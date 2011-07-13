@@ -64,7 +64,7 @@ $titlebarTpl.click(onTitleBarClick);
  * For debugging
  */
 function log(msg) {
-  console.log(msg);
+  console.log("gpn." + msg);
 }
 
 /****************************************************************************
@@ -78,7 +78,7 @@ function log(msg) {
 function onTitleBarClick() {
   // NOTE: event arg doesn't work
   var $item = $jquery(this).parent();
-  log("onTitleBarClick: " + $item.attr('id'));
+  //log("onTitleBarClick: " + $item.attr('id'));
 
   toggleItemFolded($item);
 }
@@ -88,7 +88,7 @@ function onTitleBarClick() {
  * Calls toggleItemFolded()
  */
 function onFoldKey(e, attempt) {
-  log("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
+  //log("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
   // Find selected item
   var $selectedItem = $jquery('.a-f-oi-Ai');
   if ($selectedItem.length == 1) {
@@ -116,7 +116,7 @@ function onFoldKey(e, attempt) {
  */
 function onContentPaneModified(e) {
   if (e.target.id.indexOf('update-') === 0) {
-    log("onContentPaneModified: e.target=" + e.target.id);
+    //log("onContentPaneModified: e.target=" + e.target.id);
     enhanceItem(e.target);
   }
 }
@@ -125,7 +125,7 @@ function onContentPaneModified(e) {
  * Responds to changes in the history state
  */
 function onTabUpdated() {
-  log("onTabUpdated");
+  //log("onTabUpdated");
 
   // Restrict to Google+ pages
   if (!appAPI.matchPages("plus.google.com/*"))
@@ -135,7 +135,7 @@ function onTabUpdated() {
   // Make sure we still have an event handler for DOM changes
   var $contentPane = $jquery('.a-b-f-i-oa');
   if ($contentPane.length === 0)
-    log("gpn.onRequest: Can't find content pane");
+    log("onRequest: Can't find content pane");
   else  {
     // Make sure we only have one
     $contentPane.unbind('DOMSubtreeModified', onContentPaneModified);
@@ -147,9 +147,9 @@ function onTabUpdated() {
  * Responds to changes in mode option
  */
 function onOptionsModeUpdated(newMode) {
-  log("onOptionsModeUpdated: new mode=" + newMode);
+  //log("onOptionsModeUpdated: new mode=" + newMode);
 
-  // Read in current option
+  // If mode has changed
   var oldMode = appAPI.db.get("gpn_options_mode");
   if (! oldMode || newMode !== oldMode) {
     gpnMode = newMode;
@@ -159,6 +159,18 @@ function onOptionsModeUpdated(newMode) {
 
     // Force refresh
     enhanceAllItems(true);
+
+    // If going to expanded mode, we want to unfold the last item opened in list mode
+    if (newMode == 'expanded') {
+      var id = appAPI.db.get("post_last_open_" + window.location.href);
+      if (typeof(id) != 'undefined' && id != null) {
+        var $item = $jquery('#' + id);
+        //log("onOptionsModeUpdated: last open id=" + id + " $item.length=" + $item.length);
+        if ($item.length == 1) {
+          unfoldItem($item);
+        }
+      }
+    }
   }
 }
 
@@ -168,6 +180,7 @@ function onOptionsModeUpdated(newMode) {
 
 /**
  * Toggle viewable state of the content of an item.
+ * This is only called as a result of a user action.
  * Calls foldItem() or unfoldItem().
  */
 function toggleItemFolded($item) {
@@ -180,10 +193,18 @@ function toggleItemFolded($item) {
   }
   var $post = $posts.first();
 
+  var id = $item.attr('id');
   if (! $item.hasClass('gpn-folded')) {
     foldItem($item, $post);
+    // Since this thread is a result of an interactive toggle, we delete last open
+    if (appAPI.db.get("post_last_open_" + window.location.href) == id)
+      appAPI.db.set("post_last_open_" + window.location.href, undefined, appAPI.time.minutesFromNow(5));
+
   } else {
     unfoldItem($item, $post);
+
+    // Since this thread is a result of an interactive toggle, we record last open
+    appAPI.db.set("post_last_open_" + window.location.href, id, appAPI.time.daysFromNow(10));
   }
 
   return true;
@@ -196,7 +217,7 @@ function foldItem($item, $post) {
   if (typeof($post) == 'undefined') {
     var $posts = $item.find('.a-b-f-i-p');
     if ($posts.length != 1) {
-      log("gpn.foldItem: $posts.length=" + $posts.length);
+      //log("foldItem: $posts.length=" + $posts.length);
       return;
     }
     $post = $posts.first();
@@ -204,17 +225,9 @@ function foldItem($item, $post) {
 
   // Persist
   var id = $item.attr('id');
-  log("gpn.foldItem: id=" + id);
-  if (gpnMode == 'list') {
-    //appAPI.db.remove("post_open_" + id);
-    appAPI.db.set("post_open_" + id, undefined, appAPI.time.minutesFromNow(5));
-    log("gpn.foldItem: removing post_open" + id);
-    if (appAPI.db.get("post_last_open") == id)
-      //appAPI.db.remove("post_last_open");
-      appAPI.db.set("post_last_open", undefined, appAPI.time.minutesFromNow(5));
-  } else {
+  //log("foldItem: id=" + id);
+  if (gpnMode == 'expanded')
     appAPI.db.set("post_folded_" + id, true);
-  }
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
@@ -228,7 +241,7 @@ function foldItem($item, $post) {
 
     var $fullName = $item.find('.a-f-i-go');
     if ($fullName.length != 1) {
-      log("gpn.foldItem: can't find full name node");
+      log("foldItem: can't find full name node");
     } else {
       // NOTE: don't just take the first div because sometimes the hangout 'Live' icons is there
       var $srcTitle = $fullName.parent().first();
@@ -237,7 +250,7 @@ function foldItem($item, $post) {
       if ($perms.length > 0) {
         $perms.remove();
       } else {
-        log("gpn.foldItem: can't find permissions div");
+        log("foldItem: can't find permissions div");
       }
     }
   }
@@ -251,50 +264,30 @@ function unfoldItem($item, $post) {
   if (typeof($post) == 'undefined') {
     var $posts = $item.find('.a-b-f-i-p');
     if ($posts.length != 1) {
-      log("gpn.unfoldItem: $posts.length=" + $posts.length);
+      //log("unfoldItem: $posts.length=" + $posts.length);
       return;
     }
     $post = $posts.first();
   }
 
   // In list mode, we close the previous opened item
-  var id;
+  var id = $item.attr('id');
+  //log("unfoldItem: id=" + id);
   if (gpnMode == 'list') {
-    id = appAPI.db.get("post_last_open");
-    log("gpn.unfoldItem: last open id=" + id);
+    lastOpenId = appAPI.db.get("post_last_open_" + window.location.href);
+    //log("unfoldItem: last open id=" + lastOpenId);
     // NOTE: we check for undefined because of our bug workaround
-    if (typeof(id) != "undefined" && id !== null) {
-      var url = appAPI.db.get("post_last_open_url");
-      // Only close if last open was on the same page (G+ keeps posts from other pages
-      // in the tree for a while)
-      if (typeof(url) == 'undefined' || url === null || window.location.href == url) {
-        log("unfoldItem: href=" + window.location.href + " post_last_open_url=" + url);
-        // G+ keeps items from previous page -- we don't want to close those
-        var $lastItem = $jquery('#' + id);
-        if ($lastItem.length > 0 && $lastItem.hasClass('gpn-enh')) {
-          listCloseItem(id);
-        }
+    if (typeof(lastOpenId) != "undefined" && lastOpenId !== null && lastOpenId != id) {
+      //log("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
+      var $lastItem = $jquery('#' + lastOpenId);
+      if ($lastItem.length > 0 && $lastItem.hasClass('gpn-enh')) {
+        listCloseItem(lastOpenId);
       }
     }
   }
 
   // Persist
-  id = $item.attr('id');
-  log("gpn.unfoldItem: id=" + id);
-  if (gpnMode == 'list') {
-    //log("gpn.unfoldItem: setting last open id=" + id);
-    appAPI.db.set("post_last_open", id, appAPI.time.daysFromNow(10));
-    appAPI.db.set("post_last_open_url", window.location.href, appAPI.time.daysFromNow(10));
-
-    // Check for crossRider bug: http://getsatisfaction.com/crossrider/topics/db_set_works_intermittently
-    var savedid = appAPI.db.get("post_last_open");
-    if (id != savedid)
-      log("gpn.unfoldItem: WE GOT A PROBLEM id=" + id + " savedid=" + savedid);
-
-    appAPI.db.set("post_open_" + id, true, appAPI.time.daysFromNow(10));
-    log("gpn.unfoldItem: saving post_open_" + id);
-  } else {
-    //appAPI.db.remove("post_folded_" + id);
+  if (gpnMode == 'expanded') {
     appAPI.db.set("post_folded_" + id, undefined, appAPI.time.minutesFromNow(5));
   }
 
@@ -309,12 +302,12 @@ function unfoldItem($item, $post) {
  * XXX Doesn't do much; may just inline it inside unfoldItem()
  */
 function listCloseItem(id) {
-  log("gpn.listCloseItem: id=" + id);
+  //log("listCloseItem: id=" + id);
   var $openItem = $jquery('#' + id);
   if ($openItem.length > 0) {
     foldItem($openItem.first());
   } else {
-    log("gpn.listCloseItem: can't find it: matches=" + $openItem.length);
+    log("listCloseItem: can't find it: matches=" + $openItem.length);
   }
 }
 
@@ -328,9 +321,9 @@ function listCloseItem(id) {
  */
 function enhanceAllItems(force) {
   var i = 0;
-  log("enhanceAllItems");
+  //log("enhanceAllItems");
   $jquery('.a-b-f-i').each(function(i, val) {
-    log("enhanceAllItems #" + i++);
+    //log("enhanceAllItems #" + i++);
     enhanceItem(val, force);
   });
 }
@@ -345,14 +338,14 @@ function enhanceItem(item, force) {
   if (! item)
     return;
 
-  log("enhanceItem: " + item.id);
+  //log("enhanceItem: " + item.id);
   var $item = $jquery(item);
 
   if (force || ! $item.hasClass('gpn-enh')) {
     // Add titlebar
     var $itemContent = $item.find('.a-b-f-i-p');
     if ($itemContent.length != 1) {
-      log("gpn.enhanceItem: Can't find child of item " + $item.attr('id'));
+      log("enhanceItem: Can't find child of item " + $item.attr('id'));
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
@@ -362,21 +355,21 @@ function enhanceItem(item, force) {
       $item.addClass('gpn-enh');
 
     var $titlebar = $item.find('.gpn-posttitlebar');
-    if ($titlebar.length == 0) {
+    if ($titlebar.length === 0) {
       $titlebar = $titlebarTpl.clone(true);
       $titlebar.insertBefore($itemContent);
     }
 
     if (gpnMode == 'list') {
       // If list-mode, find the expanded one
-      var itemOpen = appAPI.db.get("post_open_" + $item.attr('id'));
-      if (itemOpen) {
-        //log("gpn.enhanceItem: post_open match on " + itemOpenId);
+      var lastOpenId = appAPI.db.get("post_last_open_" + window.location.href);
+      if (typeof(lastOpenId) != "undefined" && lastOpenId !== null && lastOpenId == item.id) {
+        //log("enhanceItem: post_open match on " + itemOpenId);
         // We explicitly open in order to close any previously opened item
         // FIXME: this favors the oldest instead of the most recent opened item
         unfoldItem($item);
       } else {
-        //log("gpn.enhanceItem: post_open no match " + itemOpenId + " != " + $item.attr('id'));
+        //log("enhanceItem: post_open no match " + itemOpenId + " != " + $item.attr('id'));
         foldItem($item);
       }
     } else {
@@ -428,7 +421,7 @@ $jquery(document).ready(function() {
   //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
   var $contentPane = $jquery('.a-b-f-i-oa');
   if ($contentPane.length === 0)
-    log("gpn.main: Can't find content pane");
+    log("main: Can't find content pane");
   else 
     $contentPane.bind('DOMSubtreeModified', onContentPaneModified);
 
