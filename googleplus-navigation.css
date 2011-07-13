@@ -1,0 +1,106 @@
+/*
+# Filename:         googleplus-navigation.css
+# Version:          0.1
+# Description:
+#
+# Platforms:        Google Chrome, Firefox, Internet Explorer
+# Depends:          
+# Source:           https://github.com/huyz/googleplus-navigation
+# Author:           Huy Z  http://huyz.us/
+# Updated on:       2011-07-11
+# Created on:       2011-07-11
+#
+# Installation:
+#
+# Usage:
+#
+
+# Copyright (C) 2011 Huy Z
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+.gpn-posttitlebar {
+  margin: -16px -19px auto -21px;
+}
+
+/*
+.gpn-folded {
+  height: 26px;
+}
+  */
+
+.gpn-folded .gpn-posttitlebar {
+}
+
+/* Muted post */
+.a-f-i-za .gpn-posttitlebar {
+  margin: 0;
+  display: none;
+}
+
+.gpn-posttitlebar > div {
+  width: 100%;
+  height: 14px;
+  margin-bottom: 4px;
+}
+
+.gpn-folded .gpn-posttitlebar > div {
+  height: 24px;
+}
+
+.gpn-title {
+  padding: 4px 6px 0 6px;
+  display: none;
+}
+
+.gpn-folded .gpn-title {
+  display: block;
+}
+
+.gpn-folded.a-b-f-i {
+  padding-bottom: 0;
+}
+
+/* Selected post */
+.gpn-folded.a-f-oi-Ai {
+  border-bottom: none; /* This also shortens the left blue border */
+  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpn-posttitlebar > div" to replace deleted border */
+}
+
+/*
+.gpn-transparent .gpn-posttitlebar {
+  -khtml-opacity:0;
+  -moz-opacity:0;
+  -ms-filter:"alpha(opacity=0)";
+  filter:alpha(opacity=0);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  opacity:0;
+}
+*/
+
+/* Selected post */
+/*
+.a-f-oi-Ai .gpn-posttitlebar a div {
+  border-top: 1px solid rgb(129, 203, 237);
+  border-right: 1px solid rgb(129, 203, 237);
+  border-bottom: none;
+}
+*/

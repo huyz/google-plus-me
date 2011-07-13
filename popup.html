@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+<style>
+body {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif !important;
+    font-size: 14px;
+    line-height: 21px;
+    color: #333;
+}
+code, pre, textarea, tt {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif !important;
+    font-size: 12px;
+    line-height: 18px;
+    color: black;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+a         { text-decoration: none;      color: #537d7b }
+a:visited { text-decoration: none;      color: #98855b }
+a:hover   { text-decoration: underline; color: #a34d32 }
+
+.header {
+    background-color: #2D2D2D;
+    color: white;
+    font-weight: bold;
+    padding: 3px 5px;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.container {
+    margin: 10px 15px;
+}
+
+.author {
+    font-weight: normal;
+    font-size: 12px;
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+}
+
+.options {
+    width: 200px;
+    margin: 5px;
+}
+
+#status {
+    margin: 5px;
+    height: 20px;
+    color: green;
+}
+</style>
+
+<script type="text/javascript" charset="utf-8">
+//this line is important to get access to your appAPI object
+var appAPI = chrome.extension.getBackgroundPage().appAPI;
+
+// Saves options to localStorage.
+function saveOptions() {
+  var mode = "expanded";
+  var radios = document.getElementsByName("gpn_options_mode");
+  for (var radio in radios) {
+    if (radios[radio].checked) {
+      mode = radios[radio].value;
+      break;
+    }
+  }
+  appAPI.db.set("gpn_options_mode", mode);
+
+  // Update status to let user know options were saved.
+  var status = document.getElementById("status");
+  status.innerHTML = "Options saved.";
+  setTimeout(function() {
+    status.innerHTML = "";
+  }, 1000);
+
+  // Send update
+  appAPI.message.toActiveTab({action:"gpnModeOptionUpdated", mode: mode});
+}
+
+// Restores select box state to saved value from localStorage.
+function restoreOptions() {
+  var mode = appAPI.db.get("gpn_options_mode") || "expanded";
+  var radios = document.getElementsByName("gpn_options_mode");
+  for (var radio in radios) {
+    radios[radio].checked = mode == radios[radio].value;
+  }
+}
+</script>
+
+</head>
+
+<body onload="restoreOptions()">
+
+    <div class="header">
+        Google+ Navigation<br/>
+        <span class="author">by <a href="http://huyz.us/" target=_blank>Huy Z</a></span>
+    </div>
+
+    <div class="container">
+
+        <div class="options">
+            Show posts in mode: <br />
+            <input id="gpn_options_mode_expanded" type="radio" name="gpn_options_mode" value="expanded" / >Expanded<br />
+            <input id="gpn_options_mode_list" type="radio" name="gpn_options_mode" value="list" / >List<br />
+
+            <button onclick="saveOptions()" style="margin-top: 5px">Save</button>
+        </div>
+
+        <pre id="status">
+        </pre>
+    </div>
+
+</body>  
+</html>
+
+<!-- Local Variables: -->
+<!-- coding: utf-8 -->
+<!-- End: -->
+<!-- vim:set ai et sts=4 sw=4 tw=0: -->
