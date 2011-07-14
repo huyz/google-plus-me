@@ -1,28 +1,29 @@
 /*
 # Filename:         extension.js
-# Version:          0.1
-# Description:
-#   This file takes some ideas from https://github.com/mohamedmansour/google-plus-extension/
-#   and https://github.com/wittman/googleplusplus_hide_comments .
 #
-# Platforms:        Google Chrome, Firefox, Internet Explorer
+# Platforms:        Google Chrome, Firefox (not yet), Internet Explorer (not yet)
 # Depends:          
-# Source:           https://github.com/huyz/googleplus-navigation
+# Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-07-11
+# Updated on:       2011-07-14
 # Created on:       2011-07-11
 #
 # Installation:
+#   Like any other browser extension.
 #
 # Usage:
 #   Click on the titlebar of each shared post.
-#   Or use the 'o' keyboard shortcut.
+#   [NOT YET ENABLED: Or use the 'o' keyboard shortcut.]
 #
-# Bugs:
+# Known issues:
 # - keyboard scrolling can be messed up sometimes; i think that the code caches the height of the posts
 # - automatic window scrolling doesn't work (for clicks and keystrokes).
 # - doesn't stop youtube from playing
-# - text snippet cleaning won't work in non-English
+# - title text abbreviation won't work in non-English
+#
+# Thanks:
+#   This extension takes some ideas from https://github.com/mohamedmansour/google-plus-extension/
+#   and https://github.com/wittman/googleplusplus_hide_comments .
 
 # Copyright (C) 2011 Huy Z
 # 
@@ -81,19 +82,19 @@ var C_STATUS_BG_OFF = 'gbid';
 var C_STATUS_FG_OFF = 'gbids';
 
 
-var C_COMMENTCOUNT_NOHILITE = 'gpn-comment-count-nohilite';
+var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
 /****************************************************************************
  * Init & Utility
  ***************************************************************************/
 
 // list or expanded mode (like on GReader)
-var gpnMode;
+var gpmeMode;
 
 // Shared DOM.
 var titlebarTpl = document.createElement('div');
-titlebarTpl.setAttribute('class', 'gpn-titlebar');
-titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><span class="gpn-title"></span></div>';
+titlebarTpl.setAttribute('class', 'gpme-titlebar');
+titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><span class="gpme-title"></span></div>';
 var $titlebarTpl = $jquery(titlebarTpl);
 $titlebarTpl.click(onTitleBarClick);
 
@@ -101,7 +102,10 @@ $titlebarTpl.click(onTitleBarClick);
  * For debugging
  */
 function log(msg) {
-  console.log("gpn." + msg);
+  //console.log("gpme." + msg);
+}
+function error(msg) {
+  console.log("ERROR: gpme." + msg);
 }
 
 /**
@@ -122,6 +126,14 @@ function abbreviateDate(text) {
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
+
+/**
+ * Responds to changes in the update status
+ */
+function onStatusUpdated(e) {
+  log("onStatusUpdated");
+  appAPI.message.toBackground({action:"gpmeStatusUpdate", count: parseInt(e.target.innerText, 10)});
+}
 
 /**
  * Responds to click on post titlebar.
@@ -211,12 +223,12 @@ function onOptionsModeUpdated(newMode) {
     return;
 
   // If mode has changed
-  var oldMode = appAPI.db.get("gpn_options_mode");
+  var oldMode = appAPI.db.get("gpme_options_mode");
   if (! oldMode || newMode !== oldMode) {
-    gpnMode = newMode;
+    gpmeMode = newMode;
 
     // Persist
-    appAPI.db.set("gpn_options_mode", newMode);
+    appAPI.db.set("gpme_options_mode", newMode);
 
     // Force refresh of folding
     enhanceAllItems(true);
@@ -265,7 +277,7 @@ function toggleItemFolded($item) {
   var $post = $posts.first();
 
   var id = $item.attr('id');
-  if (! $item.hasClass('gpn-folded')) {
+  if (! $item.hasClass('gpme-folded')) {
     foldItem($item, $post);
     // Since this thread is a result of an interactive toggle, we delete last open
     if (appAPI.db.get("post_last_open_" + window.location.href) == id)
@@ -297,32 +309,32 @@ function foldItem($item, $post) {
   // Persist
   var id = $item.attr('id');
   //log("foldItem: id=" + id);
-  if (gpnMode == 'expanded')
+  if (gpmeMode == 'expanded')
     appAPI.db.set("post_folded_" + id, true, appAPI.time.daysFromNow(30));
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   $post.hide();
-  $item.addClass('gpn-folded');
+  $item.addClass('gpme-folded');
 
   // Update the comment count
   var commentCount = countComments($item);
   // Only update the comment count in storage if not already set
   var oldCount = appAPI.db.get('post_old_comment_count_' + id);
-  if (typeof(oldCount) == 'undefined' || oldCount == null)
+  if (typeof(oldCount) == 'undefined' || oldCount === null)
     appAPI.db.set('post_old_comment_count_' + id, commentCount, appAPI.time.daysFromNow(30));
 
   // Attached or pending title
   var $subtree;
 
   // If not yet done, put content in titlebar
-  var $title = $subtree = $item.find('.gpn-title');
-  if (! $title.hasClass('gpn-has-content')) {
-    $title.addClass('gpn-has-content');
+  var $title = $subtree = $item.find('.gpme-title');
+  if (! $title.hasClass('gpme-has-content')) {
+    $title.addClass('gpme-has-content');
 
     var $srcTitle = $item.find(_C_TITLE);
     if ($srcTitle.length != 1) {
-      log("foldItem: can't find post content title node");
+      error("foldItem: can't find post content title node");
     } else {
       // NOTE: don't just take the first div inside post content title because
       // sometimes the hangout 'Live' icons is there
@@ -333,7 +345,7 @@ function foldItem($item, $post) {
       if ($perms.length > 0) {
         $perms.remove();
       } else {
-        log("foldItem: can't find permissions div");
+        error("foldItem: can't find permissions div");
       }
 
       // Put in snippet, trying differing things
@@ -355,15 +367,15 @@ function foldItem($item, $post) {
             // FIXME: English-specific
             text = text.replace(/.*hung out\s*/, '');
           }
-          $clonedTitle.append('<span class="gpn-snippet">' + text + '</span>');
+          $clonedTitle.append('<span class="gpme-snippet">' + text + '</span>');
           break;
         }
       }
 
       // Add comment-count container
-      $clonedTitle.prepend('<div class="gpn-comment-count-container" style="display:none">' +
-        '<span class="gpn-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
-        '<span class="gpn-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
+      $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
+        '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
+        '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
       // Listen for updates to comment counts
       var $container = $item.find(_C_COMMENTS_ALL_CONTAINER);
       if ($container.length)
@@ -374,7 +386,7 @@ function foldItem($item, $post) {
       if ($clonedDate.length) {
         $clonedDate.removeClass(C_DATE);
       } else {
-        log("foldItem: Can't find date marker");
+        error("foldItem: Can't find date marker");
       }
 
       // For first page display, the date is there, but for AJAX updates, the date isn't there yet.
@@ -400,7 +412,7 @@ function foldItem($item, $post) {
           if ($srcDateA.length) {
             $date.append($srcDateA.clone());
           } else {
-            log("folditem.timeout: can't find the source date div");
+            error("folditem.timeout: can't find the source date div");
           }
 
           // Take out (edited.*)
@@ -442,26 +454,26 @@ function unfoldItem($item, $post) {
   // In list mode, we close the previous opened item
   var id = $item.attr('id');
   //log("unfoldItem: id=" + id);
-  if (gpnMode == 'list') {
+  if (gpmeMode == 'list') {
     lastOpenId = appAPI.db.get("post_last_open_" + window.location.href);
     //log("unfoldItem: last open id=" + lastOpenId);
     // NOTE: we check for undefined because of our bug workaround
     if (typeof(lastOpenId) != "undefined" && lastOpenId !== null && lastOpenId != id) {
       //log("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
       var $lastItem = $jquery('#' + lastOpenId);
-      if ($lastItem.length > 0 && $lastItem.hasClass('gpn-enh')) {
+      if ($lastItem.length > 0 && $lastItem.hasClass('gpme-enh')) {
         listCloseItem(lastOpenId);
       }
     }
   }
 
   // Persist
-  if (gpnMode == 'expanded')
+  if (gpmeMode == 'expanded')
     appAPI.db.set("post_folded_" + id, undefined, appAPI.time.minutesFromNow(1));
 
   // Visual changes
   $post.show();
-  $item.removeClass('gpn-folded');
+  $item.removeClass('gpme-folded');
 
   // Remove the stored comment count
   appAPI.db.set('post_old_comment_count_' + id, undefined, appAPI.time.minutesFromNow(1));
@@ -478,7 +490,7 @@ function listCloseItem(id) {
   if ($openItem.length > 0) {
     foldItem($openItem.first());
   } else {
-    log("listCloseItem: can't find it: matches=" + $openItem.length);
+    error("listCloseItem: can't find it: matches=" + $openItem.length);
   }
 }
 
@@ -512,9 +524,9 @@ function countComments($item) {
 function updateCommentCount(id, $subtree, count) {
   //log("updateCommentCount: id=" + id + " count=" + count);
   //
-  var $container = $subtree.find(".gpn-comment-count-container");
-  var $countBg = $container.find(".gpn-comment-count-bg");
-  var $countFg = $container.find(".gpn-comment-count-fg");
+  var $container = $subtree.find(".gpme-comment-count-container");
+  var $countBg = $container.find(".gpme-comment-count-bg");
+  var $countFg = $container.find(".gpme-comment-count-fg");
 
   // Change background of count
   var oldCount = appAPI.db.get('post_old_comment_count_' + id);
@@ -548,7 +560,8 @@ function enhanceAllItems(force) {
   var i = 0;
   //log("enhanceAllItems");
   $jquery(_C_ITEM).each(function(i, val) {
-    log("enhanceAllItems #" + i++);
+    log("enhanceAllItems #" + i);
+    i++;
     enhanceItem(val, force);
   });
 }
@@ -566,26 +579,26 @@ function enhanceItem(item, force) {
   //log("enhanceItem: " + item.id);
   var $item = $jquery(item);
 
-  if (force || ! $item.hasClass('gpn-enh')) {
+  if (force || ! $item.hasClass('gpme-enh')) {
     // Add titlebar
     var $itemContent = $item.find(_C_CONTENT);
     if ($itemContent.length != 1) {
-      log("enhanceItem: Can't find child of item " + $item.attr('id'));
+      error("enhanceItem: Can't find child of item " + $item.attr('id'));
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
     // events and infinite recursion.
     //log("enhanceItem: enhancing");
-    if (! $item.hasClass('gpn-enh'))
-      $item.addClass('gpn-enh');
+    if (! $item.hasClass('gpme-enh'))
+      $item.addClass('gpme-enh');
 
-    var $titlebar = $item.find('.gpn-titlebar');
+    var $titlebar = $item.find('.gpme-titlebar');
     if ($titlebar.length === 0) {
       $titlebar = $titlebarTpl.clone(true);
       $titlebar.insertBefore($itemContent);
     }
 
-    if (gpnMode == 'list') {
+    if (gpmeMode == 'list') {
       // If list-mode, find the expanded one
       var lastOpenId = appAPI.db.get("post_last_open_" + window.location.href);
       if (typeof(lastOpenId) != "undefined" && lastOpenId !== null && lastOpenId == item.id) {
@@ -633,10 +646,10 @@ function injectCss(styleUrl) {
     // gray), which seems to be there by default.
     if (statusOff = $statusNode.hasClass(C_STATUS_BG_OFF))
       $statusNode.removeClass(C_STATUS_BG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     $statusNode.addClass(C_STATUS_BG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
@@ -649,10 +662,10 @@ function injectCss(styleUrl) {
     // gray), which seems to be there by default.
     if (statusOff = $statusNode.hasClass(C_STATUS_FG_OFF))
       $statusNode.removeClass(C_STATUS_FG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpn-comment-count-fg { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     $statusNode.addClass(C_STATUS_FG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpn-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
@@ -674,22 +687,29 @@ $jquery(document).ready(function() {
   //alert("Google+ Navigation (unpacked)");
   
   // Read in options and save default
-  if (! (gpnMode = appAPI.db.get("gpn_options_mode"))) {
-    appAPI.db.set("gpn_options_mode", gpnMode = "expanded");
+  if (! (gpmeMode = appAPI.db.get("gpme_options_mode"))) {
+    appAPI.db.set("gpme_options_mode", gpmeMode = "expanded");
   }
 
   // Inject CSS
   // FIXME: Chrome-specific
-  injectCss(chrome.extension.getURL("googleplus-navigation.css"));
+  injectCss(chrome.extension.getURL("gpme.css"));
 
   // Listen when the subtree is modified for new posts.
   // WARNING: DOMSubtreeModified is deprecated and degrades performance:
   //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
   var $contentPane = $jquery(_ID_CONTENT_PANE);
-  if ($contentPane.length === 0)
-    log("main: Can't find post container");
-  else 
+  if ($contentPane.length)
     $contentPane.bind('DOMSubtreeModified', onContainerModified);
+  else 
+    log("main: Can't find post container");
+
+  // Listen when status change
+  var $status = $jquery(_ID_STATUS_FG);
+  if ($status.length)
+    $status.bind('DOMSubtreeModified', onStatusUpdated);
+  else
+    log("main: Can't find status node");
 
   // Listen for history state changes
   // http://stackoverflow.com/questions/4570093/how-to-get-notified-about-changes-of-the-history-via-history-pushstate
@@ -710,12 +730,12 @@ $jquery(document).ready(function() {
   };
   */
 
-  //listen to incoming messages 
+  // Listen to incoming messages from background page
   appAPI.message.addListener(function(msg) {
-    if (msg.action == "gpnTabUpdateComplete") {
+    if (msg.action == "gpmeTabUpdateComplete") {
       // Handle G+'s history state pushing when user clicks on different streams (and back)
       onTabUpdated();
-    } else if (msg.action == "gpnModeOptionUpdated") {
+    } else if (msg.action == "gpmeModeOptionUpdated") {
       // Handle options changes
       onOptionsModeUpdated(msg.mode);
     }
@@ -723,7 +743,7 @@ $jquery(document).ready(function() {
 
 
   // Listen for keystrokes
-/*
+/* Disabled because it's not disabled in input (probably because Google doesn't use a regular input field.)
   appAPI.shortcut.add("o", onFoldKey, {
     'disable_in_input':true,
     'type':'keypress',
