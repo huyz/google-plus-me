@@ -78,6 +78,17 @@
   color: #999;
 }
 
+/* Overrides injectCss(); add div just for higher specificity. */
+div.gpn-comment-count-container .gpn-comment-count-bg {
+  right: 7px;
+}
+
+/* Overrides injectCss(); add div just for higher specificity. */
+div.gpn-comment-count-container .gpn-comment-count-fg {
+  height: 19px;
+  line-height: 19px;
+}
+
 .gpn-folded .gpn-title {
   display: block;
 }

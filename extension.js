@@ -55,9 +55,14 @@
  * Constants
  ***************************************************************************/
 
+//// For more class constants, see foldItem() in classes array
+
+// We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
+// refresh the contentPane
+var _ID_CONTENT_PANE = '#contentPane';
+//var _C_CONTAINER = '.a-b-f-i-oa';
 var C_FEEDBACK = 'tk3N6e-e-vj';
 var _C_SELECTED = '.a-f-oi-Ai';
-var _C_CONTAINER = '.a-b-f-i-oa';
 var _C_ITEM = '.a-b-f-i';
 var _C_CONTENT = '.a-b-f-i-p';
 var _C_TITLE = '.gZgCtb';
@@ -70,7 +75,13 @@ var _C_COMMENTS_ALL_CONTAINER = '.a-b-f-i-Xb';
 var _C_COMMENTS_OLD = '.a-b-f-i-gc-cf-Xb-h';
 var _C_COMMENTS = '.a-b-f-i-W-r';
 var _C_COMMENTS_MORE = '.a-b-f-i-gc-Sb-Xb-h';
-// For more, see foldItem() in classes array
+var _ID_STATUS_BG = '#gbi1a';
+var _ID_STATUS_FG = '#gbi1';
+var C_STATUS_BG_OFF = 'gbid';
+var C_STATUS_FG_OFF = 'gbids';
+
+
+var C_COMMENTCOUNT_NOHILITE = 'gpn-comment-count-nohilite';
 
 /****************************************************************************
  * Init & Utility
@@ -91,6 +102,21 @@ $titlebarTpl.click(onTitleBarClick);
  */
 function log(msg) {
   console.log("gpn." + msg);
+}
+
+/**
+ * Check if should enable on certain pages
+ */
+function isEnabledOnThisPage() {
+  return appAPI.matchPages("plus.google.com/*") && ! appAPI.matchPages(/\/posts\//);
+}
+
+/**
+ * Shorten date text to give more room for snippet
+ * FIXME: English-specific
+ */
+function abbreviateDate(text) {
+  return text.replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.');
 }
 
 /****************************************************************************
@@ -141,6 +167,10 @@ function onFoldKey(e, attempt) {
  * Calls enhanceItem()
  */
 function onContainerModified(e) {
+  // Restrict to non-single-post Google+ pages
+  if (!isEnabledOnThisPage())
+    return;
+
   if (e.target.id.indexOf('update-') === 0) {
     log("onContainerModified: e.target=" + e.target.id);
     enhanceItem(e.target);
@@ -153,19 +183,20 @@ function onContainerModified(e) {
 function onTabUpdated() {
   log("onTabUpdated");
 
-  // Restrict to Google+ pages
-  if (!appAPI.matchPages("plus.google.com/*"))
-    return;  //quit if we are not on google.com pages
+  // Restrict to non-single-post Google+ pages
+  if (!isEnabledOnThisPage())
+    return;
+
   enhanceAllItems();
 
   // Make sure we still have an event handler for DOM changes
-  var $container = $jquery(_C_CONTAINER);
-  if ($container.length === 0)
+  var $contentPane = $jquery(_ID_CONTENT_PANE);
+  if ($contentPane.length === 0)
     log("onRequest: Can't find content pane");
   else  {
     // Make sure we only have one
-    $container.unbind('DOMSubtreeModified', onContainerModified);
-    $container.bind('DOMSubtreeModified', onContainerModified);
+    $contentPane.unbind('DOMSubtreeModified', onContainerModified);
+    $contentPane.bind('DOMSubtreeModified', onContainerModified);
   }
 }
 
@@ -175,6 +206,10 @@ function onTabUpdated() {
 function onOptionsModeUpdated(newMode) {
   log("onOptionsModeUpdated: new mode=" + newMode);
 
+  // Restrict to non-single-post Google+ pages
+  if (!isEnabledOnThisPage())
+    return;
+
   // If mode has changed
   var oldMode = appAPI.db.get("gpn_options_mode");
   if (! oldMode || newMode !== oldMode) {
@@ -183,7 +218,7 @@ function onOptionsModeUpdated(newMode) {
     // Persist
     appAPI.db.set("gpn_options_mode", newMode);
 
-    // Force refresh
+    // Force refresh of folding
     enhanceAllItems(true);
 
     // If going to expanded mode, we want to unfold the last item opened in list mode
@@ -205,8 +240,9 @@ function onOptionsModeUpdated(newMode) {
  */
 function onCommentsUpdate(e) {
   var $item = $jquery(e.target).closest(_C_ITEM);
-  log("onCommentsUpdate: id=" + $item.attr('id'));
-  updateCommentCount($item, countComments($item));
+  var id = $item.attr('id');
+  log("onCommentsUpdate: id=" + id);
+  updateCommentCount(id, $item, countComments($item));
 }
 
 /****************************************************************************
@@ -233,13 +269,13 @@ function toggleItemFolded($item) {
     foldItem($item, $post);
     // Since this thread is a result of an interactive toggle, we delete last open
     if (appAPI.db.get("post_last_open_" + window.location.href) == id)
-      appAPI.db.set("post_last_open_" + window.location.href, undefined, appAPI.time.minutesFromNow(5));
+      appAPI.db.set("post_last_open_" + window.location.href, undefined, appAPI.time.minutesFromNow(1));
 
   } else {
     unfoldItem($item, $post);
 
     // Since this thread is a result of an interactive toggle, we record last open
-    appAPI.db.set("post_last_open_" + window.location.href, id, appAPI.time.daysFromNow(10));
+    appAPI.db.set("post_last_open_" + window.location.href, id, appAPI.time.daysFromNow(30));
   }
 
   return true;
@@ -260,17 +296,27 @@ function foldItem($item, $post) {
 
   // Persist
   var id = $item.attr('id');
-  log("foldItem: id=" + id);
+  //log("foldItem: id=" + id);
   if (gpnMode == 'expanded')
-    appAPI.db.set("post_folded_" + id, true);
+    appAPI.db.set("post_folded_" + id, true, appAPI.time.daysFromNow(30));
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   $post.hide();
   $item.addClass('gpn-folded');
 
+  // Update the comment count
+  var commentCount = countComments($item);
+  // Only update the comment count in storage if not already set
+  var oldCount = appAPI.db.get('post_old_comment_count_' + id);
+  if (typeof(oldCount) == 'undefined' || oldCount == null)
+    appAPI.db.set('post_old_comment_count_' + id, commentCount, appAPI.time.daysFromNow(30));
+
+  // Attached or pending title
+  var $subtree;
+
   // If not yet done, put content in titlebar
-  var $title = $item.find('.gpn-title');
+  var $title = $subtree = $item.find('.gpn-title');
   if (! $title.hasClass('gpn-has-content')) {
     $title.addClass('gpn-has-content');
 
@@ -280,7 +326,7 @@ function foldItem($item, $post) {
     } else {
       // NOTE: don't just take the first div inside post content title because
       // sometimes the hangout 'Live' icons is there
-      var $clonedTitle = $srcTitle.clone();
+      var $clonedTitle = $subtree = $srcTitle.clone();
 
       // Take out permissions
       var $perms = $clonedTitle.find(_C_PERMS);
@@ -314,10 +360,10 @@ function foldItem($item, $post) {
         }
       }
 
-      // Count comments
-      $clonedTitle.prepend('<div class="gpn-comment-count-container gbids">' +
-        '<span class="gpn-comment-count-bg"></span><span class="gpn-comment-count"></span></div>');
-      updateCommentCount($clonedTitle, countComments($item));
+      // Add comment-count container
+      $clonedTitle.prepend('<div class="gpn-comment-count-container" style="display:none">' +
+        '<span class="gpn-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
+        '<span class="gpn-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
       // Listen for updates to comment counts
       var $container = $item.find(_C_COMMENTS_ALL_CONTAINER);
       if ($container.length)
@@ -336,8 +382,13 @@ function foldItem($item, $post) {
       var $clonedDateA = $clonedDate.find('a');
       if ($clonedDateA.length) {
         // FIXME: English-specific
-        $clonedDateA.text($clonedDateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
+        $clonedDateA.text(abbreviateDate($clonedDateA.text()));
         $title.append($clonedTitle);
+
+        // Stop propagation of click from the name
+        $clonedTitle.find('a').click(function(e) {
+          e.stopPropagation();
+        });
       } else {
         // In a few ms, the date should be ready to put in
         setTimeout(function() {
@@ -354,17 +405,24 @@ function foldItem($item, $post) {
 
           // Take out (edited.*)
           var $dateA = $date.find('a');
-          if ($dateA.length) {
-            // FIXME: English-specific
-            $dateA.text($dateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
-          }
+          if ($dateA.length)
+            $dateA.text(abbreviateDate($dateA.text()));
 
           // Finally, inject content into the titlebar
           $title.append($clonedTitle);
+
+          // Stop propagation of click from the name
+          // NOTE: this can't be done on a detached node.
+          $clonedTitle.find('a').click(function(e) {
+            e.stopPropagation();
+          });
         }, 200);
       }
     }
   }
+
+  // Updated the count in the subtree
+  updateCommentCount(id, $subtree, commentCount);
 }
 
 /**
@@ -398,13 +456,15 @@ function unfoldItem($item, $post) {
   }
 
   // Persist
-  if (gpnMode == 'expanded') {
-    appAPI.db.set("post_folded_" + id, undefined, appAPI.time.minutesFromNow(5));
-  }
+  if (gpnMode == 'expanded')
+    appAPI.db.set("post_folded_" + id, undefined, appAPI.time.minutesFromNow(1));
 
   // Visual changes
   $post.show();
   $item.removeClass('gpn-folded');
+
+  // Remove the stored comment count
+  appAPI.db.set('post_old_comment_count_' + id, undefined, appAPI.time.minutesFromNow(1));
 }
 
 /**
@@ -433,30 +493,45 @@ function countComments($item) {
   var commentCount = 0;
   var $oldComments = $item.find(_C_COMMENTS_OLD);
   if ($oldComments.length)
-    commentCount += parseInt($oldComments.text());
+    commentCount += parseInt($oldComments.text(), 10);
   commentCount += $item.find(_C_COMMENTS).length;
   var $moreComments = $item.find(_C_COMMENTS_MORE);
   if ($moreComments.length)
-    commentCount += parseInt($moreComments.text());
+    commentCount += parseInt($moreComments.text(), 10);
 
+  //log("countComments: " + commentCount);
   return commentCount;
 }
 
 /**
- * Update the displayed comment count
+ * Update the displayed comment count.
+ * NOTE: this can display negative counts if someone deletes a comment;
+ * FIXME: there's no handling for the deletion of a comment and then
+ *   the adding of a comment -- that just looks like there was no change
  */
-function updateCommentCount($parent, count) {
-  var $container = $parent.find(".gpn-comment-count-container");
+function updateCommentCount(id, $subtree, count) {
+  //log("updateCommentCount: id=" + id + " count=" + count);
+  //
+  var $container = $subtree.find(".gpn-comment-count-container");
+  var $countBg = $container.find(".gpn-comment-count-bg");
+  var $countFg = $container.find(".gpn-comment-count-fg");
 
-  if (count > 0) {
-    var $count = $container.find(".gpn-comment-count");
-    if ($count.length)
-      $count.text(count ? count : '');
-    else
-      log("updateCommentCount: can't find comment count node");
+  // Change background of count
+  var oldCount = appAPI.db.get('post_old_comment_count_' + id);
+  if (typeof(oldCount) != 'undefined' && oldCount !== null && count != oldCount) {
+    $countBg.removeClass(C_COMMENTCOUNT_NOHILITE);
+    $countFg.removeClass(C_COMMENTCOUNT_NOHILITE);
+    $countFg.text(count - oldCount);
     $container.show();
   } else {
-    $container.hide();
+    $countBg.addClass(C_COMMENTCOUNT_NOHILITE);
+    $countFg.addClass(C_COMMENTCOUNT_NOHILITE);
+    if (count) {
+      $countFg.text(count);
+      $container.show();
+    } else {
+      $container.hide();
+    }
   }
 }
 
@@ -466,13 +541,14 @@ function updateCommentCount($parent, count) {
 
 /**
  * Enhance all the items in the current page.
- * @param {Boolean<force>} Forces a refresh
+ * @param {Boolean<force>} Forces a refresh of folding status in case
+ *   user switches from one display mode to another
  */
 function enhanceAllItems(force) {
   var i = 0;
   //log("enhanceAllItems");
   $jquery(_C_ITEM).each(function(i, val) {
-    //log("enhanceAllItems #" + i++);
+    log("enhanceAllItems #" + i++);
     enhanceItem(val, force);
   });
 }
@@ -534,31 +610,53 @@ function enhanceItem(item, force) {
 }
 
 /**
- * Injects reference to stylesheet in current document
+ * Injects styles in current document
  */
 function injectCss(styleUrl) {
-  var head = document.getElementsByTagName('head')[0]
+  var head = document.getElementsByTagName('head')[0];
   var linkNode  = document.createElement('link');
   linkNode.rel = 'stylesheet';
   linkNode.type = 'text/css';
   linkNode.href = styleUrl;
   head.appendChild(linkNode);
 
-  // Copy G+ notification status styles because originals are by ID
+  // Copy G+ notification status bg style because original is by ID.
+  // We use a convoluted manner of copying styles in case G+ changes
+  // the CSS image sprite.
+  // XXX There must be an easier way than to getComputedStyle()
   var styleNode = document.createElement('style');
   styleNode.setAttribute('type', 'text/css');
-  styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg {'
-    + window.getComputedStyle(document.getElementById('gbi1a')).cssText
-        .replace(/((?:^|;\s*)right:)\s*\d+px;/, '$1 7px;')
-    + '}'));
-  head.appendChild(styleNode);
-  styleNode = document.createElement('style');
-  styleNode.setAttribute('type', 'text/css');
-  styleNode.appendChild(document.createTextNode('.gpn-comment-count {'
-    + window.getComputedStyle(document.getElementById('gbi1')).cssText
-        .replace(/((?:^|;\s*)height:)\s*\d+px;/, '$1 20px;')
-        .replace(/((?:^|;\s*)line-height:)\s*\w+;/, '$1 19px;')
-    + '}'));
+  var statusNode, statusOff;
+  $statusNode = $jquery(_ID_STATUS_BG);
+  if ($statusNode.length) {
+    // We have to temporarily remove the class 'gbid' (turns bg to
+    // gray), which seems to be there by default.
+    if (statusOff = $statusNode.hasClass(C_STATUS_BG_OFF))
+      $statusNode.removeClass(C_STATUS_BG_OFF);
+    styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg { ' +
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+    $statusNode.addClass(C_STATUS_BG_OFF);
+    styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+    if (! statusOff)
+      $statusNode.removeClass(C_STATUS_BG_OFF);
+  }
+
+  // Copy G+ notification status fg style because original is by ID
+  $statusNode = $jquery(_ID_STATUS_FG);
+  if ($statusNode.length) {
+    // We have to temporarily remove the class 'gbid' (turns bg to
+    // gray), which seems to be there by default.
+    if (statusOff = $statusNode.hasClass(C_STATUS_FG_OFF))
+      $statusNode.removeClass(C_STATUS_FG_OFF);
+    styleNode.appendChild(document.createTextNode('.gpn-comment-count-fg { ' +
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+    $statusNode.addClass(C_STATUS_FG_OFF);
+    styleNode.appendChild(document.createTextNode('.gpn-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+    if (! statusOff)
+      $statusNode.removeClass(C_STATUS_FG_OFF);
+  }
   head.appendChild(styleNode);
 }
 
@@ -570,7 +668,8 @@ $jquery(document).ready(function() {
   //Place your code here (you can also define new functions above this scope)
 
   // Restrict to Google+ pages
-  if (!appAPI.matchPages("plus.google.com/*")) return;  //quit if we are not on google.com pages
+  if (!appAPI.matchPages("plus.google.com/*"))
+    return;  //quit if we are not on google.com pages
 
   //alert("Google+ Navigation (unpacked)");
   
@@ -586,11 +685,11 @@ $jquery(document).ready(function() {
   // Listen when the subtree is modified for new posts.
   // WARNING: DOMSubtreeModified is deprecated and degrades performance:
   //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-  var $container = $jquery(_C_CONTAINER);
-  if ($container.length === 0)
+  var $contentPane = $jquery(_ID_CONTENT_PANE);
+  if ($contentPane.length === 0)
     log("main: Can't find post container");
   else 
-    $container.bind('DOMSubtreeModified', onContainerModified);
+    $contentPane.bind('DOMSubtreeModified', onContainerModified);
 
   // Listen for history state changes
   // http://stackoverflow.com/questions/4570093/how-to-get-notified-about-changes-of-the-history-via-history-pushstate
@@ -632,5 +731,6 @@ $jquery(document).ready(function() {
   });
 */
 
-  enhanceAllItems();
+  if (isEnabledOnThisPage())
+    enhanceAllItems();
 });
