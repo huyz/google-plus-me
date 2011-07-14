@@ -22,6 +22,7 @@
 # - keyboard scrolling can be messed up sometimes; i think that the code caches the height of the posts
 # - automatic window scrolling doesn't work (for clicks and keystrokes).
 # - doesn't stop youtube from playing
+# - text snippet cleaning won't work in non-English
 
 # Copyright (C) 2011 Huy Z
 # 
@@ -78,7 +79,7 @@ function log(msg) {
 function onTitleBarClick() {
   // NOTE: event arg doesn't work
   var $item = $jquery(this).parent();
-  //log("onTitleBarClick: " + $item.attr('id'));
+  log("onTitleBarClick: " + $item.attr('id'));
 
   toggleItemFolded($item);
 }
@@ -88,7 +89,7 @@ function onTitleBarClick() {
  * Calls toggleItemFolded()
  */
 function onFoldKey(e, attempt) {
-  //log("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
+  log("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
   // Find selected item
   var $selectedItem = $jquery('.a-f-oi-Ai');
   if ($selectedItem.length == 1) {
@@ -116,7 +117,7 @@ function onFoldKey(e, attempt) {
  */
 function onContentPaneModified(e) {
   if (e.target.id.indexOf('update-') === 0) {
-    //log("onContentPaneModified: e.target=" + e.target.id);
+    log("onContentPaneModified: e.target=" + e.target.id);
     enhanceItem(e.target);
   }
 }
@@ -125,7 +126,7 @@ function onContentPaneModified(e) {
  * Responds to changes in the history state
  */
 function onTabUpdated() {
-  //log("onTabUpdated");
+  log("onTabUpdated");
 
   // Restrict to Google+ pages
   if (!appAPI.matchPages("plus.google.com/*"))
@@ -147,7 +148,7 @@ function onTabUpdated() {
  * Responds to changes in mode option
  */
 function onOptionsModeUpdated(newMode) {
-  //log("onOptionsModeUpdated: new mode=" + newMode);
+  log("onOptionsModeUpdated: new mode=" + newMode);
 
   // If mode has changed
   var oldMode = appAPI.db.get("gpn_options_mode");
@@ -163,7 +164,7 @@ function onOptionsModeUpdated(newMode) {
     // If going to expanded mode, we want to unfold the last item opened in list mode
     if (newMode == 'expanded') {
       var id = appAPI.db.get("post_last_open_" + window.location.href);
-      if (typeof(id) != 'undefined' && id != null) {
+      if (typeof(id) != 'undefined' && id !== null) {
         var $item = $jquery('#' + id);
         //log("onOptionsModeUpdated: last open id=" + id + " $item.length=" + $item.length);
         if ($item.length == 1) {
@@ -225,7 +226,7 @@ function foldItem($item, $post) {
 
   // Persist
   var id = $item.attr('id');
-  //log("foldItem: id=" + id);
+  log("foldItem: id=" + id);
   if (gpnMode == 'expanded')
     appAPI.db.set("post_folded_" + id, true);
 
@@ -244,13 +245,69 @@ function foldItem($item, $post) {
       log("foldItem: can't find full name node");
     } else {
       // NOTE: don't just take the first div because sometimes the hangout 'Live' icons is there
-      var $srcTitle = $fullName.parent().first();
-      $srcTitle.clone().appendTo($title);
-      var $perms = $title.find('.a-f-i-Mb');
+      var $clonedTitle = $fullName.parent().first().clone();
+
+      // Take out permissions
+      var $perms = $clonedTitle.find('.a-f-i-Mb');
       if ($perms.length > 0) {
         $perms.remove();
       } else {
         log("foldItem: can't find permissions div");
+      }
+
+      // Put in snippet, trying differing things
+      var classes = [
+        '.a-b-f-i-u-ki', // poster text
+        '.a-b-f-i-p-R', // original poster text
+        '.a-f-i-ie-R', // hangout text
+        '.ea-S-pa-qa', // photo caption
+        '.a-f-i-p-qb .a-b-h-Jb', // photo album
+        '.ea-S-R-h', // title of shared link
+        '.ea-S-Xj-Cc' // text of shared link
+      ];
+      for (var c in classes) {
+        var $snippet = $item.find(classes[c]);
+        var text;
+        if ($snippet.length && (text = $snippet.text()).match(/\S/)) {
+          if (classes[c] == '.a-f-i-ie-R') {
+            // FIXME: English-specific
+            text = text.replace(/.*hung out\s*/, '');
+          }
+          $clonedTitle.append('<span class="gpn-snippet">' + text + '</span>');
+          break;
+        }
+      }
+
+      // For first page display, the date is there, but for AJAX updates, the date isn't there yet.
+      // So check, and delay the copying in case of updates.
+      var $clonedDateA = $clonedTitle.find('.a-f-i-Ad-Ub a');
+      if ($clonedDateA.length) {
+        // FIXME: English-specific
+        $clonedDateA.text($clonedDateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
+        $title.append($clonedTitle);
+      } else {
+        // In a few ms, the date should be ready to put in
+        setTimeout(function() {
+          var $srcDateA = $item.find('.a-f-i-Ad-Ub a');
+          var $date = $clonedTitle.find('.a-f-i-Ad-Ub');
+
+          // Copy the localized date from content
+          if ($srcDateA.length) {
+            $date.append($srcDateA.clone());
+          } else {
+            log("folditem.timeout: can't find the source date div");
+          }
+
+          // Take out (edited.*)
+          var $dateA = $date.find('a');
+          if ($dateA.length) {
+            // FIXME: English-specific
+            $dateA.text($dateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
+          }
+
+          // Finally, inject content into the titlebar
+          $title.append($clonedTitle);
+        }, 500);
       }
     }
   }

@@ -41,12 +41,6 @@
   margin: -16px -19px auto -21px;
 }
 
-/*
-.gpn-folded {
-  height: 26px;
-}
-  */
-
 .gpn-folded .gpn-posttitlebar {
 }
 
@@ -69,6 +63,17 @@
 .gpn-title {
   padding: 4px 6px 0 6px;
   display: none;
+}
+
+.gpn-title .gZgCtb {
+  white-space: nowrap;
+}
+
+.gpn-snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .gpn-folded .gpn-title {
