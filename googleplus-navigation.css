@@ -37,26 +37,26 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-.gpn-posttitlebar {
+.gpn-titlebar {
   margin: -16px -19px auto -21px;
 }
 
-.gpn-folded .gpn-posttitlebar {
+.gpn-folded .gpn-titlebar {
 }
 
 /* Muted post */
-.a-f-i-za .gpn-posttitlebar {
+.a-f-i-za .gpn-titlebar {
   margin: 0;
   display: none;
 }
 
-.gpn-posttitlebar > div {
+.gpn-titlebar > div {
   width: 100%;
   height: 14px;
   margin-bottom: 4px;
 }
 
-.gpn-folded .gpn-posttitlebar > div {
+.gpn-folded .gpn-titlebar > div {
   height: 24px;
 }
 
@@ -70,10 +70,12 @@
 }
 
 .gpn-snippet {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.gpn-comment-count-container {
+  float: right;
+  color: #999;
 }
 
 .gpn-folded .gpn-title {
@@ -87,11 +89,11 @@
 /* Selected post */
 .gpn-folded.a-f-oi-Ai {
   border-bottom: none; /* This also shortens the left blue border */
-  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpn-posttitlebar > div" to replace deleted border */
+  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpn-titlebar > div" to replace deleted border */
 }
 
 /*
-.gpn-transparent .gpn-posttitlebar {
+.gpn-transparent .gpn-titlebar {
   -khtml-opacity:0;
   -moz-opacity:0;
   -ms-filter:"alpha(opacity=0)";
@@ -103,7 +105,7 @@
 
 /* Selected post */
 /*
-.a-f-oi-Ai .gpn-posttitlebar a div {
+.a-f-oi-Ai .gpn-titlebar a div {
   border-top: 1px solid rgb(129, 203, 237);
   border-right: 1px solid rgb(129, 203, 237);
   border-bottom: none;

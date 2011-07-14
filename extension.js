@@ -58,12 +58,18 @@
 var C_FEEDBACK = 'tk3N6e-e-vj';
 var _C_SELECTED = '.a-f-oi-Ai';
 var _C_CONTAINER = '.a-b-f-i-oa';
-var _C_POST = '.a-b-f-i';
+var _C_ITEM = '.a-b-f-i';
 var _C_CONTENT = '.a-b-f-i-p';
 var _C_TITLE = '.gZgCtb';
 var _C_PERMS = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
+var C_DATE = 'a-b-f-i-Ad-Ub';
 var _C_DATE = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS = '.a-f-i-Ad-Ub';
+var _C_COMMENTS_ALL_CONTAINER = '.a-b-f-i-Xb';
+//var _C_COMMENTS_OLD_CONTAINER = '.a-b-f-i-W-xb'; //
+var _C_COMMENTS_OLD = '.a-b-f-i-gc-cf-Xb-h';
+var _C_COMMENTS = '.a-b-f-i-W-r';
+var _C_COMMENTS_MORE = '.a-b-f-i-gc-Sb-Xb-h';
 // For more, see foldItem() in classes array
 
 /****************************************************************************
@@ -75,7 +81,7 @@ var gpnMode;
 
 // Shared DOM.
 var titlebarTpl = document.createElement('div');
-titlebarTpl.setAttribute('class', 'gpn-posttitlebar');
+titlebarTpl.setAttribute('class', 'gpn-titlebar');
 titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><span class="gpn-title"></span></div>';
 var $titlebarTpl = $jquery(titlebarTpl);
 $titlebarTpl.click(onTitleBarClick);
@@ -96,7 +102,7 @@ function log(msg) {
  * Calls toggleItemFolded()
  */
 function onTitleBarClick() {
-  // NOTE: event arg doesn't work
+  // NOTE: event arg doesn't seem to work for me
   var $item = $jquery(this).parent();
   log("onTitleBarClick: " + $item.attr('id'));
 
@@ -194,6 +200,15 @@ function onOptionsModeUpdated(newMode) {
   }
 }
 
+/**
+ * Handles changes to old comment counts
+ */
+function onCommentsUpdate(e) {
+  var $item = $jquery(e.target).closest(_C_ITEM);
+  log("onCommentsUpdate: id=" + $item.attr('id'));
+  updateCommentCount($item, countComments($item));
+}
+
 /****************************************************************************
  * Folding/unfolding logic
  ***************************************************************************/
@@ -267,14 +282,6 @@ function foldItem($item, $post) {
       // sometimes the hangout 'Live' icons is there
       var $clonedTitle = $srcTitle.clone();
 
-      // Take out date marker
-      var $clonedDate = $clonedTitle.find(_C_DATE);
-      if ($clonedDate.length) {
-        $clonedDate.removeClass(_C_DATE);
-      } else {
-        log("foldItem: Can't find date marker");
-      }
-
       // Take out permissions
       var $perms = $clonedTitle.find(_C_PERMS);
       if ($perms.length > 0) {
@@ -307,9 +314,26 @@ function foldItem($item, $post) {
         }
       }
 
+      // Count comments
+      $clonedTitle.prepend('<div class="gpn-comment-count-container gbids">' +
+        '<span class="gpn-comment-count-bg"></span><span class="gpn-comment-count"></span></div>');
+      updateCommentCount($clonedTitle, countComments($item));
+      // Listen for updates to comment counts
+      var $container = $item.find(_C_COMMENTS_ALL_CONTAINER);
+      if ($container.length)
+        $container.bind('DOMSubtreeModified', onCommentsUpdate);
+
+      // Take out date marker
+      var $clonedDate = $clonedTitle.find(_C_DATE);
+      if ($clonedDate.length) {
+        $clonedDate.removeClass(C_DATE);
+      } else {
+        log("foldItem: Can't find date marker");
+      }
+
       // For first page display, the date is there, but for AJAX updates, the date isn't there yet.
       // So check, and delay the copying in case of updates.
-      var $clonedDateA = $clonedTitle.find(_C_DATE + ' a');
+      var $clonedDateA = $clonedDate.find('a');
       if ($clonedDateA.length) {
         // FIXME: English-specific
         $clonedDateA.text($clonedDateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
@@ -318,6 +342,7 @@ function foldItem($item, $post) {
         // In a few ms, the date should be ready to put in
         setTimeout(function() {
           var $srcDateA = $item.find(_C_DATE + ' a');
+          // Find date by CSS class, coz we nuked the date marker
           var $date = $clonedTitle.find(_C_DATE_CSS);
 
           // Copy the localized date from content
@@ -336,7 +361,7 @@ function foldItem($item, $post) {
 
           // Finally, inject content into the titlebar
           $title.append($clonedTitle);
-        }, 500);
+        }, 200);
       }
     }
   }
@@ -398,6 +423,44 @@ function listCloseItem(id) {
 }
 
 /****************************************************************************
+ * Comment counting
+ ***************************************************************************/
+
+/** 
+ * Count comments for item
+ */
+function countComments($item) {
+  var commentCount = 0;
+  var $oldComments = $item.find(_C_COMMENTS_OLD);
+  if ($oldComments.length)
+    commentCount += parseInt($oldComments.text());
+  commentCount += $item.find(_C_COMMENTS).length;
+  var $moreComments = $item.find(_C_COMMENTS_MORE);
+  if ($moreComments.length)
+    commentCount += parseInt($moreComments.text());
+
+  return commentCount;
+}
+
+/**
+ * Update the displayed comment count
+ */
+function updateCommentCount($parent, count) {
+  var $container = $parent.find(".gpn-comment-count-container");
+
+  if (count > 0) {
+    var $count = $container.find(".gpn-comment-count");
+    if ($count.length)
+      $count.text(count ? count : '');
+    else
+      log("updateCommentCount: can't find comment count node");
+    $container.show();
+  } else {
+    $container.hide();
+  }
+}
+
+/****************************************************************************
  * DOM enhancements
  ***************************************************************************/
 
@@ -408,7 +471,7 @@ function listCloseItem(id) {
 function enhanceAllItems(force) {
   var i = 0;
   //log("enhanceAllItems");
-  $jquery(_C_POST).each(function(i, val) {
+  $jquery(_C_ITEM).each(function(i, val) {
     //log("enhanceAllItems #" + i++);
     enhanceItem(val, force);
   });
@@ -440,7 +503,7 @@ function enhanceItem(item, force) {
     if (! $item.hasClass('gpn-enh'))
       $item.addClass('gpn-enh');
 
-    var $titlebar = $item.find('.gpn-posttitlebar');
+    var $titlebar = $item.find('.gpn-titlebar');
     if ($titlebar.length === 0) {
       $titlebar = $titlebarTpl.clone(true);
       $titlebar.insertBefore($itemContent);
@@ -473,12 +536,30 @@ function enhanceItem(item, force) {
 /**
  * Injects reference to stylesheet in current document
  */
-function injectCssLink(cssURL) {
+function injectCss(styleUrl) {
+  var head = document.getElementsByTagName('head')[0]
   var linkNode  = document.createElement('link');
   linkNode.rel = 'stylesheet';
   linkNode.type = 'text/css';
-  linkNode.href = cssURL;
-  document.getElementsByTagName('head')[0].appendChild(linkNode);
+  linkNode.href = styleUrl;
+  head.appendChild(linkNode);
+
+  // Copy G+ notification status styles because originals are by ID
+  var styleNode = document.createElement('style');
+  styleNode.setAttribute('type', 'text/css');
+  styleNode.appendChild(document.createTextNode('.gpn-comment-count-bg {'
+    + window.getComputedStyle(document.getElementById('gbi1a')).cssText
+        .replace(/((?:^|;\s*)right:)\s*\d+px;/, '$1 7px;')
+    + '}'));
+  head.appendChild(styleNode);
+  styleNode = document.createElement('style');
+  styleNode.setAttribute('type', 'text/css');
+  styleNode.appendChild(document.createTextNode('.gpn-comment-count {'
+    + window.getComputedStyle(document.getElementById('gbi1')).cssText
+        .replace(/((?:^|;\s*)height:)\s*\d+px;/, '$1 20px;')
+        .replace(/((?:^|;\s*)line-height:)\s*\w+;/, '$1 19px;')
+    + '}'));
+  head.appendChild(styleNode);
 }
 
 /****************************************************************************
@@ -498,9 +579,9 @@ $jquery(document).ready(function() {
     appAPI.db.set("gpn_options_mode", gpnMode = "expanded");
   }
 
-  // Inject stylesheet
+  // Inject CSS
   // FIXME: Chrome-specific
-  injectCssLink(chrome.extension.getURL("googleplus-navigation.css"));
+  injectCss(chrome.extension.getURL("googleplus-navigation.css"));
 
   // Listen when the subtree is modified for new posts.
   // WARNING: DOMSubtreeModified is deprecated and degrades performance:
@@ -543,11 +624,13 @@ $jquery(document).ready(function() {
 
 
   // Listen for keystrokes
+/*
   appAPI.shortcut.add("o", onFoldKey, {
     'disable_in_input':true,
     'type':'keypress',
     'propagate':true
   });
+*/
 
   enhanceAllItems();
 });
