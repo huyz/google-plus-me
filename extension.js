@@ -51,13 +51,32 @@
   For more information please visit our wiki site: http://crossrider.wiki.zoho.com
 *************************************************************************************/
 
+/****************************************************************************
+ * Constants
+ ***************************************************************************/
+
+var C_FEEDBACK = 'tk3N6e-e-vj';
+var _C_SELECTED = '.a-f-oi-Ai';
+var _C_CONTAINER = '.a-b-f-i-oa';
+var _C_POST = '.a-b-f-i';
+var _C_CONTENT = '.a-b-f-i-p';
+var _C_TITLE = '.gZgCtb';
+var _C_PERMS = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
+var _C_DATE = '.a-b-f-i-Ad-Ub';
+var _C_DATE_CSS = '.a-f-i-Ad-Ub';
+// For more, see foldItem() in classes array
+
+/****************************************************************************
+ * Init & Utility
+ ***************************************************************************/
+
 // list or expanded mode (like on GReader)
 var gpnMode;
 
 // Shared DOM.
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpn-posttitlebar');
-titlebarTpl.innerHTML = '<div class="tk3N6e-e-vj"><span class="gpn-title"></span></div>';
+titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><span class="gpn-title"></span></div>';
 var $titlebarTpl = $jquery(titlebarTpl);
 $titlebarTpl.click(onTitleBarClick);
 
@@ -91,7 +110,7 @@ function onTitleBarClick() {
 function onFoldKey(e, attempt) {
   log("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
   // Find selected item
-  var $selectedItem = $jquery('.a-f-oi-Ai');
+  var $selectedItem = $jquery(_C_SELECTED);
   if ($selectedItem.length == 1) {
     if (! toggleItemFolded($selectedItem.first())) {
       // If we couldn't fold, then movement was in motion, we try again in a bit
@@ -115,9 +134,9 @@ function onFoldKey(e, attempt) {
  * Responds to DOM updates from Google.
  * Calls enhanceItem()
  */
-function onContentPaneModified(e) {
+function onContainerModified(e) {
   if (e.target.id.indexOf('update-') === 0) {
-    log("onContentPaneModified: e.target=" + e.target.id);
+    log("onContainerModified: e.target=" + e.target.id);
     enhanceItem(e.target);
   }
 }
@@ -134,13 +153,13 @@ function onTabUpdated() {
   enhanceAllItems();
 
   // Make sure we still have an event handler for DOM changes
-  var $contentPane = $jquery('.a-b-f-i-oa');
-  if ($contentPane.length === 0)
+  var $container = $jquery(_C_CONTAINER);
+  if ($container.length === 0)
     log("onRequest: Can't find content pane");
   else  {
     // Make sure we only have one
-    $contentPane.unbind('DOMSubtreeModified', onContentPaneModified);
-    $contentPane.bind('DOMSubtreeModified', onContentPaneModified);
+    $container.unbind('DOMSubtreeModified', onContainerModified);
+    $container.bind('DOMSubtreeModified', onContainerModified);
   }
 }
 
@@ -185,7 +204,7 @@ function onOptionsModeUpdated(newMode) {
  * Calls foldItem() or unfoldItem().
  */
 function toggleItemFolded($item) {
-  var $posts = $item.find('.a-b-f-i-p');
+  var $posts = $item.find(_C_CONTENT);
   //log("toggleItemFolded: length=" + $posts.length);
   if ($posts.length != 1) {
     // It is possible to not have a proper match during keyboard scrolling
@@ -216,7 +235,7 @@ function toggleItemFolded($item) {
  */
 function foldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    var $posts = $item.find('.a-b-f-i-p');
+    var $posts = $item.find(_C_CONTENT);
     if ($posts.length != 1) {
       //log("foldItem: $posts.length=" + $posts.length);
       return;
@@ -240,15 +259,24 @@ function foldItem($item, $post) {
   if (! $title.hasClass('gpn-has-content')) {
     $title.addClass('gpn-has-content');
 
-    var $fullName = $item.find('.a-f-i-go');
-    if ($fullName.length != 1) {
-      log("foldItem: can't find full name node");
+    var $srcTitle = $item.find(_C_TITLE);
+    if ($srcTitle.length != 1) {
+      log("foldItem: can't find post content title node");
     } else {
-      // NOTE: don't just take the first div because sometimes the hangout 'Live' icons is there
-      var $clonedTitle = $fullName.parent().first().clone();
+      // NOTE: don't just take the first div inside post content title because
+      // sometimes the hangout 'Live' icons is there
+      var $clonedTitle = $srcTitle.clone();
+
+      // Take out date marker
+      var $clonedDate = $clonedTitle.find(_C_DATE);
+      if ($clonedDate.length) {
+        $clonedDate.removeClass(_C_DATE);
+      } else {
+        log("foldItem: Can't find date marker");
+      }
 
       // Take out permissions
-      var $perms = $clonedTitle.find('.a-f-i-Mb');
+      var $perms = $clonedTitle.find(_C_PERMS);
       if ($perms.length > 0) {
         $perms.remove();
       } else {
@@ -262,6 +290,7 @@ function foldItem($item, $post) {
         '.a-f-i-ie-R', // hangout text
         '.ea-S-pa-qa', // photo caption
         '.a-f-i-p-qb .a-b-h-Jb', // photo album
+        '.w0wKhb', // "A was tagged in B"
         '.ea-S-R-h', // title of shared link
         '.ea-S-Xj-Cc' // text of shared link
       ];
@@ -280,7 +309,7 @@ function foldItem($item, $post) {
 
       // For first page display, the date is there, but for AJAX updates, the date isn't there yet.
       // So check, and delay the copying in case of updates.
-      var $clonedDateA = $clonedTitle.find('.a-f-i-Ad-Ub a');
+      var $clonedDateA = $clonedTitle.find(_C_DATE + ' a');
       if ($clonedDateA.length) {
         // FIXME: English-specific
         $clonedDateA.text($clonedDateA.text().replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.'));
@@ -288,8 +317,8 @@ function foldItem($item, $post) {
       } else {
         // In a few ms, the date should be ready to put in
         setTimeout(function() {
-          var $srcDateA = $item.find('.a-f-i-Ad-Ub a');
-          var $date = $clonedTitle.find('.a-f-i-Ad-Ub');
+          var $srcDateA = $item.find(_C_DATE + ' a');
+          var $date = $clonedTitle.find(_C_DATE_CSS);
 
           // Copy the localized date from content
           if ($srcDateA.length) {
@@ -319,7 +348,7 @@ function foldItem($item, $post) {
  */
 function unfoldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    var $posts = $item.find('.a-b-f-i-p');
+    var $posts = $item.find(_C_CONTENT);
     if ($posts.length != 1) {
       //log("unfoldItem: $posts.length=" + $posts.length);
       return;
@@ -379,7 +408,7 @@ function listCloseItem(id) {
 function enhanceAllItems(force) {
   var i = 0;
   //log("enhanceAllItems");
-  $jquery('.a-b-f-i').each(function(i, val) {
+  $jquery(_C_POST).each(function(i, val) {
     //log("enhanceAllItems #" + i++);
     enhanceItem(val, force);
   });
@@ -400,7 +429,7 @@ function enhanceItem(item, force) {
 
   if (force || ! $item.hasClass('gpn-enh')) {
     // Add titlebar
-    var $itemContent = $item.find('.a-b-f-i-p');
+    var $itemContent = $item.find(_C_CONTENT);
     if ($itemContent.length != 1) {
       log("enhanceItem: Can't find child of item " + $item.attr('id'));
       return;
@@ -476,11 +505,11 @@ $jquery(document).ready(function() {
   // Listen when the subtree is modified for new posts.
   // WARNING: DOMSubtreeModified is deprecated and degrades performance:
   //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-  var $contentPane = $jquery('.a-b-f-i-oa');
-  if ($contentPane.length === 0)
-    log("main: Can't find content pane");
+  var $container = $jquery(_C_CONTAINER);
+  if ($container.length === 0)
+    log("main: Can't find post container");
   else 
-    $contentPane.bind('DOMSubtreeModified', onContentPaneModified);
+    $container.bind('DOMSubtreeModified', onContainerModified);
 
   // Listen for history state changes
   // http://stackoverflow.com/questions/4570093/how-to-get-notified-about-changes-of-the-history-via-history-pushstate
