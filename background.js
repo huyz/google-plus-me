@@ -25,4 +25,4 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 // Default to list mode
 if (localStorage.getItem('gpme_options_mode') == null)
-  localStorage.setItem('gpme_options_mode', 'list');
+  localStorage.setItem('gpme_options_mode', 'expanded');
