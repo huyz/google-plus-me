@@ -18,7 +18,6 @@
 #
 # Known issues:
 # - Doesn't expire stored data
-# - If user does an ajax refresh by clicking on the stream link that is the same as the current page, in list mode, the last open item won't be open
 # - keyboard scrolling can be messed up sometimes; i think that the code caches the height of the posts
 # - automatic window scrolling doesn't work (for clicks and keystrokes).
 # - doesn't stop youtube from playing
@@ -119,7 +118,7 @@ function error(msg) {
  * Check if should enable on certain pages
  */
 function isEnabledOnThisPage() {
-  return ! window.location.href.match(/\/posts\//);
+  return ! window.location.href.match(/\/(posts|notifications)\//);
 }
 
 /**
