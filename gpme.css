@@ -61,13 +61,13 @@
  */
 
 .gpme-fold-icon.gpme-fold-icon-unfolded-left {
-  margin-top: -2px;
   padding: 0 4px;
+  margin-top: -4px;
   float: left;
 }
 .gpme-fold-icon.gpme-fold-icon-unfolded-right {
-  margin-top: -2px;
-  padding: 0 6px;
+  padding: 0 5px;
+  margin-top: -4px;
   float: right;
 }
 .gpme-folded .gpme-fold-icon-unfolded-left {
@@ -82,7 +82,7 @@
  */
 
 .gpme-title {
-  padding: 4px 6px 0 6px;
+  padding: 0 6px 0 6px;
   display: none;
 }
 
@@ -90,16 +90,24 @@
   display: block;
 }
 
-.gpme-title .gZgCtb {
-  white-space: nowrap;
-}
-
 .gpme-fold-icon {
   float: left;
   font-size: 10px;
-  line-height: 18px;
-  padding-right: 3px;
+  line-height: 22px;
+  margin-right: 3px;
   color: #CCCCCC;
+}
+
+.gpme-title .gZgCtb {
+  white-space: nowrap;
+  margin-top: 2px;
+  line-height: 22px;
+}
+
+.gpme-title .gZgCtb > a > img {
+  height: 20px;
+  width: 20px;
+  margin: 0 3px 0 0;
 }
 
 .gpme-snippet {
@@ -122,6 +130,6 @@ div.gpme-comment-count-container .gpme-comment-count-bg {
 
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container .gpme-comment-count-fg {
-  height: 19px;
-  line-height: 19px;
+  height: 21px;
+  line-height: 21px;
 }

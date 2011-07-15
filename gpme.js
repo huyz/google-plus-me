@@ -68,6 +68,7 @@ var C_FEEDBACK = 'tk3N6e-e-vj';
 var _C_SELECTED = '.a-f-oi-Ai';
 var _C_ITEM = '.a-b-f-i';
 var _C_CONTENT = '.a-b-f-i-p';
+var P_PHOTO = '.a-f-i-p-U > a.a-f-i-do';
 var _C_TITLE = '.gZgCtb';
 var _C_PERMS = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var C_DATE = 'a-b-f-i-Ad-Ub';
@@ -606,6 +607,11 @@ function foldItem($item, $post) {
       // sometimes the hangout 'Live' icons is there
       var $clonedTitle = $subtree = $srcTitle.clone();
 
+      var $srcPhoto = $item.find(P_PHOTO);
+      if ($srcPhoto.length) {
+        $clonedTitle.prepend($srcPhoto.clone());
+      }
+
       // Insert fold icon
       $clonedTitle.prepend('<span class="gpme-fold-icon">\u25b6</span>');
 
@@ -823,7 +829,6 @@ $(document).ready(function() {
   // Listen to incoming messages from background page
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     if (request.action == "gpmeTabUpdateComplete") {
-      log("*** tabupdate");
       // Handle G+'s history state pushing when user clicks on different streams (and back)
       onTabUpdated();
     } else if (request.action == "gpmeModeOptionUpdated") {
