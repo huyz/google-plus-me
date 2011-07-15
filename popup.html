@@ -73,7 +73,7 @@ a:hover   { text-decoration: underline; color: #a34d32 }
 <script type="text/javascript" charset="utf-8">
 // Saves options to localStorage.
 function saveOptions() {
-  var mode = 'expanded';
+  var mode = 'list';
   var radios = document.getElementsByName('gpme_options_mode');
   for (var radio in radios) {
     if (radios[radio].checked) {
@@ -106,7 +106,7 @@ function resetAll() {
       localStorage.removeItem(i);
   }
   // Re-default to expanded, as in background.js
-  localStorage.setItem('gpme_options_mode', 'expanded');
+  localStorage.setItem('gpme_options_mode', 'list');
   restoreOptions();
 
   // Clear the content scripts' localStorage

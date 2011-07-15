@@ -23,6 +23,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   }
 });
 
-// Default to expanded mode
+// Default to list mode
 if (localStorage.getItem('gpme_options_mode') == null)
-  localStorage.setItem('gpme_options_mode', 'expanded');
+  localStorage.setItem('gpme_options_mode', 'list');
