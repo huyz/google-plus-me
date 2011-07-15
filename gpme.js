@@ -92,7 +92,7 @@ var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
  ***************************************************************************/
 
 // list or expanded mode (like on GReader)
-var gpmeMode;
+var displayMode;
 
 // In list mode, an item that was opened but may need to be reclosed
 // once the location.href is corrected
@@ -135,7 +135,7 @@ function abbreviateDate(text) {
  */
 function getOptionsFromBackground(callback) {
   chrome.extension.sendRequest({action: 'gpmeGetModeOption'}, function(response) {
-    gpmeMode = response;
+    displayMode = response;
     callback();
   });
 }
@@ -214,9 +214,9 @@ function onModeOptionUpdated(newMode) {
     return;
 
   // If mode has changed
-  var oldMode = gpmeMode;
-  gpmeMode = newMode;
-  if (typeof(oldMode) == 'undefined' || gpmeMode != oldMode)
+  var oldMode = displayMode;
+  displayMode = newMode;
+  if (typeof(oldMode) == 'undefined' || displayMode != oldMode)
     refreshAllFolds();
 }
 
@@ -226,7 +226,7 @@ function onModeOptionUpdated(newMode) {
 function onResetAll() {
   log("onResetAll");
 
-  var oldMode = gpmeMode;
+  var oldMode = displayMode;
   for (var i in localStorage) {
     if (i.indexOf('gpme_') == 0)
       localStorage.removeItem(i);
@@ -234,8 +234,8 @@ function onResetAll() {
 
   getOptionsFromBackground(function() {
     // If mode has changed
-    log("onResetAll: oldMode=" + oldMode + " newMode=" + gpmeMode);
-    if (typeof(oldMode) == 'undefined' || gpmeMode != oldMode)
+    log("onResetAll: oldMode=" + oldMode + " newMode=" + displayMode);
+    if (typeof(oldMode) == 'undefined' || displayMode != oldMode)
       refreshAllFolds();
   });
 }
@@ -331,7 +331,7 @@ function refreshAllFolds() {
   updateAllItems(true);
 
   // If going to expanded mode, we want to unfold the last item opened in list mode
-  if (gpmeMode == 'expanded') {
+  if (displayMode == 'expanded') {
     var id = localStorage.getItem("gpme_post_last_open_" + window.location.href);
     if (typeof(id) != 'undefined' && id !== null) {
       var $item = $('#' + id);
@@ -361,7 +361,7 @@ function updateAllItems(force) {
 
   // If list mode, make sure the correct last opened entry is unfolded, now that
   // we know that window.location.href is correct
-  if (gpmeMode == 'list') {
+  if (displayMode == 'list') {
     unfoldLastOpenInListMode();
   }
 }
@@ -416,7 +416,7 @@ function updateItem(item, force) {
     // Add titlebar
     var $itemContent = $item.find(_C_CONTENT);
     if ($itemContent.length != 1) {
-      error("updateItem: Can't find child of item " + $item.attr('id'));
+      error("updateItem: Can't find content of item " + $item.attr('id'));
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
@@ -434,7 +434,7 @@ function updateItem(item, force) {
   }
 
   if (refreshFold) {
-    if (gpmeMode == 'list') {
+    if (displayMode == 'list') {
       // Check if it's supposed to be unfolded
       // NOTE: the href may be incorrect at this point if the user is clicking on a new
       // stream link and the updates are coming in through AJAX *before* a tabUpdated event
@@ -449,7 +449,7 @@ function updateItem(item, force) {
       } else {
         foldItem($item);
       }
-    } else if (gpmeMode == 'expanded') {
+    } else if (displayMode == 'expanded') {
       var itemFolded = localStorage.getItem("gpme_post_folded_" + $item.attr('id'));
       // Fold if necessary
       if (itemFolded !== null) {
@@ -484,7 +484,7 @@ function toggleItemFolded($item) {
   var id = $item.attr('id');
   if ($item.hasClass('gpme-folded')) {
     // If in list mode, we need to fold the previous one
-    if (gpmeMode == 'list') {
+    if (displayMode == 'list') {
       lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
       //log("unfoldItem: last open id=" + lastOpenId);
       if (lastOpenId !== null && lastOpenId != id) {
@@ -527,7 +527,7 @@ function listOpenItem(id) {
   var id = $item.attr('id');
   //log("unfoldItem: id=" + id);
   //
-  if (gpmeMode == 'list') {
+  if (displayMode == 'list') {
     lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
     //log("unfoldItem: last open id=" + lastOpenId);
     if (lastOpenId !== null && lastOpenId != id) {
@@ -575,7 +575,7 @@ function foldItem($item, $post) {
 
   // Persist for expanded mode
   log("foldItem: id=" + id);
-  if (gpmeMode == 'expanded')
+  if (displayMode == 'expanded')
     localStorage.setItem("gpme_post_folded_" + id, true);
 
   // Visual changes
@@ -729,7 +729,7 @@ function unfoldItem($item, $post) {
   var id = $item.attr('id');
 
   // Persist for expanded mode
-  if (gpmeMode == 'expanded')
+  if (displayMode == 'expanded')
     localStorage.removeItem("gpme_post_folded_" + id);
 
   // Visual changes
@@ -810,37 +810,37 @@ $(document).ready(function() {
   
   injectCSS();
 
-  // Listen when the subtree is modified for new posts.
-  // WARNING: DOMSubtreeModified is deprecated and degrades performance:
-  //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-  var $contentPane = $(_ID_CONTENT_PANE);
-  if ($contentPane.length)
-    $contentPane.bind('DOMSubtreeModified', onContainerModified);
-  else 
-    log("main: Can't find post container");
-
-  // Listen when status change
-  var $status = $(_ID_STATUS_FG);
-  if ($status.length)
-    $status.bind('DOMSubtreeModified', onStatusUpdated);
-  else
-    log("main: Can't find status node");
-
-  // Listen to incoming messages from background page
-  chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-    if (request.action == "gpmeTabUpdateComplete") {
-      // Handle G+'s history state pushing when user clicks on different streams (and back)
-      onTabUpdated();
-    } else if (request.action == "gpmeModeOptionUpdated") {
-      // Handle options changes
-      onModeOptionUpdated(request.mode);
-    } else if (request.action == "gpmeResetAll") {
-      onResetAll();
-    }
-  });
-
   // Get options and then modify the page
   getOptionsFromBackground(function() {
+    // Listen when the subtree is modified for new posts.
+    // WARNING: DOMSubtreeModified is deprecated and degrades performance:
+    //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
+    var $contentPane = $(_ID_CONTENT_PANE);
+    if ($contentPane.length)
+      $contentPane.bind('DOMSubtreeModified', onContainerModified);
+    else 
+      log("main: Can't find post container");
+
+    // Listen when status change
+    var $status = $(_ID_STATUS_FG);
+    if ($status.length)
+      $status.bind('DOMSubtreeModified', onStatusUpdated);
+    else
+      log("main: Can't find status node");
+
+    // Listen to incoming messages from background page
+    chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+      if (request.action == "gpmeTabUpdateComplete") {
+        // Handle G+'s history state pushing when user clicks on different streams (and back)
+        onTabUpdated();
+      } else if (request.action == "displayModeOptionUpdated") {
+        // Handle options changes
+        onModeOptionUpdated(request.mode);
+      } else if (request.action == "gpmeResetAll") {
+        onResetAll();
+      }
+    });
+
     if (isEnabledOnThisPage())
       updateAllItems();
   });
