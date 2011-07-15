@@ -11,12 +11,12 @@ Screenshots
 Enhanced stream:
 
 ![Stream
-screenshot](/google-plus-me/raw/master/screenshots/screenshot-gpme-stream.png)
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-stream.png)
 
 Notification status badge + multiple display options:
 
 ![Options
-screenshot](/google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
 
 Features
 --------
