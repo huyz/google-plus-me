@@ -67,7 +67,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 
 /* Selected post */
-.gpme-folded.a-f-oi-Ai {
+.gpme-folded.a-f-i.a-f-oi-Ai {
   border-bottom: none; /* This also shortens the left blue border */
   margin-bottom: 5px; /* 1 more than margin-bottm of ".gpme-titlebar > div" to replace deleted border */
 }

@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <!--
  * Filename:         popup.html
- * More info, see:   extension.js
+ * More info, see:   gpme.js
  *
  * Source:           https://github.com/huyz/google-plus-me
  * Author:           Huy Z  http://huyz.us/
@@ -26,8 +26,8 @@ code, pre, textarea, tt {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-a         { text-decoration: none;      color: #537d7b }
-a:visited { text-decoration: none;      color: #98855b }
+a         { text-decoration: underline; color: #537d7b }
+a:visited { text-decoration: underline; color: #537d7b }
 a:hover   { text-decoration: underline; color: #a34d32 }
 
 .header {
@@ -58,6 +58,10 @@ a:hover   { text-decoration: underline; color: #a34d32 }
     margin: 5px;
 }
 
+.actions {
+    margin: 5px;
+}
+
 #status {
     margin: 5px;
     height: 20px;
@@ -66,40 +70,70 @@ a:hover   { text-decoration: underline; color: #a34d32 }
 </style>
 
 <script type="text/javascript" charset="utf-8">
-//this line is important to get access to your appAPI object
-var appAPI = chrome.extension.getBackgroundPage().appAPI;
-
 // Saves options to localStorage.
 function saveOptions() {
-  var mode = "expanded";
-  var radios = document.getElementsByName("gpn_options_mode");
+  var mode = 'expanded';
+  var radios = document.getElementsByName('gpme_options_mode');
   for (var radio in radios) {
     if (radios[radio].checked) {
       mode = radios[radio].value;
       break;
     }
   }
-  appAPI.db.set("gpn_options_mode", mode);
+  localStorage.setItem('gpme_options_mode', mode);
 
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options saved.";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 1000);
+  // Send update to all tabs
+  broadcast({action: 'gpmeModeOptionUpdated', mode: mode});
 
-  // Send update
-  appAPI.message.toActiveTab({action:"gpnModeOptionUpdated", mode: mode});
+  notifyUser("Option saved.");
 }
 
-// Restores select box state to saved value from localStorage.
+// Restores select box state to saved value from localStorage, after
+// filling in localStorage from content script
 function restoreOptions() {
-  var mode = appAPI.db.get("gpn_options_mode") || "expanded";
-  var radios = document.getElementsByName("gpn_options_mode");
+  var mode = localStorage.getItem('gpme_options_mode');
+  var radios = document.getElementsByName('gpme_options_mode');
   for (var radio in radios) {
     radios[radio].checked = mode == radios[radio].value;
   }
 }
+
+function resetAll() {
+  // Clear our localStorage
+  for (var i in localStorage) {
+    if (i.indexOf('gpme_') == 0)
+      localStorage.removeItem(i);
+  }
+  // Re-default to expanded, as in background.js
+  localStorage.setItem('gpme_options_mode', 'expanded');
+  restoreOptions();
+
+  // Clear the content scripts' localStorage
+  broadcast({action: 'gpmeResetAll'});
+
+  notifyUser('Resetting Google+me.');
+}
+
+function notifyUser(msg) {
+  // Update status to let user know options were saved.
+  var status = document.getElementById('status');
+  status.innerHTML = msg;
+  setTimeout(function() {
+    status.innerHTML = '';
+  }, 1000);
+}
+
+// Broadcast message to all tabs
+function broadcast(request, callback) {
+  chrome.windows.getAll({populate: true}, function(windows) {
+    windows.forEach(function(w) {
+      w.tabs.forEach(function(tab) {
+        chrome.tabs.sendRequest(tab.id, request, callback);
+      });
+    });
+  });
+}
+
 </script>
 
 </head>
@@ -107,7 +141,7 @@ function restoreOptions() {
 <body onload="restoreOptions()">
 
     <div class="header">
-        Google+ Navigation<br/>
+        Google+me<br/>
         <span class="author">by <a href="http://huyz.us/" target=_blank>Huy Z</a></span>
     </div>
 
@@ -115,10 +149,13 @@ function restoreOptions() {
 
         <div class="options">
             Show posts in: <br />
-            <input id="gpn_options_mode_expanded" type="radio" name="gpn_options_mode" value="expanded" / >expanded mode<br />
-            <input id="gpn_options_mode_list" type="radio" name="gpn_options_mode" value="list" / >list mode (max. 1 open)<br />
+            <input id="gpme_options_mode_expanded" type="radio" name="gpme_options_mode" value="expanded" / >expanded mode<br />
+            <input id="gpme_options_mode_list" type="radio" name="gpme_options_mode" value="list" / >list mode (max. 1 open)<br />
 
             <button onclick="saveOptions()" style="margin-top: 5px">Save</button>
+        </div>
+        <div class="actions">
+            <a href="#" onclick="resetAll();">Reset Google+me</a>
         </div>
 
         <pre id="status">

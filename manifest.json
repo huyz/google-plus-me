@@ -1,0 +1,29 @@
+{
+  "name": "Google+me",
+  "version": "1.0",
+
+  "description": "Google+, collapsable into summary lines updated in real-time",
+  "icons": { "16": "icons/icon16.png",
+             "48": "icons/icon48.png",
+            "128": "icons/icon128.png" },  
+
+  "browser_action": {
+     "default_icon": "icons/actions/1.png",
+     "default_title": "G+me",
+     "default_popup": "popup.html"
+  },
+
+  "background_page": "background.html",
+
+  "content_scripts": [
+    {
+      "matches" : ["http://plus.google.com/*", "https://plus.google.com/*"],
+      "css": ["gpme.css"],
+      "js": ["jquery.js", "gpme.js"]
+    }
+  ],
+
+  "permissions": [
+    "tabs"
+  ]
+}
