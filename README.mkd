@@ -8,12 +8,12 @@ process a large stream of incoming posts and comments.
 Screenshots
 -----------
 
-### Enhanced stream ###
+### Enhanced stream: ###
 
 ![Stream
 screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-stream.png)
 
-### Notification status badge + multiple display options ###
+### Notification status badge + multiple display options: ###
 
 ![Options
 screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
