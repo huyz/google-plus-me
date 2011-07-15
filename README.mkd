@@ -24,7 +24,7 @@ Features
     the page to the top and you don't have to keep going back to the browser
     tab with Google+.  You will always know when you get new notifications
     because the browser button is always visible with a badge.
- *  **Collapsable items**.  You can now hide and unhide a post without muting it.
+ *  **Collapsible items**.  You can now hide and unhide a post without muting it.
     This is great if you're not really interested in seeing a post and all its
     comments right now, but you still want to get back to it at a later time.
     The downside of muting a post is that you will never see it again and
@@ -32,18 +32,19 @@ Features
     have made on that post.
  *  **Real-time comment count on collapsed items**.  Don't miss any incoming
     comments.  Not only can you see how many comments each collapsed post has
-    at any time, but you can keep track of the number of *new* comments that
-    have come in since the last time you looked.  Change the display option to
-    'list mode' (maximum of 1 post displayed at all times) and Google+ really
-    shines: in one screenful you can see activity on many posts at once and
-    jump back and forth between multiple active comment streams. This will
-    greatly benefit those who follow popular people who post a lot and/or get
-    a lot of comments.
+    at, but you can keep track of the number of *unseen* comments that
+    have come in since the last time you looked.
+ *  **List mode keeps at most one post displayed**.  Combined with the
+    real-time comment, this turns the stream into a dashboard: in one
+    screenful you can see activity on many posts at once and jump back and
+    forth between multiple active comment streams. This will greatly benefit
+    those who follow popular people who post a lot and/or get a lot of
+    comments.
 
 Known Issues
 ------------
  *  Sometimes the comment counts look odd.  You can get zero or negative
-    counts for *new* comments because people delete their comments -- that's
+    counts for *unseen* comments because people delete their comments -- that's
     normal.  But sometimes the counts are just strange.  I probably have a bug
     in there somewhere, but I know that Google+ also has bugs when it comes
     to counting comments.  Over time, when Google fixes their bugs, the counts
