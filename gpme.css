@@ -7,17 +7,36 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
-.gpme-titlebar {
-  margin: -16px -19px auto -21px;
+
+/*
+ * The entire post item
+ */
+
+.gpme-folded.a-f-i {
+  padding-bottom: 0;
 }
 
-.gpme-folded .gpme-titlebar {
+/* Selected post; needs to be highly selective */
+.gpme-folded.a-f-i.a-f-oi-Ai {
+  border-bottom: none; /* This also shortens the left blue border */
+  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpme-titlebar > div" to replace deleted border */
+}
+
+/*
+ * The titlebar
+ */
+
+.gpme-titlebar {
+  margin: -16px -19px auto -21px;
 }
 
 /* Muted post */
 .a-f-i-za .gpme-titlebar {
   margin: 0;
   display: none;
+}
+
+.gpme-folded .gpme-titlebar {
 }
 
 .gpme-titlebar > div {
@@ -30,18 +49,66 @@
   height: 24px;
 }
 
+.tk3N6e-e-vj:hover {
+  cursor: pointer;
+}
+.tk3N6e-e-vj:hover .gpme-fold-icon {
+  color: #333333;
+}
+
+/*
+ * Inside unfolded title bar
+ */
+
+.gpme-fold-icon.gpme-fold-icon-unfolded-left {
+  margin-top: -2px;
+  padding: 0 4px;
+  float: left;
+}
+.gpme-fold-icon.gpme-fold-icon-unfolded-right {
+  margin-top: -2px;
+  padding: 0 6px;
+  float: right;
+}
+.gpme-folded .gpme-fold-icon-unfolded-left {
+  display: none;
+}
+.gpme-folded .gpme-fold-icon-unfolded-right {
+  display: none;
+}
+
+/*
+ * Title: inside folded title bar
+ */
+
 .gpme-title {
   padding: 4px 6px 0 6px;
   display: none;
+}
+
+.gpme-folded .gpme-title {
+  display: block;
 }
 
 .gpme-title .gZgCtb {
   white-space: nowrap;
 }
 
+.gpme-fold-icon {
+  float: left;
+  font-size: 10px;
+  line-height: 18px;
+  padding-right: 3px;
+  color: #CCCCCC;
+}
+
 .gpme-snippet {
   white-space: nowrap;
 }
+
+/*
+ * Comment counter
+ */
 
 .gpme-comment-count-container {
   float: right;
@@ -57,18 +124,4 @@ div.gpme-comment-count-container .gpme-comment-count-bg {
 div.gpme-comment-count-container .gpme-comment-count-fg {
   height: 19px;
   line-height: 19px;
-}
-
-.gpme-folded .gpme-title {
-  display: block;
-}
-
-.gpme-folded.a-f-i {
-  padding-bottom: 0;
-}
-
-/* Selected post */
-.gpme-folded.a-f-i.a-f-oi-Ai {
-  border-bottom: none; /* This also shortens the left blue border */
-  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpme-titlebar > div" to replace deleted border */
 }

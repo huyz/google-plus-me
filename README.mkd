@@ -6,4 +6,9 @@ to unlock the potential of its real-time updates and make it much easier to
 process a large stream of incoming posts and comments.
 
 Google+ offers true real-time updates of the social feed, something that other
-big networks offer only-partially 
+big networks offer partially.  
+
+
+Feedback
+--------
+- Photo & first name only

@@ -129,7 +129,8 @@ function broadcast(request, callback) {
   chrome.windows.getAll({populate: true}, function(windows) {
     windows.forEach(function(w) {
       w.tabs.forEach(function(tab) {
-        chrome.tabs.sendRequest(tab.id, request, callback);
+        if (tab.url.match(/^https?:\/\/plus\.google\.com\//))
+          chrome.tabs.sendRequest(tab.id, request, callback);
       });
     });
   });

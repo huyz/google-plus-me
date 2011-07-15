@@ -100,7 +100,7 @@ var $lastTentativeOpen = null;
 // Shared DOM.
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
-titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><span class="gpme-title"></span></div>';
+titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div><div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div><span class="gpme-title"></span></div>';
 var $titlebarTpl = $(titlebarTpl);
 $titlebarTpl.click(onTitleBarClick);
 
@@ -581,7 +581,7 @@ function foldItem($item, $post) {
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   $post.hide();
   $item.addClass('gpme-folded');
-  log("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!!!");
+  //log("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
   // Update the comment count
   var commentCount = countComments($item);
@@ -605,6 +605,9 @@ function foldItem($item, $post) {
       // NOTE: don't just take the first div inside post content title because
       // sometimes the hangout 'Live' icons is there
       var $clonedTitle = $subtree = $srcTitle.clone();
+
+      // Insert fold icon
+      $clonedTitle.prepend('<span class="gpme-fold-icon">\u25b6</span>');
 
       // Take out permissions
       var $perms = $clonedTitle.find(_C_PERMS);

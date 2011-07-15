@@ -24,6 +24,8 @@
   ],
 
   "permissions": [
+    "http://plus.google.com/*", // This allows injection on first install
+    "https://plus.google.com/*", // This allows injection on first install
     "tabs"
   ],
 
