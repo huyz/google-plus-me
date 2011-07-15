@@ -2,6 +2,7 @@
  * Filename:         background.js
  * More info, see:   gpme.js
  *
+ * Web:              http://huyz.us/google-plus-me/
  * Source:           https://github.com/huyz/google-plus-me
  * Author:           Huy Z  http://huyz.us/
  */

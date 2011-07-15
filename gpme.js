@@ -3,6 +3,7 @@
 #
 # Platforms:        Google Chrome
 # Depends:          
+* Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
 # Updated on:       2011-07-14
