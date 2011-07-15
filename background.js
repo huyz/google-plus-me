@@ -7,6 +7,10 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
+// Default options
+if (localStorage.getItem('gpme_options_mode') == null)
+  localStorage.setItem('gpme_options_mode', 'expanded');
+
 // Check installed version
 var oldVersion = localStorage.getItem('version');
 var version = chrome.app.getDetails().version;
@@ -46,7 +50,3 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     chrome.tabs.sendRequest(tabId, {action: 'gpmeTabUpdateComplete'});
   }
 });
-
-// Default to list mode
-if (localStorage.getItem('gpme_options_mode') == null)
-  localStorage.setItem('gpme_options_mode', 'expanded');
