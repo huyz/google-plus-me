@@ -43,12 +43,10 @@ Features
 
 Known Issues
 ------------
- *  Sometimes the comment counts look odd.  You can get zero or negative
-    counts for *unseen* comments because people delete their comments -- that's
-    normal.  But sometimes the counts are just strange.  I probably have a bug
-    in there somewhere, but I know that Google+ also has bugs when it comes
-    to counting comments.  Over time, when Google fixes their bugs, the counts
-    will automatically make more sense.
+ *  Sometimes the comment counts look odd. You can get zero or negative counts
+    for new comments because people delete their comments -- that's normal.
+    But there are also some bugs in the count that both Google and I need to
+    fix over time.
  *  Does not play well with the 'j' and 'k' keyboard shortcuts, which scroll
     the page.
 
