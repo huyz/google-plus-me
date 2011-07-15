@@ -589,6 +589,8 @@ function foldItem($item, $post) {
   // Only update the comment count in storage if not already set
   var oldCount = localStorage.getItem('gpme_post_old_comment_count_' + id);
   if (typeof(oldCount) == 'undefined' || oldCount === null)
+    // For nice screenshots
+    //localStorage.setItem('gpme_post_old_comment_count_' + id, Math.floor(commentCount / 2));
     localStorage.setItem('gpme_post_old_comment_count_' + id, commentCount);
 
   // Attached or pending title
