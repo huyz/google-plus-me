@@ -22,7 +22,7 @@ Features
 --------
 - **Notification status visible at all times**. Browser icon shows badge with number of new notifications.
 
-- **Collapsible itemsi**. As an alternative to muting, this is great if you're not really interested in seeing a post and all its comments right now, but you still want to get back to it at a later time and/or still want to get notifications.
+- **Collapsible items**. As an alternative to muting, this is great if you're not really interested in seeing a post and all its comments right now, but you still want to get back to it at a later time and/or still want to get notifications.
 
 - **Real-time comment count on collapsed items**. You will see either how many comments a post has or how many new ones you haven't seen yet.
 
