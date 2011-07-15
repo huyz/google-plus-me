@@ -1,5 +1,5 @@
-Google+me
-=========
+G+me for Google+
+================
 
 This is a Google Chrome browser extension that enhances the Google+ web app
 to unlock the potential of its real-time updates and make it much easier to
