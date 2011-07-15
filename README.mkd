@@ -20,26 +20,14 @@ screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
 
 Features
 --------
- *  **Notification status visible at all times**.  You no longer have to scroll
-    the page to the top and you don't have to keep going back to the browser
-    tab with Google+.  You will always know when you get new notifications
-    because the browser button is always visible with a badge.
- *  **Collapsible items**.  You can now hide and unhide a post without muting it.
-    This is great if you're not really interested in seeing a post and all its
-    comments right now, but you still want to get back to it at a later time.
-    The downside of muting a post is that you will never see it again and
-    you stop getting any notifications of responses to any comments you may
-    have made on that post.
- *  **Real-time comment count on collapsed items**.  Don't miss any incoming
-    comments.  Not only can you see how many comments each collapsed post has
-    at, but you can keep track of the number of *unseen* comments that
-    have come in since the last time you looked.
- *  **List mode keeps at most one post displayed**.  Combined with the
-    real-time comment, this turns the stream into a dashboard: in one
-    screenful you can see activity on many posts at once and jump back and
-    forth between multiple active comment streams. This will greatly benefit
-    those who follow popular people who post a lot and/or get a lot of
-    comments.
+- **Notification status visible at all times**. Browser icon shows badge with number of new notifications.
+
+- **Collapsible itemsi**. As an alternative to muting, this is great if you're not really interested in seeing a post and all its comments right now, but you still want to get back to it at a later time and/or still want to get notifications.
+
+- **Real-time comment count on collapsed items**. You will see either how many comments a post has or how many new ones you haven't seen yet.
+
+- **List mode keeps at most one post displayed**. This turns the stream into a dashboard: in one screenful you can see activity on many posts at once and jump back and forth between multiple active comment streams.
+
 
 Known Issues
 ------------
