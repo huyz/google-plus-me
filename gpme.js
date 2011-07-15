@@ -833,7 +833,7 @@ $(document).ready(function() {
       if (request.action == "gpmeTabUpdateComplete") {
         // Handle G+'s history state pushing when user clicks on different streams (and back)
         onTabUpdated();
-      } else if (request.action == "displayModeOptionUpdated") {
+      } else if (request.action == "gpmeModeOptionUpdated") {
         // Handle options changes
         onModeOptionUpdated(request.mode);
       } else if (request.action == "gpmeResetAll") {
