@@ -112,7 +112,7 @@ function resetAll() {
   // Clear the content scripts' localStorage
   broadcast({action: 'gpmeResetAll'});
 
-  notifyUser('Resetting Google+me.');
+  notifyUser('Resetting G+me.');
 }
 
 function notifyUser(msg) {
@@ -143,7 +143,7 @@ function broadcast(request, callback) {
 <body onload="restoreOptions()">
 
     <div class="header">
-        Google+me<br/>
+        G+me<br/>
         <span class="author">by <a href="http://huyz.us/" target=_blank>Huy Z</a></span>
     </div>
 
@@ -157,7 +157,7 @@ function broadcast(request, callback) {
             <button onclick="saveOptions()" style="margin-top: 5px">Save</button>
         </div>
         <div class="actions">
-            <a href="#" onclick="resetAll();">Reset Google+me</a>
+            <a href="#" onclick="resetAll();">Reset G+me</a>
         </div>
 
         <pre id="status">
