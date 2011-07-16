@@ -5,10 +5,9 @@ This is a Google Chrome browser extension that enhances the Google+ web app
 to unlock the potential of its real-time updates and make it much easier to
 process a large stream of incoming posts and comments.
 
-Install at the [Chrome Web Store](http://goo.gl/jlY8E).
-Follow me on [Google+](http://goo.gl/UmSoR) and
-[Twitter](http://twitter.com/huyplus).
-Give feedback on Google+: </p>
+- Install at the [Chrome Web Store](http://goo.gl/jlY8E).
+- Follow me on [Google+](http://goo.gl/UmSoR) and [Twitter](http://twitter.com/huyplus).
+- Give feedback on [Google+ discussion](http://goo.gl/VwkwX).
 
 
 Screenshots
