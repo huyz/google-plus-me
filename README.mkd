@@ -13,7 +13,12 @@ Screenshots
 ![Stream
 screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-stream.png)
 
-### Notification status badge + multiple display options: ###
+### Notification status badge: ###
+
+![Options
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-browser-icon.png)
+
+### Multiple display options: ###
 
 ![Options
 screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
