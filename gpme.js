@@ -264,8 +264,8 @@ function onContainerModified(e) {
  */
 function onCommentsUpdated(e) {
   var id = e.target.id;
-  // Some weak optimization attempts
-  if (! id || id.charAt(0) == ':')
+  // Some weak optimization attempts to prevent lag when typing comments.
+  if (id && id.charAt(0) == ':')
     return;
 
   log("onCommentsUpdated: id=" + e.target.id);

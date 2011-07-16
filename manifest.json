@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google+™",
-  "version": "1.1",
+  "version": "1.2",
 
   "description": "Chrome extension that turns the Google+ stream into a real-time dashboard",
   "icons": { "16": "icons/icon16.png",
