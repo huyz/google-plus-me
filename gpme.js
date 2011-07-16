@@ -109,10 +109,13 @@ $titlebarTpl.click(onTitleBarClick);
  * For debugging
  */
 function log(msg) {
-  console.log("gpme." + msg);
+  //console.log("g+me." + msg);
+}
+function trace(msg) {
+  console.log("g+me: " + msg);
 }
 function error(msg) {
-  console.log("ERROR: gpme." + msg);
+  console.log("ERROR: g+me." + msg);
 }
 
 /**
@@ -182,7 +185,7 @@ function onFoldKey(e, attempt) {
  * Responds to changes in the history state
  */
 function onTabUpdated() {
-  log("onTabUpdated");
+  trace("event: Chrome says that tab was updated");
 
   // Restrict to non-single-post Google+ pages
   if (!isEnabledOnThisPage())
@@ -250,7 +253,7 @@ function onContainerModified(e) {
     return;
 
   if (e.target.id.indexOf('update-') === 0) {
-    log("onContainerModified: e.target=" + e.target.id);
+    trace("event: DOMSubtreeModified for item id=" + e.target.id);
     updateItem(e.target);
   }
 }
@@ -666,7 +669,7 @@ function foldItem($item, $post) {
         error("foldItem: Can't find date marker");
       }
 
-      // For first page display, the date is there, but for AJAX updates, the date isn't there yet.
+      // For first page display, the date is there, but for updates, the date isn't there yet.
       // So check, and delay the copying in case of updates.
       var $clonedDateA = $clonedDate.find('a');
       if ($clonedDateA.length) {
@@ -806,6 +809,8 @@ function updateCommentCount(id, $subtree, count) {
  ***************************************************************************/
 
 $(document).ready(function() {
+  trace("event: initial page load.");
+
   //Place your code here (you can also define new functions above this scope)
 
   //alert("Google+ Navigation (unpacked)");
