@@ -248,22 +248,34 @@ function onResetAll() {
  * Calls updateItem()
  */
 function onContainerModified(e) {
-  // Restrict to non-single-post Google+ pages
-  if (!isEnabledOnThisPage())
+  var id = e.target.id;
+  // Some weak optimization attempts
+  if (! id || id.charAt(0) == ':' || id.indexOf('update-') !== 0 || ! isEnabledOnThisPage())
     return;
 
-  if (e.target.id.indexOf('update-') === 0) {
-    trace("event: DOMSubtreeModified for item id=" + e.target.id);
-    updateItem(e.target);
-  }
+  log("onContainerModified: id=" + e.target.id);
+
+  trace("event: DOMSubtreeModified for item id=" + e.target.id);
+  updateItem(e.target);
 }
 
 /**
  * Responds to DOM updates from G+ to handle changes to old comment counts
  */
 function onCommentsUpdated(e) {
+  var id = e.target.id;
+  // Some weak optimization attempts
+  if (! id || id.charAt(0) == ':')
+    return;
+
+  log("onCommentsUpdated: id=" + e.target.id);
   var $item = $(e.target).closest(_C_ITEM);
-  var id = $item.attr('id');
+  if (! $item) {
+    error("onCommentsUpdated: Can't find ancestor of comments");
+    return;
+  }
+
+  id = $item.attr('id');
   //log("onCommentsUpdated: id=" + id);
   updateCommentCount(id, $item, countComments($item));
 }
