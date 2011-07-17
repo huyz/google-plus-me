@@ -109,7 +109,7 @@ $titlebarTpl.click(onTitleBarClick);
  * For debugging
  */
 function log(msg) {
-  //console.log("g+me." + msg);
+  console.log("g+me." + msg);
 }
 function trace(msg) {
   console.log("g+me: " + msg);
@@ -231,7 +231,7 @@ function onResetAll() {
 
   var oldMode = displayMode;
   for (var i in localStorage) {
-    if (i.indexOf('gpme_') == 0)
+    if (i.indexOf('gpme_') === 0)
       localStorage.removeItem(i);
   }
 
@@ -398,7 +398,7 @@ function unfoldLastOpenInListMode() {
   // XXX Strange: if I search lastTentativeOpen by id, I may be hiding an entry that
   // won't be shown.  Would be interesting to investigate further, as it probably
   // has to do with the way the DOM updates happen with G+.
-  if ($lastTentativeOpen != null && $lastTentativeOpen.attr('id') != lastOpenId) {
+  if ($lastTentativeOpen !== null && $lastTentativeOpen.attr('id') != lastOpenId) {
     //log("unfoldLastOpenInListMode: # tentative opens =" + $('#' + lastTentOpenId).length);
     foldItem($lastTentativeOpen);
     $lastTentativeOpen = null;
@@ -579,7 +579,7 @@ function listCloseItem(id) {
  */
 function foldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    var $post = $item.find(_C_CONTENT);
+    $post = $item.find(_C_CONTENT);
     if ($post.length != 1) {
       error("foldItem: Can't find post content node");
       return;
@@ -643,7 +643,8 @@ function foldItem($item, $post) {
       // Put in snippet, trying differing things
       var classes = [
         '.a-b-f-i-u-ki', // poster text
-        '.a-b-f-i-p-R', // original poster text
+        '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
+        '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
         '.a-f-i-ie-R', // hangout text
         '.w0wKhb', // "A was tagged in B"
         '.ea-S-pa-qa', // photo caption
@@ -653,8 +654,17 @@ function foldItem($item, $post) {
       ];
       for (var c in classes) {
         var $snippet = $item.find(classes[c]);
-        var text;
-        if ($snippet.length && (text = $snippet.text()).match(/\S/)) {
+        if (! $snippet.length)
+          continue;
+
+        // We want to ignore link shares that only have the text Edit
+        // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
+        if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
+          $snippet = $snippet.clone();
+          $snippet.find('.a-b-f-i-Ka').remove();
+        }
+        var text = $snippet.text();
+        if (text.match(/\S/)) {
           if (classes[c] == '.a-f-i-ie-R') {
             // FIXME: English-specific
             text = text.replace(/.*hung out\s*/, '');
