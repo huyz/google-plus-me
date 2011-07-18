@@ -6,7 +6,7 @@
 * Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-07-14
+# Updated on:       2011-07-18
 # Created on:       2011-07-11
 #
 # Installation:
@@ -15,13 +15,6 @@
 # Usage:
 #   Click on the titlebar of each shared post.
 #   [NOT YET ENABLED: Or use the 'o' keyboard shortcut.]
-#
-# Known issues:
-# - Doesn't expire stored data
-# - keyboard scrolling can be messed up sometimes; i think that the code caches the height of the posts
-# - automatic window scrolling doesn't work (for clicks and keystrokes).
-# - doesn't stop youtube from playing
-# - title text abbreviation won't work in non-English
 #
 # Thanks:
 #   This extension takes some ideas from https://github.com/mohamedmansour/google-plus-extension/
@@ -64,6 +57,7 @@
 // refresh the contentPane
 var _ID_CONTENT_PANE = '#contentPane';
 //var _C_CONTAINER = '.a-b-f-i-oa';
+var _FEEDBACK_LINK = '.a-eo-eg';
 var C_FEEDBACK = 'tk3N6e-e-vj';
 var _C_SELECTED = '.a-f-oi-Ai';
 var _C_ITEM = '.a-b-f-i';
@@ -338,6 +332,19 @@ function injectCSS() {
 }
 
 /**
+ * Injects code to make the Feedback button work
+ */
+function injectNewFeedbackLink() {
+  //var $link = $('.a-eo-eg');
+  //alert($link.attr('onclick'));
+  //$link.attr('onclick', 'alert("shit");');
+  //$link.click(function(event) { alert("yes"); if (confirm("sheeet")) return appfeedback.startFeedback(event); else return false; });
+  //$link.click(function(event) { alert("yes") });
+  //$link.attr('onclick', 'alert("yes");');
+  //alert($link.attr('onclick'));
+}
+
+/**
  * Refresh fold/unfolded display of items.
  * Called by onModeOptionUpdated() and onResetAll()
  */
@@ -529,51 +536,6 @@ function toggleItemFolded($item) {
 }
 
 /**
- * In list mode, unfolds item, making sure other ones are closed.
- * This should only be called as a result of a user action or after a tab update,
- * but not as a result of DOMSubtreeModified, to guarantee that window.location.href
- * is correct.
- * Calls listCloseItem().
- * called by toggleItemFolded() and updateAllItems()
- */
-/*
-function listOpenItem(id) {
-  // In list mode, we close the previous opened item
-  var id = $item.attr('id');
-  //log("unfoldItem: id=" + id);
-  //
-  if (displayMode == 'list') {
-    lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
-    //log("unfoldItem: last open id=" + lastOpenId);
-    if (lastOpenId !== null && lastOpenId != id) {
-      //log("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
-      var $lastItem = $('#' + lastOpenId);
-      if ($lastItem.length > 0 && $lastItem.hasClass('gpme-enh')) {
-        listCloseItem(lastOpenId);
-      }
-    }
-  }
-}
-*/
-
-/**
- * Assuming list mode, given an ID, close the item, if possible.
- * Is called by listOpenItem().
- * XXX Doesn't do much; may just inline it inside unfoldItem()
- */
-/*
-function listCloseItem(id) {
-  //log("listCloseItem: id=" + id);
-  var $openItem = $('#' + id);
-  if ($openItem.length > 0) {
-    foldItem($openItem.first());
-  } else {
-    error("listCloseItem: can't find it: matches=" + $openItem.length);
-  }
-}
-*/
-
-/**
  * Fold item, and give titlebar summary content if necessary
  * @param $post Optional if you have it
  */
@@ -695,7 +657,6 @@ function foldItem($item, $post) {
       // So check, and delay the copying in case of updates.
       var $clonedDateA = $clonedDate.find('a');
       if ($clonedDateA.length) {
-        // FIXME: English-specific
         $clonedDateA.text(abbreviateDate($clonedDateA.text()));
         $title.append($clonedTitle);
 
@@ -869,6 +830,8 @@ $(document).ready(function() {
         onResetAll();
       }
     });
+
+    injectNewFeedbackLink();
 
     if (isEnabledOnThisPage())
       updateAllItems();
