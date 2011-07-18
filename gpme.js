@@ -92,18 +92,51 @@ var displayMode;
 // once the location.href is corrected
 var $lastTentativeOpen = null;
 
-// Shared DOM.
+var $lastPreviewedItem = null;
+
+// Shared DOM: the titlebar
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
 titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div><div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div><span class="gpme-title"></span></div>';
 var $titlebarTpl = $(titlebarTpl);
 $titlebarTpl.click(onTitleBarClick);
 
+// Shared DOM: the preview triangle
+var postWrapperTpl = document.createElement('div');
+postWrapperTpl.className = 'gpme-post-wrapper';
+var clickWall = document.createElement('div');
+clickWall.className = 'gpme-disable-clicks';
+clickWall.style.position = 'absolute';
+clickWall.style.height = '100%';
+clickWall.style.width = '100%';
+clickWall.style.zIndex = '12'; // higher than .gpme-folded .a-f-i-Ia-D
+clickWall.style.display = 'none';
+var previewTriangleSpan = document.createElement('span');
+previewTriangleSpan.className = 'gpme-preview-triangle';
+previewTriangleSpan.style.backgroundImage = 'url(' + chrome.extension.getURL('/images/preview-triangle.png') + ')';
+postWrapperTpl.appendChild(clickWall);
+postWrapperTpl.appendChild(previewTriangleSpan);
+var $postWrapperTpl = $(postWrapperTpl);
+
+// For instant previews, hoverIntent
+var hoverIntentConfig = {    
+  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
+  delayIn: 400, // number = milliseconds delay before onMouseOver
+  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
+  delayOut: 350, // number = milliseconds delay before onMouseOut    
+  exclusiveSet: null // name of exclusiveSet to which the target belongs
+};
+
+// Duration of clickwall.
+// NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
+// the preview will go away.
+var clickWallTimeout = 300;
+
 /**
  * For debugging
  */
 function log(msg) {
-  console.log("g+me." + msg);
+  //console.log("g+me." + msg);
 }
 function trace(msg) {
   console.log("g+me: " + msg);
@@ -301,7 +334,8 @@ function injectCSS() {
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbid' (turns bg to
     // gray), which seems to be there by default.
-    if (statusOff = $statusNode.hasClass(C_STATUS_BG_OFF))
+    statusOff = $statusNode.hasClass(C_STATUS_BG_OFF);
+    if (statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
@@ -317,7 +351,8 @@ function injectCSS() {
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbid' (turns bg to
     // gray), which seems to be there by default.
-    if (statusOff = $statusNode.hasClass(C_STATUS_FG_OFF))
+    statusOff = $statusNode.hasClass(C_STATUS_FG_OFF);
+    if (statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
@@ -446,11 +481,20 @@ function updateItem(item, force) {
     //log("updateItem: enhancing");
     $item.addClass('gpme-enh');
 
+    // Add hover event handler
+    $item.hoverIntent(hoverIntentConfig);
+    //$item.hover(showPreview, hidePreview);
+
     var $titlebar = $item.find('.gpme-titlebar');
     if ($titlebar.length === 0) {
       $titlebar = $titlebarTpl.clone(true);
       $titlebar.insertBefore($itemContent);
     }
+
+    // Insert container for post content so that we can turn it into an instant
+    // preview
+    var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
+    $wrapper.append($itemContent);
 
     refreshFold = true;
   }
@@ -494,7 +538,7 @@ function updateItem(item, force) {
  * @return true if toggling worked
  */
 function toggleItemFolded($item) {
-  var $post = $item.find(_C_CONTENT);
+  var $post = $item.find('.gpme-post-wrapper');
   //log("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
     // It is possible to not have a proper match during keyboard scrolling
@@ -541,7 +585,7 @@ function toggleItemFolded($item) {
  */
 function foldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    $post = $item.find(_C_CONTENT);
+    $post = $item.find('.gpme-post-wrapper');
     if ($post.length != 1) {
       error("foldItem: Can't find post content node");
       return;
@@ -657,7 +701,10 @@ function foldItem($item, $post) {
       // So check, and delay the copying in case of updates.
       var $clonedDateA = $clonedDate.find('a');
       if ($clonedDateA.length) {
-        $clonedDateA.text(abbreviateDate($clonedDateA.text()));
+        // Strip out the A link because we don't want to make it clickable
+        // Not only does clicking it somehow opens a new window, but we need
+        // the clicking space especially with instant previews
+        $clonedDate.text(abbreviateDate($clonedDate.text()));
         $title.append($clonedTitle);
 
         // Stop propagation of click from the name
@@ -679,9 +726,7 @@ function foldItem($item, $post) {
           }
 
           // Take out (edited.*)
-          var $dateA = $date.find('a');
-          if ($dateA.length)
-            $dateA.text(abbreviateDate($dateA.text()));
+          $date.text(abbreviateDate($date.text()));
 
           // Finally, inject content into the titlebar
           $title.append($clonedTitle);
@@ -706,12 +751,11 @@ function foldItem($item, $post) {
  */
 function unfoldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    var $posts = $item.find(_C_CONTENT);
-    if ($posts.length != 1) {
+    $post = $item.find('gpme-post-wrapper');
+    if ($post.length != 1) {
       //log("unfoldItem: $posts.length=" + $posts.length);
       return;
     }
-    $post = $posts.first();
   }
 
   var id = $item.attr('id');
@@ -785,6 +829,68 @@ function updateCommentCount(id, $subtree, count) {
       $container.hide();
     }
   }
+}
+
+/****************************************************************************
+ * Preview
+ ***************************************************************************/
+
+function showPreview(e) {
+  //log("showPreview: this=" + this.className);
+
+  // Sometimes if you switch windows, there might be some preview remaining
+  // that hoverIntent will not catch.
+  if ($lastPreviewedItem)
+    hidePostItemPreview($lastPreviewedItem);
+
+  var $item = $(this);
+
+  var $post = $item.find('.gpme-post-wrapper');
+  if ($post.length) {
+    // Block clicks temporarily
+    var $clickWall = $item.find('.gpme-disable-clicks');
+    $clickWall.show();
+    setTimeout(function() { $clickWall.hide(); } , clickWallTimeout);
+
+    $post.show();
+    $lastPreviewedItem = $item;
+
+    // Move to the right edge and as far up as possible
+    // 303px = (31+60+32) cropping + 195 width of sidebar - 15 slack
+    // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
+    $post.css('left',
+      '' + (297 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+    // Move to the top, leaving room for the top bar
+    // NOTE: first '30' is the height of triangle; second '30' is height of Google status bar.
+    var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
+        Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
+          $item.offset().top -
+            Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 ) - /* breathing room */ 7));
+    $post.css('top', '' + (-offsetY) + 'px');
+    var $triangle = $item.find('.gpme-preview-triangle');
+    $triangle.css('top',  '' + offsetY + 'px');
+  } else {
+    error("showPreview: Can't find post wrapper");
+  }
+}
+
+function hidePreview(e) {
+  //log("hidePreview: this=" + this.className);
+  hidePostItemPreview($(this));
+}
+
+function hidePostItemPreview($item) {
+  if (!$item || ! $item.hasClass("gpme-folded"))
+    return;
+
+  var $post = $item.find('.gpme-post-wrapper');
+  if ($post.length) {
+    $post.hide();
+  } else {
+    error("showPreview: Can't find post wrapper");
+  }
+
+  $lastPreviewedItem = null;
 }
 
 /****************************************************************************

@@ -133,3 +133,50 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   height: 21px;
   line-height: 21px;
 }
+
+/*
+ * Preview
+ */
+
+.gpme-folded .gpme-post-wrapper .a-f-i-do { /* User photo */
+  display: none;
+}
+.gpme-folded .a-f-i-Ia-D-h { /* Context menu button */
+  margin-right: -13px; /* Gained 44-13=31 px */
+}
+.gpme-folded .a-f-i-Ia-D { /* context menu */
+  z-index: 11;
+}
+.gpme-folded .a-f-i-p { /* Post content */
+  margin-left: 0; /* Gained 60px */
+  margin-right: 13px; /* Gained 44-13=31 px */
+}
+
+.gpme-folded .gpme-post-wrapper {
+  position: absolute;
+  left: 297px; /* (31+60+26) + 195 width of sidebar - 15 slack */
+  top: -20px;
+  z-index: 10;
+  width: 451px; /* 574-31-60-32 */
+  padding: 6px 8px; /* Gained (21-8)*2=26px */
+  /*max-height: 1000px;*/
+  overflow-x: visible;
+  overflow-y: visible;
+  background: white;
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.gpme-preview-triangle {
+  display: none;
+}
+
+.gpme-folded .gpme-preview-triangle {
+  display: inline;
+  position: absolute;
+  left: -16px;
+  top: 20px; /* -top of wrapper */
+  height: 30px;
+  width: 17px;
+}
