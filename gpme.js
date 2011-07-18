@@ -466,7 +466,7 @@ function updateItem(item, force) {
     return;
   var refreshFold = force;
 
-  //log("updateItem: " + item.id);
+  log("updateItem: " + item.id);
   var $item = $(item);
 
   if (! $item.hasClass('gpme-enh')) {
@@ -751,7 +751,7 @@ function foldItem($item, $post) {
  */
 function unfoldItem($item, $post) {
   if (typeof($post) == 'undefined') {
-    $post = $item.find('gpme-post-wrapper');
+    $post = $item.find('.gpme-post-wrapper');
     if ($post.length != 1) {
       //log("unfoldItem: $posts.length=" + $posts.length);
       return;
@@ -859,7 +859,7 @@ function showPreview(e) {
     // 303px = (31+60+32) cropping + 195 width of sidebar - 15 slack
     // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
     $post.css('left',
-      '' + (297 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+      '' + (295 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
     // Move to the top, leaving room for the top bar
     // NOTE: first '30' is the height of triangle; second '30' is height of Google status bar.
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
@@ -867,6 +867,7 @@ function showPreview(e) {
           $item.offset().top -
             Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 ) - /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
+    //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $item.find('.gpme-preview-triangle');
     $triangle.css('top',  '' + offsetY + 'px');
   } else {
