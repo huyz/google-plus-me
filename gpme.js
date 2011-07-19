@@ -323,6 +323,12 @@ function onStatusUpdated(e) {
  * Injects styles in current document
  */
 function injectCSS() {
+  var linkNode  = document.createElement('link');
+  linkNode.rel = 'stylesheet';
+  linkNode.type = 'text/css';
+  linkNode.href = chrome.extension.getURL('gpme.css');
+  document.getElementsByTagName('head')[0].appendChild(linkNode);
+
   // Copy G+ notification status bg style because original is by ID.
   // We use a convoluted manner of copying styles in case G+ changes
   // the CSS image sprite.
@@ -837,6 +843,10 @@ function updateCommentCount(id, $subtree, count) {
 
 function showPreview(e) {
   //log("showPreview: this=" + this.className);
+
+  // Skip if this is expanded mode
+  if (displayMode == 'expanded')
+    return;
 
   // Sometimes if you switch windows, there might be some preview remaining
   // that hoverIntent will not catch.
