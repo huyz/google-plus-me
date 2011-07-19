@@ -136,7 +136,7 @@ var clickWallTimeout = 300;
  * For debugging
  */
 function log(msg) {
-  //console.log("g+me." + msg);
+  console.log("g+me." + msg);
 }
 function trace(msg) {
   console.log("g+me: " + msg);
@@ -865,6 +865,10 @@ function showPreview(e) {
     $post.show();
     $lastPreviewedItem = $item;
 
+    // Detect fixed topbar for compatibility (from "Replies and more for Google+")
+    var $topbar = $('#gb');
+    var isTopbarFixed = $topbar.length && ($topbar.parent().css('position') == 'fixed');
+
     // Move to the right edge and as far up as possible
     // 303px = (31+60+32) cropping + 195 width of sidebar - 15 slack
     // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
@@ -875,7 +879,8 @@ function showPreview(e) {
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
         Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
           $item.offset().top -
-            Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 ) - /* breathing room */ 7));
+          (isTopbarFixed ? document.body.scrollTop + 30
+            : Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 )) - /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $item.find('.gpme-preview-triangle');
