@@ -6,7 +6,7 @@
 * Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-07-18
+# Updated on:       2011-07-20
 # Created on:       2011-07-11
 #
 # Installation:
@@ -681,7 +681,9 @@ function foldItem($item, $post) {
             // FIXME: English-specific
             text = text.replace(/.*hung out\s*/, '');
           }
-          $clonedTitle.append('<span class="gpme-snippet">' + text + '</span>');
+          $snippet = $('<span class="gpme-snippet"></span');
+          $snippet.text(text); // We have to add separately to properly escape HTML tags
+          $clonedTitle.append($snippet);
           break;
         }
       }
