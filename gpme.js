@@ -149,7 +149,7 @@ function error(msg) {
  * Check if should enable on certain pages
  */
 function isEnabledOnThisPage() {
-  return ! window.location.href.match(/\/(posts|notifications)\//);
+  return ! window.location.href.match(/\/(posts|notifications|sparks)\//);
 }
 
 /**
@@ -326,7 +326,7 @@ function injectCSS() {
   var linkNode  = document.createElement('link');
   linkNode.rel = 'stylesheet';
   linkNode.type = 'text/css';
-  linkNode.href = chrome.extension.getURL('gpme.css');
+  linkNode.href = chrome.extension.getURL('gpme.css') + '?' + new Date().getTime();
   document.getElementsByTagName('head')[0].appendChild(linkNode);
 
   // Copy G+ notification status bg style because original is by ID.
