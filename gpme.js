@@ -81,6 +81,8 @@ var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
 
+var _C_COMMENT_CONTAINERS =
+  [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
 
 var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
@@ -177,6 +179,17 @@ function isEnabledOnThisPage() {
  */
 function abbreviateDate(text) {
   return text.replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.');
+}
+
+/**
+ * Iterates through all the comment containers and calls the callback
+ */
+function foreachCommentContainer($subtree, callback) {
+  for (var container in _C_COMMENT_CONTAINERS) {
+    var $container = $subtree.find(_C_COMMENT_CONTAINERS[container]);
+    if ($container.length)
+      callback($container);
+  }
 }
 
 /**
@@ -511,7 +524,9 @@ function updateItem($item, force) {
   var id = $item.attr('id');
   debug("updateItem: " + id);
 
-  if (! $item.hasClass('gpme-enh')) {
+  var enhanceItem = ! $item.hasClass('gpme-enh');
+
+  if (enhanceItem) {
     // Add titlebar
     var $itemContent = $item.find(_C_CONTENT);
     if ($itemContent.length != 1) {
@@ -536,20 +551,22 @@ function updateItem($item, force) {
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
     $wrapper.append($itemContent);
 
-    // Insert commentbar
-    var $commentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
-    // If there is no comments, then this could be a photo tagging post for example
-    if (! $commentContainer.length) {
-      //debug("updateItem: can't find comments container " + id);
-      '';
-    } else {
+    // Structure commentbar:
+    // "a-b-f-i-Xb"
+    //   "gpme-commentbar"
+    var $allCommentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
+    // It's possible not to have comments at all on posts with comments
+    // disabled or on photo-tagging posts
+    if ($allCommentContainer.length) {
       var $commentbar = $commentbarTpl.clone(true);
-      $commentbar.insertBefore($commentContainer);
+      $allCommentContainer.prepend($commentbar);
 
       // Insert wrapper for comments container so that we can hide it without
       // triggering DOMSubtreeModified events on the container
       $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
-      $wrapper.append($commentContainer);
+      foreachCommentContainer($allCommentContainer, function($container) {
+        $wrapper.append($container);
+      });
     }
 
     refreshFold = true;
@@ -587,6 +604,14 @@ function updateItem($item, force) {
       foldComments(false, $item);
     else
       unfoldComments(false, $item);
+  }
+
+  // Start listening to updates to comments.
+  // We need to listen all the time since comments can come in or out.
+  if (enhanceItem) {
+    foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
+      $container.bind('DOMSubtreeModified', onCommentsUpdated);
+    });
   }
 }
 
@@ -764,10 +789,6 @@ function foldItem(interactive, $item, $post) {
       $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
         '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
         '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
-      // Listen for updates to comment counts and commentbar
-      var $container = $item.find(_C_COMMENTS_ALL_CONTAINER);
-      if ($container.length)
-        $container.bind('DOMSubtreeModified', onCommentsUpdated);
 
       // Take out date marker
       var $clonedDate = $clonedTitle.find(_C_DATE);
@@ -821,7 +842,7 @@ function foldItem(interactive, $item, $post) {
   }
 
   // Show comments so that they appear in the preview (but don't persist)
-  var $comments = $item.find(_C_COMMENTS_ALL_CONTAINER);
+  var $comments = $item.find('.gpme-comments-wrapper');
   if ($comments.length) {
     $comments.show();
   }
@@ -1130,12 +1151,12 @@ function updateCommentbarHeight(id, $item, commentCount) {
       $commentbar.css('height', '');
     } else {
       // Update the height
-      var $commentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
-      if (! $commentContainer.length) {
-        error("updateCommentbarHeight: can't find comments container");
+      var $commentWrapper = $item.find('.gpme-comments-wrapper');
+      if (! $commentWrapper.length) {
+        error("updateCommentbarHeight: can't find comments wrapper");
         error($item);
       } else {
-        $commentbar.height($commentContainer.outerHeight() - 2);
+        $commentbar.height($commentWrapper.outerHeight() - 2);
       }
     }
   }

@@ -199,10 +199,15 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 .gpme-comments-unfolded .gpme-commentbar > div {
   float: left;
-  margin-left: -16px;
+  margin-top: -1px; /* Like .a-f-i-Xb */
+  margin-left: -12px;
   width: 10px;
   height: 50px; /* Dynamically overridden */
   min-height: 24px; /* Constrain slideUp() */
+  -moz-border-radius-topleft: 8px;
+  border-top-left-radius: 8px;
+  -moz-border-radius-bottomleft: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .gpme-comments-folded .gpme-commentbar > div {
