@@ -82,8 +82,10 @@
  */
 
 .gpme-title {
+  margin-top: 2px;
   padding: 0 6px 0 6px;
   display: none;
+  position: relative;
 }
 
 .gpme-folded .gpme-title {
@@ -100,7 +102,6 @@
 
 .gpme-title .gZgCtb {
   white-space: nowrap;
-  margin-top: 2px;
   line-height: 22px;
 }
 
@@ -125,7 +126,8 @@
 
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container .gpme-comment-count-bg {
-  right: 7px;
+  top: 0;
+  right: 6px;
 }
 
 /* Overrides injectCss(); add div just for higher specificity. */
@@ -181,3 +183,86 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   height: 30px;
   width: 17px;
 }
+
+/*
+ * Commentbar
+ */
+
+.gpme-commentbar {
+  margin-right: 2px;
+}
+
+.gpme-commentbar > div {
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.gpme-comments-unfolded .gpme-commentbar > div {
+  float: left;
+  margin-left: -16px;
+  width: 10px;
+  height: 50px; /* Dynamically overridden */
+  min-height: 24px; /* Constrain slideUp() */
+}
+
+.gpme-comments-folded .gpme-commentbar > div {
+  /*margin: 0;*/
+  width: 100%;
+  height: 24px;
+}
+
+/*
+ * Comment bar
+ */
+
+.gpme-folded .gpme-commentbar {
+  display: none;
+}
+
+/*
+ * Unfolded comment bar
+ */
+
+.gpme-folded .gpme-commentbar {
+  display: none;
+}
+
+.gpme-comments-unfolded .gpme-comments-title {
+  display: none;
+}
+
+.gpme-comments-unfolded .gpme-comments-fold-icon-unfolded-top {
+  padding: 4px 0;
+}
+.gpme-comments-unfolded .gpme-comments-fold-icon-unfolded-bottom {
+  padding: 4px 0;
+  position: absolute;
+  bottom: 0;
+}
+
+/*
+ * Folded comment bar
+ */
+
+.gpme-comments-folded .gpme-comments-fold-icon-unfolded-top {
+  display: none;
+}
+.gpme-comments-folded .gpme-comments-fold-icon-unfolded-bottom {
+  display: none;
+}
+
+.gpme-comments-title {
+  display: none;
+  margin-top: 2px;
+  padding: 0 6px 0 6px;
+  line-height: 19px;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gpme-comments-folded .gpme-comments-title {
+  display: block;
+}
+
