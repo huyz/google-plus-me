@@ -708,7 +708,7 @@ function foldItem($item, $post) {
       // For first page display, the date is there, but for updates, the date isn't there yet.
       // So check, and delay the copying in case of updates.
       var $clonedDateA = $clonedDate.find('a');
-      if ($clonedDateA.length) {
+      if ($clonedDateA.length && $clonedDateA.text() != '#') {
         // Strip out the A link because we don't want to make it clickable
         // Not only does clicking it somehow opens a new window, but we need
         // the clicking space especially with instant previews
@@ -720,6 +720,7 @@ function foldItem($item, $post) {
           e.stopPropagation();
         });
       } else {
+        console.log("foldItem: clonedDateA " + $clonedDateA.text());
         // In a few ms, the date should be ready to put in
         setTimeout(function() {
           var $srcDateA = $item.find(_C_DATE + ' a');
@@ -728,13 +729,10 @@ function foldItem($item, $post) {
 
           // Copy the localized date from content
           if ($srcDateA.length) {
-            $date.append($srcDateA.clone());
+            $date.text(abbreviateDate($srcDateA.text()));
           } else {
             error("folditem.timeout: can't find the source date div");
           }
-
-          // Take out (edited.*)
-          $date.text(abbreviateDate($date.text()));
 
           // Finally, inject content into the titlebar
           $title.append($clonedTitle);
