@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google Plus™",
-  "version": "3",
+  "version": "3.1",
 
   "description": "Chrome extension that collapses the Google+ stream into a real-time dashboard",
   "icons": { "16": "icons/icon16.png",
@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "matches" : ["http://plus.google.com/*", "https://plus.google.com/*"],
-      "js": ["jquery.js", "jquery.hoverIntent.js", "gpme.js"]
+      "js": ["jquery.js", "jquery.hoverIntent.js", "jquery.scrollintoview.js", "gpme.js"]
     }
   ],
 

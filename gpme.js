@@ -80,6 +80,7 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
+var _C_SHARE_LINE               = '.a-f-i-bg';
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -352,11 +353,13 @@ function onCommentsUpdated(e) {
   if (! $item.hasClass('gpme-enh'))
     return;
 
+  /*
   // If the user is editing, we have to unfold the comments because
   // the comment editing window is inside and hide the commentbar
   if ($target.hasClass(C_COMMENTS_ALL_CONTAINER) && $target.find(_C_COMMENT_EDITOR).length && $item.hasClass('gpme-comments-folded')) {
     unfoldComments(true, $item);
   }
+  */
 
   updateItemComments($item);
 }
@@ -968,6 +971,8 @@ function foldComments(interactive, $item, $comments) {
       updateCommentbar(id, $item, commentCount);
       $commentbar.show(); // undo the hiding of sliding up
     });
+    var $shareLine = $item.find(_C_SHARE_LINE);
+    ($shareLine.length? $shareLine : $item).scrollintoview({ duration: duration, direction: 'y' });
 
   } else {
     // Visual changes
