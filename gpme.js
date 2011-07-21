@@ -329,13 +329,22 @@ function injectCSS() {
   linkNode.href = chrome.extension.getURL('gpme.css') + '?' + new Date().getTime();
   document.getElementsByTagName('head')[0].appendChild(linkNode);
 
+  // Apparently, the background-position is incorrect for a user.
+  // Maybe the notification status displays something differently for him
+  // early in the loading of the page.
+  // Let's hardcode the coords, only in this situation
+  function hardcodeCoords($node) {
+    return window.getComputedStyle($node.get(0)).cssText.
+      replace(/(background-position:\s+-?\d+px\s+)-394px/, '$1-274px');
+  }
+
   // Copy G+ notification status bg style because original is by ID.
   // We use a convoluted manner of copying styles in case G+ changes
   // the CSS image sprite.
   // XXX There must be an easier way than to getComputedStyle()
   var styleNode = document.createElement('style');
   styleNode.setAttribute('type', 'text/css');
-  var statusNode, statusOff;
+  var statusNode, statusOff, cssText;
   $statusNode = $(_ID_STATUS_BG);
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbid' (turns bg to
@@ -344,10 +353,10 @@ function injectCSS() {
     if (statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
-      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+      hardcodeCoords($statusNode) + ' } '));
     $statusNode.addClass(C_STATUS_BG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
-      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+      hardcodeCoords($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
   }
@@ -355,16 +364,16 @@ function injectCSS() {
   // Copy G+ notification status fg style because original is by ID
   $statusNode = $(_ID_STATUS_FG);
   if ($statusNode.length) {
-    // We have to temporarily remove the class 'gbid' (turns bg to
+    // We have to temporarily remove the class 'gbids' (turns bg to
     // gray), which seems to be there by default.
     statusOff = $statusNode.hasClass(C_STATUS_FG_OFF);
     if (statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
-      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+      hardcodeCoords($statusNode) + ' } '));
     $statusNode.addClass(C_STATUS_FG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
-      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
+      hardcodeCoords($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
   }
@@ -916,12 +925,8 @@ function hidePostItemPreview($item) {
 $(document).ready(function() {
   trace("event: initial page load.");
 
-  //Place your code here (you can also define new functions above this scope)
-
-  //alert("Google+ Navigation (unpacked)");
+  //alert("G+me (unpacked)");
   
-  injectCSS();
-
   // Get options and then modify the page
   getOptionsFromBackground(function() {
     // Listen when the subtree is modified for new posts.
@@ -954,6 +959,7 @@ $(document).ready(function() {
     });
 
     injectNewFeedbackLink();
+    injectCSS();
 
     if (isEnabledOnThisPage())
       updateAllItems();
