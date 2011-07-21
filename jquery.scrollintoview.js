@@ -1,4 +1,4 @@
-﻿/*!
+/*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
  * Version 1.8 (14 Jul 2011)
