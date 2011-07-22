@@ -63,7 +63,7 @@ var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
 var _C_CONTENT                  = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
-var P_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
+var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 var _C_TITLE                    = '.gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
@@ -92,6 +92,7 @@ var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
 var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
+var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -262,13 +263,17 @@ function onTabUpdated() {
   if (!isEnabledOnThisPage())
     return;
 
-  updateAllItems();
+  // If list mode, make sure the correct last opened entry is unfolded, now
+  // that we know that window.location.href is correct
+  if (displayMode == 'list')
+    unfoldLastOpenInListMode();
 }
 
 /**
  * Responds to a reconstruction of the content pane, e.g.
  * when the user clicks on the link that points to the same
- * page we're already on
+ * page we're already on, or when switching from About to Posts
+ * on a profile page.
  */
 function onContentPaneUpdated(e) {
   // We're only interested in the insertion of entire content pane
@@ -288,13 +293,11 @@ function onContentPaneUpdated(e) {
  * Calls updateItem()
  */
 function onStreamUpdated(e) {
-  var id = e.target.id;
-  // Some weak optimization attempts
-  if (! id || id.charAt(0) == ':' || id.indexOf('update-') !== 0 || ! isEnabledOnThisPage())
+  if (! isEnabledOnThisPage())
     return;
 
   trace("event: DOMNodeInserted within stream");
-  debug("onStreamUpdated: DOMNodeInserted for item id=" + id + " class='" + e.target.className);
+  debug("onStreamUpdated: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
 }
 
@@ -496,7 +499,7 @@ function refreshAllFolds() {
   // If going to expanded mode, we want to unfold the last item opened in list mode
   if (displayMode == 'expanded') {
     var id = localStorage.getItem("gpme_post_last_open_" + window.location.href);
-    if (typeof(id) != 'undefined' && id !== null) {
+    if (id !== null) {
       var $item = $('#' + id);
       //debug("onModeOptionUpdated: last open id=" + id + " $item.length=" + $item.length);
       if ($item.length == 1) {
@@ -526,11 +529,10 @@ function updateAllItems($subtree) {
     updateItem($(item));
   });
 
-  // If list mode, make sure the correct last opened entry is unfolded, now that
-  // we know that window.location.href is correct
-  if (displayMode == 'list') {
+  // If list mode, make sure the correct last opened entry is unfolded, but
+  // only when we know that window.location.href is correct
+  if (typeof $subtree == 'undefined' && displayMode == 'list')
     unfoldLastOpenInListMode();
-  }
 }
 
 
@@ -551,7 +553,7 @@ function unfoldLastOpenInListMode() {
   // won't be shown.  Would be interesting to investigate further, as it probably
   // has to do with the way the DOM updates happen with G+.
   if ($lastTentativeOpen !== null && $lastTentativeOpen.attr('id') != lastOpenId) {
-    //debug("unfoldLastOpenInListMode: # tentative opens =" + $('#' + lastTentOpenId).length);
+    //debug("unfoldLastOpenInListMode: unfolding " + $lastTentativeOpen.attr('id'));
     foldItem(false, $lastTentativeOpen);
     $lastTentativeOpen = null;
   }
@@ -798,7 +800,7 @@ function foldItem(interactive, $item, $post) {
       // sometimes the hangout 'Live' icons is there
       var $clonedTitle = $subtree = $srcTitle.clone();
 
-      var $srcPhoto = $item.find(P_PHOTO);
+      var $srcPhoto = $item.find(S_PHOTO);
       if ($srcPhoto.length) {
         $clonedTitle.prepend($srcPhoto.clone());
       }
@@ -1398,16 +1400,29 @@ $(document).ready(function() {
   
   // Get options and then modify the page
   getOptionsFromBackground(function() {
-    // Listen for when there's a total AJAX refresh of the stream.
+    // Listen for when there's a total AJAX refresh of the stream,
+    // on a regular page
     var $contentPane = $(_ID_CONTENT_PANE);
     if ($contentPane.length) {
-      var contentPane = $contentPane.get()[0];
+      var contentPane = $contentPane.get(0);
       $contentPane.bind('DOMNodeInserted', function(e) {
-        // This last <div> is the one with the content: <div id="content"><div style="display: block"><div>...
+        // This happens when a new stream is selected
         if (e.relatedNode.parentNode == contentPane)
-          onContentPaneUpdated(e);
-        else
+          return onContentPaneUpdated(e);
+
+        var id = e.target.id;
+        // ':' is weak optimization attempt for comment editing
+        if (id && ! id.charAt(0))
+          return;
+
+        // This happens when a new post is added, either through "More"
+        // or a new recent post.
+        if (id && id.indexOf('update-') === 0)
           onStreamUpdated(e);
+        // This happens when switching from About page to Posts page
+        // on profile
+        else if (e.relatedNode.id.indexOf('-posts-page') > 0)
+          onContentPaneUpdated(e);
       });
     } else  {
       error("main: Can't find content pane");
@@ -1426,7 +1441,7 @@ $(document).ready(function() {
     chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       if (request.action == "gpmeTabUpdateComplete") {
         // Handle G+'s history state pushing when user clicks on different streams (and back)
-        //onTabUpdated();
+        onTabUpdated();
       } else if (request.action == "gpmeModeOptionUpdated") {
         // Handle options changes
         onModeOptionUpdated(request.mode);
