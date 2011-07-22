@@ -637,7 +637,7 @@ function updateItem($item) {
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem) {
     // We must have one throttle function per comment section within item.
-    var commentsUpdateHandler = $.throttle(100, function(e) { onCommentsUpdated(e, $item); });
+    var commentsUpdateHandler = $.throttle(50, function(e) { onCommentsUpdated(e, $item); });
 
     //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
     foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
@@ -849,7 +849,7 @@ function foldItem(interactive, $item, $post) {
 
         // For first page display, the date is there, but for updates, the date isn't there yet.
         // So check, and try again later in case of updates.
-        var attempt = 10;
+        var attempt = 20;
         (function insertTitleWhenDateUpdated($date) {
           attempt--;
           if ($date.length && $date.text() != '#' || attempt < 0) {
@@ -876,7 +876,7 @@ function foldItem(interactive, $item, $post) {
 
             if ($srcDateA.length) {
               // Try again later in a little bit
-              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 200);
+              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 100);
             } else {
               error("insertTitleWhenDateUpdated: can't find the source date div");
               error($srcDateA);
