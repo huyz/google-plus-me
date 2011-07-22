@@ -2,4 +2,5 @@ OLD
 dist
 *.crx
 *.pem
-google-plus-me.zip
+*.zip
+google-plus-me
