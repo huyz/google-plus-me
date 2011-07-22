@@ -157,10 +157,10 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 .gpme-folded .gpme-post-wrapper {
   position: absolute;
-  left: 297px; /* (31+60+26) + 195 width of sidebar - 15 slack */
+  left: 395px; /* (31+60+26) + 100 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
   top: -20px;
   z-index: 10;
-  width: 451px; /* 574-31-60-32 */
+  width: 351px; /* 574-(31+60+32) - 100 shrinking*/
   padding: 6px 8px; /* Gained (21-8)*2=26px */
   /*max-height: 1000px;*/
   overflow-x: visible;
