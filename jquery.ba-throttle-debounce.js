@@ -1,4 +1,8 @@
 /*!
+ * Hacked by huyz 2011-07-22 to add two timeouts to throttle as per
+ * https://github.com/cowboy/jquery-throttle-debounce/issues/5
+ * (And I broke debounce, which I don't need)
+ *
  * jQuery throttle / debounce - v1.1 - 3/7/2010
  * http://benalman.com/projects/jquery-throttle-debounce-plugin/
  * 
@@ -119,7 +123,7 @@
   // 
   //  (Function) A new, throttled, function.
   
-  $.throttle = jq_throttle = function( delay, no_trailing, callback, debounce_mode ) {
+  $.throttle = jq_throttle = function( callback_interval, burst_interval, no_trailing, callback, debounce_mode ) {
     // After wrapper has stopped being called, this timeout ensures that
     // `callback` is executed at the proper times in `throttle` and `end`
     // debounce modes.
@@ -164,7 +168,7 @@
       // Clear any existing timeout.
       timeout_id && clearTimeout( timeout_id );
       
-      if ( debounce_mode === undefined && elapsed > delay ) {
+      if ( debounce_mode === undefined && elapsed > callback_interval ) {
         // In throttle mode, if `delay` time has been exceeded, execute
         // `callback`.
         exec();
@@ -179,7 +183,7 @@
         // 
         // If `debounce_mode` is false (at end), schedule `callback` to
         // execute after `delay` ms.
-        timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? delay - elapsed : delay );
+        timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? burst_interval - elapsed : delay );
       }
     };
     
