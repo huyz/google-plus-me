@@ -27,6 +27,7 @@ if (version != oldVersion) {
           if (tab.url.match(/^https?:\/\/plus\.google\.com\//)) {
             //chrome.tabs.insertCSS(tab.id, {file: 'gpme.css', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'jquery.js', allFrames: true});
+            chrome.tabs.executeScript(tab.id, {file: 'jquery.ba-throttle-debounce.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'jquery.hoverIntent.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'jquery.scrollintoview.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'gpme.js', allFrames: true});

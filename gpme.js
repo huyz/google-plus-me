@@ -51,7 +51,8 @@
 // We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
 // refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-//var _C_CONTAINER              = '.a-b-f-i-oa';
+var C_STREAM                    = 'a-b-f-i-oa';
+var _C_STREAM                   = '.a-b-f-i-oa';
 var _FEEDBACK_LINK              = '.a-eo-eg';
 var C_FEEDBACK                  = 'tk3N6e-e-vj';
 var _C_SELECTED                 = '.a-f-oi-Ai';
@@ -65,12 +66,15 @@ var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
 var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
 var C_COMMENTS_ALL_CONTAINER    = 'a-b-f-i-Xb';
+var C_COMMENTS_OLD_CONTAINER    = 'a-b-f-i-cf-W-xb';
 var _C_COMMENTS_OLD_CONTAINER   = '.a-b-f-i-cf-W-xb';
 var _C_COMMENTS_OLD             = '.a-b-f-i-gc-cf-Xb-h';
 var _C_COMMENTS_OLD_NAMES       = '.a-b-f-i-cf-W-xb .a-b-f-i-je-oa-Vb';
+var C_COMMENTS_SHOWN_CONTAINER  = 'a-b-f-i-Xb-oa';
 var _C_COMMENTS_SHOWN_CONTAINER = '.a-b-f-i-Xb-oa';
 var _C_COMMENTS_SHOWN           = '.a-b-f-i-W-r';
 var _C_COMMENTS_SHOWN_NAMES     = '.a-b-f-i-W-r a.a-f-i-W-Zb';
+var C_COMMENTS_MORE_CONTAINER   = 'a-b-f-i-Sb-W-xb';
 var _C_COMMENTS_MORE_CONTAINER  = '.a-b-f-i-Sb-W-xb';
 var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
 var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
@@ -86,6 +90,10 @@ var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
 
 var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
+
+// XXX We assume there is no substring match problem because
+// it doesn't look like any class names would be a superstring of these
+var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + ')\\b')
 
 /****************************************************************************
  * Init
@@ -155,7 +163,7 @@ var clickWallTimeout = 300;
  * For debugging
  */
 function trace(msg) {
-  console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
+  //console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
 }
 function debug(msg) {
   console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
@@ -203,9 +211,90 @@ function getOptionsFromBackground(callback) {
   });
 }
 
+/**
+ * Returns a throttle function kk2
+ * */
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
+
+/**
+ * Responds to DOM updates from G+ to handle change in status of new notifications shown to the user
+ */
+function onStatusUpdated(e) {
+  debug("onStatusUpdated");
+  chrome.extension.sendRequest({action: 'gpmeStatusUpdate', count: parseInt(e.target.innerText, 10)});
+}
+
+/**
+ * Responds to changes in the history state
+ */
+function onTabUpdated() {
+  trace("event: Chrome says that tab was updated");
+
+  // Restrict to non-single-post Google+ pages
+  if (!isEnabledOnThisPage())
+    return;
+
+  updateAllItems();
+}
+
+/**
+ * Responds to a reconstruction of the content pane, e.g.
+ * when the user clicks on the link that points to the same
+ * page we're already on
+ */
+function onContentPaneUpdated(e) {
+  // We're only interested in the insertion of entire content pane
+  trace("event: DOMNodeInserted within onContentPaneUpdated");
+
+  if (isEnabledOnThisPage())
+    updateAllItems(true);
+
+  // (Re-)create handler for insertions into the stream
+  // No longer needed: we'll just handle it in the single DOMNodeInserted event handler
+  //$stream = $(e.target).find(_C_STREAM).bind('DOMNodeInserted', onStreamUpdated);
+}
+
+/**
+ * Responds to DOM updates from G+ to handle incoming items.
+ * Calls updateItem()
+ */
+function onStreamUpdated(e) {
+  var id = e.target.id;
+  // Some weak optimization attempts
+  if (! id || id.charAt(0) == ':' || id.indexOf('update-') !== 0 || ! isEnabledOnThisPage())
+    return;
+
+  trace("event: DOMNodeInserted within stream");
+  debug("onStreamUpdated: DOMNodeInserted for item id=" + id + " class='" + e.target.className);
+  updateItem($(e.target));
+}
+
+/**
+ * Responds to DOM updates from G+ to handle changes to old comment counts
+ */
+function onCommentsUpdated(e, $item) {
+  var id = e.target.id;
+  var className = e.target.className;
+
+  //trace("event: DOM insertion or deletion of comments");
+  debug("onCommentsUpdated: DOM insertion/deletion of comments for item id=" + id + " class='" + e.target.className + "'");
+
+  // We may be getting events just from a jquery find for comments,
+  // before things are set up.
+  if (! $item.hasClass('gpme-enh'))
+    return;
+
+  /*
+  // If the user is editing, we should unfold comments
+  if ($target.hasClass(C_COMMENTS_ALL_CONTAINER) && $target.find(_C_COMMENT_EDITOR).length && $item.hasClass('gpme-comments-folded')) {
+    unfoldComments(true, $item);
+  }
+  */
+
+  updateItemComments($item);
+}
 
 /**
  * Responds to click on post titlebar.
@@ -254,31 +343,6 @@ function onFoldKey(e, attempt) {
 }
 
 /**
- * Responds to changes in the history state
- */
-function onTabUpdated() {
-  trace("event: Chrome says that tab was updated");
-
-  // Restrict to non-single-post Google+ pages
-  if (!isEnabledOnThisPage())
-    return;
-
-  updateAllItems();
-
-  /*
-  // Make sure we still have an event handler for DOM changes.
-  var $contentPane = $(_ID_CONTENT_PANE);
-  if ($contentPane.length === 0) {
-    debug("onRequest: Can't find content pane");
-  } else  {
-    // Make sure we only have one
-    $contentPane.unbind('DOMSubtreeModified', onContainerModified);
-    $contentPane.bind('DOMSubtreeModified', onContainerModified);
-  }
-  */
-}
-
-/**
  * Responds to changes in mode option
  */
 function onModeOptionUpdated(newMode) {
@@ -313,63 +377,6 @@ function onResetAll() {
     if (typeof(oldMode) == 'undefined' || displayMode != oldMode)
       refreshAllFolds();
   });
-}
-
-/**
- * Responds to DOM updates from G+ to handle incoming items.
- * Calls updateItem()
- */
-function onContainerModified(e) {
-  var id = e.target.id;
-  // Some weak optimization attempts
-  if (! id || id.charAt(0) == ':' || id.indexOf('update-') !== 0 || ! isEnabledOnThisPage())
-    return;
-
-  trace("event: DOMSubtreeModified within posts for item id=" + id + " class='" + e.target.className + "'");
-  updateItem($(e.target));
-}
-
-/**
- * Responds to DOM updates from G+ to handle changes to old comment counts
- */
-function onCommentsUpdated(e) {
-  var id = e.target.id;
-  // Some weak optimization attempts to prevent lag when typing comments.
-  if (id && id.charAt(0) == ':')
-    return;
-
-  trace("event: DOMSubtreeModified within comments for element id=" + id + " class='" + e.target.className + "' this.id=" + this.id + " this.class=" + this.className);
-
-  var $target = $(e.target);
-  var $item = $target.closest(_C_ITEM);
-  if (! $item) {
-    error("onCommentsUpdated: Can't find item ancestor of comments");
-    error($item);
-    return;
-  }
-
-  // We may be getting events just from searching for comments,
-  // before things are set up.
-  if (! $item.hasClass('gpme-enh'))
-    return;
-
-  /*
-  // If the user is editing, we have to unfold the comments because
-  // the comment editing window is inside and hide the commentbar
-  if ($target.hasClass(C_COMMENTS_ALL_CONTAINER) && $target.find(_C_COMMENT_EDITOR).length && $item.hasClass('gpme-comments-folded')) {
-    unfoldComments(true, $item);
-  }
-  */
-
-  updateItemComments($item);
-}
-
-/**
- * Responds to DOM updates from G+ to handle change in status of new notifications shown to the user
- */
-function onStatusUpdated(e) {
-  debug("onStatusUpdated");
-  chrome.extension.sendRequest({action: 'gpmeStatusUpdate', count: parseInt(e.target.innerText, 10)});
 }
 
 /****************************************************************************
@@ -457,7 +464,7 @@ function injectNewFeedbackLink() {
  */
 function refreshAllFolds() {
   // Force refresh of folding
-  updateAllItems(true);
+  updateAllItems();
 
   // If going to expanded mode, we want to unfold the last item opened in list mode
   if (displayMode == 'expanded') {
@@ -474,18 +481,18 @@ function refreshAllFolds() {
 
 /**
  * Update all the items in the current page.
- * Is called by main(), onTabUpdated(), and onModeOptionUpdated()
- * @param force: Optional, forces a refresh of folding status in case
- *   user switches from one display mode to another
+ * Is called by main() and onModeOptionUpdated()
  */
-function updateAllItems(force) {
+function updateAllItems(invisible) {
   //debug("updateAllItems");
   
   // Update all items
-  $(_C_ITEM).each(function(i, val) {
+  $(_ID_CONTENT_PANE + ' > div').filter(function() {
+    return this.style.display == (invisible ? 'none' : 'block');
+  }).find(_C_ITEM).each(function(i, item) {
     debug("updateAllItems #" + i);
     i++;
-    updateItem($(val), force);
+    updateItem($(item));
   });
 
   // If list mode, make sure the correct last opened entry is unfolded, now that
@@ -528,11 +535,8 @@ function unfoldLastOpenInListMode() {
 /**
  * Updates fold/unfold appropriately, except in list mode where the
  * caller is responsible for unfolding the appropriate item.
- * @param force: Optional
  */
-function updateItem($item, force) {
-  var refreshFold = force;
-
+function updateItem($item) {
   var id = $item.attr('id');
   debug("updateItem: " + id);
 
@@ -580,38 +584,38 @@ function updateItem($item, force) {
         $wrapper.append($container);
       });
     }
-
-    refreshFold = true;
   }
 
-  if (refreshFold) {
-    // Refresh fold of post
-    if (displayMode == 'list') {
-      // Check if it's supposed to be unfolded
-      // NOTE: the href may be incorrect at this point if the user is clicking on a new
-      // stream link and the updates are coming in through AJAX *before* a tabUpdated event
-      var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
+  // Refresh fold of post
+  var itemFolded = false;
+  if (displayMode == 'list') {
+    // Check if it's supposed to be unfolded
+    // NOTE: the href may be incorrect at this point if the user is clicking on a new
+    // stream link and the updates are coming in through AJAX *before* a tabUpdated event
+    var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
 
-      if (lastOpenId !== null && id == lastOpenId) {
-        unfoldItem(false, $item);
+    if (lastOpenId !== null && id == lastOpenId) {
+      unfoldItem(false, $item);
 
-        // Record this operation because we may have to undo it once location.href is
-        // known to be correct
-        $lastTentativeOpen = $item;
-      } else {
-        foldItem(false, $item);
-      }
-    } else if (displayMode == 'expanded') {
-      var itemFolded = localStorage.getItem("gpme_post_folded_" + id);
-      // Fold if necessary
-      if (itemFolded !== null) {
-        foldItem(false, $item);
-      } else {
-        unfoldItem(false, $item);
-      }
+      // Record this operation because we may have to undo it once location.href is
+      // known to be correct
+      $lastTentativeOpen = $item;
+    } else {
+      foldItem(false, $item);
+      itemFolded = true;
     }
+  } else if (displayMode == 'expanded') {
+    itemFolded = localStorage.getItem("gpme_post_folded_" + id);
+    // Fold if necessary
+    if (itemFolded !== null) {
+      foldItem(false, $item);
+    } else {
+      unfoldItem(false, $item);
+    }
+  }
 
-    // Refresh fold of comments
+  // Refresh fold of comments if visible
+  if (! itemFolded) {
     if (localStorage.getItem("gpme_comments_folded_" + id))
       foldComments(false, $item);
     else
@@ -621,8 +625,27 @@ function updateItem($item, force) {
   // Start listening to updates to comments.
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem) {
+    // We must have one throttle function per comment section within item.
+    var commentsUpdateHandler = $.throttle(100, function(e) { onCommentsUpdated(e, $item) });
+
+    //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
     foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
-      $container.bind('DOMSubtreeModified', onCommentsUpdated);
+      $container.bind('DOMSubtreeModified', function(e) {
+        // We have to filter out junk before we call the throttle function; otherwise
+        // the last callback call will have junk arguments.
+        var id = e.target.id;
+        // Some optimizations, especially to prevent lag when typing comments.
+        if (id && id.charAt(0) == ':' || ! isEnabledOnThisPage())
+          return;
+
+        var className = e.target.className;
+        // If the target has id, then it's probably a comment
+        if (! id && ! COMMENT_CONTAINER_REGEXP.test(className))
+          return;
+
+        // Finally call our throttled callback
+        commentsUpdateHandler(e);
+      });
     });
   }
 }
@@ -894,6 +917,11 @@ function unfoldItem(interactive, $item, $post) {
     foldComments(false, $item);
   else
     unfoldComments(false, $item);
+
+  // Scroll into view because on a short web page for list mode because
+  // the closing of another post can move the post we're trying to open
+  if (displayMode == 'list')
+    $item.scrollintoview();
 
   // Remove the stored comment count
   localStorage.removeItem('gpme_post_old_comment_count_' + id);
@@ -1282,19 +1310,29 @@ $(document).ready(function() {
   trace("event: initial page load.");
 
   //alert("G+me (unpacked)");
+
+  injectCSS();
   
   // Get options and then modify the page
   getOptionsFromBackground(function() {
-    // Listen when the subtree is modified for new posts.
-    // WARNING: DOMSubtreeModified is deprecated and degrades performance:
-    //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
+    // Listen for when there's a total AJAX refresh of the stream.
     var $contentPane = $(_ID_CONTENT_PANE);
-    if ($contentPane.length)
-      $contentPane.bind('DOMSubtreeModified', onContainerModified);
-    else 
-      debug("main: Can't find post container");
+    if ($contentPane.length) {
+      var contentPane = $contentPane.get()[0];
+      $contentPane.bind('DOMNodeInserted', function(e) {
+        // This last <div> is the one with the content: <div id="content"><div style="display: block"><div>...
+        if (e.relatedNode.parentNode == contentPane)
+          onContentPaneUpdated(e);
+        else
+          onStreamUpdated(e);
+      });
+    } else  {
+      error("main: Can't find content pane");
+    }
 
     // Listen when status change
+    // WARNING: DOMSubtreeModified is deprecated and degrades performance:
+    //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
     var $status = $(_ID_STATUS_FG);
     if ($status.length)
       $status.bind('DOMSubtreeModified', onStatusUpdated);
@@ -1305,7 +1343,7 @@ $(document).ready(function() {
     chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       if (request.action == "gpmeTabUpdateComplete") {
         // Handle G+'s history state pushing when user clicks on different streams (and back)
-        onTabUpdated();
+        //onTabUpdated();
       } else if (request.action == "gpmeModeOptionUpdated") {
         // Handle options changes
         onModeOptionUpdated(request.mode);
@@ -1315,8 +1353,8 @@ $(document).ready(function() {
     });
 
     injectNewFeedbackLink();
-    injectCSS();
 
+    // The initial update
     if (isEnabledOnThisPage())
       updateAllItems();
   });
