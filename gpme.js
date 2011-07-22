@@ -658,7 +658,7 @@ function updateItem($item) {
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem) {
     // We must have one throttle function per comment section within item.
-    var commentsUpdateHandler = $.throttle(50, function(e) { onCommentsUpdated(e, $item); });
+    var commentsUpdateHandler = $.throttle(200, function(e) { onCommentsUpdated(e, $item); });
 
     //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
     foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
