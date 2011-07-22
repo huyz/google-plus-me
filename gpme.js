@@ -91,6 +91,7 @@ var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
 var _C_SHARE_LINE               = '.a-f-i-bg';
+var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -908,7 +909,21 @@ function foldItem(interactive, $item, $post) {
     }
   }
 
-  // Show comments so that they appear in the preview (but don't persist)
+  /* Gonna be harder than this :)
+  // If interactive, then we want to stop any playing youtube video
+  // by undoing what clicking play does
+  var $embed = $post.find(_C_EMBEDDED_VIDEO + '> iframe');
+  if ($embed.length) {
+    var $embedParent = $embed.parent();
+    $embedParent.find('img').show();
+    $embedParent.find('div').show();
+    $embedParent.attr({ 'aria-pressed': '', 'aria-selected': '', 'aria-expanded': '' }).
+      removeClass('ea-S-Pa ea-S-Ya'); // Classes not important -- probably on affects iframe
+    $embed.remove();
+  }
+  */
+
+  // Show possibly-hidden comments so that they appear in the preview (but don't persist)
   var $comments = $item.find('.gpme-comments-wrapper');
   if ($comments.length) {
     $comments.show();
