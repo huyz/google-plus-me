@@ -58,9 +58,11 @@ var C_FEEDBACK                  = 'tk3N6e-e-vj';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
 var _C_CONTENT                  = '.a-b-f-i-p';
+var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var P_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 var _C_TITLE                    = '.gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
+var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
 var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
@@ -93,7 +95,7 @@ var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
-var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + ')\\b')
+var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + ')\\b');
 
 /****************************************************************************
  * Init
@@ -249,7 +251,7 @@ function onContentPaneUpdated(e) {
   trace("event: DOMNodeInserted within onContentPaneUpdated");
 
   if (isEnabledOnThisPage())
-    updateAllItems(true);
+    updateAllItems($(e.target));
 
   // (Re-)create handler for insertions into the stream
   // No longer needed: we'll just handle it in the single DOMNodeInserted event handler
@@ -484,13 +486,17 @@ function refreshAllFolds() {
  * Update all the items in the current page.
  * Is called by main() and onModeOptionUpdated()
  */
-function updateAllItems(invisible) {
+function updateAllItems($subtree) {
   //debug("updateAllItems");
   
+  // Default to updating all divs in contentpane,
+  // but sometimes we know which one was just inserted by
+  // an Ajax refresh
+  if (typeof $subtree == 'undefined')
+    $subtree = $(_C_STREAM);
+  
   // Update all items
-  $(_ID_CONTENT_PANE + ' > div').filter(function() {
-    return this.style.display == (invisible ? 'none' : 'block');
-  }).find(_C_ITEM).each(function(i, item) {
+  $subtree.find(_C_ITEM).each(function(i, item) {
     debug("updateAllItems #" + i);
     i++;
     updateItem($(item));
@@ -547,8 +553,12 @@ function updateItem($item) {
     // Add titlebar
     var $itemContent = $item.find(_C_CONTENT);
     if ($itemContent.length != 1) {
-      error("updateItem: Can't find content of item " + id);
-      error($item);
+      if ($item.find(_C_HANGOUT_PLACEHOLDER).length) {
+        setTimeout(function() { updateItem($item); }, 100 );
+      } else {
+        error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
+        error($item.html());
+      }
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
@@ -627,7 +637,7 @@ function updateItem($item) {
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem) {
     // We must have one throttle function per comment section within item.
-    var commentsUpdateHandler = $.throttle(100, function(e) { onCommentsUpdated(e, $item) });
+    var commentsUpdateHandler = $.throttle(100, function(e) { onCommentsUpdated(e, $item); });
 
     //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
     foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
@@ -826,53 +836,53 @@ function foldItem(interactive, $item, $post) {
         '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
         '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
 
-      // Take out date marker
+      // Take out date marker so that G+ doesn't update the wrong copy
       var $clonedDate = $clonedTitle.find(_C_DATE);
-      if ($clonedDate.length) {
-        $clonedDate.removeClass(C_DATE);
-      } else {
+      if (! $clonedDate.length) {
         error("foldItem: Can't find date marker");
         error($clonedTitle);
-      }
-
-      // For first page display, the date is there, but for updates, the date isn't there yet.
-      // So check, and delay the copying in case of updates.
-      var $clonedDateA = $clonedDate.find('a');
-      if ($clonedDateA.length && $clonedDateA.text() != '#') {
-        // Strip out the A link because we don't want to make it clickable
-        // Not only does clicking it somehow opens a new window, but we need
-        // the clicking space especially with instant previews
-        $clonedDate.text(abbreviateDate($clonedDate.text()));
-        $title.append($clonedTitle);
-
-        // Stop propagation of click from the name
-        $clonedTitle.find('a').click(function(e) {
-          e.stopPropagation();
-        });
       } else {
-        // In a few ms, the date should be ready to put in
-        setTimeout(function() {
-          var $srcDateA = $item.find(_C_DATE + ' a');
-          // Find date by CSS class, coz we nuked the date marker
-          var $date = $clonedTitle.find(_C_DATE_CSS);
+        $clonedDate.removeClass(C_DATE);
 
-          // Copy the localized date from content
-          if ($srcDateA.length) {
-            $date.text(abbreviateDate($srcDateA.text()));
+        // If any, move "- Muted" to right after date and before the " - "
+        $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
+
+        // For first page display, the date is there, but for updates, the date isn't there yet.
+        // So check, and try again later in case of updates.
+        var attempt = 10;
+        (function insertTitleWhenDateUpdated($date) {
+          attempt--;
+          if ($date.length && $date.text() != '#' || attempt < 0) {
+            var dateText = '';
+            if (attempt < 0) {
+              error("insertTitleWhenDateUpdated: gave up on getting the date for id=" + id);
+            } else {
+              dateText = abbreviateDate($date.text());
+            }
+            // Strip out the A link because we don't want to make it clickable
+            // Not only does clicking it somehow opens a new window, but we need
+            // the clicking space especially with instant previews
+            $clonedDate.text(dateText);
+            $title.append($clonedTitle);
+
+            // Stop propagation of click from the name
+            // NOTE: done here coz it can't be done on a detached node.
+            $clonedTitle.find('a').click(function(e) {
+              e.stopPropagation();
+            });
+
           } else {
-            error("folditem.timeout: can't find the source date div");
-            error($srcDateA);
+            var $srcDateA = $item.find(_C_DATE + ' a');
+
+            if ($srcDateA.length) {
+              // Try again later in a little bit
+              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 200);
+            } else {
+              error("insertTitleWhenDateUpdated: can't find the source date div");
+              error($srcDateA);
+            }
           }
-
-          // Finally, inject content into the titlebar
-          $title.append($clonedTitle);
-
-          // Stop propagation of click from the name
-          // NOTE: this can't be done on a detached node.
-          $clonedTitle.find('a').click(function(e) {
-            e.stopPropagation();
-          });
-        }, 200);
+        })($clonedDate.find('a'));
       }
     }
   }
