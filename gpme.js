@@ -1217,9 +1217,9 @@ function updateCommentbarHeight(id, $item, commentCount) {
 
   // If no comments, no need for a bar
   if (commentCount === 0) {
-    $commentbar.parent().hide();
+    $commentbar.hide();
   } else {
-    $commentbar.parent().show();
+    $commentbar.show();
     // If folded, Remove any dynamically-set height
     if ($item.hasClass('gpme-comments-folded')) {
       $commentbar.css('height', '');
