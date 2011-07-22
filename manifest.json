@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google Plus™",
-  "version": "3.0",
+  "version": "3.0.1",
 
   "description": "Collapses the Google+ stream into a real-time dashboard: collapses posts, hides comments, etc.",
   "icons": { "16": "icons/icon16.png",
