@@ -1295,17 +1295,32 @@ function showPreview(e) {
     var isTopbarFixed = $topbar.length && ($topbar.parent().css('position') == 'fixed');
 
     // Move to the right edge and as far up as possible
-    // 425px = (31+60+26) cropping + 130 shriking + 195 width of sidebar - 17 slack
+    // 430px = (31+60+26) cropping + 135 shriking + 195 width of sidebar - 17 slack
     // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
-    $post.css('left',
-      '' + (425 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+    //$post.css('left',
+      //'' + (430 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+    $post.css('left', '0');
+    debug('doc.width=' + $(document).width());
+    debug('win.scrollLeft=' + $(window).scrollLeft());
+    debug('bounding.right=' + $item.get(0).getBoundingClientRect().right);
+    debug('right=-' +
+      -Math.min($post.outerWidth() + 5,
+       ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)));
+    // We give slack of 10 coz otherwise you get the horizontal bar flashing on Chrome OSX.
+    // The width of the popup is reduced by 5 in CSS to leave a bit of a gap between posts and the popup so
+    // that the popup triangle can nicely overlay a big commentcount.
+    $post.css('right', '' +
+      -Math.min($post.outerWidth() + 5,
+        ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)) +
+      'px');
+    $post.css('left', 'auto');
     // Move to the top, leaving room for the top bar
     // NOTE: first '30' is the height of triangle; second '30' is height of Google status bar.
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
-        Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
-          $item.offset().top -
-          (isTopbarFixed ? document.body.scrollTop + 30 :
-             Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 )) - /* breathing room */ 7));
+      Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
+        $item.offset().top -
+        (isTopbarFixed ? document.body.scrollTop + 30 :
+            Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 )) - /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $item.find('.gpme-preview-triangle');
