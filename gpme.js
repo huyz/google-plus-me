@@ -1262,10 +1262,10 @@ function showPreview(e) {
     var isTopbarFixed = $topbar.length && ($topbar.parent().css('position') == 'fixed');
 
     // Move to the right edge and as far up as possible
-    // 395px = (31+60+26) cropping + 100 shriking + 195 width of sidebar - 17 slack
+    // 425px = (31+60+26) cropping + 130 shriking + 195 width of sidebar - 17 slack
     // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
     $post.css('left',
-      '' + (395 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+      '' + (425 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
     // Move to the top, leaving room for the top bar
     // NOTE: first '30' is the height of triangle; second '30' is height of Google status bar.
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,

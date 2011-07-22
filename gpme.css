@@ -157,10 +157,10 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 .gpme-folded .gpme-post-wrapper {
   position: absolute;
-  left: 395px; /* (31+60+26) + 100 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
+  left: 425px; /* (31+60+26) + 130 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
   top: -20px;
   z-index: 10;
-  width: 351px; /* 574-(31+60+32) - 100 shrinking*/
+  width: 321px; /* 574-(31+60+32) - 130 shrinking*/
   padding: 6px 8px; /* Gained (21-8)*2=26px */
   /*max-height: 1000px;*/
   overflow-x: visible;
@@ -182,6 +182,10 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   top: 20px; /* -top of wrapper */
   height: 30px;
   width: 17px;
+}
+
+.gpme-folded .gpme-post-wrapper img {
+  max-width: 305px; /* 321 gpme-post-wrapper - (8*2 padding) */
 }
 
 /*
