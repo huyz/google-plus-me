@@ -42,6 +42,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// Load our version of jQuery (which we hacked to alias to $162)
+var $ = $162;
+
 /****************************************************************************
  * Constants
  ***************************************************************************/
@@ -51,6 +54,10 @@
 // We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
 // refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
+var C_NOTIFICATIONS_MARKER      = 'MJI2hd';
+var C_SPARKS_MARKER             = 'a-b-OL';
+var C_SINGLE_POST_MARKER        = 'a-Wf-i-M';
+var C_PROFILE_PANE              = 'a-p-M-T-hk-xc';
 var C_STREAM                    = 'a-b-f-i-oa';
 var _C_STREAM                   = '.a-b-f-i-oa';
 var _FEEDBACK_LINK              = '.a-eo-eg';
@@ -96,6 +103,12 @@ var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
 var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + ')\\b');
+var DISABLED_PAGES_URL_REGEXP = new RegExp(/\/(posts|notifications|sparks)\//);
+var DISABLED_PAGES_CLASSES = [
+  C_NOTIFICATIONS_MARKER,
+  C_SPARKS_MARKER,
+  C_SINGLE_POST_MARKER
+];
 
 /****************************************************************************
  * Init
@@ -179,9 +192,20 @@ function error(msg) {
 
 /**
  * Check if should enable on certain pages
+ * @param $subtree: Optional, to force checking of DOM in cases when the
+ *   href is not yet correct and the Ajax updates are pending
  */
-function isEnabledOnThisPage() {
-  return ! window.location.href.match(/\/(posts|notifications|sparks)\//);
+function isEnabledOnThisPage($subtree) {
+  if (typeof $subtree == 'undefined')
+    return ! DISABLED_PAGES_URL_REGEXP.test(window.location.href);
+
+  for (var c in DISABLED_PAGES_CLASSES) {
+    if ($subtree.hasClass(DISABLED_PAGES_CLASSES[c]) || $subtree.find('.' + DISABLED_PAGES_CLASSES[c]).length) {
+      debug("isEnabledOnThisPage: disabling because match on " + DISABLED_PAGES_CLASSES[c]);
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -250,8 +274,9 @@ function onContentPaneUpdated(e) {
   // We're only interested in the insertion of entire content pane
   trace("event: DOMNodeInserted within onContentPaneUpdated");
 
-  if (isEnabledOnThisPage())
-    updateAllItems($(e.target));
+  var $subtree = $(e.target);
+  if (isEnabledOnThisPage($subtree))
+    updateAllItems($subtree);
 
   // (Re-)create handler for insertions into the stream
   // No longer needed: we'll just handle it in the single DOMNodeInserted event handler
@@ -350,7 +375,6 @@ function onFoldKey(e, attempt) {
 function onModeOptionUpdated(newMode) {
   debug("onModeOptionUpdated: new mode=" + newMode);
 
-  // Restrict to non-single-post Google+ pages
   if (! isEnabledOnThisPage())
     return;
 
@@ -1209,7 +1233,7 @@ function updateCommentbarHeight(id, $item, commentCount) {
         error("updateCommentbarHeight: can't find comments wrapper");
         error($item);
       } else {
-        $commentbar.height($commentWrapper.outerHeight() - 2);
+        $commentbar.height($commentWrapper.height() - 2);
       }
     }
   }
