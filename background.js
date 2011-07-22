@@ -30,6 +30,7 @@ if (version != oldVersion) {
             chrome.tabs.executeScript(tab.id, {file: 'jquery.ba-throttle-debounce.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'jquery.hoverIntent.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'jquery.scrollintoview.js', allFrames: true});
+            chrome.tabs.executeScript(tab.id, {file: 'jquery.actual.js', allFrames: true});
             chrome.tabs.executeScript(tab.id, {file: 'gpme.js', allFrames: true});
           }
         });

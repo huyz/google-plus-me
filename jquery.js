@@ -8977,5 +8977,5 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 
 // Expose jQuery to the global object
-window.$162 = window.jQuery = window.$ = jQuery;
+window.jQuery = window.$ = jQuery;
 })(window);

@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google Plus™",
-  "version": "3.0.2",
+  "version": "3.0.3",
 
   "description": "Collapses the Google+ stream while keeping live updates: hides comments, collapses posts, etc.",
   "icons": { "16": "icons/icon16.png",
@@ -23,6 +23,7 @@
 	"jquery.ba-throttle-debounce.js",
 	"jquery.hoverIntent.js",
 	"jquery.scrollintoview.js",
+	"jquery.actual.js",
 	"gpme.js"]
     }
   ],

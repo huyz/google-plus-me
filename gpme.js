@@ -42,9 +42,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Load our version of jQuery (which we hacked to alias to $162)
-var $ = $162;
-
 /****************************************************************************
  * Constants
  ***************************************************************************/
@@ -1233,7 +1230,9 @@ function updateCommentbarHeight(id, $item, commentCount) {
         error("updateCommentbarHeight: can't find comments wrapper");
         error($item);
       } else {
-        $commentbar.height($commentWrapper.height() - 2);
+        // Despite advertisements, jQuery 1.6.2 still cannot calculate
+        // height within a hidden tree
+        $commentbar.height($commentWrapper.actual('outerHeight') - 2);
       }
     }
   }
@@ -1343,8 +1342,6 @@ function hidePostItemPreview($item) {
 
 $(document).ready(function() {
   trace("event: initial page load.");
-
-  //alert("G+me (unpacked)");
 
   injectCSS();
   
