@@ -121,6 +121,8 @@ var $lastTentativeOpen = null;
 
 var $lastPreviewedItem = null;
 
+var lastCommentCountUpdateTimers = {};
+
 // Shared DOM: the titlebar
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
@@ -724,7 +726,7 @@ function toggleItemFolded($item) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
         if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
-          foldItem(false, $lastItem);
+          foldItem(true, $lastItem);
         }
       }
     }
@@ -774,14 +776,10 @@ function foldItem(interactive, $item, $post) {
   $item.removeClass('gpme-unfolded');
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
-  // Update the comment count
+  // If interactive folding and comments are showing, record the comment count
   var commentCount = countComments($item);
-  // Only update the comment count in storage if not already set
-  var oldCount = localStorage.getItem('gpme_post_old_comment_count_' + id);
-  if (typeof(oldCount) == 'undefined' || oldCount === null)
-    // For nice screenshots
-    //localStorage.setItem('gpme_post_old_comment_count_' + id, Math.floor(commentCount / 2));
-    localStorage.setItem('gpme_post_old_comment_count_' + id, commentCount);
+  if (interactive && ! $item.hasClass('gpme-comments-folded'))
+    saveSeenCommentCount(id, commentCount);
 
   // Attached or pending title
   var $subtree;
@@ -965,14 +963,14 @@ function unfoldItem(interactive, $item, $post) {
   else
     unfoldComments(false, $item);
 
+  if (interactive && ! $item.hasClass('gpme-comments-folded'))
+    deleteSeenCommentCount(id);
+
   // Scroll into view because on a short web page for list mode because
   // the closing of another post can move the post we're trying to open
   if (displayMode == 'list')
     $item.scrollintoview();
 
-  // Remove the stored comment count
-  localStorage.removeItem('gpme_post_old_comment_count_' + id);
-  localStorage.removeItem('gpme_post_old_comment_count_changed_' + id);
 }
 
 /****************************************************************************
@@ -1028,12 +1026,7 @@ function foldComments(interactive, $item, $comments) {
     // Persist
     localStorage.setItem("gpme_comments_folded_" + id, true);
 
-    // Update the shown comment count, only if not already set.
-    var oldCount = localStorage.getItem('gpme_comments_old_comment_count_' + id);
-    if (typeof(oldCount) == 'undefined' || oldCount === null)
-      // For nice screenshots
-      //localStorage.setItem('gpme_comments_old_comment_count_' + id, Math.floor(commentCount / 2));
-      localStorage.setItem('gpme_comments_old_comment_count_' + id, commentCount);
+    saveSeenCommentCount(id, commentCount);
 
     // Visual changes
     var shownCommentCount = countShownComments($item);
@@ -1113,9 +1106,7 @@ function unfoldComments(interactive, $item, $comments) {
       $commentbar.fadeIn(200);
     });
 
-    // Remove the stored comment count
-    localStorage.removeItem('gpme_post_old_comment_count_' + id);
-    localStorage.removeItem('gpme_post_old_comment_count_changed_' + id);
+    deleteSeenCommentCount(id);
   } else {
     // Automated visual changes
     $comments.show();
@@ -1152,18 +1143,34 @@ function updateCommentCount(id, $subtree, count) {
   var $countBg = $container.find(".gpme-comment-count-bg");
   var $countFg = $container.find(".gpme-comment-count-fg");
 
+  // Clear any old timers we may have
+  if (id in lastCommentCountUpdateTimers) {
+    clearTimeout(lastCommentCountUpdateTimers[id]);
+    delete lastCommentCountUpdateTimers[id];
+  }
+
   // Change background of count
-  var oldCount = localStorage.getItem('gpme_post_old_comment_count_' + id);
-  if (oldCount !== null &&
-      (count != oldCount || localStorage.getItem('gpme_post_old_comment_count_changed_' + id) !== null)) {
+  var seenCount = localStorage.getItem('gpme_post_seen_comment_count_' + id);
+  // seenCount === null && count > 0 : in list mode, there is no seen count on new folded posts
+  // seenCount !== null && count != seenCount : count has changed since last seen
+  // 'gpme_post_seen_comment_count_changed_' + id in localStorage : count is the same but was
+  //    different before, which means e.g. a comment was deleted and another inserted
+  if ((seenCount === null && count > 0 ) || (seenCount !== null && count != seenCount) ||
+      'gpme_post_seen_comment_count_changed_' + id in localStorage) {
     $countBg.removeClass(C_COMMENTCOUNT_NOHILITE);
     $countFg.removeClass(C_COMMENTCOUNT_NOHILITE);
-    $countFg.text(count - oldCount);
+    $countFg.text(count - (seenCount !== null ? seenCount : 0));
     $container.show();
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
-    localStorage['gpme_post_old_comment_count_changed_' + id] = true;
+    if (seenCount !== null && ! ('gpme_post_seen_comment_count_changed_' + id in localStorage)) {
+      lastCommentCountUpdateTimers[id] = setTimeout(function() {
+        debug("lastCommentCountUpdateTimers: setting id=" + id);
+        localStorage['gpme_post_seen_comment_count_changed_' + id] = true;
+        delete lastCommentCountUpdateTimers[id];
+      }, 200);
+    }
   } else {
     $countBg.addClass(C_COMMENTCOUNT_NOHILITE);
     $countFg.addClass(C_COMMENTCOUNT_NOHILITE);
@@ -1277,6 +1284,26 @@ function countShownComments($subtree) {
   return $subtree.find(_C_COMMENTS_SHOWN).length;
 }
 
+/**
+ * Stores seen comment count
+ */
+function saveSeenCommentCount(id, commentCount) {
+  debug("saveSeenCommentCount: id=" + id + " saving count=" + commentCount);
+  // Update the shown comment count, only if not already set.
+  var oldCount = localStorage.getItem('gpme_post_seen_comment_count_' + id);
+  if (typeof(oldCount) == 'undefined' || oldCount === null)
+    localStorage.setItem('gpme_post_seen_comment_count_' + id, commentCount);
+}
+
+/**
+ * Deletes seen comment count
+ */
+function deleteSeenCommentCount(id) {
+  // Remove the stored comment count
+  localStorage.removeItem('gpme_post_seen_comment_count_' + id);
+  localStorage.removeItem('gpme_post_seen_comment_count_changed_' + id);
+}
+
 /****************************************************************************
  * Preview popup
  ***************************************************************************/
@@ -1315,12 +1342,6 @@ function showPreview(e) {
     //$post.css('left',
       //'' + (430 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
     $post.css('left', '0');
-    debug('doc.width=' + $(document).width());
-    debug('win.scrollLeft=' + $(window).scrollLeft());
-    debug('bounding.right=' + $item.get(0).getBoundingClientRect().right);
-    debug('right=-' +
-      -Math.min($post.outerWidth() + 5,
-       ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)));
     // We give slack of 10 coz otherwise you get the horizontal bar flashing on Chrome OSX.
     // The width of the popup is reduced by 5 in CSS to leave a bit of a gap between posts and the popup so
     // that the popup triangle can nicely overlay a big commentcount.

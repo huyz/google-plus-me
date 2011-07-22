@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google Plus™",
-  "version": "3.0.4",
+  "version": "3.0.5",
 
   "description": "Collapses the Google+ stream while keeping live updates: hides comments, collapses posts, etc.",
   "icons": { "16": "icons/icon16.png",
