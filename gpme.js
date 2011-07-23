@@ -80,6 +80,7 @@ var C_COMMENTS_SHOWN_CONTAINER  = 'a-b-f-i-Xb-oa';
 var _C_COMMENTS_SHOWN_CONTAINER = '.a-b-f-i-Xb-oa';
 var _C_COMMENTS_SHOWN           = '.a-b-f-i-W-r';
 var _C_COMMENTS_SHOWN_NAMES     = '.a-b-f-i-W-r a.a-f-i-W-Zb';
+var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p';
 var C_COMMENTS_MORE_CONTAINER   = 'a-b-f-i-Sb-W-xb';
 var _C_COMMENTS_MORE_CONTAINER  = '.a-b-f-i-Sb-W-xb';
 var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
@@ -101,7 +102,7 @@ var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
-var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + ')\\b');
+var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + ')\\b');
 var DISABLED_PAGES_URL_REGEXP = new RegExp(/\/(posts|notifications|sparks)\//);
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
