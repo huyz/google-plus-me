@@ -7,6 +7,7 @@ process a large stream of incoming posts and comments.
 
 - Install at the [Chrome Web Store](http://goo.gl/jlY8E).
 - Follow me on [Google+](http://goo.gl/UmSoR) and [Twitter](http://twitter.com/huyplus).
+- Web page for [G+me](http://huyz.us/google-plus-me/)
 - Give feedback in [discussion at Google+](http://goo.gl/VwkwX).
 
 
