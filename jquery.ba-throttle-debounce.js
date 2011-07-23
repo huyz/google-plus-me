@@ -183,7 +183,7 @@
         // 
         // If `debounce_mode` is false (at end), schedule `callback` to
         // execute after `delay` ms.
-        timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? burst_interval - elapsed : delay );
+        timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? burst_interval : delay );
       }
     };
     
