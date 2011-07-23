@@ -13,10 +13,25 @@ process a large stream of incoming posts and comments.
 Screenshots
 -----------
 
-### Enhanced stream: ###
+### Enhanced stream in expanded mode: ###
 
 ![Stream
-screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-stream.png)
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-expanded-fullsize.png)
+
+### Collapsed comments ###
+
+![Stream
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-collapsed-comments.png)
+
+### Enhanced stream in list mode: ###
+
+![Stream
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-stream-fullsize.png)
+
+### Mouse-over preview in list mode: ###
+
+![Stream
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-preview.png)
 
 ### Notification status badge: ###
 
@@ -30,14 +45,31 @@ screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-options.png)
 
 Features
 --------
-- **Notification status visible at all times**. Browser icon shows badge with number of new notifications.
-
-- **Collapsible items**. As an alternative to muting, this is great if you're not really interested in seeing a post and all its comments right now, but you still want to get back to it at a later time and/or still want to get notifications.
-
-- **Real-time comment count on collapsed items**. You will see either how many comments a post has or how many new ones you haven't seen yet.
-
-- **List mode keeps at most one post displayed**. This turns the stream into a dashboard: in one screenful you can see activity on many posts at once and jump back and forth between multiple active comment streams.
-
+ *  **Notification status visible at all times**.  You no longer have to scroll
+    the page to the top and you don't have to keep going back to the browser
+    tab with Google+.  You will always know when you get new notifications
+    because the browser button is always visible with a badge.
+ *  **Collapsible comments**. Thanks to a side bar always within view, it's quick
+    and easy to hide hundreds of comments from anywhere in the discussion.
+ *  **Collapsible posts**.  You can hide and unhide a post without muting it.
+    This is great if you're not really interested in seeing a post and all its
+    comments right now, but you still want to get back to it at a later time.
+    The downside of muting a post is that you will never see it again and
+    you stop getting any notifications of responses to any comments you may
+    have made on that post.
+ *  **Mark comments as read**. Collapsing posts/comments automatically
+    keeps track of the comments you've seen; the extension remembers.
+ *  **Real-time comment count on collapsed items**.  Whether you like to collapse
+    comments or posts, you won't miss any incoming comments.  The extension shows you
+    the total number of seen or unseen comments, updated live.
+ *  **List-mode option keeps at most one post displayed**.  Combined with
+    real-time comments, this turns the stream into a dashboard: in one
+    screenful you can see activity on many posts at once and jump back and
+    forth between multiple active comment streams. This will greatly benefit
+    those who follow popular people who post a lot and/or get a lot of comments.
+ *  **Mouse-over instant preview**.  In list mode, hover the mouse over a
+    collapsed post to get a preview of the content at the side.  The preview is fully
+    functional.
 
 Known Issues
 ------------
