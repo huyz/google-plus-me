@@ -73,12 +73,11 @@ Features
 
 Known Issues
 ------------
- *  Sometimes the comment counts look odd. You can get zero or negative counts
-    for new comments because people delete their comments -- that's normal.
-    But there are also some bugs in the count that both Google and I need to
-    fix over time.
  *  Does not play well with the 'j' and 'k' keyboard shortcuts, which scroll
     the page.
+ *  Sometimes the comment counts look odd. You can get zero or negative counts
+    for new comments because people delete their comments -- that's normal. But
+    Google+ doesn't give us comments consistently.
 
 
 Caltech License
