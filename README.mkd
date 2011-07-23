@@ -37,7 +37,7 @@ screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-preview.png)
 ### Notification status badge: ###
 
 ![Options
-screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-browser-icon-unexpanded.png)
+screenshot](google-plus-me/raw/master/screenshots/screenshot-gpme-browser-icon-cropped.png)
 
 ### Multiple display options: ###
 
