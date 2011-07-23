@@ -6,7 +6,7 @@
 * Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-07-20
+# Updated on:       2011-07-23
 # Created on:       2011-07-11
 #
 # Installation:
@@ -17,8 +17,10 @@
 #   [NOT YET ENABLED: Or use the 'o' keyboard shortcut.]
 #
 # Thanks:
-#   This extension takes some ideas from https://github.com/mohamedmansour/google-plus-extension/
-#   and https://github.com/wittman/googleplusplus_hide_comments .
+#   This extension takes some ideas from
+#   https://github.com/mohamedmansour/google-plus-extension/
+#   http://code.google.com/p/buzz-plus/
+#   https://github.com/wittman/googleplusplus_hide_comments .
 
 # Copyright (C) 2011 Huy Z
 # 
@@ -870,9 +872,18 @@ function foldItem(interactive, $item, $post) {
         // If any, move "- Muted" to right after date and before the " - "
         $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
 
+        // Inject the summary title
+        $title.append($clonedTitle);
+
+        // Stop propagation of click from the name
+        // NOTE: done here coz it can't be done on a detached node.
+        $clonedTitle.find('a').click(function(e) {
+          e.stopPropagation();
+        });
+
         // For first page display, the date is there, but for updates, the date isn't there yet.
         // So check, and try again later in case of updates.
-        var attempt = 20;
+        var attempt = 40;
         (function insertTitleWhenDateUpdated($date) {
           attempt--;
           if ($date.length && $date.text() != '#' || attempt < 0) {
@@ -886,20 +897,13 @@ function foldItem(interactive, $item, $post) {
             // Not only does clicking it somehow opens a new window, but we need
             // the clicking space especially with instant previews
             $clonedDate.text(dateText);
-            $title.append($clonedTitle);
-
-            // Stop propagation of click from the name
-            // NOTE: done here coz it can't be done on a detached node.
-            $clonedTitle.find('a').click(function(e) {
-              e.stopPropagation();
-            });
 
           } else {
             var $srcDateA = $item.find(_C_DATE + ' a');
 
             if ($srcDateA.length) {
               // Try again later in a little bit
-              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 100);
+              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 50);
             } else {
               error("insertTitleWhenDateUpdated: can't find the source date div");
               error($srcDateA);
