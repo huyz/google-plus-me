@@ -50,6 +50,8 @@
 
 //// For more class constants, see foldItem() in classes array
 
+var _ID_TOPBAR                  = '#gb';
+var _C_HEADER                   = '.a-U-T';
 // We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
 // refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
@@ -185,7 +187,7 @@ function trace(msg) {
   //console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
 }
 function debug(msg) {
-  console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+  //console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
 }
 function warn(msg) {
   console.warn(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
@@ -1339,9 +1341,15 @@ function showPreview(e) {
     $post.show();
     $lastPreviewedItem = $item;
 
-    // Detect fixed topbar for compatibility (from "Replies and more for Google+")
-    var $topbar = $('#gb');
+    // Detect fixed topbar for compatibility (with "Replies and more for Google+")
+    var $topbar = $(_ID_TOPBAR);
     var isTopbarFixed = $topbar.length && ($topbar.parent().css('position') == 'fixed');
+    // Detect fixed topbar for compatibility (with "Google+ Ultimate")
+    var isHeaderFixed = false;
+    if (isTopbarFixed) {
+      var $header = $(_C_HEADER);
+      isHeaderFixed = $header.length && ($header.css('position') == 'fixed');
+    }
 
     // Move to the right edge and as far up as possible
     // 430px = (31+60+26) cropping + 135 shriking + 195 width of sidebar - 17 slack
@@ -1362,7 +1370,7 @@ function showPreview(e) {
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
       Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
         $item.offset().top -
-        (isTopbarFixed ? document.body.scrollTop + 30 :
+        (isTopbarFixed ? document.body.scrollTop + 30 + (isHeaderFixed ? 45 : 0) :
             Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 )) - /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
@@ -1417,7 +1425,7 @@ $(document).ready(function() {
 
         var id = e.target.id;
         // ':' is weak optimization attempt for comment editing
-        if (id && ! id.charAt(0))
+        if (id && id.charAt(0) == ':')
           return;
 
         // This happens when a new post is added, either through "More"
