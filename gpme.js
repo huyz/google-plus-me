@@ -6,7 +6,7 @@
 * Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-07-23
+# Updated on:       2011-07-25
 # Created on:       2011-07-11
 #
 # Installation:
@@ -430,11 +430,21 @@ function injectCSS() {
   // Apparently, the background-position is incorrect for a user.
   // Maybe the notification status displays something differently for him
   // early in the loading of the page.
-  // Let's hardcode the coords, only in this situation
+  // Let's hardcode the coords, only in this situation.
+  /* Damn, Guy Kawasaki needs to have it really hardcoded.
   function hardcodeCoords($node) {
     return window.getComputedStyle($node.get(0)).cssText.
       replace(/(background-position:)\s+-?0\s*(?:px)?\s+-394\s*px/, '$1 0 -274px').
       replace(/(background-position:)\s+-37\s*px\s+-394\s*px/, '$1 -26px -274px');
+  }
+  */
+  function hardcodeCoordsHilite($node) {
+    return window.getComputedStyle($node.get(0)).cssText.
+      replace(/(background-position:)[^;]*/, '$1 0 -274px');
+  }
+  function hardcodeCoordsNohilite($node) {
+    return window.getComputedStyle($node.get(0)).cssText.
+      replace(/(background-position:)[^;]*/, '$1 -26px -274px');
   }
 
   // Copy G+ notification status bg style because original is by ID.
@@ -452,10 +462,10 @@ function injectCSS() {
     if (statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
-      hardcodeCoords($statusNode) + ' } '));
+      hardcodeCoordsHilite($statusNode) + ' } '));
     $statusNode.addClass(C_STATUS_BG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
-      hardcodeCoords($statusNode) + ' } '));
+      hardcodeCoordsNohilite($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
   }
@@ -469,10 +479,10 @@ function injectCSS() {
     if (statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
-      hardcodeCoords($statusNode) + ' } '));
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     $statusNode.addClass(C_STATUS_FG_OFF);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
-      hardcodeCoords($statusNode) + ' } '));
+      window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
   }
