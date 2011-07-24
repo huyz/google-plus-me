@@ -433,7 +433,7 @@ function injectCSS() {
   // Let's hardcode the coords, only in this situation
   function hardcodeCoords($node) {
     return window.getComputedStyle($node.get(0)).cssText.
-      replace(/(background-position:\s+-?0\s*(?:px)?\s+)-394\s*px/, '$1 0 -274px').
+      replace(/(background-position:)\s+-?0\s*(?:px)?\s+-394\s*px/, '$1 0 -274px').
       replace(/(background-position:)\s+-37\s*px\s+-394\s*px/, '$1 -26px -274px');
   }
 
