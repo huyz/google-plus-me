@@ -65,15 +65,23 @@ var _FEEDBACK_LINK              = '.a-eo-eg';
 var C_FEEDBACK                  = 'tk3N6e-e-vj';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
-var _C_CONTENT                  = '.a-b-f-i-p';
+var _C_ITEM_GUTS                = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
+var C_TITLE                     = 'gZgCtb';
 var _C_TITLE                    = '.gZgCtb';
+var _C_NAME                     = '.a-f-i-go';
+var C_TITLE_COLOR               = 'a-f-i-yj';
+var S_SOURCE                    = 'a.a-f-i-Wd';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
 var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
+var _C_CONTENT                  = '.a-f-i-p-r';
+var _C_QUOTE_IMG                = '.ea-S-qg';
+var _C_ORIG_PHOTO               = '.a-f-i-u-go > img';
+var _C_MAP_IMG                  = '.a-f-i-p-Dc-jd-Jd';
 var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
 var C_COMMENTS_ALL_CONTAINER    = 'a-b-f-i-Xb';
 var C_COMMENTS_OLD_CONTAINER    = 'a-b-f-i-cf-W-xb';
@@ -115,19 +123,18 @@ var DISABLED_PAGES_CLASSES = [
 ];
 
 /****************************************************************************
- * Init
+ * Pre-created DOM elements
  ***************************************************************************/
+// NOTE: started using regular JS, then switched to using jQuery; no grand master plan
+// behind the dual usage.
 
-// list or expanded mode (like on GReader)
-var displayMode;
-
-// In list mode, an item that was opened but may need to be reclosed
-// once the location.href is corrected
-var $lastTentativeOpen = null;
-
-var $lastPreviewedItem = null;
-
-var lastCommentCountUpdateTimers = {};
+var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u25b6</span></div>');
+var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
+var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  &amp;  </span>');
+var $checkinIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X');
+var $mobileIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X').css({
+  'background-position': '0 -34px'
+});
 
 // Shared DOM: the titlebar
 var titlebarTpl = document.createElement('div');
@@ -161,6 +168,21 @@ var $postWrapperTpl = $(postWrapperTpl);
 var commentsWrapperTpl = document.createElement('div');
 commentsWrapperTpl.className = 'gpme-comments-wrapper';
 var $commentsWrapperTpl = $(commentsWrapperTpl);
+
+/****************************************************************************
+ * Init
+ ***************************************************************************/
+
+// list or expanded mode (like on GReader)
+var displayMode;
+
+// In list mode, an item that was opened but may need to be reclosed
+// once the location.href is corrected
+var $lastTentativeOpen = null;
+
+var $lastPreviewedItem = null;
+
+var lastCommentCountUpdateTimers = {};
 
 // For instant previews, hoverIntent
 var hoverIntentConfig = {    
@@ -582,12 +604,12 @@ function updateItem($item) {
 
   if (enhanceItem) {
     // Add titlebar
-    var $itemContent = $item.find(_C_CONTENT);
-    if ($itemContent.length != 1) {
+    var $itemGuts = $item.find(_C_ITEM_GUTS);
+    if ($itemGuts.length != 1) {
       if ($item.find(_C_HANGOUT_PLACEHOLDER).length) {
         setTimeout(function() { updateItem($item); }, 100 );
       } else {
-        error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
+        error("updateItem: Can't find content of item " + id + " hits=" + $itemGuts.length);
         error($item.html());
       }
       return;
@@ -602,12 +624,12 @@ function updateItem($item) {
     //$item.hover(showPreview, hidePreview);
 
     var $titlebar = $titlebarTpl.clone(true);
-    $titlebar.insertBefore($itemContent);
+    $titlebar.insertBefore($itemGuts);
 
     // Insert container for post content so that we can turn it into an instant
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
-    $wrapper.append($itemContent);
+    $wrapper.append($itemGuts);
 
     // Structure commentbar:
     // "a-b-f-i-Xb"
@@ -803,25 +825,44 @@ function foldItem(interactive, $item, $post) {
     } else {
       // NOTE: don't just take the first div inside post content title because
       // sometimes the hangout 'Live' icons is there
-      var $clonedTitle = $subtree = $srcTitle.clone();
+      var $clonedTitle = $subtree = $titleTpl.clone();
+      var $clonedTitleName = $srcTitle.find(_C_NAME).clone();
+      $clonedTitle.append($clonedTitleName);
 
-      var $srcPhoto = $item.find(S_PHOTO);
+      var $srcPhoto = $post.find(S_PHOTO);
+      if ($srcPhoto.length)
+        $clonedTitle.append($srcPhoto.clone());
+
+      // Insert "mobile"/"check-ins" icons
+      var $source = $srcTitle.find(S_SOURCE);
+      if ($source.length) {
+        // FIXME: English-only
+        if ($source.text() == 'Google Check-ins')
+          $clonedTitle.append($checkinIconTpl.clone());
+        else if ($source.text() == 'Mobile')
+          $clonedTitle.append($mobileIconTpl.clone());
+      }
+
+      var $content = $post.find(_C_CONTENT);
+
+      // Original sender's photo plus a dash
+      $srcPhoto = $content.find(_C_ORIG_PHOTO);
       if ($srcPhoto.length) {
-        $clonedTitle.prepend($srcPhoto.clone());
+        $clonedTitle.append($titleQuoteTpl.clone()).append($srcPhoto.clone().attr('style', 'margin: 0'));
       }
 
-      // Insert fold icon
-      $clonedTitle.prepend('<span class="gpme-fold-icon">\u25b6</span>');
-
-      // Take out permissions
-      var $perms = $clonedTitle.find(_C_PERMS);
-      if ($perms.length > 0) {
-        $perms.remove();
-      } else {
-        error("foldItem: can't find permissions div");
-        error($clonedTitle);
+      // Images in the content
+      var isDashNeeded = true;
+      $srcPhoto = $content.find('img').not(_C_ORIG_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
+      if ($srcPhoto.length) {
+        $clonedTitle.append($titleDashTpl.clone()).append($srcPhoto.clone().attr('style', ''));
+        isDashNeeded = false;
       }
 
+      // Insert a little dash
+      if (isDashNeeded)
+        $clonedTitle.append($titleDashTpl.clone());
+      
       // Put in snippet, trying differing things
       var classes = [
         '.a-b-f-i-u-ki', // poster text
@@ -835,7 +876,7 @@ function foldItem(interactive, $item, $post) {
         '.ea-S-Xj-Cc' // text of shared link
       ];
       for (var c in classes) {
-        var $snippet = $item.find(classes[c]);
+        var $snippet = $content.find(classes[c]);
         if (! $snippet.length)
           continue;
 
@@ -849,7 +890,7 @@ function foldItem(interactive, $item, $post) {
         if (text.match(/\S/)) {
           if (classes[c] == '.a-f-i-ie-R') {
             // FIXME: English-specific
-            text = text.replace(/.*hung out\s*/, '');
+            text = text.replace(/.*(hung out)/, '$1');
           }
           $snippet = $('<span class="gpme-snippet"></span');
           $snippet.text(text); // We have to add separately to properly escape HTML tags
@@ -863,6 +904,7 @@ function foldItem(interactive, $item, $post) {
         '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
         '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
 
+/* 3.5: We don't want the date anymore
       // Take out date marker so that G+ doesn't update the wrong copy
       var $clonedDate = $clonedTitle.find(_C_DATE);
       if (! $clonedDate.length) {
@@ -873,6 +915,9 @@ function foldItem(interactive, $item, $post) {
 
         // If any, move "- Muted" to right after date and before the " - "
         $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
+*/
+        // If any, move "- Muted" to right after date and before the " - "
+        $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
 
         // Inject the summary title
         $title.append($clonedTitle);
@@ -883,6 +928,8 @@ function foldItem(interactive, $item, $post) {
           e.stopPropagation();
         });
 
+
+/* 3.5: We don't want the date anymore
         // For first page display, the date is there, but for updates, the date isn't there yet.
         // So check, and try again later in case of updates.
         var attempt = 40;
@@ -913,6 +960,7 @@ function foldItem(interactive, $item, $post) {
           }
         })($clonedDate.find('a'));
       }
+*/
     }
   }
 
