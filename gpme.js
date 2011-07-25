@@ -341,7 +341,7 @@ function onTitlebarClick() {
   var $item = $(this).parent();
   debug("onTitlebarClick: " + $item.attr('id'));
 
-  toggleItemFolded(false, $item);
+  toggleItemFolded($item, true);
 }
 
 /**
@@ -381,12 +381,17 @@ function onKeydown(e) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
       if ($selectedItem.hasClass('gpme-folded'))
-        toggleItemFolded(true, $selectedItem);
+        toggleItemFolded($selectedItem);
       break;
     case 79: // 'o'
-      toggleItemFolded(true, $selectedItem);
-      //if (! toggleItemFolded(true, $selectedItem))
+      toggleItemFolded( $selectedItem);
+      //if (! toggleItemFolded( $selectedItem))
         //tryAgain = true;
+      break;
+    case 80: // 'p'
+      $sibling = $selectedItem.prev();
+      if ($sibling.length)
+        click($sibling);
       break;
     case 78: // 'n'
       $sibling = $selectedItem.next();
@@ -399,13 +404,39 @@ function onKeydown(e) {
           click($moreButton);
       }
       break;
-    case 80: // 'p'
-      $sibling = $selectedItem.prev();
-      if ($sibling.length)
-        click($sibling);
+    case 38: // shift-up
+      if (e.shiftKey) {
+        $sibling = $selectedItem.prev();
+        if ($sibling.length) {
+          debug("clicking previous sibling");
+          click($sibling);
+          toggleItemFolded( $sibling);
+        } else {
+          debug("no sibling");
+        }
+      }
+      break;
+    case 40: // shift-down
+      if (e.shiftKey) {
+        $sibling = $selectedItem.next();
+        if ($sibling.length) {
+          debug("clicking next sibling");
+          click($sibling);
+          toggleItemFolded( $sibling);
+        } else {
+          // If we're at the bottom, trigger the more button
+          var $moreButton = $(_C_MORE_BUTTON);
+          if ($moreButton.length)
+            click($moreButton);
+        }
+      }
       break;
     case 74: // 'j'
       // Delay a little bit to give priority to G+'s handling of 'j'
+      setTimeout(function() {
+        toggleItemFolded( $selectedItem);
+      }, 200);
+      /*
       setTimeout(function() {
         $sibling = $selectedItem.next();
         // We duplicate the handling by default G+ because sometimes G+
@@ -413,10 +444,15 @@ function onKeydown(e) {
         // expect such short posts?
         click($sibling);
         if ($sibling.length && $sibling.hasClass('gpme-folded'))
-          toggleItemFolded(true, $sibling);
-      }, 50);
+          toggleItemFolded( $sibling);
+      }, 200);
+      */
       break;
     case 75: // 'k'
+      setTimeout(function() {
+        toggleItemFolded($selectedItem);
+      }, 200);
+      /*
       // Delay a little bit to give priority to G+'s handling of 'k'
       setTimeout(function() {
         $sibling = $selectedItem.prev();
@@ -425,8 +461,9 @@ function onKeydown(e) {
         // expect such short posts?
         click($sibling);
         if ($sibling.length && $sibling.hasClass('gpme-folded'))
-          toggleItemFolded(true, $sibling);
-      }, 50);
+          toggleItemFolded($sibling);
+      }, 200);
+      */
       break;
     default:
       break;
@@ -439,7 +476,7 @@ function onKeydown(e) {
  */
 function onSmartKeydown(e, attempt) {
   var $selectedItem = $(_C_SELECTED);
-  if (! $selectedItem.length)
+  if (! $selectedIt && ! noscrollem.length)
     return;
 
   var tryAgain = false;
@@ -464,7 +501,7 @@ function onSmartKeydown(e, attempt) {
           click($sibling);
         }
         if ($sibling.hasClass('gpme-folded'))
-          toggleItemFolded(true, $sibling);
+          toggleItemFolded($sibling);
         break;
       case 75: // 'k'
         $sibling = $selectedItem.prev();
@@ -475,7 +512,7 @@ function onSmartKeydown(e, attempt) {
           click($sibling);
         }
         if ($sibling.hasClass('gpme-folded'))
-          toggleItemFolded(true, $sibling);
+          toggleItemFolded($sibling);
         break;
       default: break;
     }
@@ -871,9 +908,9 @@ function updateItemComments($item) {
  * Toggle viewable state of the content of an item.
  * This is only called as a result of a user action.
  * Calls foldItem() or unfoldItem().
- * @param keyboard: true if triggered by keyboard
+ * @param animatedScroll: Optional
  */
-function toggleItemFolded(keyboard, $item) {
+function toggleItemFolded($item, animatedScroll) {
   var $post = $item.find('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
@@ -912,7 +949,7 @@ function toggleItemFolded(keyboard, $item) {
     // We don't scroll if coming from keyboard because G+ may already have
     // motion and we don't want to reverse direction coz that's annoying
     //if (displayMode == 'list' && interactive != 2)
-    if (displayMode == 'list' && ! keyboard) {
+    if (displayMode == 'list') {
       /*
       if (keyboard) {
         debug("itemOffsetY= " + itemOffsetY + " currentOffset=" + $item.offset().top + " scrollTop" + $('body').scrollTop());
@@ -920,7 +957,7 @@ function toggleItemFolded(keyboard, $item) {
         $('body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
       } else
       */
-      $item.scrollintoview({ duration: 250, direction: 'y' });
+      $item.scrollintoview({ duration: (animatedScroll ? 250 : 0), direction: 'y' });
     }
 
     // Since this thread is a result of an interactive toggle, we record last open
