@@ -14,7 +14,6 @@
 #
 # Usage:
 #   Click on the titlebar of each shared post.
-#   [NOT YET ENABLED: Or use the 'o' keyboard shortcut.]
 #
 # Thanks:
 #   This extension takes some ideas from
@@ -187,7 +186,7 @@ function trace(msg) {
   //console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
 }
 function debug(msg) {
-  //console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+  console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
 }
 function warn(msg) {
   console.warn(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
@@ -340,7 +339,7 @@ function onTitlebarClick() {
   var $item = $(this).parent();
   debug("onTitlebarClick: " + $item.attr('id'));
 
-  toggleItemFolded($item);
+  toggleItemFolded(false, $item);
 }
 
 /**
@@ -356,25 +355,74 @@ function onCommentbarClick() {
 }
 
 /**
- * Responds to the keypress for open/close item.
- * Calls toggleItemFolded()
+ * Responds to all keypresses
  */
-function onFoldKey(e, attempt) {
-  debug("onFoldKey attempt=" + (typeof attempt == 'undefined' ? 0 : attempt));
-  // Find selected item
+function onKeydown(e) {
+  // Some weak optimizations for editing comments
+  if (e.target.id && e.target.id.charAt(0) == ':')
+    return;
+
+  // Listen for 'o', 'p', 'n'
+  if (e.which == 79 || e.which == 78 || e.which == 80)
+    onKeyShorcut(e, 0);
+}
+
+/**
+ * Responds to our keypresses
+ * Calls toggleItemFolded() and unfoldItem(0
+ */
+function onKeyShorcut(e, attempt) {
+  debug("onKeyShortcut attempt=" + attempt);
+
   var $selectedItem = $(_C_SELECTED);
-  if ($selectedItem.length == 1) {
-    if (! toggleItemFolded($selectedItem.first())) {
-      // If we couldn't fold, then movement was in motion, we try again in a bit
-      if (typeof(attempt) == 'undefined')
-        attempt = 0;
-      if (attempt < 4) {
-        setTimeout(function() {
-          onFoldKey(e, attempt + 1);
-        }, 200);
-      }
+  if (! $selectedItem.length)
+    return;
+
+  var tryAgain = false;
+
+  // The active element may be the previous post while scrolling is in motion (i.e. hit 'j' and 'o' quickly)
+  // or it may be in some input field.
+  if (document.activeElement != null && document.activeElement.tagName != 'BODY' &&
+      document.activeElement != $selectedItem.get(0)) {
+    debug("onKeydown: activeElement is different: tagname=" + document.activeElement.tagName + " id=" + document.activeElement.id);
+    tryAgain = true;
+  }
+
+  if (! tryAgain) {
+    switch (e.which) {
+      case 79: // 'o'
+        if (! toggleItemFolded(true, $selectedItem))
+          tryAgain = true;
+        break;
+/* TODO
+      case 78: // 'n'
+        // Simulate 'j' then unfold
+        if (attempt == 0) {
+          //$('BODY').trigger({ type : 'keydown', which : 74 });
+          //$('BODY').trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
+          //jQuery.event.trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
+          //$(window).trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
+          var event = jQuery.Event('keydown');
+          event.which = 74;
+          $('body').trigger(event);
+        }
+        //if (! unfoldItem(2, $selectedItem))
+          tryAgain = true;
+        break;
+      case 80: // 'p'
+        // Simulate 'k' then unfold
+        if (attempt == 0)
+          $('BODY').trigger({ type : 'keydown', which : 75 });
+        if (! unfoldItem(2, $selectedItem))
+          tryAgain = true;
+        break;
+*/
     }
   }
+
+  // Try again in a little bit
+  if (tryAgain && attempt < 20)
+    setTimeout(function() { onKeyShorcut(e, attempt + 1); }, 50);
 }
 
 /**
@@ -721,9 +769,10 @@ function updateItemComments($item) {
  * Toggle viewable state of the content of an item.
  * This is only called as a result of a user action.
  * Calls foldItem() or unfoldItem().
+ * @param keyboard: true if triggered by keyboard
  * @return true if toggling worked
  */
-function toggleItemFolded($item) {
+function toggleItemFolded(keyboard, $item) {
   var $post = $item.find('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
@@ -732,6 +781,10 @@ function toggleItemFolded($item) {
     //debug("toggleItemFolded: improper match: " + $posts.length);
     return false;
   }
+
+  var scrollNeeded = false;
+  var scrollTop = $('body').scrollTop();
+  debug("toggleItemFolded: scrollTop=" + scrollTop);
 
   var id = $item.attr('id');
   if ($item.hasClass('gpme-folded')) {
@@ -743,19 +796,34 @@ function toggleItemFolded($item) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
         if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
-          foldItem(true, $lastItem);
+          foldItem(keyboard ? 2 : 1, $lastItem);
+          scrollNeeded = true;
         }
       }
     }
 
-    unfoldItem(true, $item, $post);
+    setTimeout(function(){unfoldItem(keyboard ? 2 : 1, $item, $post)}, 100);
+
+    // Scroll into view because on a short web page for list mode because
+    // the closing of another post can move the post we're trying to open.
+    // We don't scroll if coming from keyboard because G+ may already have
+    // motion and we don't want to reverse direction coz that's annoying
+    //if (displayMode == 'list' && interactive != 2)
+    //if (displayMode == 'list')
+      //$item.scrollintoview();
+/*
+    if (scrollNeeded) {
+      $('body').scrollTop(scrollTop + 200);
+      debug("toggleItemFolded: scrollTop=" + scrollTop);
+    }
+*/
 
     // Since this thread is a result of an interactive toggle, we record last open
     debug("toggleItemFolded: href=" + window.location.href);
     debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
     localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
   } else {
-    foldItem(true, $item, $post);
+    foldItem(keyboard ? 2 : 1, $item, $post);
 
     // Since this thread is a result of an interactive toggle, we delete last open
     if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
@@ -767,6 +835,7 @@ function toggleItemFolded($item) {
 
 /**
  * Fold item, and give titlebar summary content if necessary
+ * @param interactive: 0 if automated, 1 if mouse, 2 if keyboard
  * @param $post: Optional if you have it
  */
 function foldItem(interactive, $item, $post) {
@@ -952,14 +1021,17 @@ function foldItem(interactive, $item, $post) {
 
 /**
  * For both list and expanded mode, unfolds the item.
+ * @param interactive: 0 if automated, 1 if mouse, 2 if keyboard
  * @param $post: Optional if you have it
  */
 function unfoldItem(interactive, $item, $post) {
   if (typeof($post) == 'undefined') {
     $post = $item.find('.gpme-post-wrapper');
     if ($post.length != 1) {
+      // It is possible to not have a proper match during keyboard scrolling
+      // (hit 'j' and 'o' in quick succession)
       //debug("unfoldItem: $posts.length=" + $posts.length);
-      return;
+      return false;
     }
   }
 
@@ -985,11 +1057,7 @@ function unfoldItem(interactive, $item, $post) {
   if (interactive && ! $item.hasClass('gpme-comments-folded'))
     deleteSeenCommentCount(id);
 
-  // Scroll into view because on a short web page for list mode because
-  // the closing of another post can move the post we're trying to open
-  if (displayMode == 'list')
-    $item.scrollintoview();
-
+  return true;
 }
 
 /****************************************************************************
@@ -1476,8 +1544,12 @@ $(document).ready(function() {
     injectNewFeedbackLink();
 
     // The initial update
-    if (isEnabledOnThisPage())
+    if (isEnabledOnThisPage()) {
       updateAllItems();
+
+      // Listen to keyboard shortcuts
+      $(window).keydown(onKeydown);
+    }
   });
 });
 
