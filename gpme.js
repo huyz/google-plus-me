@@ -62,6 +62,7 @@ var C_STREAM                    = 'a-b-f-i-oa';
 var _C_STREAM                   = '.a-b-f-i-oa';
 var _FEEDBACK_LINK              = '.a-eo-eg';
 var C_FEEDBACK                  = 'tk3N6e-e-vj';
+var C_SELECTED                  = 'a-f-oi-Ai';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
 var _C_CONTENT                  = '.a-b-f-i-p';
@@ -90,6 +91,7 @@ var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
 var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
 //var _C_COMMENTS_CONTAINER     = '.a-b-f-i-Xb-oa';
 var _C_COMMENT_EDITOR           = '.a-b-f-i-Pb-W-t';
+var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
 var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
@@ -358,22 +360,84 @@ function onCommentbarClick() {
  * Responds to all keypresses
  */
 function onKeydown(e) {
-  // Some weak optimizations for editing comments
-  if (e.target.id && e.target.id.charAt(0) == ':')
+  debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
+  // We're not interested in these
+  if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
+      e.target.tagName == 'INPUT')
     return;
 
-  // Listen for 'o', 'p', 'n'
-  if (e.which == 79 || e.which == 78 || e.which == 80)
-    onKeyShorcut(e, 0);
+  // First, try the activeElement instead of C_SELECTED because it's already set before the
+  // scroll; but if that fails (e.g. when the user cancels the editing of a comment
+  // or clicks on area outside of contentpane), then we go loook at C_SELECTED
+  var $selectedItem =
+    document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
+    document.activeElement.id !== null && document.activeElement.id.indexOf('update-') === 0 ?
+      $(document.activeElement) : $(_C_SELECTED);
+  if (! $selectedItem.length)
+    return;
+
+  var $sibling;
+  switch (e.which) {
+    case 13: // <enter>
+      // If user hits <enter>, we'll open so that they can type a comment
+      if ($selectedItem.hasClass('gpme-folded'))
+        toggleItemFolded(true, $selectedItem);
+      break;
+    case 79: // 'o'
+      toggleItemFolded(true, $selectedItem);
+      //if (! toggleItemFolded(true, $selectedItem))
+        //tryAgain = true;
+      break;
+    case 78: // 'n'
+      $sibling = $selectedItem.next();
+      if ($sibling.length) {
+        click($sibling);
+      } else {
+        // If we're at the bottom, trigger the more button
+        var $moreButton = $(_C_MORE_BUTTON);
+        if ($moreButton.length)
+          click($moreButton);
+      }
+      break;
+    case 80: // 'p'
+      $sibling = $selectedItem.prev();
+      if ($sibling.length)
+        click($sibling);
+      break;
+    case 74: // 'j'
+      // Delay a little bit to give priority to G+'s handling of 'j'
+      setTimeout(function() {
+        $sibling = $selectedItem.next();
+        // We duplicate the handling by default G+ because sometimes G+
+        // gets confused about which post it's on -- maybe it doesn't
+        // expect such short posts?
+        click($sibling);
+        if ($sibling.length && $sibling.hasClass('gpme-folded'))
+          toggleItemFolded(true, $sibling);
+      }, 50);
+      break;
+    case 75: // 'k'
+      // Delay a little bit to give priority to G+'s handling of 'k'
+      setTimeout(function() {
+        $sibling = $selectedItem.prev();
+        // We duplicate the handling by default G+ because sometimes G+
+        // gets confused about which post it's on -- maybe it doesn't
+        // expect such short posts?
+        click($sibling);
+        if ($sibling.length && $sibling.hasClass('gpme-folded'))
+          toggleItemFolded(true, $sibling);
+      }, 50);
+      break;
+    default:
+      break;
+  }
 }
 
 /**
- * Responds to our keypresses
- * Calls toggleItemFolded() and unfoldItem(0
+ * Responds to our keypresses, while handling cases when scrolling is in motion
+ * Calls toggleItemFolded() and unfoldItem()
  */
-function onKeyShorcut(e, attempt) {
-  debug("onKeyShortcut attempt=" + attempt);
-
+function onSmartKeydown(e, attempt) {
   var $selectedItem = $(_C_SELECTED);
   if (! $selectedItem.length)
     return;
@@ -382,48 +446,86 @@ function onKeyShorcut(e, attempt) {
 
   // The active element may be the previous post while scrolling is in motion (i.e. hit 'j' and 'o' quickly)
   // or it may be in some input field.
-  if (document.activeElement != null && document.activeElement.tagName != 'BODY' &&
-      document.activeElement != $selectedItem.get(0)) {
+  if (document.activeElement !== null && document.activeElement.tagName != 'BODY' &&
+      document.activeElement !== $selectedItem.get(0)) {
     debug("onKeydown: activeElement is different: tagname=" + document.activeElement.tagName + " id=" + document.activeElement.id);
     tryAgain = true;
   }
 
+  var $sibling;
   if (! tryAgain) {
     switch (e.which) {
-      case 79: // 'o'
-        if (! toggleItemFolded(true, $selectedItem))
-          tryAgain = true;
-        break;
-/* TODO
-      case 78: // 'n'
-        // Simulate 'j' then unfold
-        if (attempt == 0) {
-          //$('BODY').trigger({ type : 'keydown', which : 74 });
-          //$('BODY').trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
-          //jQuery.event.trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
-          //$(window).trigger({ type : 'keydown', which : 'j'.charCodeAt(0) });
-          var event = jQuery.Event('keydown');
-          event.which = 74;
-          $('body').trigger(event);
+      case 74: // 'j'
+        $sibling = $selectedItem.next();
+        if ($sibling.length) {
+          // We duplicate the handling by default G+ because sometimes G+
+          // gets confused about which post it's on -- maybe it doesn't
+          // expect such short posts?
+          click($sibling);
         }
-        //if (! unfoldItem(2, $selectedItem))
-          tryAgain = true;
+        if ($sibling.hasClass('gpme-folded'))
+          toggleItemFolded(true, $sibling);
         break;
-      case 80: // 'p'
-        // Simulate 'k' then unfold
-        if (attempt == 0)
-          $('BODY').trigger({ type : 'keydown', which : 75 });
-        if (! unfoldItem(2, $selectedItem))
-          tryAgain = true;
+      case 75: // 'k'
+        $sibling = $selectedItem.prev();
+        if ($sibling.length) {
+          // We duplicate the handling by default G+ because sometimes G+
+          // gets confused about which post it's on -- maybe it doesn't
+          // expect such short posts?
+          click($sibling);
+        }
+        if ($sibling.hasClass('gpme-folded'))
+          toggleItemFolded(true, $sibling);
         break;
-*/
+      default: break;
     }
   }
 
   // Try again in a little bit
   if (tryAgain && attempt < 20)
-    setTimeout(function() { onKeyShorcut(e, attempt + 1); }, 50);
+    setTimeout(function() { onSmartKeydown(e, attempt + 1); }, 50);
 }
+
+/**
+ * Simulate clicks on the page.
+ * Better to simulate clicks than keyboard right now because 'j' and 'k'
+ * are messed up.
+ */
+/* Deprecated
+function click($elem) {
+  // We have to inject script because the content script doesn't have
+  // direct access to the page's event handlers.
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.id = 'gpme-dispatch-event';
+  script.innerText = ' \
+    var evt = document.createEvent("MouseEvents"); \
+    evt.initMouseEvent("click", true, true, window, \
+                      0, 0, 0, 0, 0, false, false, false, false, 0, null); \
+    document.getElementById("' + $elem.attr('id') + '").dispatchEvent(evt); \
+    var gpmeNode = document.getElementById("gpme-dispatch-event"); \
+    gpmeNode.parentNode.removeChild(gpmeNode);';
+  document.getElementsByTagName('body')[0].appendChild(script);
+}
+*/
+
+/**
+ * Click the specified element
+ * Thanks to http://code.google.com/p/buzz-plus/
+ */
+function click($element) {
+  var e, elem = $element.get(0);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("mousedown", true, true);
+  elem.dispatchEvent(e);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("click", true, true);
+  elem.dispatchEvent(e);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("mouseup", true, true);
+  elem.dispatchEvent(e);
+}
+
 
 /**
  * Responds to changes in mode option
@@ -770,21 +872,19 @@ function updateItemComments($item) {
  * This is only called as a result of a user action.
  * Calls foldItem() or unfoldItem().
  * @param keyboard: true if triggered by keyboard
- * @return true if toggling worked
  */
 function toggleItemFolded(keyboard, $item) {
   var $post = $item.find('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
-    // It is possible to not have a proper match during keyboard scrolling
-    // (hit 'j' and 'o' in quick succession)
-    //debug("toggleItemFolded: improper match: " + $posts.length);
-    return false;
+    error("toggleItemFolded: can't find post");
+    return;
   }
 
+  /*
   var scrollNeeded = false;
-  var scrollTop = $('body').scrollTop();
-  debug("toggleItemFolded: scrollTop=" + scrollTop);
+  var itemOffsetY = $item.offset().top;
+  */
 
   var id = $item.attr('id');
   if ($item.hasClass('gpme-folded')) {
@@ -796,46 +896,48 @@ function toggleItemFolded(keyboard, $item) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
         if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
-          foldItem(keyboard ? 2 : 1, $lastItem);
-          scrollNeeded = true;
+          foldItem(true, $lastItem);
+//          scrollNeeded = true;
         }
       }
     }
 
-    setTimeout(function(){unfoldItem(keyboard ? 2 : 1, $item, $post)}, 100);
+    //setTimeout(function(){unfoldItem(true, $item, $post)}, 100);
+    unfoldItem(true, $item, $post);
 
     // Scroll into view because on a short web page for list mode because
     // the closing of another post can move the post we're trying to open.
+    // Also, this is just nice anyway when clicking on a collapsed post
+    // near the bottom: no need to scroll.
     // We don't scroll if coming from keyboard because G+ may already have
     // motion and we don't want to reverse direction coz that's annoying
     //if (displayMode == 'list' && interactive != 2)
-    //if (displayMode == 'list')
-      //$item.scrollintoview();
-/*
-    if (scrollNeeded) {
-      $('body').scrollTop(scrollTop + 200);
-      debug("toggleItemFolded: scrollTop=" + scrollTop);
+    if (displayMode == 'list' && ! keyboard) {
+      /*
+      if (keyboard) {
+        debug("itemOffsetY= " + itemOffsetY + " currentOffset=" + $item.offset().top + " scrollTop" + $('body').scrollTop());
+        //alert("ready to scroll");
+        $('body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
+      } else
+      */
+      $item.scrollintoview({ duration: 250, direction: 'y' });
     }
-*/
 
     // Since this thread is a result of an interactive toggle, we record last open
     debug("toggleItemFolded: href=" + window.location.href);
     debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
     localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
   } else {
-    foldItem(keyboard ? 2 : 1, $item, $post);
+    foldItem(true, $item, $post);
 
     // Since this thread is a result of an interactive toggle, we delete last open
     if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
       localStorage.removeItem("gpme_post_last_open_" + window.location.href);
   }
-
-  return true;
 }
 
 /**
  * Fold item, and give titlebar summary content if necessary
- * @param interactive: 0 if automated, 1 if mouse, 2 if keyboard
  * @param $post: Optional if you have it
  */
 function foldItem(interactive, $item, $post) {
@@ -1021,7 +1123,6 @@ function foldItem(interactive, $item, $post) {
 
 /**
  * For both list and expanded mode, unfolds the item.
- * @param interactive: 0 if automated, 1 if mouse, 2 if keyboard
  * @param $post: Optional if you have it
  */
 function unfoldItem(interactive, $item, $post) {
@@ -1126,8 +1227,11 @@ function foldComments(interactive, $item, $comments) {
       updateCommentbar(id, $item, commentCount);
       $commentbar.show(); // undo the hiding of sliding up
     });
+    /* Disabled until there's a collapsebar at the bottom of the post
     var $shareLine = $item.find(_C_SHARE_LINE);
-    ($shareLine.length? $shareLine : $item).scrollintoview({ duration: duration, direction: 'y' });
+    ($shareLine.length? $shareLine : $item.find('.gpme-titlebar')).scrollintoview({ duration: duration, direction: 'y' });
+    */
+    $item.find('.gpme-titlebar').scrollintoview({ duration: duration, direction: 'y' });
 
   } else {
     // Visual changes
