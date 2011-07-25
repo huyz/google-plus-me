@@ -410,7 +410,8 @@ function onKeydown(e) {
         if ($sibling.length) {
           debug("clicking previous sibling");
           click($sibling);
-          toggleItemFolded( $sibling);
+          if ($sibling.hasClass('gpme-folded'))
+            toggleItemFolded($sibling);
         } else {
           debug("no sibling");
         }
@@ -422,7 +423,8 @@ function onKeydown(e) {
         if ($sibling.length) {
           debug("clicking next sibling");
           click($sibling);
-          toggleItemFolded( $sibling);
+          if ($sibling.hasClass('gpme-folded'))
+            toggleItemFolded($sibling);
         } else {
           // If we're at the bottom, trigger the more button
           var $moreButton = $(_C_MORE_BUTTON);
