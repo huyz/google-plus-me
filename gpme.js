@@ -381,7 +381,10 @@ function onKeydown(e) {
       break;
     case 79: // 'o'
       toggleItemFolded($selectedItem);
-      scrollToTop($selectedItem);
+      if (! $selectedItem.hasClass('gpme-folded'))
+        scrollToTop($selectedItem);
+      else
+        $selectedItem.scrollintoview({duration: 0, direction: 'y'});
       break;
     case 80: // 'p'
       hideAnyPostItemPreview();
