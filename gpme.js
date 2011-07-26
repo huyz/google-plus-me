@@ -99,6 +99,7 @@ var C_STATUS_FG_OFF             = 'gbids';
 var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
+var _C_COPYRIGHT                = '.a-b-Xa-T';
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -337,7 +338,6 @@ function onCommentsUpdated(e, $item) {
  * Calls toggleItemFolded()
  */
 function onTitlebarClick() {
-  // NOTE: event arg doesn't seem to work for me
   var $item = $(this).parent();
   debug("onTitlebarClick: " + $item.attr('id'));
 
@@ -349,7 +349,6 @@ function onTitlebarClick() {
  * Calls toggleItemFolded()
  */
 function onCommentbarClick() {
-  // NOTE: event arg doesn't seem to work for me
   var $item = $(this).closest(_C_ITEM);
   debug("onCommentbarClick: " + $item.attr('id'));
 
@@ -384,19 +383,25 @@ function onKeydown(e) {
         toggleItemFolded($selectedItem);
       break;
     case 79: // 'o'
-      toggleItemFolded( $selectedItem);
-      //if (! toggleItemFolded( $selectedItem))
-        //tryAgain = true;
+      toggleItemFolded($selectedItem);
+      // If titlebar is out of view, bring it to the top
+      if ($selectedItem.offset().top - 2 < $('body').scrollTop())
+        scrollToTop($selectedItem);
       break;
     case 80: // 'p'
+      hideAnyPostItemPreview();
       $sibling = $selectedItem.prev();
-      if ($sibling.length)
+      if ($sibling.length) {
         click($sibling);
+        scrollToTop($sibling);
+      }
       break;
     case 78: // 'n'
+      hideAnyPostItemPreview();
       $sibling = $selectedItem.next();
       if ($sibling.length) {
         click($sibling);
+        scrollToTop($sibling);
       } else {
         // If we're at the bottom, trigger the more button
         var $moreButton = $(_C_MORE_BUTTON);
@@ -406,25 +411,27 @@ function onKeydown(e) {
       break;
     case 38: // shift-up
       if (e.shiftKey) {
+        hideAnyPostItemPreview();
         $sibling = $selectedItem.prev();
-        if ($sibling.length) {
-          debug("clicking previous sibling");
-          click($sibling);
-          if ($sibling.hasClass('gpme-folded'))
-            toggleItemFolded($sibling);
-        } else {
-          debug("no sibling");
-        }
+        click($sibling);
+        if ($sibling.hasClass('gpme-folded'))
+          toggleItemFolded($sibling);
+        scrollToTop($sibling);
       }
       break;
     case 40: // shift-down
       if (e.shiftKey) {
+        hideAnyPostItemPreview();
         $sibling = $selectedItem.next();
         if ($sibling.length) {
-          debug("clicking next sibling");
           click($sibling);
           if ($sibling.hasClass('gpme-folded'))
             toggleItemFolded($sibling);
+          // XXX Post will not always be aligned at the top
+          // if the post is short -- G+ auto-scrolls because it
+          // aligns at the bottom so that there's no whitespace
+          // below the copyright line.
+          scrollToTop($sibling);
         } else {
           // If we're at the bottom, trigger the more button
           var $moreButton = $(_C_MORE_BUTTON);
@@ -434,9 +441,11 @@ function onKeydown(e) {
       }
       break;
     case 74: // 'j'
+      hideAnyPostItemPreview();
       // Delay a little bit to give priority to G+'s handling of 'j'
       setTimeout(function() {
-        toggleItemFolded( $selectedItem);
+        if ($selectedItem.hasClass('gpme-folded'))
+          toggleItemFolded($selectedItem);
       }, 200);
       /*
       setTimeout(function() {
@@ -451,8 +460,10 @@ function onKeydown(e) {
       */
       break;
     case 75: // 'k'
+      hideAnyPostItemPreview();
       setTimeout(function() {
-        toggleItemFolded($selectedItem);
+        if ($selectedItem.hasClass('gpme-folded'))
+          toggleItemFolded($selectedItem);
       }, 200);
       /*
       // Delay a little bit to give priority to G+'s handling of 'k'
@@ -469,6 +480,59 @@ function onKeydown(e) {
       break;
     default:
       break;
+  }
+}
+
+/**
+ * Scroll item to top, without animation.
+ */
+function scrollToTop($item) {
+  if (typeof $item === 'undefined' || ! $item.length)
+    return;
+
+  var $copyright = $(_C_COPYRIGHT);
+
+  // To prevent the page from jumping back down, we have to have a spacer
+  // at the bottom of the page.
+  var $spacer = $('#gpme-bottom-spacer');
+  if (! $spacer.length) {
+    if ($copyright.length != 1) {
+      error("scrollTop: Can't find copyright line");
+    } else {
+      $spacer = $('<div id="gpme-bottom-spacer"></div>');
+      $spacer.insertAfter($copyright);
+    }
+  }
+
+  // Shrink the spacer
+  $spacer.height(0);
+
+  var $body = $('body');
+  var itemOffsetY = $item.offset().top - 2;
+
+  // Scroll as much as possible
+  //$body.scrollTop(itemOffsetY);
+  $body.get(0).scrollTop = itemOffsetY;
+
+  // Check if we need to scroll more
+  debug("scrollToTop: itemOffsetY=" + itemOffsetY + " body.scrollTop=" + $body.scrollTop());
+  debug("scrollToTop: innerHeight=" + window.innerHeight + " copyrightbottom=" + $copyright.get(0).getBoundingClientRect().bottom);
+
+  // For some reason, sometimes the scrollTop temporarily lets us
+  // put the item at the top, even though that moves the copyright line too high.
+  // But that's temporary and a few 100ms later, it comes back down: so
+  // we have to adjust while we can.
+  var stillToGo = Math.max(0,
+    Math.max(itemOffsetY - $body.scrollTop(),
+      window.innerHeight - $copyright.get(0).getBoundingClientRect().bottom));
+
+  if (stillToGo > 0) {
+    // Expand the spacer
+    $spacer.height(stillToGo);
+
+    // Try to scroll again
+    //$body.scrollTop(itemOffsetY);
+    $body.get(0).scrollTop = itemOffsetY;
   }
 }
 
@@ -527,8 +591,6 @@ function onSmartKeydown(e, attempt) {
 
 /**
  * Simulate clicks on the page.
- * Better to simulate clicks than keyboard right now because 'j' and 'k'
- * are messed up.
  */
 /* Deprecated
 function click($elem) {
@@ -550,7 +612,12 @@ function click($elem) {
 
 /**
  * Click the specified element
- * Thanks to http://code.google.com/p/buzz-plus/
+ * Better to simulate clicks than keyboard right now because 'j' and 'k'
+ * are messed up.
+ * Note: clicking an item doesn't act like a real user click on G+:
+ *   in this case, G+ actually scrolls the item without animation.
+ *   And since we have to correct that scrolling, we can't animate
+ *   either or it would sometimes look reversed.
  */
 function click($element) {
   var e, elem = $element.get(0);
@@ -564,7 +631,6 @@ function click($element) {
   e.initEvent("mouseup", true, true);
   elem.dispatchEvent(e);
 }
-
 
 /**
  * Responds to changes in mode option
@@ -912,7 +978,7 @@ function updateItemComments($item) {
  * Calls foldItem() or unfoldItem().
  * @param animatedScroll: Optional
  */
-function toggleItemFolded($item, animatedScroll) {
+function toggleItemFolded($item, animated) {
   var $post = $item.find('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
@@ -935,14 +1001,14 @@ function toggleItemFolded($item, animatedScroll) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
         if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
-          foldItem(true, $lastItem);
+          foldItem(true, $lastItem, animated);
 //          scrollNeeded = true;
         }
       }
     }
 
     //setTimeout(function(){unfoldItem(true, $item, $post)}, 100);
-    unfoldItem(true, $item, $post);
+    unfoldItem(true, $item, animated, $post);
 
     // Scroll into view because on a short web page for list mode because
     // the closing of another post can move the post we're trying to open.
@@ -959,7 +1025,10 @@ function toggleItemFolded($item, animatedScroll) {
         $('body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
       } else
       */
-      $item.scrollintoview({ duration: (animatedScroll ? 250 : 0), direction: 'y' });
+      if (animated)
+        $item.find('.gpme-titlebar').scrollintoview({duration: 'fast', direction: 'y' });
+      else
+        $item.find('.gpme-titlebar').get(0).scrollIntoView();
     }
 
     // Since this thread is a result of an interactive toggle, we record last open
@@ -967,7 +1036,7 @@ function toggleItemFolded($item, animatedScroll) {
     debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
     localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
   } else {
-    foldItem(true, $item, $post);
+    foldItem(true, $item, animated, $post);
 
     // Since this thread is a result of an interactive toggle, we delete last open
     if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
@@ -977,9 +1046,10 @@ function toggleItemFolded($item, animatedScroll) {
 
 /**
  * Fold item, and give titlebar summary content if necessary
+ * @param animated: Optional
  * @param $post: Optional if you have it
  */
-function foldItem(interactive, $item, $post) {
+function foldItem(interactive, $item, animated, $post) {
   if (typeof($post) == 'undefined') {
     $post = $item.find('.gpme-post-wrapper');
     if ($post.length != 1) {
@@ -998,9 +1068,16 @@ function foldItem(interactive, $item, $post) {
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
-  $post.hide();
-  $item.addClass('gpme-folded');
-  $item.removeClass('gpme-unfolded');
+  if (animated)
+    $post.slideUp('fast', function() {
+      $item.addClass('gpme-folded');
+      $item.removeClass('gpme-unfolded');
+    });
+  else {
+    $post.hide();
+    $item.addClass('gpme-folded');
+    $item.removeClass('gpme-unfolded');
+  }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
   // If interactive folding and comments are showing, record the comment count
@@ -1162,9 +1239,10 @@ function foldItem(interactive, $item, $post) {
 
 /**
  * For both list and expanded mode, unfolds the item.
+ * @param animated: Optional
  * @param $post: Optional if you have it
  */
-function unfoldItem(interactive, $item, $post) {
+function unfoldItem(interactive, $item, animated, $post) {
   if (typeof($post) == 'undefined') {
     $post = $item.find('.gpme-post-wrapper');
     if ($post.length != 1) {
@@ -1183,9 +1261,16 @@ function unfoldItem(interactive, $item, $post) {
     localStorage.removeItem("gpme_post_folded_" + id);
 
   // Visual changes
-  $post.show();
-  $item.removeClass('gpme-folded');
-  $item.addClass('gpme-unfolded');
+  if (animated) {
+    hidePostItemPreview($item);
+    $item.removeClass('gpme-folded');
+    $item.addClass('gpme-unfolded');
+    $post.slideDown('fast');
+  } else {
+    $item.removeClass('gpme-folded');
+    $item.addClass('gpme-unfolded');
+    $post.show();
+  }
 
   // Refresh fold of comments
   // NOTE: this must be done after the CSS classes are updated
@@ -1333,7 +1418,7 @@ function unfoldComments(interactive, $item, $comments) {
       $item.addClass('gpme-comments-unfolded');
       // NOTE: updateCommentbar needs to be done after updating classes
       updateCommentbar(id, $item, commentCount);
-      $commentbar.fadeIn(200);
+      $commentbar.fadeIn('fast');
     });
 
     deleteSeenCommentCount(id);
@@ -1539,6 +1624,9 @@ function deleteSeenCommentCount(id) {
  * Preview popup
  ***************************************************************************/
 
+/**
+ * Pops up the preview of the hovered item
+ */
 function showPreview(e) {
   //debug("showPreview: this=" + this.className);
 
@@ -1548,8 +1636,7 @@ function showPreview(e) {
 
   // Sometimes if you switch windows, there might be some preview remaining
   // that hoverIntent will not catch.
-  if ($lastPreviewedItem)
-    hidePostItemPreview($lastPreviewedItem);
+  hideAnyPostItemPreview();
 
   var $item = $(this);
 
@@ -1604,11 +1691,17 @@ function showPreview(e) {
   }
 }
 
+/**
+ * Hides the preview of the item that was moused-out
+ */
 function hidePreview(e) {
   //debug("hidePreview: this=" + this.className);
   hidePostItemPreview($(this));
 }
 
+/**
+ * Hides the preview of the specified item
+ */
 function hidePostItemPreview($item) {
   if (!$item || ! $item.hasClass("gpme-folded"))
     return;
@@ -1622,6 +1715,14 @@ function hidePostItemPreview($item) {
   }
 
   $lastPreviewedItem = null;
+}
+
+/**
+ * Hides the last preview that was popped up
+ */
+function hideAnyPostItemPreview() {
+  if ($lastPreviewedItem != null)
+    hidePostItemPreview($lastPreviewedItem);
 }
 
 /****************************************************************************
