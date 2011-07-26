@@ -245,9 +245,6 @@ function getOptionsFromBackground(callback) {
   });
 }
 
-/**
- * Returns a throttle function kk2
- * */
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -375,7 +372,7 @@ function onKeydown(e) {
   if (! $selectedItem.length)
     return;
 
-  var $sibling;
+  var $sibling, $moreButton;
   switch (e.which) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
@@ -393,7 +390,7 @@ function onKeydown(e) {
       $sibling = $selectedItem.prev();
       if ($sibling.length) {
         click($sibling);
-        scrollToTop($sibling);
+        // NOTE: G+ already scrolls everything for us
       }
       break;
     case 78: // 'n'
@@ -401,10 +398,10 @@ function onKeydown(e) {
       $sibling = $selectedItem.next();
       if ($sibling.length) {
         click($sibling);
-        scrollToTop($sibling);
+        // NOTE: G+ already scrolls everything for us
       } else {
         // If we're at the bottom, trigger the more button
-        var $moreButton = $(_C_MORE_BUTTON);
+        $moreButton = $(_C_MORE_BUTTON);
         if ($moreButton.length)
           click($moreButton);
       }
@@ -434,30 +431,11 @@ function onKeydown(e) {
           scrollToTop($sibling);
         } else {
           // If we're at the bottom, trigger the more button
-          var $moreButton = $(_C_MORE_BUTTON);
+          $moreButton = $(_C_MORE_BUTTON);
           if ($moreButton.length)
             click($moreButton);
         }
       }
-      break;
-    case 74: // 'j'
-      hideAnyPostItemPreview();
-      // Delay a little bit to give priority to G+'s handling of 'j'
-      setTimeout(function() {
-        if ($selectedItem.hasClass('gpme-folded'))
-          toggleItemFolded($selectedItem);
-      }, 200);
-      /*
-      setTimeout(function() {
-        $sibling = $selectedItem.next();
-        // We duplicate the handling by default G+ because sometimes G+
-        // gets confused about which post it's on -- maybe it doesn't
-        // expect such short posts?
-        click($sibling);
-        if ($sibling.length && $sibling.hasClass('gpme-folded'))
-          toggleItemFolded( $sibling);
-      }, 200);
-      */
       break;
     case 75: // 'k'
       hideAnyPostItemPreview();
@@ -475,6 +453,25 @@ function onKeydown(e) {
         click($sibling);
         if ($sibling.length && $sibling.hasClass('gpme-folded'))
           toggleItemFolded($sibling);
+      }, 200);
+      */
+      break;
+    case 74: // 'j'
+      hideAnyPostItemPreview();
+      // Delay a little bit to give priority to G+'s handling of 'j'
+      setTimeout(function() {
+        if ($selectedItem.hasClass('gpme-folded'))
+          toggleItemFolded($selectedItem);
+      }, 200);
+      /*
+      setTimeout(function() {
+        $sibling = $selectedItem.next();
+        // We duplicate the handling by default G+ because sometimes G+
+        // gets confused about which post it's on -- maybe it doesn't
+        // expect such short posts?
+        click($sibling);
+        if ($sibling.length && $sibling.hasClass('gpme-folded'))
+          toggleItemFolded( $sibling);
       }, 200);
       */
       break;
@@ -1022,13 +1019,14 @@ function toggleItemFolded($item, animated) {
       if (keyboard) {
         debug("itemOffsetY= " + itemOffsetY + " currentOffset=" + $item.offset().top + " scrollTop" + $('body').scrollTop());
         //alert("ready to scroll");
-        $('body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
+        $('html, body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
       } else
       */
-      if (animated)
+      if (animated) {
         $item.find('.gpme-titlebar').scrollintoview({duration: 'fast', direction: 'y' });
-      else
+      } else {
         $item.find('.gpme-titlebar').get(0).scrollIntoView();
+      }
     }
 
     // Since this thread is a result of an interactive toggle, we record last open
@@ -1721,7 +1719,7 @@ function hidePostItemPreview($item) {
  * Hides the last preview that was popped up
  */
 function hideAnyPostItemPreview() {
-  if ($lastPreviewedItem != null)
+  if ($lastPreviewedItem !== null)
     hidePostItemPreview($lastPreviewedItem);
 }
 
