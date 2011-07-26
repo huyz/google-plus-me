@@ -381,9 +381,7 @@ function onKeydown(e) {
       break;
     case 79: // 'o'
       toggleItemFolded($selectedItem);
-      // If titlebar is out of view, bring it to the top
-      if ($selectedItem.offset().top - 2 < $('body').scrollTop())
-        scrollToTop($selectedItem);
+      scrollToTop($selectedItem);
       break;
     case 80: // 'p'
       hideAnyPostItemPreview();
@@ -401,39 +399,33 @@ function onKeydown(e) {
         // NOTE: G+ already scrolls everything for us
       } else {
         // If we're at the bottom, trigger the more button
-        $moreButton = $(_C_MORE_BUTTON);
-        if ($moreButton.length)
-          click($moreButton);
+        clickMoreButton();
       }
       break;
     case 38: // shift-up
       if (e.shiftKey) {
-        hideAnyPostItemPreview();
         $sibling = $selectedItem.prev();
-        click($sibling);
-        if ($sibling.hasClass('gpme-folded'))
-          toggleItemFolded($sibling);
-        scrollToTop($sibling);
+        if ($sibling.length) {
+          hideAnyPostItemPreview();
+          click($sibling);
+          if ($sibling.hasClass('gpme-folded'))
+            toggleItemFolded($sibling);
+          scrollToTop($sibling);
+        }
       }
       break;
     case 40: // shift-down
       if (e.shiftKey) {
-        hideAnyPostItemPreview();
         $sibling = $selectedItem.next();
         if ($sibling.length) {
+          hideAnyPostItemPreview();
           click($sibling);
           if ($sibling.hasClass('gpme-folded'))
             toggleItemFolded($sibling);
-          // XXX Post will not always be aligned at the top
-          // if the post is short -- G+ auto-scrolls because it
-          // aligns at the bottom so that there's no whitespace
-          // below the copyright line.
           scrollToTop($sibling);
         } else {
           // If we're at the bottom, trigger the more button
-          $moreButton = $(_C_MORE_BUTTON);
-          if ($moreButton.length)
-            click($moreButton);
+          clickMoreButton();
         }
       }
       break;
@@ -487,49 +479,49 @@ function scrollToTop($item) {
   if (typeof $item === 'undefined' || ! $item.length)
     return;
 
-  var $copyright = $(_C_COPYRIGHT);
-
-  // To prevent the page from jumping back down, we have to have a spacer
-  // at the bottom of the page.
-  var $spacer = $('#gpme-bottom-spacer');
-  if (! $spacer.length) {
-    if ($copyright.length != 1) {
-      error("scrollTop: Can't find copyright line");
-    } else {
-      $spacer = $('<div id="gpme-bottom-spacer"></div>');
-      $spacer.insertAfter($copyright);
-    }
-  }
-
-  // Shrink the spacer
-  $spacer.height(0);
-
   var $body = $('body');
   var itemOffsetY = $item.offset().top - 2;
+  var scrollDist = itemOffsetY - $body.scrollTop();
+  debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
 
-  // Scroll as much as possible
-  //$body.scrollTop(itemOffsetY);
-  $body.get(0).scrollTop = itemOffsetY;
+  if (scrollDist != 0) {
+    var $copyright = $(_C_COPYRIGHT);
 
-  // Check if we need to scroll more
-  debug("scrollToTop: itemOffsetY=" + itemOffsetY + " body.scrollTop=" + $body.scrollTop());
-  debug("scrollToTop: innerHeight=" + window.innerHeight + " copyrightbottom=" + $copyright.get(0).getBoundingClientRect().bottom);
+    // To prevent the page from jumping back down, we have to have a spacer
+    // at the bottom of the page.
+    var $spacer = $('#gpme-bottom-spacer');
 
-  // For some reason, sometimes the scrollTop temporarily lets us
-  // put the item at the top, even though that moves the copyright line too high.
-  // But that's temporary and a few 100ms later, it comes back down: so
-  // we have to adjust while we can.
-  var stillToGo = Math.max(0,
-    Math.max(itemOffsetY - $body.scrollTop(),
-      window.innerHeight - $copyright.get(0).getBoundingClientRect().bottom));
+    if ($copyright.length != 1) {
+      error("scrollTop: Can't find copyright line");
+      $spacer.height(0); // If any
+    } else {
+      // 30 is the slack that G+ gives (about the same as height as feedback button)
+      var copyrightBottom = $copyright.get(0).getBoundingClientRect().bottom + 30;
+      debug("scrollToTop: copyrightBottom=" + copyrightBottom + " window.innerHeight=" + window.innerHeight);
 
-  if (stillToGo > 0) {
-    // Expand the spacer
-    $spacer.height(stillToGo);
+      if (! $spacer.length) {
+        $spacer = $('<div id="gpme-bottom-spacer"></div>');
+        $spacer.insertAfter($copyright);
+      }
 
-    // Try to scroll again
-    //$body.scrollTop(itemOffsetY);
-    $body.get(0).scrollTop = itemOffsetY;
+      debug("scrollToTop: spacer height" + Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
+      $spacer.height(Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
+    }
+
+    // Scroll item
+    $body.scrollTop(itemOffsetY);
+  }
+}
+
+/**
+  * Trigger the more button
+  */
+function clickMoreButton() {
+  // Scroll it into view
+  $moreButton = $(_C_MORE_BUTTON);
+  if ($moreButton.length) {
+    $moreButton.scrollintoview();
+    click($moreButton);
   }
 }
 
