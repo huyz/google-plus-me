@@ -1434,11 +1434,12 @@ function updateCommentsSnippet(id, $subtree) {
   }
 
   var $shownNames = $subtree.find(_C_COMMENTS_SHOWN_NAMES);
-  $shownNames.each(function() { addNameUnique($(this).text()); });
+  var i = 0;
+  $shownNames.slice(0, 7).each(function() { addNameUnique($(this).text()); });
   // Pad with some more recent names
   if (names.length < 7) {
     var $moreNames = $subtree.find(_C_COMMENTS_MORE_NAMES);
-    $moreNames.each(function() { addNameUnique($(this).text()); });
+    $moreNames.slice(0, 7 - names.length).each(function() { addNameUnique($(this).text()); });
   }
   text = names.join(', ');
 
