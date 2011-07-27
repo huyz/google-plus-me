@@ -255,6 +255,13 @@ function getOptionsFromBackground(callback) {
   });
 }
 
+/**
+ * Returns true if specified item is folded
+ */
+function isItemFolded($item) {
+  return $item.hasClass('gpme-folded');
+}
+
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -374,24 +381,44 @@ function onKeydown(e) {
 
   // First, try the activeElement instead of C_SELECTED because it's already set before the
   // scroll; but if that fails (e.g. when the user cancels the editing of a comment
-  // or clicks on area outside of contentpane), then we go loook at C_SELECTED
+  // or clicks on area outside of contentpane), then we go look at C_SELECTED
   var $selectedItem =
     document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
     document.activeElement.id !== null && document.activeElement.id.indexOf('update-') === 0 ?
       $(document.activeElement) : $(_C_SELECTED);
-  if (! $selectedItem.length)
+
+  // If we still don't have a selected item, then e.g. the page must have just loaded,
+  // so just pick the first item.
+  if (! $selectedItem.length) {
+    $selectedItem = $(_C_ITEM).filter(':first');
+    if ($selectedItem.length) {
+      switch (e.which) {
+        case 80: // 'p'
+        case 78: // 'o'
+          click($selectedItem);
+          break;
+        case 38: // shift-up
+        case 40: // shift-down
+          click($selectedItem);
+          if (isItemFolded($selectedItem))
+            toggleItemFolded($selectedItem);
+          break;
+        default: break;
+      }
+    }
     return;
+  }
 
   var $sibling, $moreButton;
   switch (e.which) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
-      if ($selectedItem.hasClass('gpme-folded'))
+      if (isItemFolded($selectedItem))
         toggleItemFolded($selectedItem);
       break;
     case 79: // 'o'
       toggleItemFolded($selectedItem);
-      if (! $selectedItem.hasClass('gpme-folded'))
+      if (! isItemFolded($selectedItem))
         scrollToTop($selectedItem);
       else
         $selectedItem.scrollintoview({duration: 0, direction: 'y'});
@@ -421,7 +448,7 @@ function onKeydown(e) {
         if ($sibling.length) {
           hideAnyPostItemPreview();
           click($sibling);
-          if ($sibling.hasClass('gpme-folded'))
+          if (isItemFolded($sibling))
             toggleItemFolded($sibling);
           scrollToTop($sibling);
         }
@@ -433,7 +460,7 @@ function onKeydown(e) {
         if ($sibling.length) {
           hideAnyPostItemPreview();
           click($sibling);
-          if ($sibling.hasClass('gpme-folded'))
+          if (isItemFolded($sibling))
             toggleItemFolded($sibling);
           scrollToTop($sibling);
         } else {
@@ -445,7 +472,7 @@ function onKeydown(e) {
     case 75: // 'k'
       hideAnyPostItemPreview();
       setTimeout(function() {
-        if ($selectedItem.hasClass('gpme-folded'))
+        if (isItemFolded($selectedItem))
           toggleItemFolded($selectedItem);
       }, 200);
       /*
@@ -465,7 +492,7 @@ function onKeydown(e) {
       hideAnyPostItemPreview();
       // Delay a little bit to give priority to G+'s handling of 'j'
       setTimeout(function() {
-        if ($selectedItem.hasClass('gpme-folded'))
+        if (isItemFolded($selectedItem))
           toggleItemFolded($selectedItem);
       }, 200);
       /*
@@ -480,8 +507,7 @@ function onKeydown(e) {
       }, 200);
       */
       break;
-    default:
-      break;
+    default: break;
   }
 }
 
@@ -776,6 +802,7 @@ function refreshAllFolds() {
       //debug("onModeOptionUpdated: last open id=" + id + " $item.length=" + $item.length);
       if ($item.length == 1) {
         unfoldItem(false, $item);
+        click($item);
       }
     }
   }
@@ -831,9 +858,11 @@ function unfoldLastOpenInListMode() {
   }
 
   if (lastOpenId !== null) {
-    // We explicitly open in order to close any previously opened item
+    var $item = $('#' + lastOpenId);
+    // We explicitly unfold in order to fold any previously opened item
     // FIXME: this favors the oldest instead of the most recent opened item
-    unfoldItem(false, $('#' + lastOpenId));
+    unfoldItem(false, $item);
+    click($item);
   }
 }
 
@@ -996,7 +1025,7 @@ function toggleItemFolded($item, animated) {
 
   var $body = $('body');
 
-  if ( $item.hasClass('gpme-folded')) {
+  if (isItemFolded($item)) {
     // If in list mode, we need to fold the previous one
     if (displayMode == 'list') {
       lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
@@ -1605,7 +1634,7 @@ function updateCommentsSnippet(id, $subtree) {
  */
 function updateCommentbarHeight(id, $item, commentCount) {
   // Skip it since the entire post is not even shown
-  if ($item.hasClass('gpme-folded'))
+  if (isItemFolded($item))
     return;
 
   var $commentbar = $item.find('.gpme-commentbar > div');
@@ -1764,7 +1793,7 @@ function hidePreview(e) {
  * Hides the preview of the specified item
  */
 function hidePostItemPreview($item) {
-  if (!$item || ! $item.hasClass("gpme-folded"))
+  if (!$item || ! isItemFolded($item))
     return;
 
   var $post = $item.find('.gpme-post-wrapper');
