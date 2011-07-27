@@ -116,6 +116,16 @@ var DISABLED_PAGES_CLASSES = [
   C_SINGLE_POST_MARKER
 ];
 
+
+// Values shared with our CSS file
+var GBAR_HEIGHT = 30;
+var TRIANGLE_HEIGHT = 30;
+var POST_WRAPPER_PADDING_BOTTOM = 6;
+var HEADER_HEIGHT = 45;
+var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
+var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
+var GAP_ABOVE_ITEM_AT_TOP = 2;
+
 /****************************************************************************
  * Init
  ***************************************************************************/
@@ -483,11 +493,11 @@ function scrollToTop($item) {
     return;
 
   var $body = $('body');
-  var itemOffsetY = $item.offset().top - 2;
+  var itemOffsetY = $item.offset().top - GAP_ABOVE_ITEM_AT_TOP;
   var scrollDist = itemOffsetY - $body.scrollTop();
   debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
 
-  if (scrollDist != 0) {
+  if (scrollDist !== 0) {
     var $copyright = $(_C_COPYRIGHT);
 
     // To prevent the page from jumping back down, we have to have a spacer
@@ -498,8 +508,8 @@ function scrollToTop($item) {
       error("scrollTop: Can't find copyright line");
       $spacer.height(0); // If any
     } else {
-      // 30 is the slack that G+ gives (about the same as height as feedback button)
-      var copyrightBottom = $copyright.get(0).getBoundingClientRect().bottom + 30;
+      // XXX Probably could have used the body height instead of the bottom of the copyright.
+      var copyrightBottom = $copyright.get(0).getBoundingClientRect().bottom + MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT;
       debug("scrollToTop: copyrightBottom=" + copyrightBottom + " window.innerHeight=" + window.innerHeight);
 
       if (! $spacer.length) {
@@ -978,13 +988,15 @@ function toggleItemFolded($item, animated) {
     return;
   }
 
-  /*
-  var scrollNeeded = false;
-  var itemOffsetY = $item.offset().top;
-  */
-
   var id = $item.attr('id');
-  if ($item.hasClass('gpme-folded')) {
+
+  var lastItemOffset = -1;
+  var lastItemHeight = COLLAPSED_ITEM_HEIGHT;
+  var predictedItemHeight = -1;
+
+  var $body = $('body');
+
+  if ( $item.hasClass('gpme-folded')) {
     // If in list mode, we need to fold the previous one
     if (displayMode == 'list') {
       lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
@@ -993,47 +1005,102 @@ function toggleItemFolded($item, animated) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
         if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
+          // Prepare for scrolling animation
+          if (animated) {
+            // If we're animating, we have to do our own calculations because
+            // two opposing animations are going simultaneously, which is too
+            // complex for regular animations to calculate.
+            lastItemHeight = $lastItem.outerHeight();
+            lastItemOffset = $lastItem.offset().top;
+          }
+
+          // Fold the last opened item
           foldItem(true, $lastItem, animated);
-//          scrollNeeded = true;
         }
       }
     }
 
-    //setTimeout(function(){unfoldItem(true, $item, $post)}, 100);
-    unfoldItem(true, $item, animated, $post);
-
-    // Scroll into view because on a short web page for list mode because
-    // the closing of another post can move the post we're trying to open.
-    // Also, this is just nice anyway when clicking on a collapsed post
-    // near the bottom: no need to scroll.
-    // We don't scroll if coming from keyboard because G+ may already have
-    // motion and we don't want to reverse direction coz that's annoying
-    //if (displayMode == 'list' && interactive != 2)
-    if (displayMode == 'list') {
-      /*
-      if (keyboard) {
-        debug("itemOffsetY= " + itemOffsetY + " currentOffset=" + $item.offset().top + " scrollTop" + $('body').scrollTop());
-        //alert("ready to scroll");
-        $('html, body').scrollTop($('body').scrollTop() + $item.offset().top - itemOffsetY);
-      } else
-      */
-      if (animated) {
-        $item.find('.gpme-titlebar').scrollintoview({duration: 'fast', direction: 'y' });
-      } else {
-        $item.find('.gpme-titlebar').get(0).scrollIntoView();
-      }
+    // Predict the height of the item
+    if (animated) {
+      // Temporarily unfold the item in order to calculate its height
+      $item.removeClass('gpme-folded');
+      $item.addClass('gpme-unfolded');
+      $post.show();
+      predictedItemHeight = $item.outerHeight();
+      $item.removeClass('gpme-folded');
+      $item.addClass('gpme-unfolded');
+      $post.hide();
     }
 
+    // Unfold the selected item
+    unfoldItem(true, $item, animated, $post);
     // Since this thread is a result of an interactive toggle, we record last open
     debug("toggleItemFolded: href=" + window.location.href);
     debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
     localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
   } else {
+    // Predict the height of the item
+    if (animated)
+      predictedItemHeight = COLLAPSED_ITEM_HEIGHT;
+
+    // Fold the selected item
     foldItem(true, $item, animated, $post);
 
     // Since this thread is a result of an interactive toggle, we delete last open
     if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
       localStorage.removeItem("gpme_post_last_open_" + window.location.href);
+  }
+
+  // XXX As of 4.0.5, there are still some bugs, e.g. G+ seems to add whitespace
+  // under the More button; but the current result is good enough -- users shouldn't
+  // notice.
+  // Scrolling animation.
+  // These are the cases when we'd need to scroll:
+  // - In expanded and list mode, an item is folded which shortens the document
+  // and pulls the document bottom above the bottom of the screen; we want
+  // to avoid the jarring scroll back down that would ensue.
+  // - In list mode, the last open item is above the selected item and it is closed
+  // which causes the top of the selected item to go out of view above; we
+  // want to counteract the upward motion of the selected item as the
+  // two items are changing size.
+  // - Combination of the two above cases.
+  if (animated) {
+    // Calc the new item offset once the last item is folded (without yet
+    // taking account the bottom of the document)
+    predictedItemOffset = $item.offset().top;
+    // If we folded an item above the selected item, then we need to shift
+    // the predicted offset
+    if (lastItemOffset != -1 && lastItemOffset < predictedItemOffset)
+      predictedItemOffset -= lastItemHeight - COLLAPSED_ITEM_HEIGHT;
+
+    // Calc the body height once the last item is folded and the selected
+    // item is unfolded
+    predictedBodyHeight = $body.height() - lastItemHeight + predictedItemHeight;
+
+    // There are two forces that make the page scroll up:
+    // 1) getting the top of the selected item within view
+    // 2) the bottom of the document must be no higher than the bottom of hte viewport.
+    // So we calculate the minimum of this to figure out the scrolling distance.
+    var currentScrollTop = $body.scrollTop();
+    var scrollDist = Math.max(0,
+      Math.max(currentScrollTop - predictedItemOffset + GAP_ABOVE_ITEM_AT_TOP,
+               window.innerHeight - 30 - (predictedBodyHeight - currentScrollTop)));
+    /*
+    debug("foldItem: currentScrollTop=" + currentScrollTop);
+    debug("foldItem: predictedItemOffset=" + predictedItemOffset);
+    debug("foldItem: window.height=" + window.innerHeight);
+    debug("foldItem: predictedItemHeight=" + predictedItemHeight);
+    debug("foldItem: predictedBodyHeight=" + predictedBodyHeight);
+    debug("foldItem: scrollDist=" + scrollDist);
+    */
+    // Only scroll if necessary
+    if (scrollDist > 0) {
+      // XXX G+ seems to have an autoscroll that's acting faster than mine
+      // and is shifting the page faster
+      $body.animate({scrollTop: $body.scrollTop() - scrollDist }, 'fast');
+    }
+  } else {
+    $item.find('.gpme-titlebar').get(0).scrollIntoView();
   }
 }
 
@@ -1654,10 +1721,12 @@ function showPreview(e) {
     }
 
     // Move to the right edge and as far up as possible
+/* Disabled: we now move based on right-edge instead of left-edge
     // 430px = (31+60+26) cropping + 135 shriking + 195 width of sidebar - 17 slack
     // NOTE: need lots of slack coz the horizontal scrollbar flashes on OSX for some rason
-    //$post.css('left',
-      //'' + (430 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+    $post.css('left',
+      '' + (430 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
+*/
     $post.css('left', '0');
     // We give slack of 10 coz otherwise you get the horizontal bar flashing on Chrome OSX.
     // The width of the popup is reduced by 5 in CSS to leave a bit of a gap between posts and the popup so
@@ -1668,12 +1737,11 @@ function showPreview(e) {
       'px');
     $post.css('left', 'auto');
     // Move to the top, leaving room for the top bar
-    // NOTE: first '30' is the height of triangle; second '30' is height of Google status bar.
     var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
-      Math.min($post.outerHeight() - /* height of triangle */ 30 - /* post-wrapper's padding-bottom */ 6,
+      Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -
-        (isTopbarFixed ? document.body.scrollTop + 30 + (isHeaderFixed ? 45 : 0) :
-            Math.max(document.body.scrollTop, /* height of Google statusbar */ 30 )) - /* breathing room */ 7));
+        (isTopbarFixed ? document.body.scrollTop + TRIANGLE_HEIGHT + (isHeaderFixed ? HEADER_HEIGHT : 0) :
+            Math.max(document.body.scrollTop, GBAR_HEIGHT)) - /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $item.find('.gpme-preview-triangle');
@@ -1736,8 +1804,10 @@ $(document).ready(function() {
       var contentPane = $contentPane.get(0);
       $contentPane.bind('DOMNodeInserted', function(e) {
         // This happens when a new stream is selected
-        if (e.relatedNode.parentNode == contentPane)
-          return onContentPaneUpdated(e);
+        if (e.relatedNode.parentNode == contentPane) {
+          onContentPaneUpdated(e);
+          return;
+        }
 
         var id = e.target.id;
         // ':' is weak optimization attempt for comment editing
