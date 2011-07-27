@@ -100,6 +100,10 @@ var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 var _C_COPYRIGHT                = '.a-b-Xa-T';
+var _C_MENU_MUTE                = '.a-b-f-i-Fb-C';
+var _C_MENU_UNMUTE              = '.a-b-f-i-kb-C'; // Displayed on user's posts page
+var _C_LINK_UNMUTE              = '.a-b-f-i-kb-h';
+var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -125,6 +129,7 @@ var HEADER_HEIGHT = 45;
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var GAP_ABOVE_ITEM_AT_TOP = 2;
+var MUTED_ITEM_HEIGHT = 40;
 
 /****************************************************************************
  * Init
@@ -255,13 +260,6 @@ function getOptionsFromBackground(callback) {
   });
 }
 
-/**
- * Returns true if specified item is folded
- */
-function isItemFolded($item) {
-  return $item.hasClass('gpme-folded');
-}
-
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -387,6 +385,28 @@ function onKeydown(e) {
     document.activeElement.id !== null && document.activeElement.id.indexOf('update-') === 0 ?
       $(document.activeElement) : $(_C_SELECTED);
 
+  /**
+   * Navigates to and unfolds the specified item
+   */
+  function navigateUnfolding($item, $previousItem) {
+    hideAnyPostItemPreview();
+
+    // In expanded mode, we want these shortcuts fold the previous item, unlike with the mouse.
+    if (typeof $previousItem != 'undefined' && $previousItem !== null &&
+        $previousItem.length && displayMode == 'expanded' && ! isItemMuted($previousItem))
+      foldItem(true, $previousItem);
+
+    click($item);
+    toggleItemFoldedVariant('list-like-unfold', $item);
+    scrollToTop($item);
+  }
+
+  // Skip all these modifiers
+  // XXX Is there a jQuery method for this?
+  if ((e.which == 38 || e.which == 40) && (e.ctrlKey || e.altKey || e.metaKey) ||
+      (e.which != 38 && e.which != 40) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
+    return;
+
   // If we still don't have a selected item, then e.g. the page must have just loaded,
   // so just pick the first item.
   if (! $selectedItem.length) {
@@ -394,14 +414,13 @@ function onKeydown(e) {
     if ($selectedItem.length) {
       switch (e.which) {
         case 80: // 'p'
-        case 78: // 'o'
+        case 78: // 'n'
           click($selectedItem);
           break;
         case 38: // shift-up
         case 40: // shift-down
-          click($selectedItem);
-          if (isItemFolded($selectedItem))
-            toggleItemFolded($selectedItem);
+          if (e.shiftKey)
+            navigateUnfolding($item);
           break;
         default: break;
       }
@@ -413,15 +432,35 @@ function onKeydown(e) {
   switch (e.which) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
-      if (isItemFolded($selectedItem))
+      if (! isItemMuted($selectedItem) && isItemFolded($selectedItem))
         toggleItemFolded($selectedItem);
       break;
+    case 77: // 'm'
+      toggleItemMuted($selectedItem);
+      break;
+    case 67: // 'c' and 'C'
+      if (! isItemFolded($selectedItem)) {
+        // For 'C' we want to unfold comments > get more comments > get older comments
+        if (e.shiftKey) {
+          if (areItemCommentsFolded($selectedItem)) {
+            toggleCommentsFolded($selectedItem);
+          } else {
+            clickMoreCommentsButton($selectedItem);
+          }
+        } else {
+          // For 'c' we want to unfold or fold comments 
+          toggleCommentsFolded($selectedItem);
+        }
+      }
+      break;
     case 79: // 'o'
-      toggleItemFolded($selectedItem);
-      if (! isItemFolded($selectedItem))
-        scrollToTop($selectedItem);
-      else
-        $selectedItem.scrollintoview({duration: 0, direction: 'y'});
+      if (! isItemMuted($selectedItem)) {
+        toggleItemFolded($selectedItem);
+        if (! isItemFolded($selectedItem))
+          scrollToTop($selectedItem);
+          // NOTE: if folded, we don't want to scroll to top.
+          // and toggleItemFolded already scrolls into view.
+      }
       break;
     case 80: // 'p'
       hideAnyPostItemPreview();
@@ -445,24 +484,15 @@ function onKeydown(e) {
     case 38: // shift-up
       if (e.shiftKey) {
         $sibling = $selectedItem.prev();
-        if ($sibling.length) {
-          hideAnyPostItemPreview();
-          click($sibling);
-          if (isItemFolded($sibling))
-            toggleItemFolded($sibling);
-          scrollToTop($sibling);
-        }
+        if ($sibling.length)
+          navigateUnfolding($sibling, $selectedItem);
       }
       break;
     case 40: // shift-down
       if (e.shiftKey) {
         $sibling = $selectedItem.next();
         if ($sibling.length) {
-          hideAnyPostItemPreview();
-          click($sibling);
-          if (isItemFolded($sibling))
-            toggleItemFolded($sibling);
-          scrollToTop($sibling);
+          navigateUnfolding($sibling, $selectedItem);
         } else {
           // If we're at the bottom, trigger the more button
           clickMoreButton();
@@ -470,11 +500,13 @@ function onKeydown(e) {
       }
       break;
     case 75: // 'k'
+      /*
       hideAnyPostItemPreview();
       setTimeout(function() {
         if (isItemFolded($selectedItem))
           toggleItemFolded($selectedItem);
       }, 200);
+      */
       /*
       // Delay a little bit to give priority to G+'s handling of 'k'
       setTimeout(function() {
@@ -489,12 +521,14 @@ function onKeydown(e) {
       */
       break;
     case 74: // 'j'
+      /*
       hideAnyPostItemPreview();
       // Delay a little bit to give priority to G+'s handling of 'j'
       setTimeout(function() {
         if (isItemFolded($selectedItem))
           toggleItemFolded($selectedItem);
       }, 200);
+      */
       /*
       setTimeout(function() {
         $sibling = $selectedItem.next();
@@ -508,59 +542,6 @@ function onKeydown(e) {
       */
       break;
     default: break;
-  }
-}
-
-/**
- * Scroll item to top, without animation.
- */
-function scrollToTop($item) {
-  if (typeof $item === 'undefined' || ! $item.length)
-    return;
-
-  var $body = $('body');
-  var itemOffsetY = $item.offset().top - GAP_ABOVE_ITEM_AT_TOP;
-  var scrollDist = itemOffsetY - $body.scrollTop();
-  debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
-
-  if (scrollDist !== 0) {
-    var $copyright = $(_C_COPYRIGHT);
-
-    // To prevent the page from jumping back down, we have to have a spacer
-    // at the bottom of the page.
-    var $spacer = $('#gpme-bottom-spacer');
-
-    if ($copyright.length != 1) {
-      error("scrollTop: Can't find copyright line");
-      $spacer.height(0); // If any
-    } else {
-      // XXX Probably could have used the body height instead of the bottom of the copyright.
-      var copyrightBottom = $copyright.get(0).getBoundingClientRect().bottom + MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT;
-      debug("scrollToTop: copyrightBottom=" + copyrightBottom + " window.innerHeight=" + window.innerHeight);
-
-      if (! $spacer.length) {
-        $spacer = $('<div id="gpme-bottom-spacer"></div>');
-        $spacer.insertAfter($copyright);
-      }
-
-      debug("scrollToTop: spacer height" + Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
-      $spacer.height(Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
-    }
-
-    // Scroll item
-    $body.scrollTop(itemOffsetY);
-  }
-}
-
-/**
-  * Trigger the more button
-  */
-function clickMoreButton() {
-  // Scroll it into view
-  $moreButton = $(_C_MORE_BUTTON);
-  if ($moreButton.length) {
-    $moreButton.scrollintoview();
-    click($moreButton);
   }
 }
 
@@ -639,28 +620,6 @@ function click($elem) {
 */
 
 /**
- * Click the specified element
- * Better to simulate clicks than keyboard right now because 'j' and 'k'
- * are messed up.
- * Note: clicking an item doesn't act like a real user click on G+:
- *   in this case, G+ actually scrolls the item without animation.
- *   And since we have to correct that scrolling, we can't animate
- *   either or it would sometimes look reversed.
- */
-function click($element) {
-  var e, elem = $element.get(0);
-  e = document.createEvent("MouseEvents");
-  e.initEvent("mousedown", true, true);
-  elem.dispatchEvent(e);
-  e = document.createEvent("MouseEvents");
-  e.initEvent("click", true, true);
-  elem.dispatchEvent(e);
-  e = document.createEvent("MouseEvents");
-  e.initEvent("mouseup", true, true);
-  elem.dispatchEvent(e);
-}
-
-/**
  * Responds to changes in mode option
  */
 function onModeOptionUpdated(newMode) {
@@ -697,7 +656,7 @@ function onResetAll() {
 }
 
 /****************************************************************************
- * DOM enhancements & folding according to state
+ * DOM enhancements & post folding according to state
  ***************************************************************************/
 
 /**
@@ -786,6 +745,10 @@ function injectNewFeedbackLink() {
   //alert($link.attr('onclick'));
 }
 
+/****************************************************************************
+ * Post DOM enhancements
+ ***************************************************************************/
+
 /**
  * Refresh fold/unfolded display of items.
  * Called by onModeOptionUpdated() and onResetAll()
@@ -834,41 +797,8 @@ function updateAllItems($subtree) {
     unfoldLastOpenInListMode();
 }
 
-
 /**
- * In list mode, unfold the last opened entry, refolding any wrongly unfolded entry
- * NOTE: At this point, location.href may or may not be correct.
- */
-function unfoldLastOpenInListMode() {
-  //debug("unfoldLastOpenInListMode: href=" + window.location.href);
-  var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
-
-  // Undo any incorrectly-unfolded item
-  // NOTE: lastOpenId could be null, which means this is a page that wasn't visited
-  // before in list mode or a page that had all items closed; we still want to close
-  // the incorrectly-opened item
-  // FIXME: we still get the flash of an open-then-closed item
-  // XXX Strange: if I search lastTentativeOpen by id, I may be hiding an entry that
-  // won't be shown.  Would be interesting to investigate further, as it probably
-  // has to do with the way the DOM updates happen with G+.
-  if ($lastTentativeOpen !== null && $lastTentativeOpen.attr('id') != lastOpenId) {
-    //debug("unfoldLastOpenInListMode: unfolding " + $lastTentativeOpen.attr('id'));
-    foldItem(false, $lastTentativeOpen);
-    $lastTentativeOpen = null;
-  }
-
-  if (lastOpenId !== null) {
-    var $item = $('#' + lastOpenId);
-    // We explicitly unfold in order to fold any previously opened item
-    // FIXME: this favors the oldest instead of the most recent opened item
-    unfoldItem(false, $item);
-    click($item);
-  }
-}
-
-/**
- * Updates fold/unfold appropriately, except in list mode where the
- * caller is responsible for unfolding the appropriate item.
+ * Updates fold/unfold appropriately
  */
 function updateItem($item) {
   var id = $item.attr('id');
@@ -1004,12 +934,37 @@ function updateItemComments($item) {
  ***************************************************************************/
 
 /**
- * Toggle viewable state of the content of an item.
+ * Returns true if specified item is folded
+ */
+function isItemFolded($item) {
+  return $item.hasClass('gpme-folded');
+}
+
+/**
+ * Toggle folding state of the content of an item.
  * This is only called as a result of a user action.
- * Calls foldItem() or unfoldItem().
- * @param animatedScroll: Optional
+ * Calls setOrToggleItemFolded()
  */
 function toggleItemFolded($item, animated) {
+  toggleItemFoldedVariant('toggle', $item, animated);
+}
+
+/**
+ * Either toggles the folding state of an item or sets to unfolded,
+ * while making sure in list mode that any previously-unfolded item
+ * is folded.
+ * This function handles different seemingly-conflicting modes because
+ * it handles complex scrolling animation that needs to be in one place.
+ * Is called by toggleItemFolded() and navigateUnfolding()>
+ * Calls foldItem() or unfoldItem().
+ * @param action: toggle, unfold, list-like-unfold.
+ *   'toggle': what happens when the user hits a title bar, adapting to both the mode
+ *             and to the current folding state of the item
+ *   'unfold': forces an unfold on the item
+ *   'list-like-unfold': forces an unfold on the item as if the mode were 'list'
+ * @param animatedScroll: Optional
+ */
+function toggleItemFoldedVariant(action, $item, animated) {
   var $post = $item.find('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
@@ -1020,26 +975,28 @@ function toggleItemFolded($item, animated) {
   var id = $item.attr('id');
 
   var lastItemOffset = -1;
-  var lastItemHeight = COLLAPSED_ITEM_HEIGHT;
+  var lastItemHeightLoss = 0;
   var predictedItemHeight = -1;
 
   var $body = $('body');
 
-  if (isItemFolded($item)) {
+  // If the item is folded, we unfold it (and possibly fold back the previous unfolded
+  // item in list mode)
+  if (action == 'unfold' || action == 'list-like-unfold' || isItemFolded($item)) {
     // If in list mode, we need to fold the previous one
-    if (displayMode == 'list') {
+    if (displayMode == 'list' || action == 'list-like-unfold') {
       lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
       //debug("unfoldItem: last open id=" + lastOpenId);
       if (lastOpenId !== null && lastOpenId != id) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
-        if ($lastItem.length && $lastItem.hasClass('gpme-enh')) {
+        if ($lastItem.length && $lastItem.hasClass('gpme-enh') && ! isItemMuted($lastItem)) {
           // Prepare for scrolling animation
           if (animated) {
             // If we're animating, we have to do our own calculations because
             // two opposing animations are going simultaneously, which is too
             // complex for regular animations to calculate.
-            lastItemHeight = $lastItem.outerHeight();
+            lastItemHeightLoss = $lastItem.outerHeight() - COLLAPSED_ITEM_HEIGHT;
             lastItemOffset = $lastItem.offset().top;
           }
 
@@ -1061,29 +1018,40 @@ function toggleItemFolded($item, animated) {
       $post.hide();
     }
 
-    // Unfold the selected item
-    unfoldItem(true, $item, animated, $post);
-    // Since this thread is a result of an interactive toggle, we record last open
-    debug("toggleItemFolded: href=" + window.location.href);
-    debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
-    localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
-  } else {
-    // Predict the height of the item
-    if (animated)
-      predictedItemHeight = COLLAPSED_ITEM_HEIGHT;
+    if (isItemMuted($item)) {
+      localStorage.removeItem('gpme_post_last_open_' + window.location.href);
+    } else {
+      // Unfold the selected item
+      unfoldItem(true, $item, animated, $post);
+      // Since this thread is a result of an interactive toggle, we record last open
+      debug("toggleItemFolded: href=" + window.location.href);
+      debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
+      localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
+    }
 
-    // Fold the selected item
-    foldItem(true, $item, animated, $post);
+  } else { // For 'toggle' action, if the item is unfolded, we fold it.
 
-    // Since this thread is a result of an interactive toggle, we delete last open
-    if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
-      localStorage.removeItem("gpme_post_last_open_" + window.location.href);
+    if (isItemMuted($item)) {
+      if (animated)
+        predictedItemHeight = $item.height();
+    } else {
+      // Predict the height of the item
+      if (animated)
+        predictedItemHeight = COLLAPSED_ITEM_HEIGHT;
+
+      // Fold the selected item
+      foldItem(true, $item, animated, $post);
+
+      // Since this thread is a result of an interactive toggle, we delete last open
+      if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
+        localStorage.removeItem("gpme_post_last_open_" + window.location.href);
+    }
   }
 
-  // XXX As of 4.0.5, there are still some bugs, e.g. G+ seems to add whitespace
-  // under the More button; but the current result is good enough -- users shouldn't
-  // notice.
   // Scrolling animation.
+  // XXX As of 4.0.5, there are still some bugs in scrolling animation,
+  // e.g. G+ seems to add whitespace under the More button;
+  // but the current result is good enough -- users shouldn't // notice.
   // These are the cases when we'd need to scroll:
   // - In expanded and list mode, an item is folded which shortens the document
   // and pulls the document bottom above the bottom of the screen; we want
@@ -1100,11 +1068,11 @@ function toggleItemFolded($item, animated) {
     // If we folded an item above the selected item, then we need to shift
     // the predicted offset
     if (lastItemOffset != -1 && lastItemOffset < predictedItemOffset)
-      predictedItemOffset -= lastItemHeight - COLLAPSED_ITEM_HEIGHT;
+      predictedItemOffset -= lastItemHeightLoss;
 
     // Calc the body height once the last item is folded and the selected
     // item is unfolded
-    predictedBodyHeight = $body.height() - lastItemHeight + predictedItemHeight;
+    predictedBodyHeight = $body.height() - lastItemHeightLoss + (predictedItemHeight - COLLAPSED_ITEM_HEIGHT);
 
     // There are two forces that make the page scroll up:
     // 1) getting the top of the selected item within view
@@ -1129,7 +1097,7 @@ function toggleItemFolded($item, animated) {
       $body.animate({scrollTop: $body.scrollTop() - scrollDist }, 'fast');
     }
   } else {
-    $item.find('.gpme-titlebar').get(0).scrollIntoView();
+    $item.find('.gpme-titlebar').scrollintoview({duration: 0, direction: 'y'});
   }
 }
 
@@ -1152,10 +1120,16 @@ function foldItem(interactive, $item, animated, $post) {
 
   // Persist for expanded mode
   debug("foldItem: id=" + id);
-  if (displayMode == 'expanded')
+  if (interactive && displayMode == 'expanded')
     localStorage.setItem("gpme_post_folded_" + id, true);
 
   // Visual changes
+  // Can't fold muted items
+  /*
+  if (isItemMuted($item))
+    return;
+  */
+
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
     $post.slideUp('fast', function() {
@@ -1171,7 +1145,7 @@ function foldItem(interactive, $item, animated, $post) {
 
   // If interactive folding and comments are showing, record the comment count
   var commentCount = countComments($item);
-  if (interactive && ! $item.hasClass('gpme-comments-folded'))
+  if (interactive && ! areItemCommentsFolded($item))
     saveSeenCommentCount(id, commentCount);
 
   // Attached or pending title
@@ -1346,7 +1320,7 @@ function unfoldItem(interactive, $item, animated, $post) {
   debug("unfoldItem: id=" + id);
 
   // Persist for expanded mode
-  if (displayMode == 'expanded')
+  if (interactive && displayMode == 'expanded')
     localStorage.removeItem("gpme_post_folded_" + id);
 
   // Visual changes
@@ -1368,15 +1342,219 @@ function unfoldItem(interactive, $item, animated, $post) {
   else
     unfoldComments(false, $item);
 
-  if (interactive && ! $item.hasClass('gpme-comments-folded'))
+  if (interactive && ! areItemCommentsFolded($item))
     deleteSeenCommentCount(id);
 
   return true;
 }
 
+/**
+ * In list mode, unfold the last opened entry, refolding any wrongly unfolded entry
+ * NOTE: At this point, location.href may or may not be correct.
+ */
+function unfoldLastOpenInListMode() {
+  //debug("unfoldLastOpenInListMode: href=" + window.location.href);
+  var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
+
+  // Undo any incorrectly-unfolded item
+  // NOTE: lastOpenId could be null, which means this is a page that wasn't visited
+  // before in list mode or a page that had all items closed; we still want to close
+  // the incorrectly-opened item
+  // FIXME: we still get the flash of an open-then-closed item
+  // XXX Strange: if I search lastTentativeOpen by id, I may be hiding an entry that
+  // won't be shown.  Would be interesting to investigate further, as it probably
+  // has to do with the way the DOM updates happen with G+.
+  if ($lastTentativeOpen !== null && $lastTentativeOpen.attr('id') != lastOpenId) {
+    //debug("unfoldLastOpenInListMode: unfolding " + $lastTentativeOpen.attr('id'));
+    foldItem(false, $lastTentativeOpen);
+    $lastTentativeOpen = null;
+  }
+
+  if (lastOpenId !== null) {
+    var $item = $('#' + lastOpenId);
+    // We explicitly unfold in order to fold any previously opened item
+    // FIXME: this favors the oldest instead of the most recent opened item
+    unfoldItem(false, $item);
+    click($item);
+  }
+}
+
+/****************************************************************************
+ * Misc. operations on posts
+ ***************************************************************************/
+
+/**
+ * Click the specified element
+ * Better to simulate clicks than keyboard right now because 'j' and 'k'
+ * are messed up.
+ * Note: clicking an item doesn't act like a real user click on G+:
+ *   in this case, G+ actually scrolls the item without animation.
+ *   And since we have to correct that scrolling, we can't animate
+ *   either or it would sometimes look reversed.
+ */
+function click($element) {
+  var e, elem = $element.get(0);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("mousedown", true, true);
+  elem.dispatchEvent(e);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("click", true, true);
+  elem.dispatchEvent(e);
+  e = document.createEvent("MouseEvents");
+  e.initEvent("mouseup", true, true);
+  elem.dispatchEvent(e);
+}
+
+/**
+ * Scroll item to top, without animation.
+ */
+function scrollToTop($item) {
+  if (typeof $item === 'undefined' || ! $item.length)
+    return;
+
+  var $body = $('body');
+  var itemOffsetY = $item.offset().top - GAP_ABOVE_ITEM_AT_TOP;
+  var scrollDist = itemOffsetY - $body.scrollTop();
+  //debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
+
+  if (scrollDist !== 0) {
+    var $copyright = $(_C_COPYRIGHT);
+
+    // To prevent the page from jumping back down, we have to have a spacer
+    // at the bottom of the page.
+    var $spacer = $('#gpme-bottom-spacer');
+
+    if ($copyright.length != 1) {
+      error("scrollTop: Can't find copyright line");
+      $spacer.height(0); // If any
+    } else {
+      // XXX Probably could have used the body height instead of the bottom of the copyright.
+      var copyrightBottom = $copyright.get(0).getBoundingClientRect().bottom + MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT;
+      //debug("scrollToTop: copyrightBottom=" + copyrightBottom + " window.innerHeight=" + window.innerHeight);
+
+      if (! $spacer.length) {
+        $spacer = $('<div id="gpme-bottom-spacer"></div>');
+        $spacer.insertAfter($copyright);
+      }
+
+      //debug("scrollToTop: spacer height" + Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
+      $spacer.height(Math.max(0, window.innerHeight - copyrightBottom + scrollDist));
+    }
+
+    // Scroll item
+    $body.scrollTop(itemOffsetY);
+  }
+}
+
+/**
+ * Toggle muting on specified item.
+ * This is how muted items are treated differently:
+ * - we preserve their last fold/unfold state, so that when we unmute, it goes back to what it was.
+ *   That means other fold/unfold operations have no effect on that state.
+ * - the post-wrapper must be unhidden for G+'s muted div to display.
+ */
+function toggleItemMuted($item) {
+  if (typeof $item === 'undefined' || $item === null)
+    return;
+
+  // Try unmute link first, then unmute menu entry, then mute menu entry
+  // NOTE: the unmute link could be there but hidden as a result of a prior
+  // mute-unmute operation
+  var $unmuteLink = $item.find(_C_LINK_UNMUTE);
+  var unmuteFound = false;
+  if ($unmuteLink.length && $unmuteLink.is(':visible')) {
+    unmuteFound = true;
+  } else {
+    $unmuteLink = $item.find(_C_MENU_UNMUTE);
+    if ($unmuteLink.length)
+      unmuteFound = true;
+  }
+
+  // Unmute
+  if (unmuteFound) {
+    // See below for when we set max-height
+    $item.css('max-height', '');
+    click($unmuteLink);
+
+    // If folded, we have to undo the show we did when muting
+    if (isItemFolded($item)) {
+      var $post = $item.find('.gpme-post-wrapper');
+      if ($post.length != 1) {
+        error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
+      } else {
+        $post.hide();
+      }
+    } else { // If unfolded, this may mean we need to fold the last open item and animate scrolling
+      toggleItemFoldedVariant('unfold', $item);
+    }
+
+  } else { // Mute
+    var $muteMenu = $item.find(_C_MENU_MUTE);
+    if ($muteMenu.length) {
+      // If the item is folded, we need to set a max-height so that G+'s muting
+      // scrolling animation doesn't start from so low
+      if (isItemFolded($item))
+        $item.css('max-height', MUTED_ITEM_HEIGHT);
+
+      click($muteMenu);
+
+      if (isItemFolded($item)) {
+        // We have to show the post content in order to display the "muted" message
+        var $post = $item.find('.gpme-post-wrapper');
+        if ($post.length != 1) {
+          error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
+        } else {
+          $post.show();
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Returns true if specified item is muted
+ */
+function isItemMuted($item) {
+  return $item.hasClass(C_IS_MUTED);
+}
+
+/**
+  * Trigger the more button
+  */
+function clickMoreButton() {
+  // Scroll it into view
+  $moreButton = $(_C_MORE_BUTTON);
+  if ($moreButton.length) {
+    $moreButton.scrollintoview();
+    click($moreButton);
+  }
+}
+
+/**
+ * Trigger the "More comments" button, or "Older comments" button
+ */
+function clickMoreCommentsButton($item) {
+  var $commentsButton = $item.find(_C_COMMENTS_MORE_CONTAINER);
+  if ($commentsButton.length && $commentsButton.is(':visible')) {
+    click($commentsButton);
+  } else {
+    $commentsButton = $item.find(_C_COMMENTS_OLD_CONTAINER);
+    if ($commentsButton.length && $commentsButton.is(':visible')) {
+      click($commentsButton);
+    }
+  }
+}
+
 /****************************************************************************
  * Comment folding/unfolding logic
  ***************************************************************************/
+
+/**
+ * Returns true if comments for specified item are folded
+ */
+function areItemCommentsFolded($item) {
+  return $item.hasClass('gpme-comments-folded');
+}
 
 /**
  * Toggle viewable state of the comments of an item.
@@ -1394,7 +1572,7 @@ function toggleCommentsFolded($item) {
   }
 
   var id = $item.attr('id');
-  if ($item.hasClass('gpme-comments-folded')) {
+  if (areItemCommentsFolded($item)) {
     unfoldComments(true, $item, $comments);
   } else {
     foldComments(true, $item, $comments);
@@ -1440,11 +1618,10 @@ function foldComments(interactive, $item, $comments) {
       updateCommentbar(id, $item, commentCount);
       $commentbar.show(); // undo the hiding of sliding up
     });
-    /* Disabled until there's a collapsebar at the bottom of the post
+
+    // Favor the share line first so there's no unnecessary motion
     var $shareLine = $item.find(_C_SHARE_LINE);
-    ($shareLine.length? $shareLine : $item.find('.gpme-titlebar')).scrollintoview({ duration: duration, direction: 'y' });
-    */
-    $item.find('.gpme-titlebar').scrollintoview({ duration: duration, direction: 'y' });
+    ($shareLine.length? $shareLine : $commentbar).scrollintoview({ duration: duration, direction: 'y' });
 
   } else {
     // Visual changes
@@ -1648,7 +1825,7 @@ function updateCommentbarHeight(id, $item, commentCount) {
   } else {
     $commentbar.show();
     // If folded, Remove any dynamically-set height
-    if ($item.hasClass('gpme-comments-folded')) {
+    if (areItemCommentsFolded($item)) {
       $commentbar.css('height', '');
     } else {
       // Update the height
@@ -1717,7 +1894,7 @@ function deleteSeenCommentCount(id) {
  * Pops up the preview of the hovered item
  */
 function showPreview(e) {
-  //debug("showPreview: this=" + this.className);
+  debug("showPreview: this=" + this.className);
 
   // Skip if this is expanded mode
   if (displayMode == 'expanded')
@@ -1728,6 +1905,10 @@ function showPreview(e) {
   hideAnyPostItemPreview();
 
   var $item = $(this);
+
+  // Skip if this is a muted item
+  if (isItemMuted($item))
+    return;
 
   var $post = $item.find('.gpme-post-wrapper');
   if ($post.length) {
@@ -1785,7 +1966,7 @@ function showPreview(e) {
  * Hides the preview of the item that was moused-out
  */
 function hidePreview(e) {
-  //debug("hidePreview: this=" + this.className);
+  debug("hidePreview: this=" + this.className);
   hidePostItemPreview($(this));
 }
 
@@ -1793,7 +1974,12 @@ function hidePreview(e) {
  * Hides the preview of the specified item
  */
 function hidePostItemPreview($item) {
+  debug("hidePostItemPreview:");
   if (!$item || ! isItemFolded($item))
+    return;
+
+  // Skip if this is a muted item
+  if (isItemMuted($item))
     return;
 
   var $post = $item.find('.gpme-post-wrapper');
@@ -1811,6 +1997,7 @@ function hidePostItemPreview($item) {
  * Hides the last preview that was popped up
  */
 function hideAnyPostItemPreview() {
+  debug("hideAnyPostItemPreview");
   if ($lastPreviewedItem !== null)
     hidePostItemPreview($lastPreviewedItem);
 }

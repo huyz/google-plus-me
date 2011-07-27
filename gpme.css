@@ -31,9 +31,12 @@
 }
 
 /* Muted post */
-.a-f-i-za .gpme-titlebar {
+.a-f-i-za .gpme-titlebar { /* Candidates: a-f-i-za a-f-i-Fb-Un */
   margin: 0;
   display: none;
+}
+.a-f-i-za .a-f-i-Fb-L {
+  margin-bottom: 5px;
 }
 
 .gpme-folded .gpme-titlebar {
@@ -138,24 +141,25 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 /*
  * Preview
+ * :not(.a-f-i-za) means not muted
  */
 
-.gpme-folded .gpme-post-wrapper .a-f-i-p-U .a-f-i-do, /* User photo */
-.gpme-folded .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do, /* User photo */
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q {
   display: none;
 }
-.gpme-folded .a-f-i-Ia-D-h { /* Context menu button */
+.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */
   margin-right: -13px; /* Gained 44-13=31 px */
 }
-.gpme-folded .a-f-i-Ia-D { /* context menu */
+.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D { /* context menu */
   z-index: 11;
 }
-.gpme-folded .a-f-i-p { /* Post content */
+.gpme-folded:not(.a-f-i-za) .a-f-i-p { /* Post content */
   margin-left: 0; /* Gained 60px */
   margin-right: 13px; /* Gained 44-13=31 px */
 }
 
-.gpme-folded .gpme-post-wrapper {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper {
   position: absolute;
   left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
   top: -20px;
@@ -175,7 +179,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   display: none;
 }
 
-.gpme-folded .gpme-preview-triangle {
+.gpme-folded:not(.a-f-i-za) .gpme-preview-triangle {
   display: inline;
   position: absolute;
   left: -16px;
@@ -184,7 +188,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   width: 17px;
 }
 
-.gpme-folded .gpme-post-wrapper img {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper img {
   max-width: 297px; /* 313 gpme-post-wrapper - (8*2 padding) */
 }
 
