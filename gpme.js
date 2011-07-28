@@ -49,7 +49,7 @@
 
 //// For more class constants, see foldItem() in classes array
 
-var _ID_TOPBAR                  = '#gb';
+var _ID_GBAR                    = '#gb';
 var _C_HEADER                   = '.a-U-T';
 // We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
 // refresh the contentPane
@@ -124,6 +124,7 @@ var DISABLED_PAGES_CLASSES = [
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
+var POST_WRAPPER_PADDING_TOP = 6;
 var POST_WRAPPER_PADDING_BOTTOM = 6;
 var HEADER_HEIGHT = 45;
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
@@ -258,6 +259,25 @@ function getOptionsFromBackground(callback) {
     displayMode = response;
     callback();
   });
+}
+
+/**
+ * Returns the number of height of any fixed bars at the top, if
+ * applicable.
+ * This is for compatibility with other extensions.
+ */
+function fixedBarsHeight() {
+  // Detect fixed gbar for compatibility (with "Replies and more for Google+")
+  var $gbar = $(_ID_GBAR);
+  var isGbarFixed = $gbar.length && ($gbar.parent().css('position') == 'fixed');
+  // Detect fixed gbar for compatibility (with "Google+ Ultimate")
+  var isHeaderFixed = false;
+  if (isGbarFixed) {
+    var $header = $(_C_HEADER);
+    isHeaderFixed = $header.length && ($header.css('position') == 'fixed');
+  }
+
+  return isGbarFixed ? GBAR_HEIGHT + (isHeaderFixed ? HEADER_HEIGHT : 0) : 0;
 }
 
 /****************************************************************************
@@ -1081,7 +1101,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
     // So we calculate the minimum of this to figure out the scrolling distance.
     var currentScrollTop = $body.scrollTop();
     var scrollDist = Math.max(0,
-      Math.max(currentScrollTop - predictedItemOffset + GAP_ABOVE_ITEM_AT_TOP,
+      Math.max(currentScrollTop - (predictedItemOffset - fixedBarsHeight() - GAP_ABOVE_ITEM_AT_TOP),
                window.innerHeight - 30 - (predictedBodyHeight - currentScrollTop)));
     /*
     debug("foldItem: currentScrollTop=" + currentScrollTop);
@@ -1414,7 +1434,7 @@ function scrollToTop($item) {
     return;
 
   var $body = $('body');
-  var itemOffsetY = $item.offset().top - GAP_ABOVE_ITEM_AT_TOP;
+  var itemOffsetY = $item.offset().top - fixedBarsHeight() - GAP_ABOVE_ITEM_AT_TOP;
   var scrollDist = itemOffsetY - $body.scrollTop();
   //debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
 
@@ -1935,16 +1955,6 @@ function showPreview(e) {
     $post.show();
     $lastPreviewedItem = $item;
 
-    // Detect fixed topbar for compatibility (with "Replies and more for Google+")
-    var $topbar = $(_ID_TOPBAR);
-    var isTopbarFixed = $topbar.length && ($topbar.parent().css('position') == 'fixed');
-    // Detect fixed topbar for compatibility (with "Google+ Ultimate")
-    var isHeaderFixed = false;
-    if (isTopbarFixed) {
-      var $header = $(_C_HEADER);
-      isHeaderFixed = $header.length && ($header.css('position') == 'fixed');
-    }
-
     // Move to the right edge and as far up as possible
 /* Disabled: we now move based on right-edge instead of left-edge
     // 430px = (31+60+26) cropping + 135 shriking + 195 width of sidebar - 17 slack
@@ -1962,11 +1972,13 @@ function showPreview(e) {
       'px');
     $post.css('left', 'auto');
     // Move to the top, leaving room for the top bar
-    var offsetY = Math.max(/* post-wrapper's padding-top */ 6,
+    var fixedOffset = fixedBarsHeight();
+    var offsetY = Math.max(POST_WRAPPER_PADDING_TOP,
       Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -
-        (isTopbarFixed ? document.body.scrollTop + TRIANGLE_HEIGHT + (isHeaderFixed ? HEADER_HEIGHT : 0) :
-            Math.max(document.body.scrollTop, GBAR_HEIGHT)) - /* breathing room */ 7));
+        (fixedOffset > 0 ? document.body.scrollTop + fixedOffset :
+         Math.max(document.body.scrollTop, GBAR_HEIGHT)) -
+        /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $item.find('.gpme-preview-triangle');
