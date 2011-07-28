@@ -1146,13 +1146,6 @@ function foldItem(interactive, $item, animated, $post) {
   if (interactive && displayMode == 'expanded')
     localStorage.setItem("gpme_post_folded_" + id, true);
 
-  // Visual changes
-  // Can't fold muted items
-  /*
-  if (isItemMuted($item))
-    return;
-  */
-
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
     $post.slideUp('fast', function() {
