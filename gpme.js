@@ -50,21 +50,34 @@
 //// For more class constants, see foldItem() in classes array
 
 var _ID_GBAR                    = '#gb';
+var _ID_STATUS_BG               = '#gbi1a';
+var _ID_STATUS_FG               = '#gbi1';
+var C_STATUS_BG_OFF             = 'gbid';
+var C_STATUS_FG_OFF             = 'gbids';
 var _C_HEADER                   = '.a-U-T';
-// We can't just use '.a-b-f-i-oa' cuz clicking link to the *current* page will
-// refresh the contentPane
+// For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
+// clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
+var _C_COPYRIGHT                = '.a-b-Xa-T';
+var _FEEDBACK_LINK              = '.a-eo-eg';
+var C_FEEDBACK                  = 'tk3N6e-e-vj';
+
+// Pages and streams
 var C_NOTIFICATIONS_MARKER      = 'MJI2hd';
+var _C_NOTIFICATION_STREAM      = '.a-b-l-Kc-Ze'
 var C_SPARKS_MARKER             = 'a-b-OL';
 var C_SINGLE_POST_MARKER        = 'a-Wf-i-M';
 var C_PROFILE_PANE              = 'a-p-M-T-hk-xc';
 var C_STREAM                    = 'a-b-f-i-oa';
 var _C_STREAM                   = '.a-b-f-i-oa';
-var _FEEDBACK_LINK              = '.a-eo-eg';
-var C_FEEDBACK                  = 'tk3N6e-e-vj';
+var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
+var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
+
+// Item
 var C_SELECTED                  = 'a-f-oi-Ai';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
+var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
 var _C_CONTENT                  = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
@@ -74,6 +87,8 @@ var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
 var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
+
+// Comments
 var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
 var C_COMMENTS_ALL_CONTAINER    = 'a-b-f-i-Xb';
 var C_COMMENTS_OLD_CONTAINER    = 'a-b-f-i-cf-W-xb';
@@ -91,19 +106,13 @@ var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
 var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
 //var _C_COMMENTS_CONTAINER     = '.a-b-f-i-Xb-oa';
 var _C_COMMENT_EDITOR           = '.a-b-f-i-Pb-W-t';
-var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
-var _ID_STATUS_BG               = '#gbi1a';
-var _ID_STATUS_FG               = '#gbi1';
-var C_STATUS_BG_OFF             = 'gbid';
-var C_STATUS_FG_OFF             = 'gbids';
 var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
-var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_COPYRIGHT                = '.a-b-Xa-T';
+
+// Menu
 var _C_MENU_MUTE                = '.a-b-f-i-Fb-C';
 var _C_MENU_UNMUTE              = '.a-b-f-i-kb-C'; // Displayed on user's posts page
 var _C_LINK_UNMUTE              = '.a-b-f-i-kb-h';
-var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -120,7 +129,6 @@ var DISABLED_PAGES_CLASSES = [
   C_SINGLE_POST_MARKER
 ];
 
-
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
@@ -131,6 +139,20 @@ var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var GAP_ABOVE_ITEM_AT_TOP = 2;
 var MUTED_ITEM_HEIGHT = 45;
+
+// For instant previews, hoverIntent
+var hoverIntentConfig = {    
+  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
+  delayIn: 400, // number = milliseconds delay before onMouseOver
+  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
+  delayOut: 350, // number = milliseconds delay before onMouseOut    
+  exclusiveSet: null // name of exclusiveSet to which the target belongs
+};
+
+// Duration of clickwall.
+// NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
+// the preview will go away.
+var clickWallTimeout = 300;
 
 /****************************************************************************
  * Init
@@ -143,8 +165,10 @@ var displayMode;
 // once the location.href is corrected
 var $lastTentativeOpen = null;
 
+// We track what's open so that we can close it
 var $lastPreviewedItem = null;
 
+// Timers to handle G+'s G+ dynamic comment list reconstruction
 var lastCommentCountUpdateTimers = {};
 
 // Shared DOM: the titlebar
@@ -179,20 +203,6 @@ var $postWrapperTpl = $(postWrapperTpl);
 var commentsWrapperTpl = document.createElement('div');
 commentsWrapperTpl.className = 'gpme-comments-wrapper';
 var $commentsWrapperTpl = $(commentsWrapperTpl);
-
-// For instant previews, hoverIntent
-var hoverIntentConfig = {    
-  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
-  delayIn: 400, // number = milliseconds delay before onMouseOver
-  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
-  delayOut: 350, // number = milliseconds delay before onMouseOut    
-  exclusiveSet: null // name of exclusiveSet to which the target belongs
-};
-
-// Duration of clickwall.
-// NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
-// the preview will go away.
-var clickWallTimeout = 300;
 
 /****************************************************************************
  * Utility
@@ -396,6 +406,14 @@ function onKeydown(e) {
   if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
       e.target.tagName == 'INPUT')
     return;
+
+  /*
+  // Start catching key sequences
+  // 71 = 'g'
+  if (e.which == 71) {
+    setTimeout
+  }
+  */
 
   // First, try the activeElement instead of C_SELECTED because it's already set before the
   // scroll; but if that fails (e.g. when the user cancels the editing of a comment
