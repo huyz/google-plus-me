@@ -129,7 +129,7 @@ var HEADER_HEIGHT = 45;
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var GAP_ABOVE_ITEM_AT_TOP = 2;
-var MUTED_ITEM_HEIGHT = 40;
+var MUTED_ITEM_HEIGHT = 45;
 
 /****************************************************************************
  * Init
@@ -385,26 +385,10 @@ function onKeydown(e) {
     document.activeElement.id !== null && document.activeElement.id.indexOf('update-') === 0 ?
       $(document.activeElement) : $(_C_SELECTED);
 
-  /**
-   * Navigates to and unfolds the specified item
-   */
-  function navigateUnfolding($item, $previousItem) {
-    hideAnyPostItemPreview();
-
-    // In expanded mode, we want these shortcuts fold the previous item, unlike with the mouse.
-    if (typeof $previousItem != 'undefined' && $previousItem !== null &&
-        $previousItem.length && displayMode == 'expanded' && ! isItemMuted($previousItem))
-      foldItem(true, $previousItem);
-
-    click($item);
-    toggleItemFoldedVariant('list-like-unfold', $item);
-    scrollToTop($item);
-  }
-
   // Skip all these modifiers
   // XXX Is there a jQuery method for this?
-  if ((e.which == 38 || e.which == 40) && (e.ctrlKey || e.altKey || e.metaKey) ||
-      (e.which != 38 && e.which != 40) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
+  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 77) && (e.ctrlKey || e.altKey || e.metaKey) ||
+      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 77) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
     return;
 
   // If we still don't have a selected item, then e.g. the page must have just loaded,
@@ -435,8 +419,8 @@ function onKeydown(e) {
       if (! isItemMuted($selectedItem) && isItemFolded($selectedItem))
         toggleItemFolded($selectedItem);
       break;
-    case 77: // 'm'
-      toggleItemMuted($selectedItem);
+    case 77: // 'm' and 'M'
+      toggleItemMuted($selectedItem, e.shiftKey);
       break;
     case 67: // 'c' and 'C'
       if (! isItemFolded($selectedItem)) {
@@ -543,6 +527,23 @@ function onKeydown(e) {
       break;
     default: break;
   }
+}
+
+/**
+  * Navigates to and unfolds the specified item
+  * @param scrollPreviousItem: Optional, makes previous item top item
+  */
+function navigateUnfolding($item, $previousItem, scrollPreviousItem) {
+  hideAnyPostItemPreview();
+
+  // In expanded mode, we want these shortcuts fold the previous item, unlike with the mouse.
+  if (typeof $previousItem != 'undefined' && $previousItem !== null &&
+      $previousItem.length && displayMode == 'expanded' && ! isItemMuted($previousItem))
+    foldItem(true, $previousItem);
+
+  click($item);
+  toggleItemFoldedVariant('list-like-unfold', $item);
+  scrollToTop(scrollPreviousItem ? $previousItem : $item);
 }
 
 /**
@@ -955,7 +956,7 @@ function toggleItemFolded($item, animated) {
  * is folded.
  * This function handles different seemingly-conflicting modes because
  * it handles complex scrolling animation that needs to be in one place.
- * Is called by toggleItemFolded() and navigateUnfolding()>
+ * Is called by toggleItemFolded() and navigateUnfolding().
  * Calls foldItem() or unfoldItem().
  * @param action: toggle, unfold, list-like-unfold.
  *   'toggle': what happens when the user hits a title bar, adapting to both the mode
@@ -1452,8 +1453,9 @@ function scrollToTop($item) {
  * - we preserve their last fold/unfold state, so that when we unmute, it goes back to what it was.
  *   That means other fold/unfold operations have no effect on that state.
  * - the post-wrapper must be unhidden for G+'s muted div to display.
+ * @param goUp: optional, tries to go up after mute instead of down
  */
-function toggleItemMuted($item) {
+function toggleItemMuted($item, goUp) {
   if (typeof $item === 'undefined' || $item === null)
     return;
 
@@ -1506,6 +1508,19 @@ function toggleItemMuted($item) {
         } else {
           $post.show();
         }
+      }
+
+      // Now automatically go to the next message, just like in gmail
+      // This code is just like for shift-down
+      if (goUp)
+        $sibling = $item.prev();
+      else
+        $sibling = $item.next();
+      if ($sibling.length) {
+        navigateUnfolding($sibling, $item, ! goUp);
+      } else if (! goUp) {
+        // If we're at the bottom, trigger the more button
+        clickMoreButton();
       }
     }
   }
