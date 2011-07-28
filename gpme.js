@@ -820,7 +820,7 @@ function updateItem($item) {
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
-    // events and infinite recursion.
+    // events and infinite recursion if we listen to DOMSubtreeModified.
     //debug("updateItem: enhancing");
     $item.addClass('gpme-enh');
 
