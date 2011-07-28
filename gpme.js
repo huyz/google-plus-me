@@ -404,7 +404,7 @@ function onKeydown(e) {
   debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
   // We're not interested in these
   if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
-      e.target.tagName == 'INPUT')
+      e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA')
     return;
 
   /*
