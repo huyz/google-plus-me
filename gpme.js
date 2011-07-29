@@ -92,8 +92,8 @@ var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // _C_TITLE:
 // NOTE: don't just take the first div inside post content title because
 // sometimes the hangout 'Live' icons (.a-lx-i-ie-ms-Ha-q) is there
-//var C_TITLE                     = 'gZgCtb';
 var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q)'; // This will work with StartG+ as well
+var C_TITLE                     = 'gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
@@ -158,7 +158,7 @@ var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
 var POST_WRAPPER_PADDING_TOP = 6;
 var POST_WRAPPER_PADDING_BOTTOM = 6;
-var HEADER_BAR_HEIGHT = 60;
+var HEADER_BAR_HEIGHT = 60; // This changes to 45 depending on Google+ Ultimate's options
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var GAP_ABOVE_ITEM_AT_TOP = 2;
@@ -301,7 +301,16 @@ function getOptionsFromBackground(callback) {
  * This is for compatibility with other extensions.
  */
 function fixedBarsHeight() {
-  return isGbarFixed() ? GBAR_HEIGHT + (isHeaderBarFixed() ? HEADER_BAR_HEIGHT : 0) : 0;
+  return isGbarFixed() ? GBAR_HEIGHT + (isHeaderBarFixed() ? getHeaderBarHeight() : 0) : 0;
+}
+
+/**
+ * Returns the header bar height, which changes according to Google+ Ultimate settings
+ * (Compatc or Ultra Compact navigation)
+ */
+function getHeaderBarHeight() {
+  var $header = $(_C_HEADER);
+  return $header.length ? $header.height() : HEADER_BAR_HEIGHT;
 }
 
 /**
@@ -337,7 +346,7 @@ function overlappingBarsHeight() {
   if ($content.length) {
     var styles = window.getComputedStyle($content.get(0));
     if (styles.overflowX == 'hidden')
-      result += HEADER_BAR_HEIGHT;
+      result += getHeaderBarHeight();
   }
 
   return result;
@@ -1267,6 +1276,11 @@ function foldItem(interactive, $item, animated, $post) {
       error($item);
     } else {
       var $clonedTitle = $subtree = $srcTitle.clone();
+
+      // 2011-07-30 Google Ultimate+ changes the overflow for .gZgCtb to visible.
+      // Let's just remove that class, since we've already copied its styles to
+      // ".gpme-title > div" for Start G+
+      $clonedTitle.removeClass(C_TITLE);
 
       var $srcPhoto = $item.find(S_PHOTO);
       if ($srcPhoto.length) {
