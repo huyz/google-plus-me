@@ -153,6 +153,9 @@ var _C_CIRCLESTARS = '.circlestars';
 var C_STARTGP = 'sgp_update';
 var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
 
+// Google+ Tweaks
+var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
+
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
@@ -1292,12 +1295,15 @@ function foldItem(interactive, $item, animated, $post) {
 
       // Take out permissions
       var $perms = $clonedTitle.find(_C_PERMS);
-      if ($perms.length > 0) {
+      if ($perms.length) {
         $perms.remove();
       } else if (! isSgpPost) {
         error("foldItem: can't find permissions div");
         error($clonedTitle);
       }
+
+      // Take out Google+ Tweak's Easy mention feature
+      $clonedTitle.find(_C_TWEAK_EZMNTN).remove();
 
       // Take out Usability Boost's "- Mute"
       var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
