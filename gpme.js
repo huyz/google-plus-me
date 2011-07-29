@@ -55,6 +55,7 @@ var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
 var _C_HEADER                   = '.a-U-T';
+var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
@@ -64,7 +65,7 @@ var C_FEEDBACK                  = 'tk3N6e-e-vj';
 
 // Pages and streams
 var C_NOTIFICATIONS_MARKER      = 'MJI2hd';
-var _C_NOTIFICATION_STREAM      = '.a-b-l-Kc-Ze'
+var _C_NOTIFICATION_STREAM      = '.a-b-l-Kc-Ze';
 var C_SPARKS_MARKER             = 'a-b-OL';
 var C_SINGLE_POST_MARKER        = 'a-Wf-i-M';
 var C_PROFILE_PANE              = 'a-p-M-T-hk-xc';
@@ -134,7 +135,7 @@ var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
 var POST_WRAPPER_PADDING_TOP = 6;
 var POST_WRAPPER_PADDING_BOTTOM = 6;
-var HEADER_HEIGHT = 45;
+var HEADER_BAR_HEIGHT = 60;
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var GAP_ABOVE_ITEM_AT_TOP = 2;
@@ -272,23 +273,53 @@ function getOptionsFromBackground(callback) {
 }
 
 /**
- * Returns the number of height of any fixed bars at the top, if
+ * Returns the height of any fixed bars at the top, if
  * applicable.
  * This is for compatibility with other extensions.
  */
 function fixedBarsHeight() {
+  return isGbarFixed() ? GBAR_HEIGHT + (isHeaderBarFixed() ? HEADER_BAR_HEIGHT : 0) : 0;
+}
+
+/**
+ * Returns true if Gbar is fixed in place
+ */
+function isGbarFixed() {
   // Detect fixed gbar for compatibility (with "Replies and more for Google+",
   // Usability Boost, and Google+ Ultimate)
   var $gbar = $(_ID_GBAR);
-  var isGbarFixed = $gbar.length && ($gbar.parent().css('position') == 'fixed');
+  return $gbar.length && $gbar.parent().css('position') == 'fixed';
+}
+
+/**
+ * Returns true if header bar (the part below Gbar) is fixed in place
+ */
+function isHeaderBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate")
-  var isHeaderFixed = false;
-  if (isGbarFixed) {
-    var $header = $(_C_HEADER);
-    isHeaderFixed = $header.length && ($header.css('position') == 'fixed');
+  var $header = $(_C_HEADER);
+  return $header.length && $header.css('position') == 'fixed';
+}
+
+/**
+ * Returns the height of any bars at the top that would overlap
+ * our popup preview, i.e. anythings that's outside the #content area,
+ * which may overflow-hidden or have a high z-index
+ */
+function overlappingBarsHeight() {
+  var result = GBAR_HEIGHT;
+
+  // 2011-07-29 Usability Boost messes up the overflow of the content area
+  // to fix something that it breaks.  So we have to adjust
+  var $content = $(_ID_CONTENT);
+  if ($content.length) {
+    var styles = window.getComputedStyle($content.get(0));
+    debug("overlappingBarsHeight");
+    debug(styles);
+    if (styles.overflowX == 'hidden')
+      result += HEADER_BAR_HEIGHT;
   }
 
-  return isGbarFixed ? GBAR_HEIGHT + (isHeaderFixed ? HEADER_HEIGHT : 0) : 0;
+  return result;
 }
 
 /****************************************************************************
@@ -443,7 +474,7 @@ function onKeydown(e) {
         case 38: // shift-up
         case 40: // shift-down
           if (e.shiftKey)
-            navigateUnfolding($item);
+            navigateUnfolding($selectedItem);
           break;
         default: break;
       }
@@ -1511,6 +1542,8 @@ function toggleItemMuted($item, goUp) {
       unmuteFound = true;
   }
 
+  var $post;
+
   // Unmute
   if (unmuteFound) {
     // See below for when we set max-height
@@ -1519,7 +1552,7 @@ function toggleItemMuted($item, goUp) {
 
     // If folded, we have to undo the show we did when muting
     if (isItemFolded($item)) {
-      var $post = $item.find('.gpme-post-wrapper');
+      $post = $item.find('.gpme-post-wrapper');
       if ($post.length != 1) {
         error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
       } else {
@@ -1541,7 +1574,7 @@ function toggleItemMuted($item, goUp) {
 
       if (isItemFolded($item)) {
         // We have to show the post content in order to display the "muted" message
-        var $post = $item.find('.gpme-post-wrapper');
+        $post = $item.find('.gpme-post-wrapper');
         if ($post.length != 1) {
           error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
         } else {
@@ -1990,13 +2023,10 @@ function showPreview(e) {
         ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)) +
       'px');
     $post.css('left', 'auto');
-    // Move to the top, leaving room for the top bar
-    var fixedOffset = fixedBarsHeight();
     var offsetY = Math.max(POST_WRAPPER_PADDING_TOP,
       Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -
-        (fixedOffset > 0 ? document.body.scrollTop + fixedOffset :
-         Math.max(document.body.scrollTop, GBAR_HEIGHT)) -
+         Math.max(document.body.scrollTop + fixedBarsHeight(), overlappingBarsHeight()) -
         /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
