@@ -103,12 +103,15 @@
   color: #CCCCCC;
 }
 
-.gpme-title .gZgCtb {
+.gpme-title > div {
   white-space: nowrap;
   line-height: 22px;
+  /* Copied from gZgCtb, so that it works for Start G+ as well */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.gpme-title .gZgCtb > a > img {
+.gpme-title > div > a > img {
   height: 20px;
   width: 20px;
   margin: 0 3px 0 0;
@@ -144,8 +147,8 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
  * :not(.a-f-i-za) means not muted
  */
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do, /* User photo */
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do /* User photo */,
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* Hangout's live */{
   display: none;
 }
 .gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */

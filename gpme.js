@@ -44,6 +44,13 @@
 */
 
 /****************************************************************************
+ * Config
+ ***************************************************************************/
+
+// Set to true to enable compatibility with Start G+
+var COMPAT_STARTGP = true;
+
+/****************************************************************************
  * Constants
  ***************************************************************************/
 
@@ -82,7 +89,11 @@ var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-U
 var _C_CONTENT                  = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
-var _C_TITLE                    = '.gZgCtb';
+// _C_TITLE:
+// NOTE: don't just take the first div inside post content title because
+// sometimes the hangout 'Live' icons (.a-lx-i-ie-ms-Ha-q) is there
+//var C_TITLE                     = 'gZgCtb';
+var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q)'; // This will work with StartG+ as well
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
@@ -137,6 +148,10 @@ var _C_UBOOST_MUTELINK = '.mute_link';
 
 // Circlestars
 var _C_CIRCLESTARS = '.circlestars';
+
+// Start G+
+var C_STARTGP = 'sgp_update';
+var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
 
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
@@ -458,7 +473,7 @@ function onKeydown(e) {
   // or clicks on area outside of contentpane), then we go look at C_SELECTED
   var $selectedItem =
     document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
-    document.activeElement.id !== null && document.activeElement.id.indexOf('update-') === 0 ?
+    document.activeElement.id !== null && document.activeElement.id.substring(0,7) == 'update-' ?
       $(document.activeElement) : $(_C_SELECTED);
 
   // Skip all these modifiers
@@ -529,7 +544,7 @@ function onKeydown(e) {
       break;
     case 80: // 'p'
       hideAnyPostItemPreview();
-      $sibling = $selectedItem.prev();
+      $sibling = getPrevItem($selectedItem);
       if ($sibling.length) {
         click($sibling);
         // NOTE: G+ already scrolls everything for us
@@ -537,7 +552,7 @@ function onKeydown(e) {
       break;
     case 78: // 'n'
       hideAnyPostItemPreview();
-      $sibling = $selectedItem.next();
+      $sibling = getNextItem($selectedItem);
       if ($sibling.length) {
         click($sibling);
         // NOTE: G+ already scrolls everything for us
@@ -548,14 +563,14 @@ function onKeydown(e) {
       break;
     case 38: // shift-up
       if (e.shiftKey) {
-        $sibling = $selectedItem.prev();
+        $sibling = getPrevItem($selectedItem);
         if ($sibling.length)
           navigateUnfolding($sibling, $selectedItem);
       }
       break;
     case 40: // shift-down
       if (e.shiftKey) {
-        $sibling = $selectedItem.next();
+        $sibling = getNextItem($selectedItem);
         if ($sibling.length) {
           navigateUnfolding($sibling, $selectedItem);
         } else {
@@ -631,6 +646,7 @@ function navigateUnfolding($item, $previousItem, scrollPreviousItem) {
  * Responds to our keypresses, while handling cases when scrolling is in motion
  * Calls toggleItemFolded() and unfoldItem()
  */
+/*
 function onSmartKeydown(e, attempt) {
   var $selectedItem = $(_C_SELECTED);
   if (! $selectedIt && ! noscrollem.length)
@@ -679,9 +695,9 @@ function onSmartKeydown(e, attempt) {
   if (tryAgain && attempt < 20)
     setTimeout(function() { onSmartKeydown(e, attempt + 1); }, 50);
 }
+*/
 
-/**
- * Simulate clicks on the page.
+/** * Simulate clicks on the page.
  */
 /* Deprecated
 function click($elem) {
@@ -725,7 +741,7 @@ function onResetAll() {
 
   var oldMode = displayMode;
   for (var i in localStorage) {
-    if (i.indexOf('gpme_') === 0)
+    if (i.substring(0,5) == 'gpme_')
       localStorage.removeItem(i);
   }
 
@@ -896,7 +912,7 @@ function updateItem($item) {
         setTimeout(function() { updateItem($item); }, 100 );
       } else {
         error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
-        error($item.html());
+        console.error($item.get(0));
       }
       return;
     }
@@ -1233,18 +1249,23 @@ function foldItem(interactive, $item, animated, $post) {
   // Attached or pending title
   var $subtree;
 
+  // If this is StartG+ post
+  var isSgpPost = false;
+  if (COMPAT_STARTGP)
+    isSgpPost = $item.hasClass(C_STARTGP);
+
   // If not yet done, put content in titlebar
   var $title = $subtree = $item.find('.gpme-title');
   if (! $title.hasClass('gpme-has-content')) {
     $title.addClass('gpme-has-content');
 
-    var $srcTitle = $item.find(_C_TITLE);
-    if ($srcTitle.length != 1) {
+    var $srcTitle;
+
+    $srcTitle = $item.find(_C_TITLE);
+    if (! $srcTitle.length) {
       error("foldItem: can't find post content title node");
       error($item);
     } else {
-      // NOTE: don't just take the first div inside post content title because
-      // sometimes the hangout 'Live' icons is there
       var $clonedTitle = $subtree = $srcTitle.clone();
 
       var $srcPhoto = $item.find(S_PHOTO);
@@ -1259,7 +1280,7 @@ function foldItem(interactive, $item, animated, $post) {
       var $perms = $clonedTitle.find(_C_PERMS);
       if ($perms.length > 0) {
         $perms.remove();
-      } else {
+      } else if (! isSgpPost) {
         error("foldItem: can't find permissions div");
         error($clonedTitle);
       }
@@ -1282,13 +1303,19 @@ function foldItem(interactive, $item, animated, $post) {
         $stars.remove();
       }
 
+      // Take out Start G+'s original post link
+      if (isSgpPost) {
+        //console.debug("foldItem: SG+", $clonedTitle.find('span[style^="font-size"]'));
+        $clonedTitle.find('span[style^="font-size"]').remove();
+      }
+
       // Put in snippet, trying differing things
       var classes = [
         '.a-b-f-i-u-ki', // poster text
         '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
         '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
         '.a-f-i-ie-R', // hangout text
-        '.w0wKhb', // "A was tagged in B"
+        '.w0wKhb', // "A was tagged in B", or Start G+'s tweets
         '.ea-S-pa-qa', // photo caption
         '.a-f-i-p-qb .a-b-h-Jb', // photo album
         '.ea-S-R-h', // title of shared link
@@ -1323,55 +1350,63 @@ function foldItem(interactive, $item, animated, $post) {
         '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
         '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
 
-      // Take out date marker so that G+ doesn't update the wrong copy
-      var $clonedDate = $clonedTitle.find(_C_DATE);
-      if (! $clonedDate.length) {
-        error("foldItem: Can't find date marker");
-        error($clonedTitle);
-      } else {
-        $clonedDate.removeClass(C_DATE);
+      // For Start G+ post, we're done
+      if (isSgpPost) {
+          // Inject the summary title
+          $title.append($clonedTitle);
 
-        // If any, move "- Muted" to right after date and before the " - "
-        $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
+      } else { // Regular G+ posts
 
-        // Inject the summary title
-        $title.append($clonedTitle);
+        // Take out date marker so that G+ doesn't update the wrong copy
+        var $clonedDate = $clonedTitle.find(_C_DATE);
+        if (! $clonedDate.length) {
+          error("foldItem: Can't find date marker");
+          error($clonedTitle);
+        } else {
+          $clonedDate.removeClass(C_DATE);
 
-        // Stop propagation of click from the name
-        // NOTE: done here coz it can't be done on a detached node.
-        $clonedTitle.find('a').click(function(e) {
-          e.stopPropagation();
-        });
+          // If any, move "- Muted" to right after date and before the " - "
+          $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
 
-        // For first page display, the date is there, but for updates, the date isn't there yet.
-        // So check, and try again later in case of updates.
-        var attempt = 40;
-        (function insertTitleWhenDateUpdated($date) {
-          attempt--;
-          if ($date.length && $date.text() != '#' || attempt < 0) {
-            var dateText = '';
-            if (attempt < 0) {
-              error("insertTitleWhenDateUpdated: gave up on getting the date for id=" + id);
+          // Inject the summary title
+          $title.append($clonedTitle);
+
+          // Stop propagation of click from the name
+          // NOTE: done here coz it can't be done on a detached node.
+          $clonedTitle.find('a').click(function(e) {
+            e.stopPropagation();
+          });
+
+          // For first page display, the date is there, but for updates, the date isn't there yet.
+          // So check, and try again later in case of updates.
+          var attempt = 40;
+          (function insertTitleWhenDateUpdated($date) {
+            attempt--;
+            if ($date.length && $date.text() != '#' || attempt < 0) {
+              var dateText = '';
+              if (attempt < 0) {
+                error("insertTitleWhenDateUpdated: gave up on getting the date for id=" + id);
+              } else {
+                dateText = abbreviateDate($date.text());
+              }
+              // Strip out the A link because we don't want to make it clickable
+              // Not only does clicking it somehow opens a new window, but we need
+              // the clicking space especially with instant previews
+              $clonedDate.text(dateText);
+
             } else {
-              dateText = abbreviateDate($date.text());
-            }
-            // Strip out the A link because we don't want to make it clickable
-            // Not only does clicking it somehow opens a new window, but we need
-            // the clicking space especially with instant previews
-            $clonedDate.text(dateText);
+              var $srcDateA = $item.find(_C_DATE + ' a');
 
-          } else {
-            var $srcDateA = $item.find(_C_DATE + ' a');
-
-            if ($srcDateA.length) {
-              // Try again later in a little bit
-              setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 50);
-            } else {
-              error("insertTitleWhenDateUpdated: can't find the source date div");
-              error($srcDateA);
+              if ($srcDateA.length) {
+                // Try again later in a little bit
+                setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 50);
+              } else {
+                error("insertTitleWhenDateUpdated: can't find the source date div");
+                error($srcDateA);
+              }
             }
-          }
-        })($clonedDate.find('a'));
+          })($clonedDate.find('a'));
+        }
       }
     }
   }
@@ -1482,6 +1517,19 @@ function unfoldLastOpenInListMode() {
 /****************************************************************************
  * Misc. operations on posts
  ***************************************************************************/
+
+/**
+ * Returns the previous item
+ */
+function getPrevItem($item) {
+  return $item.prevAll('[id^="update-"]').first(); // We want to skip over Start G+'s items
+}
+/**
+ * Returns the next item
+ */
+function getNextItem($item) {
+  return $item.nextAll('[id^="update-"]').first(); // We want to skip over Start G+'s items
+}
 
 /**
  * Click the specified element
@@ -1614,9 +1662,9 @@ function toggleItemMuted($item, goUp) {
       // Now automatically go to the next message, just like in gmail
       // This code is just like for shift-down
       if (goUp)
-        $sibling = $item.prev();
+        $sibling = getPrevItem($item);
       else
-        $sibling = $item.next();
+        $sibling = getNextItem($item);
       if ($sibling.length) {
         navigateUnfolding($sibling, $item, ! goUp);
       } else if (! goUp) {
@@ -2149,7 +2197,9 @@ $(document).ready(function() {
 
         // This happens when a new post is added, either through "More"
         // or a new recent post.
-        if (id && id.indexOf('update-') === 0)
+        // Or it's a Start G+ post
+        if (id && id.substring(0,7) == 'update-' ||
+            COMPAT_STARTGP && e.target.className.indexOf(C_STARTGP) >= 0)
           onStreamUpdated(e);
         // This happens when switching from About page to Posts page
         // on profile
