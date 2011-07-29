@@ -118,8 +118,6 @@ var _C_LINK_UNMUTE              = '.a-b-f-i-kb-h';
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
 
-var C_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
-
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
 var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + ')\\b');
@@ -129,6 +127,12 @@ var DISABLED_PAGES_CLASSES = [
   C_SPARKS_MARKER,
   C_SINGLE_POST_MARKER
 ];
+
+// G+me
+var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
+
+// Usability Boost
+var _C_UBOOST_MUTELINK = '.mute_link';
 
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
@@ -777,7 +781,7 @@ function injectCSS() {
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
       hardcodeCoordsHilite($statusNode) + ' } '));
     $statusNode.addClass(C_STATUS_BG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_GPME_COMMENTCOUNT_NOHILITE + ' { ' +
       hardcodeCoordsNohilite($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
@@ -794,7 +798,7 @@ function injectCSS() {
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     $statusNode.addClass(C_STATUS_FG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_GPME_COMMENTCOUNT_NOHILITE + ' { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
@@ -1253,6 +1257,15 @@ function foldItem(interactive, $item, animated, $post) {
         error($clonedTitle);
       }
 
+      // Take out Usability Boost's "- Mute"
+      var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
+      if ($muteLink.length) {
+        var $muteDash = $muteLink.prev();
+        if ($muteDash.length && $muteDash.text() == '-')
+          $muteDash.remove();
+        $muteLink.remove();
+      }
+
       // Put in snippet, trying differing things
       var classes = [
         '.a-b-f-i-u-ki', // poster text
@@ -1291,8 +1304,8 @@ function foldItem(interactive, $item, animated, $post) {
 
       // Add comment-count container
       $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-        '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
-        '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
+        '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
+        '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
 
       // Take out date marker so that G+ doesn't update the wrong copy
       var $clonedDate = $clonedTitle.find(_C_DATE);
@@ -1730,8 +1743,8 @@ function foldComments(interactive, $item, $comments) {
 
     // Add comment-count container
     $title.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-      '<span class="gpme-comment-count-bg ' + C_COMMENTCOUNT_NOHILITE + '"></span>' +
-      '<span class="gpme-comment-count-fg ' + C_COMMENTCOUNT_NOHILITE + '"></span></div>');
+      '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
+      '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
   }
 
   if (! interactive)
@@ -1825,8 +1838,8 @@ function updateCommentCount(id, $subtree, count) {
   //    different before, which means e.g. a comment was deleted and another inserted
   if ((seenCount === null && count > 0 ) || (seenCount !== null && count != seenCount) ||
       'gpme_post_seen_comment_count_changed_' + id in localStorage) {
-    $countBg.removeClass(C_COMMENTCOUNT_NOHILITE);
-    $countFg.removeClass(C_COMMENTCOUNT_NOHILITE);
+    $countBg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $countFg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
     $container.show();
 
@@ -1840,8 +1853,8 @@ function updateCommentCount(id, $subtree, count) {
       }, 200);
     }
   } else {
-    $countBg.addClass(C_COMMENTCOUNT_NOHILITE);
-    $countFg.addClass(C_COMMENTCOUNT_NOHILITE);
+    $countBg.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $countFg.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
     if (count) {
       $countFg.text(count);
       $container.show();
