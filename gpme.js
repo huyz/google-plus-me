@@ -1,9 +1,9 @@
 /*
 # Filename:         gpme.js
-# {{{1
+#
 # Platforms:        Google Chrome
 # Depends:          
-* Web:              http://huyz.us/google-plus-me/
+# Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
 # Updated on:       2011-07-25
@@ -88,6 +88,7 @@ var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
 var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
+var _C_EXPAND_POST              = '.a-b-f-i-p-gc-h';
 
 // Comments
 var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
@@ -320,8 +321,6 @@ function overlappingBarsHeight() {
   var $content = $(_ID_CONTENT);
   if ($content.length) {
     var styles = window.getComputedStyle($content.get(0));
-    debug("overlappingBarsHeight");
-    debug(styles);
     if (styles.overflowX == 'hidden')
       result += HEADER_BAR_HEIGHT;
   }
@@ -521,6 +520,11 @@ function onKeydown(e) {
           scrollToTop($selectedItem);
           // NOTE: if folded, we don't want to scroll to top.
           // and toggleItemFolded already scrolls into view.
+      }
+      break;
+    case 88: // 'x'
+      if (! isItemMuted($selectedItem) && ! isItemFolded($selectedItem)) {
+        togglePostExpansion($selectedItem);
       }
       break;
     case 80: // 'p'
@@ -1653,6 +1657,18 @@ function clickMoreCommentsButton($item) {
     $commentsButton = $item.find(_C_COMMENTS_OLD_CONTAINER);
     if ($commentsButton.length && $commentsButton.is(':visible')) {
       click($commentsButton);
+    }
+  }
+}
+
+/**
+ * Expand the text of the post by clicking on "Expand this post"
+ */
+function togglePostExpansion($item) {
+  if (typeof $item !== 'undefined' && $item.length) {
+    var $expandLink = $item.find(_C_EXPAND_POST);
+    if ($expandLink.length) {
+      click($expandLink);
     }
   }
 }
