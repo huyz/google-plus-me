@@ -134,6 +134,9 @@ var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 // Usability Boost
 var _C_UBOOST_MUTELINK = '.mute_link';
 
+// Circlestars
+var _C_CIRCLESTARS = '.circlestars';
+
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
@@ -1264,6 +1267,15 @@ function foldItem(interactive, $item, animated, $post) {
         if ($muteDash.length && $muteDash.text() == '-')
           $muteDash.remove();
         $muteLink.remove();
+      }
+
+      // Take out CircleStars
+      var $stars = $clonedTitle.find(_C_CIRCLESTARS);
+      if ($stars.length) {
+        var $starsDash = $stars.prev();
+        if ($starsDash.length && $starsDash.text() == ' - ')
+          $starsDash.remove();
+        $stars.remove();
       }
 
       // Put in snippet, trying differing things
