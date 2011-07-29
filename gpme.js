@@ -277,7 +277,8 @@ function getOptionsFromBackground(callback) {
  * This is for compatibility with other extensions.
  */
 function fixedBarsHeight() {
-  // Detect fixed gbar for compatibility (with "Replies and more for Google+")
+  // Detect fixed gbar for compatibility (with "Replies and more for Google+",
+  // Usability Boost, and Google+ Ultimate)
   var $gbar = $(_ID_GBAR);
   var isGbarFixed = $gbar.length && ($gbar.parent().css('position') == 'fixed');
   // Detect fixed gbar for compatibility (with "Google+ Ultimate")
