@@ -47,8 +47,8 @@
  * Config
  ***************************************************************************/
 
-// Set to true to enable compatibility with Start G+
-var COMPAT_STARTGP = true;
+// Set to true to enable compatibility with Start G+, a.k.a. SGPlus
+var COMPAT_SGP = true;
 
 /****************************************************************************
  * Constants
@@ -95,7 +95,8 @@ var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                     = '.gZgCtb';
+var _C_TITLE                    = '.gZgCtb';
+//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
 var C_TITLE                     = 'gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
@@ -152,10 +153,12 @@ var _C_UBOOST_MUTELINK = '.mute_link';
 // Circlestars
 var _C_CIRCLESTARS = '.circlestars';
 
-// Start G+
-var C_STARTGP = 'sgp_update';
-var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
+// Start G+, a.k.a. SGPlus
+var ID_SGP_POST_PREFIX = 'sgp-post-';
+var C_SGP_UPDATE = 'sgp_update';
 var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class as it should
+var S_SGP_ORIGPOST_LINK = 'span[style^="font-size"]';
+var _C_SGP_COMMENT = '.a-b-f-i-W-r';
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
@@ -426,7 +429,7 @@ function onItemMenuInserted(e) {
   if (! isEnabledOnThisPage())
     return;
 
-  trace("event: DOMNodeInserted of menu into post");
+  //trace("event: DOMNodeInserted of menu into post");
   // We want to make sure the menu is inserted in the right place,
   // not only so that the position is correct in the popup, but also
   // for Google+ Tweaks to insert its mute button in the right place
@@ -970,28 +973,41 @@ function updateItem($item, attempt) {
     // Insert container for post content so that we can turn it into an instant
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
-    console.debug("updateItem: itemContent=", $itemContent);
     $wrapper.append($itemContent);
 
-    if ($item.find('.a-f-i-Ia-D').length === 0);
-      warn("updateItem: can't find a menu!");
+    // If this is SGPlus post
+    var isSgpPost = false;
+    if (COMPAT_SGP)
+      isSgpPost = $item.hasClass(C_SGP_UPDATE);
 
-    // Structure commentbar:
-    // "a-b-f-i-Xb"
-    //   "gpme-commentbar"
-    var $allCommentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
-    // It's possible not to have comments at all on posts with comments
-    // disabled or on photo-tagging posts
-    if ($allCommentContainer.length) {
-      var $commentbar = $commentbarTpl.clone(true);
-      $allCommentContainer.prepend($commentbar);
+    if (! isSgpPost) {
+      // Structure commentbar:
+      // "a-b-f-i-Xb"
+      //   "gpme-commentbar"
+      var $allCommentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
+      // It's possible not to have comments at all on posts with comments
+      // disabled or on photo-tagging posts
+      if ($allCommentContainer.length) {
+        var $commentbar = $commentbarTpl.clone(true);
+        $allCommentContainer.prepend($commentbar);
 
-      // Insert wrapper for comments container so that we can hide it without
-      // triggering DOMSubtreeModified events on the container
-      $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
-      foreachCommentContainer($allCommentContainer, function($container) {
-        $wrapper.append($container);
-      });
+        // Insert wrapper for comments container so that we can hide it without
+        // triggering DOMSubtreeModified events on the container
+        $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
+        foreachCommentContainer($allCommentContainer, function($container) {
+          $wrapper.append($container);
+        });
+      }
+
+    } else { // If SGP post, as of SGP 1.4.0
+      // We have to move the comments into the container
+
+      var $comments = $item.find(_C_SGP_COMMENT);
+      if ($comments.length) {
+        var $commentbar = $commentbarTpl.clone(true);
+        $commentbar.insertBefore($comments.first());
+        $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar).append($comments);
+      }
     }
   }
 
@@ -1292,10 +1308,10 @@ function foldItem(interactive, $item, animated, $post) {
   // Attached or pending title
   var $subtree;
 
-  // If this is StartG+ post
+  // If this is SGPlus post
   var isSgpPost = false;
-  if (COMPAT_STARTGP)
-    isSgpPost = $item.hasClass(C_STARTGP);
+  if (COMPAT_SGP)
+    isSgpPost = $item.hasClass(C_SGP_UPDATE);
 
   // If not yet done, put content in titlebar
   var $title = $subtree = $item.find('.gpme-title');
@@ -1358,7 +1374,7 @@ function foldItem(interactive, $item, animated, $post) {
       // Take out Start G+'s original post link
       if (isSgpPost) {
         //console.debug("foldItem: SG+", $clonedTitle.find('span[style^="font-size"]'));
-        $clonedTitle.find('span[style^="font-size"]').remove();
+        $clonedTitle.find(S_SGP_ORIGPOST_LINK ).remove();
       }
 
       // Put in snippet, trying differing things
@@ -2282,8 +2298,8 @@ $(document).ready(function() {
         // This happens when a new post is added, either through "More"
         // or a new recent post.
         // Or it's a Start G+ post
-        else if (id && id.substring(0,7) == 'update-' ||
-            COMPAT_STARTGP && e.target.className.indexOf(C_STARTGP) >= 0)
+        if (id && (id.substring(0,7) == 'update-' ||
+            COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ))
           onItemInserted(e);
         // This happens when switching from About page to Posts page
         // on profile
