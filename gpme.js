@@ -155,6 +155,7 @@ var _C_CIRCLESTARS = '.circlestars';
 // Start G+
 var C_STARTGP = 'sgp_update';
 var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
+var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class it they should
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
@@ -1276,7 +1277,7 @@ function foldItem(interactive, $item, animated, $post) {
 
     var $srcTitle;
 
-    $srcTitle = $item.find(_C_TITLE);
+    $srcTitle = $item.find(isSgpPost ? _C_SGP_TITLE : _C_TITLE);
     if (! $srcTitle.length) {
       error("foldItem: can't find post content title node");
       error($item);
