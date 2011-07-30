@@ -948,7 +948,7 @@ function updateItem($item) {
     //$item.hover(showPreview, hidePreview);
 
     var $titlebar = $titlebarTpl.clone(true);
-    $titlebar.insertBefore($itemContent);
+    $titlebar.insertBefore($itemContent.first());
 
     // Insert container for post content so that we can turn it into an instant
     // preview
@@ -1264,7 +1264,7 @@ function foldItem(interactive, $item, animated, $post) {
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
   // If interactive folding and comments are showing, record the comment count
-  var commentCount = countComments($item);
+  var commentCount = countComments($item.find('.gpme-comments-wrapper'));
   if (interactive && ! areItemCommentsFolded($item))
     saveSeenCommentCount(id, commentCount);
 
@@ -1804,7 +1804,7 @@ function foldComments(interactive, $item, $comments) {
 
   var id = $item.attr('id');
   debug("foldComments: id=" + id);
-  var commentCount = countComments($item);
+  var commentCount = countComments($comments);
 
   // If result of user action
   if (interactive) {
@@ -1853,8 +1853,7 @@ function foldComments(interactive, $item, $comments) {
       '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
   }
 
-  if (! interactive)
-    updateCommentbar(id, $item, commentCount);
+  updateCommentbar(id, $item, commentCount);
 }
 
 /**
@@ -1874,7 +1873,7 @@ function unfoldComments(interactive, $item, $comments) {
 
   var id = $item.attr('id');
   debug("unfoldComments: id=" + id);
-  var commentCount = countComments($item);
+  var commentCount = countComments($comments);
 
   if (interactive) {
     // Persist
@@ -1975,9 +1974,13 @@ function updateCommentCount(id, $subtree, count) {
  * NOTE: due to the way Google orders the names (oldest to most recent)
  * and cuts off past a number of names, we have to stick to that order.
  */
-function updateCommentsSnippet(id, $subtree) {
+function updateCommentsSnippet(id, $item) {
+  // Skip if the comments are unfolded
+  if (! areItemCommentsFolded($item))
+    return;
+
   var text = '';
-  var $snippet = $subtree.find('.gpme-comments-snippet');
+  var $snippet = $item.find('.gpme-comments-snippet');
 
   // Get the shown names
   var names = new Array();
@@ -1988,19 +1991,26 @@ function updateCommentsSnippet(id, $subtree) {
       names.push(name);
       namesHash[name] = true;
     }
+    return namesHash.length;
   }
 
-  var $shownNames = $subtree.find(_C_COMMENTS_SHOWN_NAMES);
-  var i = 0;
-  $shownNames.slice(0, 7).each(function() { addNameUnique($(this).text()); });
+  var $commentWrapper = $item.find('.gpme-comments-wrapper');
+  // It's possible not to have comments at all on posts with comments
+  // disabled or on photo-tagging posts
+  if (! $commentWrapper.length) {
+    return;
+  }
+
+  var $shownNames = $commentWrapper.find(_C_COMMENTS_SHOWN_NAMES);
+  $shownNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
   // Pad with some more recent names
-  if (names.length < 7) {
-    var $moreNames = $subtree.find(_C_COMMENTS_MORE_NAMES);
-    $moreNames.slice(0, 7 - names.length).each(function() { addNameUnique($(this).text()); });
+  if (names.length < 15) {
+    var $moreNames = $commentWrapper.find(_C_COMMENTS_MORE_NAMES);
+    $moreNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
   }
   text = names.join(', ');
 
-  var $oldNames = $subtree.find(_C_COMMENTS_OLD_NAMES);
+  var $oldNames = $commentWrapper.find(_C_COMMENTS_OLD_NAMES);
   if ($oldNames.length) {
     // If nothing, then just get the old names.
     if (! text.match(/\S/))
@@ -2016,14 +2026,21 @@ function updateCommentsSnippet(id, $subtree) {
  * @param commentCount Optionally provide the commentcount
  */
 function updateCommentbarHeight(id, $item, commentCount) {
-  // Skip it since the entire post is not even shown
+  // Skip if entire post is folded
   if (isItemFolded($item))
     return;
 
-  var $commentbar = $item.find('.gpme-commentbar > div');
+  var $commentWrapper = $item.find('.gpme-comments-wrapper');
+  if (! $commentWrapper.length) {
+    error("updateCommentbarHeight: can't find comments wrapper");
+    error($item);
+    return;
+  }
 
   if (typeof commentCount == 'undefined')
-    commentCount = countComments($item);
+    commentCount = countComments($commentWrapper);
+
+  var $commentbar = $item.find('.gpme-commentbar > div');
 
   // If no comments, no need for a bar
   if (commentCount === 0) {
@@ -2035,15 +2052,9 @@ function updateCommentbarHeight(id, $item, commentCount) {
       $commentbar.css('height', '');
     } else {
       // Update the height
-      var $commentWrapper = $item.find('.gpme-comments-wrapper');
-      if (! $commentWrapper.length) {
-        error("updateCommentbarHeight: can't find comments wrapper");
-        error($item);
-      } else {
-        // Despite advertisements, jQuery 1.6.2 still cannot calculate
-        // height within a hidden tree
-        $commentbar.height($commentWrapper.actual('outerHeight') - 2);
-      }
+      // Despite advertisements, jQuery 1.6.2 still cannot calculate
+      // height within a hidden tree
+      $commentbar.height($commentWrapper.actual('outerHeight') - 2);
     }
   }
 }
@@ -2052,6 +2063,9 @@ function updateCommentbarHeight(id, $item, commentCount) {
  * Count comments for item
  */
 function countComments($subtree) {
+  if (typeof $subtree === 'undefined' || ! $subtree.length)
+    return 0;
+
   var commentCount = 0, text;
   var $comments = $subtree.find(_C_COMMENTS_OLD);
   if ($comments.length)
