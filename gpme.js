@@ -1335,9 +1335,9 @@ function foldItem(interactive, $item, animated, $post) {
         '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
         '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
         '.a-f-i-ie-R', // hangout text
-        '.w0wKhb', // "A was tagged in B", or Start G+'s tweets
         '.ea-S-pa-qa', // photo caption
         '.a-f-i-p-qb .a-b-h-Jb', // photo album
+        '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
         '.ea-S-R-h', // title of shared link
         '.ea-S-Xj-Cc' // text of shared link
       ];
