@@ -156,6 +156,9 @@ var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
 
+// google plus reply+
+var _C_GPR_TOOLS = '.gpr_tools';
+
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
 var TRIANGLE_HEIGHT = 30;
@@ -1305,6 +1308,9 @@ function foldItem(interactive, $item, animated, $post) {
       // Take out Google+ Tweak's Easy mention feature
       $clonedTitle.find(_C_TWEAK_EZMNTN).remove();
 
+      // Take out Google Plus Reply+ tools
+      $clonedTitle.find(_C_GPR_TOOLS).remove();
+
       // Take out Usability Boost's "- Mute"
       var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
       if ($muteLink.length) {
@@ -2042,17 +2048,32 @@ function updateCommentbarHeight(id, $item, commentCount) {
  * Count comments for item
  */
 function countComments($subtree) {
-  var commentCount = 0;
-  var $oldComments = $subtree.find(_C_COMMENTS_OLD);
-  if ($oldComments.length)
-    commentCount += parseInt($oldComments.text(), 10);
+  var commentCount = 0, text;
+  var $comments = $subtree.find(_C_COMMENTS_OLD);
+  if ($comments.length)
+    commentCount += parseTextCount($comments.text());
   commentCount += countShownComments($subtree);
-  var $moreComments = $subtree.find(_C_COMMENTS_MORE);
-  if ($moreComments.length)
-    commentCount += parseInt($moreComments.text(), 10);
+  $comments = $subtree.find(_C_COMMENTS_MORE);
+  if ($comments.length)
+    commentCount += parseTextCount($comments.text());
 
   //debug("countComments: " + commentCount);
   return commentCount;
+}
+
+/**
+ * Extracts count from text in multiple languages
+ */
+function parseTextCount(text) {
+  var num = parseInt(text); // Try faster method first
+  if (isNaN(num)) {
+    num = parseInt(text.replace(/.*?(\d+).*/, '$1'));
+    if (isNaN(num)) {
+      error("parseTextCount: can't parse count of text");
+      num = 0;
+    }
+  }
+  return num;
 }
 
 /**
@@ -2227,7 +2248,8 @@ $(document).ready(function() {
           onContentPaneUpdated(e);
       });
     } else  {
-      error("main: Can't find content pane");
+      // This can happen if we're in the settings page for example
+      warn("main: Can't find content pane");
     }
 
     // Listen when status change
