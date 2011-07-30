@@ -155,7 +155,8 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   display: none;
 }
 
-.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */
+.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h, /* Context menu button */
+.gpme-folded:not(.a-f-i-za) .fv-bookmark { /* Fav+ star button */
   margin-right: -13px; /* Gained 44-13=31 px */
 }
 .gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D { /* context menu */
@@ -201,7 +202,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   height: auto !important; /* Override inline height:239px */
 }
 .gpme-folded:not(.a-f-i-za) .gpme-post-wrapper img {
-  max-width: 297px; /* 313 gpme-post-wrapper - (8*2 padding) */
+  max-width: 100%; /* Resizes image */
 }
 
 /*
@@ -291,3 +292,16 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   display: block;
 }
 
+/*
+ * Compatibility with other extensions
+ */
+
+/* G+ Tweaks */
+.gpme-enh .bcGTweaksMute {
+  top: 18px;
+}
+
+/* Adhik */
+.gpme-folded:not(.a-f-i-za) .ea-S-A {
+  margin-right: 0; /* Overrides 20px */
+}

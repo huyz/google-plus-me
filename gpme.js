@@ -86,8 +86,8 @@ var C_SELECTED                  = 'a-f-oi-Ai';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
 var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
-//var _C_CONTENT                  = '.a-b-f-i-p';
-var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
+var _C_CONTENT                  = '.a-b-f-i-p';
+var _C_CONTENT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // For hangout and photo albums
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // _C_TITLE:
 // Watch out for these divs:
@@ -155,7 +155,7 @@ var _C_CIRCLESTARS = '.circlestars';
 // Start G+
 var C_STARTGP = 'sgp_update';
 var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
-var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class it they should
+var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class as it should
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
@@ -243,7 +243,7 @@ var $commentsWrapperTpl = $(commentsWrapperTpl);
  * For debugging
  */
 function trace(msg) {
-  //console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
+  console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
 }
 function debug(msg) {
   console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
@@ -403,20 +403,34 @@ function onContentPaneUpdated(e) {
 
   // (Re-)create handler for insertions into the stream
   // No longer needed: we'll just handle it in the single DOMNodeInserted event handler
-  //$stream = $(e.target).find(_C_STREAM).bind('DOMNodeInserted', onStreamUpdated);
+  //$stream = $(e.target).find(_C_STREAM).bind('DOMNodeInserted', onItemInserted);
 }
 
 /**
  * Responds to DOM updates from G+ to handle incoming items.
  * Calls updateItem()
  */
-function onStreamUpdated(e) {
+function onItemInserted(e) {
   if (! isEnabledOnThisPage())
     return;
 
-  trace("event: DOMNodeInserted within stream");
-  debug("onStreamUpdated: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
+  trace("event: DOMNodeInserted of item into stream");
+  debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
+}
+
+/**
+ * Responds to DOM updates from G+ to handle incoming menus
+ */
+function onItemMenuInserted(e) {
+  if (! isEnabledOnThisPage())
+    return;
+
+  trace("event: DOMNodeInserted of menu into post");
+  // We want to make sure the menu is inserted in the right place,
+  // not only so that the position is correct in the popup, but also
+  // for Google+ Tweaks to insert its mute button in the right place
+  $(e.target).prev('.gpme-post-wrapper').append($(e.target));
 }
 
 /**
@@ -914,7 +928,7 @@ function updateAllItems($subtree) {
 /**
  * Updates fold/unfold appropriately
  */
-function updateItem($item) {
+function updateItem($item, attempt) {
   var id = $item.attr('id');
   debug("updateItem: " + id);
 
@@ -924,19 +938,22 @@ function updateItem($item) {
     // Add titlebar
     // For Tweak, we also need the menu in there
     //var $itemContent = $item.find(_C_CONTENT);
-    var $itemContent = $item.children('div');
+    var $itemContent = $item.children('div:not(' + _C_CONTENT_PLACEHOLDER + ')');
     if (! $itemContent.length) {
-      // The hangout post comes a bit later
-      if ($item.find(_C_HANGOUT_PLACEHOLDER).length) {
-        setTimeout(function() { updateItem($item); }, 100 );
+      // The content comes a bit later
+      if ($item.find(_C_CONTENT_PLACEHOLDER).length) {
+        if (typeof attempt === 'undefined')
+          attempt = 0;
+        if (attempt < 29) {
+          setTimeout(function() { updateItem($item, attempt + 1); }, 100 );
+        } else {
+          error("updateItem: Can't get any content within 3 seconds. Giving up");
+        }
       } else {
         error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
         console.error($item.get(0));
       }
       return;
-    }
-    if ($item.find('.a-f-i-Ia-D.d-D')) {
-      debug("menu", $item.find('.a-f-i-Ia-D.d-D'));
     }
     // NOTE: we have to change the class before inserting or we'll get more
     // events and infinite recursion if we listen to DOMSubtreeModified.
@@ -953,7 +970,11 @@ function updateItem($item) {
     // Insert container for post content so that we can turn it into an instant
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
+    console.debug("updateItem: itemContent=", $itemContent);
     $wrapper.append($itemContent);
+
+    if ($item.find('.a-f-i-Ia-D').length === 0);
+      warn("updateItem: can't find a menu!");
 
     // Structure commentbar:
     // "a-b-f-i-Xb"
@@ -1283,9 +1304,9 @@ function foldItem(interactive, $item, animated, $post) {
 
     var $srcTitle;
 
-    $srcTitle = $item.find(isSgpPost ? _C_SGP_TITLE : _C_TITLE);
-    if (! $srcTitle.length) {
-      error("foldItem: can't find post content title node");
+    $srcTitle = $item.find(_C_CONTENT + " " + (isSgpPost ? _C_SGP_TITLE : _C_TITLE));
+    if ($srcTitle.length !== 1) {
+      error("foldItem: can't find (unique) post content title node");
       error($item);
     } else {
       var $clonedTitle = $subtree = $srcTitle.clone();
@@ -1313,7 +1334,8 @@ function foldItem(interactive, $item, animated, $post) {
       }
 
       // Take out Google+ Tweak's Easy mention feature
-      $clonedTitle.find(_C_TWEAK_EZMNTN).remove();
+      // Doesn't work, it looks for: #contentPane  div[id^="update"] a[oid] which includes mine
+      //$clonedTitle.find(_C_TWEAK_EZMNTN).remove();
 
       // Take out Usability Boost's "- Mute"
       var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
@@ -2254,12 +2276,15 @@ $(document).ready(function() {
         if (id && id.charAt(0) == ':')
           return;
 
+        // This happens when posts' menus get inserted
+        if (e.target.className == 'a-f-i-Ia-D' || e.target.className == 'a-f-i-Ia-D d-D')
+          onItemMenuInserted(e);
         // This happens when a new post is added, either through "More"
         // or a new recent post.
         // Or it's a Start G+ post
-        if (id && id.substring(0,7) == 'update-' ||
+        else if (id && id.substring(0,7) == 'update-' ||
             COMPAT_STARTGP && e.target.className.indexOf(C_STARTGP) >= 0)
-          onStreamUpdated(e);
+          onItemInserted(e);
         // This happens when switching from About page to Posts page
         // on profile
         else if (e.relatedNode.id.indexOf('-posts-page') > 0)
