@@ -86,7 +86,7 @@ var C_SELECTED                  = 'a-f-oi-Ai';
 var _C_SELECTED                 = '.a-f-oi-Ai';
 var _C_ITEM                     = '.a-b-f-i';
 var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
-var _C_CONTENT                  = '.a-b-f-i-p';
+//var _C_CONTENT                  = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // _C_TITLE:
@@ -919,8 +919,11 @@ function updateItem($item) {
 
   if (enhanceItem) {
     // Add titlebar
-    var $itemContent = $item.find(_C_CONTENT);
-    if ($itemContent.length != 1) {
+    // For Tweak, we also need the menu in there
+    //var $itemContent = $item.find(_C_CONTENT);
+    var $itemContent = $item.children('div');
+    if (! $itemContent.length) {
+      // The hangout post comes a bit later
       if ($item.find(_C_HANGOUT_PLACEHOLDER).length) {
         setTimeout(function() { updateItem($item); }, 100 );
       } else {
@@ -928,6 +931,9 @@ function updateItem($item) {
         console.error($item.get(0));
       }
       return;
+    }
+    if ($item.find('.a-f-i-Ia-D.d-D')) {
+      debug("menu", $item.find('.a-f-i-Ia-D.d-D'));
     }
     // NOTE: we have to change the class before inserting or we'll get more
     // events and infinite recursion if we listen to DOMSubtreeModified.
