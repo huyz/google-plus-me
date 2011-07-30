@@ -47,8 +47,8 @@
  * Config
  ***************************************************************************/
 
-// Set to true to enable compatibility with Start G+
-var COMPAT_STARTGP = true;
+// Set to true to enable compatibility with Start G+, a.k.a. SGPlus
+var COMPAT_SGP = true;
 
 /****************************************************************************
  * Constants
@@ -149,9 +149,10 @@ var _C_UBOOST_MUTELINK = '.mute_link';
 // Circlestars
 var _C_CIRCLESTARS = '.circlestars';
 
-// Start G+
-var C_STARTGP = 'sgp_update';
-var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
+// Start G+, a.k.a. SGPlus
+var ID_SGP_POST_PREFIX = 'sgp-post-';
+var C_SGP_UPDATE = 'sgp_update';
+var S_SGP_ORIGPOST_LINK = 'span[style^="font-size"]';
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
@@ -1263,8 +1264,8 @@ function foldItem(interactive, $item, animated, $post) {
 
   // If this is StartG+ post
   var isSgpPost = false;
-  if (COMPAT_STARTGP)
-    isSgpPost = $item.hasClass(C_STARTGP);
+  if (COMPAT_SGP)
+    isSgpPost = $item.hasClass(C_SGP_UPDATE);
 
   // If not yet done, put content in titlebar
   var $title = $subtree = $item.find('.gpme-title');
@@ -1326,7 +1327,7 @@ function foldItem(interactive, $item, animated, $post) {
       // Take out Start G+'s original post link
       if (isSgpPost) {
         //console.debug("foldItem: SG+", $clonedTitle.find('span[style^="font-size"]'));
-        $clonedTitle.find('span[style^="font-size"]').remove();
+        $clonedTitle.find(S_SGP_ORIGPOST_LINK ).remove();
       }
 
       // Put in snippet, trying differing things
@@ -2218,8 +2219,8 @@ $(document).ready(function() {
         // This happens when a new post is added, either through "More"
         // or a new recent post.
         // Or it's a Start G+ post
-        if (id && id.substring(0,7) == 'update-' ||
-            COMPAT_STARTGP && e.target.className.indexOf(C_STARTGP) >= 0)
+        if (id && (id.substring(0,7) == 'update-' ||
+            COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ))
           onStreamUpdated(e);
         // This happens when switching from About page to Posts page
         // on profile
