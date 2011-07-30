@@ -151,6 +151,10 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 .gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* Hangout's live */{
   display: none;
 }
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
+  display: none;
+}
+
 .gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */
   margin-right: -13px; /* Gained 44-13=31 px */
 }

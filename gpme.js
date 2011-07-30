@@ -91,8 +91,9 @@ var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hang
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // _C_TITLE:
 // NOTE: don't just take the first div inside post content title because
-// sometimes the hangout 'Live' icons (.a-lx-i-ie-ms-Ha-q) is there
-var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q)'; // This will work with StartG+ as well
+// sometimes the hangout 'Live' icons (.a-lx-i-ie-ms-Ha-q) is there.
+// Also ignore Google Plus Reply+
+var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
 var C_TITLE                     = 'gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
@@ -155,9 +156,6 @@ var S_STARTGP_ORIGPOST_LINK = _C_TITLE + '> span[style^="font-size"]';
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
-
-// google plus reply+
-var _C_GPR_TOOLS = '.gpr_tools';
 
 // Values shared with our CSS file
 var GBAR_HEIGHT = 30;
@@ -1307,9 +1305,6 @@ function foldItem(interactive, $item, animated, $post) {
 
       // Take out Google+ Tweak's Easy mention feature
       $clonedTitle.find(_C_TWEAK_EZMNTN).remove();
-
-      // Take out Google Plus Reply+ tools
-      $clonedTitle.find(_C_GPR_TOOLS).remove();
 
       // Take out Usability Boost's "- Mute"
       var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
