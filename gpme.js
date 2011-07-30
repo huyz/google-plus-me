@@ -90,10 +90,12 @@ var _C_CONTENT                  = '.a-b-f-i-p';
 var _C_HANGOUT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // Maybe more than just hangout?
 var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // _C_TITLE:
-// NOTE: don't just take the first div inside post content title because
-// sometimes the hangout 'Live' icons (.a-lx-i-ie-ms-Ha-q) is there.
-// Also ignore Google Plus Reply+
-var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
+// Watch out for these divs:
+// - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
+// - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
+// - Google Plus Reply+
+//var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
+var _C_TITLE                     = '.gZgCtb';
 var C_TITLE                     = 'gZgCtb';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
