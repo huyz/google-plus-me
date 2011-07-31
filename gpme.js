@@ -210,6 +210,11 @@ var $lastPreviewedItem = null;
 // Timers to handle G+'s G+ dynamic comment list reconstruction
 var lastCommentCountUpdateTimers = {};
 
+// SGPlus update timer
+var sgpUpdateTimer = null;
+// SGPlus cached DOM
+var $sgpCachedItems = new Object();
+
 // Shared DOM: the titlebar
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
@@ -425,6 +430,75 @@ function onItemInserted(e) {
   trace("event: DOMNodeInserted of item into stream");
   debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
+}
+
+/**
+ * Responds to DOM updates from the inefficient SGPlus which refreshes
+ * too frequently and broadly.
+ * We use several tricks to make up for its inefficiencies:
+ * - Since it consumes all the CPU while it refreshes, we want to do our
+ *   refreshes a bit later to make the browser more responsive
+ * - We cache our enhanced DOM which shouldn't change
+ */
+function onSgpItemInserted(e) {
+  if (! isEnabledOnThisPage())
+    return;
+
+  //trace("event: DOMNodeInserted of SGP post into stream");
+
+  // This event results from our inserting our cached DOM
+  if (e.target.className.indexOf('gpme-enh') >= 0)
+    return;
+  
+  // Try to find cached DOM
+  if (typeof e.target.id !== 'undefined' && e.target.id && e.target.id in $sgpCachedItems) {
+    //debug("onSgpItemInserted: hitting cache id=" + e.target.id);
+    var $item = $(e.target);
+    var $newItem = $sgpCachedItems[e.target.id].clone(true, true);
+    $newItem.insertBefore($item);
+    $newItem.children('.gpme-post-wrapper').append($item.children());
+    //debug("onSgpItemInserted: after:", $newItem.html());
+    $item.remove();
+
+  } else { // Otherwise, we'll enhance later
+    // Get rid of any ongoing timers
+    if (sgpUpdateTimer !== null)
+      clearTimeout(sgpUpdateTimer);
+
+    // Hide the item until we can enhance it
+    $(e.target).hide();
+
+    // Postpone our work for 2 seconds
+    sgpUpdateTimer = setTimeout(function() { enhanceAllSgpPosts($(e.target.parentNode)); }, 2000);
+  }
+}
+
+/**
+ * Update the folding status of an SGP post in the cache
+ */
+function cacheSgpItemFoldState($item) {
+  var id = $item.attr('id');
+  if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
+    var $copy = $sgpCachedItems[id];
+    if (typeof $copy !== 'undefined') {
+      if (isItemFolded($item)) {
+        $copy.addClass('gpme-folded');
+        $copy.removeClass('gpme-unfolded');
+      } else {
+        $copy.addClass('gpme-unfolded');
+        $copy.removeClass('gpme-folded');
+      }
+      if (COMPAT_SGP_COMMENTS) {
+        if (areItemCommentsFolded($item)) {
+          $copy.addClass('gpme-comments-folded');
+          $copy.removeClass('gpme-comments-unfolded');
+        } else {
+          $copy.addClass('gpme-comments-unfolded');
+          $copy.removeClass('gpme-comments-folded');
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -934,6 +1008,29 @@ function updateAllItems($subtree) {
 }
 
 /**
+ * Enhance all the SGP items in the current page
+ */
+function enhanceAllSgpPosts($stream) {
+  $stream.children(_C_ITEM + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh)').each(function(i, item) {
+    debug("enhanceAllSgpPosts #" + i);
+    i++;
+    // Space out the enhancements to make the browser more responsive
+    // NOTE: We have to show because we temporarily hid in onSgpItemInserted()
+    setTimeout(function() {
+      var $item = $(item);
+      updateItem($item);
+
+      $item.show();
+      // Cache the DOM for re-use
+      $item = $item.clone(true, true);
+      $item.children('.gpme-post-wrapper').children(':not([class^="gpme-"])').remove();
+      $sgpCachedItems[item.id] = $item;
+      //console.debug("enhanceAllSgpPosts inserting id=" + item.id, $item);
+    }, i * 50);
+  });
+}
+
+/**
  * Updates fold/unfold appropriately
  */
 function updateItem($item, attempt) {
@@ -948,6 +1045,8 @@ function updateItem($item, attempt) {
     if (isSgpPost)
       canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
+
+  var $commentbar;
 
   var enhanceItem = ! $item.hasClass('gpme-enh');
 
@@ -993,7 +1092,7 @@ function updateItem($item, attempt) {
       // It's possible not to have comments at all on posts with comments
       // disabled or on photo-tagging posts
       if ($allCommentContainer.length) {
-        var $commentbar = $commentbarTpl.clone(true);
+        $commentbar = $commentbarTpl.clone(true);
         $allCommentContainer.prepend($commentbar);
 
         // Insert wrapper for comments container so that we can hide it without
@@ -1010,7 +1109,7 @@ function updateItem($item, attempt) {
       if (canHaveComments) {
         var $comments = $item.find(_C_SGP_COMMENT);
         if ($comments.length) {
-          var $commentbar = $commentbarTpl.clone(true);
+          $commentbar = $commentbarTpl.clone(true);
           $commentbar.insertBefore($comments.first());
           $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar).append($comments);
         }
@@ -1302,11 +1401,13 @@ function foldItem(interactive, $item, animated, $post) {
     $post.slideUp('fast', function() {
       $item.addClass('gpme-folded');
       $item.removeClass('gpme-unfolded');
+      cacheSgpItemFoldState($item);
     });
   else {
     $post.hide();
     $item.addClass('gpme-folded');
     $item.removeClass('gpme-unfolded');
+    cacheSgpItemFoldState($item);
   }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
@@ -1573,10 +1674,12 @@ function unfoldItem(interactive, $item, animated, $post) {
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
     $post.slideDown('fast');
+    cacheSgpItemFoldState($item);
   } else {
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
     $post.show();
+    cacheSgpItemFoldState($item);
   }
 
   if (canHaveComments) {
@@ -1904,6 +2007,7 @@ function foldComments(interactive, $item, $comments) {
       $item.removeClass('gpme-comments-unfolded');
       updateCommentbar(id, $item, commentCount);
       $commentbar.show(); // undo the hiding of sliding up
+      cacheSgpItemFoldState($item);
     });
 
     // Favor the share line first so there's no unnecessary motion
@@ -1915,6 +2019,7 @@ function foldComments(interactive, $item, $comments) {
     $comments.hide();
     $item.addClass('gpme-comments-folded');
     $item.removeClass('gpme-comments-unfolded');
+    cacheSgpItemFoldState($item);
   }
 
   // If not yet done, put content in titlebar
@@ -1971,6 +2076,7 @@ function unfoldComments(interactive, $item, $comments) {
       // NOTE: updateCommentbar needs to be done after updating classes
       updateCommentbar(id, $item, commentCount);
       $commentbar.fadeIn('fast');
+      cacheSgpItemFoldState($item);
     });
 
     deleteSeenCommentCount(id);
@@ -1981,6 +2087,7 @@ function unfoldComments(interactive, $item, $comments) {
     $item.addClass('gpme-comments-unfolded');
     // NOTE: updateCommentbar needs to be done after updating classes
     updateCommentbar(id, $item, commentCount);
+    cacheSgpItemFoldState($item);
   }
 }
 
@@ -2341,9 +2448,10 @@ $(document).ready(function() {
         // This happens when a new post is added, either through "More"
         // or a new recent post.
         // Or it's a Start G+ post
-        if (id && (id.substring(0,7) == 'update-' ||
-            COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ))
+        if (id && (id.substring(0,7) == 'update-'))
           onItemInserted(e);
+        else if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX )
+          onSgpItemInserted(e);
         // This happens when switching from About page to Posts page
         // on profile
         else if (e.relatedNode.id.indexOf('-posts-page') > 0)
