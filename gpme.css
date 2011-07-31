@@ -1,6 +1,6 @@
 /*
  * Filename:         gpme.css
- * More info, see:   extension.js
+ * More info, see:   gpme.js
  *
  * Web:              http://huyz.us/google-plus-me/
  * Source:           https://github.com/huyz/google-plus-me
@@ -147,42 +147,6 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
  * :not(.a-f-i-za) means not muted
  */
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do /* User photo */,
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* Hangout's live */{
-  display: none;
-}
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
-  display: none;
-}
-
-.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h, /* Context menu button */
-.gpme-folded:not(.a-f-i-za) .fv-bookmark { /* Fav+ star button */
-  margin-right: -13px; /* Gained 44-13=31 px */
-}
-.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D { /* context menu */
-  z-index: 11;
-}
-.gpme-folded:not(.a-f-i-za) .a-f-i-p { /* Post content */
-  margin-left: 0; /* Gained 60px */
-  margin-right: 13px; /* Gained 44-13=31 px */
-}
-
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper {
-  position: absolute;
-  left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
-  top: -20px;
-  z-index: 10;
-  width: 313px; /* 574-(31+60+32) - 137 shrinking*/
-  padding: 6px 8px; /* Gained (21-8)*2=26px */
-  /*max-height: 1000px;*/
-  overflow-x: visible;
-  overflow-y: visible;
-  background: white;
-  outline: 1px solid #CCC;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-}
-
 .gpme-preview-triangle {
   display: none;
 }
@@ -194,6 +158,70 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   top: 20px; /* -top of wrapper */
   height: 30px;
   width: 17px;
+}
+
+.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */
+  position: absolute;
+  margin: 0;
+  right: 2px;
+  top: 3px;
+  float:none;
+  background-color: white;
+/*  margin-right: -13px; /* Gained 44-13=31 px */
+}
+.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D { /* context menu */
+  z-index: 11;
+}
+
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper {
+  position: absolute;
+  left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
+  top: -20px; /* overridden dynamically */
+  z-index: 10;
+  width: 313px; /* 574-(31+60+32) - 137 shrinking*/
+  padding: 6px 0 8px 6px; /* Gained (21-8)*2=26px */
+  background: white;
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p { /* Post content */
+  margin-left: 0; /* Gained 60px */
+  margin-right: 0; /* Gained 44-13=31 px */
+  padding-right: 8px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/* From Google News */
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+  overflow: visible;
+}
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper.gpme-hover > .a-f-i-p::-webkit-scrollbar-thumb {
+  background-color: #CCC;
+}
+.gpme-folded:not(.a-f-i-za) .a-f-i-p::-webkit-scrollbar-button {
+  height: 7px;
+  display: block;
+  background-color: transparent;
+}
+
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U {
+  margin-right: 5px;
+}
+
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do /* User photo */,
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* Hangout's live */{
+  display: none;
+}
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
+  display: none;
 }
 
 /* Shrink images to fit preview */

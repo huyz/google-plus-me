@@ -48,7 +48,7 @@
  ***************************************************************************/
 
 // Set to true to enable compatibility with Start G+, a.k.a. SGPlus
-var COMPAT_SGP = true;
+var COMPAT_SGP = false;
 
 /****************************************************************************
  * Constants
@@ -980,6 +980,7 @@ function updateItem($item, attempt) {
     if (COMPAT_SGP)
       isSgpPost = $item.hasClass(C_SGP_UPDATE);
 
+    var $commentbar;
     if (! isSgpPost) {
       // Structure commentbar:
       // "a-b-f-i-Xb"
@@ -988,7 +989,7 @@ function updateItem($item, attempt) {
       // It's possible not to have comments at all on posts with comments
       // disabled or on photo-tagging posts
       if ($allCommentContainer.length) {
-        var $commentbar = $commentbarTpl.clone(true);
+        $commentbar = $commentbarTpl.clone(true);
         $allCommentContainer.prepend($commentbar);
 
         // Insert wrapper for comments container so that we can hide it without
@@ -1004,7 +1005,7 @@ function updateItem($item, attempt) {
 
       var $comments = $item.find(_C_SGP_COMMENT);
       if ($comments.length) {
-        var $commentbar = $commentbarTpl.clone(true);
+        $commentbar = $commentbarTpl.clone(true);
         $commentbar.insertBefore($comments.first());
         $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar).append($comments);
       }
@@ -1170,8 +1171,8 @@ function toggleItemFoldedVariant(action, $item, animated) {
       $item.addClass('gpme-unfolded');
       $post.show();
       predictedItemHeight = $item.outerHeight();
-      $item.removeClass('gpme-folded');
-      $item.addClass('gpme-unfolded');
+      $item.removeClass('gpme-unfolded');
+      $item.addClass('gpme-folded');
       $post.hide();
     }
 
@@ -1527,8 +1528,9 @@ function unfoldItem(interactive, $item, animated, $post) {
     localStorage.removeItem("gpme_post_folded_" + id);
 
   // Visual changes
+  hidePostItemPreview($item);
   if (animated) {
-    hidePostItemPreview($item);
+    // NOTE: changing of classes must be done after hidePostItemPreview()
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
     $post.slideDown('fast');
@@ -1691,11 +1693,11 @@ function toggleItemMuted($item, goUp) {
 
   // Unmute
   if (unmuteFound) {
-    // See below for when we set max-height
-    $item.css('max-height', '');
     click($unmuteLink);
 
     // If folded, we have to undo the show we did when muting
+    // NOTE: unlike when clicking G+'s "unmute" link, this will not automatically
+    // re-show the preview, but that's not important.
     if (isItemFolded($item)) {
       $post = $item.find('.gpme-post-wrapper');
       if ($post.length != 1) {
@@ -1712,8 +1714,10 @@ function toggleItemMuted($item, goUp) {
     if ($muteMenu.length) {
       // If the item is folded, we need to set a max-height so that G+'s muting
       // scrolling animation doesn't start from so low
-      if (isItemFolded($item))
+      if (isItemFolded($item)) {
         $item.css('max-height', MUTED_ITEM_HEIGHT);
+        setTimeout(function() { $item.css('max-height', ''); }, 500);
+      }
 
       click($muteMenu);
 
@@ -2121,9 +2125,9 @@ function countComments($subtree) {
  * Extracts count from text in multiple languages
  */
 function parseTextCount(text) {
-  var num = parseInt(text); // Try faster method first
+  var num = parseInt(text, 10); // Try faster method first
   if (isNaN(num)) {
-    num = parseInt(text.replace(/.*?(\d+).*/, '$1'));
+    num = parseInt(text.replace(/.*?(\d+).*/, '$1'), 10);
     if (isNaN(num)) {
       error("parseTextCount: can't parse count of text");
       num = 0;
@@ -2173,11 +2177,14 @@ function showPreview(e) {
   if (displayMode == 'expanded')
     return;
 
+  var $item = $(this);
+
+  if (!$item || ! isItemFolded($item))
+    return;
+
   // Sometimes if you switch windows, there might be some preview remaining
   // that hoverIntent will not catch.
   hideAnyPostItemPreview();
-
-  var $item = $(this);
 
   // Skip if this is a muted item
   if (isItemMuted($item))
@@ -2190,8 +2197,8 @@ function showPreview(e) {
     $clickWall.show();
     setTimeout(function() { $clickWall.hide(); } , clickWallTimeout);
 
-    $post.show();
-    $lastPreviewedItem = $item;
+    var fixedHeight = fixedBarsHeight();
+    var overlappingHeight = overlappingBarsHeight();
 
     // Move to the right edge and as far up as possible
 /* Disabled: we now move based on right-edge instead of left-edge
@@ -2212,12 +2219,38 @@ function showPreview(e) {
     var offsetY = Math.max(POST_WRAPPER_PADDING_TOP,
       Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -
-         Math.max(document.body.scrollTop + fixedBarsHeight(), overlappingBarsHeight()) -
+         Math.max(document.body.scrollTop + fixedHeight, overlappingHeight) -
         /* breathing room */ 7));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
-    var $triangle = $item.find('.gpme-preview-triangle');
+    var $triangle = $post.children('.gpme-preview-triangle');
     $triangle.css('top',  '' + offsetY + 'px');
+
+    // Change the max-height of the post content
+    var $postContent = $post.children(_C_CONTENT);
+    if (! $postContent.length) {
+      error("showPreview: Can't find post content style class");
+    } else {
+      $postContent.css(
+        'max-height',
+          '' + (window.innerHeight - Math.max(document.body.scrollTop + fixedHeight, overlappingHeight) -
+                /* breathing room */ 7*2) +
+          'px');
+
+      // Workaround for scroll-position loss bug in Chrome
+      // http://code.google.com/p/chromium/issues/detail?id=36428
+      var lastScrollTop = $postContent.attr('gpme-last-scrollTop');
+      if (typeof lastScrollTop !== undefined && lastScrollTop !== '')
+        $postContent.scrollTop(lastScrollTop);
+    }
+
+    // Only show the scrollbar when the mouse is inside
+    $post.hover(function() { $(this).addClass('gpme-hover'); },
+                function() { $(this).removeClass('gpme-hover'); });
+
+    // Show the preview
+    $post.show();
+    $lastPreviewedItem = $item;
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);
@@ -2246,7 +2279,20 @@ function hidePostItemPreview($item) {
 
   var $post = $item.find('.gpme-post-wrapper');
   if ($post.length) {
-    $post.hide();
+    // Change the max-height of the post content
+    var $postContent = $post.children(_C_CONTENT);
+    if (! $postContent.length) {
+      error("showPreview: Can't find post content style class");
+    } else {
+      // Workaround for scroll-position loss bug in Chrome
+      // http://code.google.com/p/chromium/issues/detail?id=36428
+      $postContent.attr('gpme-last-scrollTop', $postContent.scrollTop());
+
+      $postContent.css('max-height', '');
+    }
+
+    // Remove class just in case but not necessary
+    $post.hide().removeClass('gpme-hover').unbind('mouseenter mouseleave');
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);
