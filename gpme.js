@@ -48,7 +48,8 @@
  ***************************************************************************/
 
 // Set to true to enable compatibility with Start G+, a.k.a. SGPlus
-var COMPAT_SGP = false;
+var COMPAT_SGP = true;
+var COMPAT_SGP_COMMENTS = false;
 
 /****************************************************************************
  * Constants
@@ -156,7 +157,11 @@ var _C_CIRCLESTARS = '.circlestars';
 // Start G+, a.k.a. SGPlus
 var ID_SGP_POST_PREFIX = 'sgp-post-';
 var C_SGP_UPDATE = 'sgp_update';
+var C_SGP_UPDATE_FB = 'sgp_update_facebook';
+var C_SGP_UPDATE_TWITTER = 'sgp_update_twitter';
 var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class as it should
+var _C_SGP_CONTENT = '.a-f-i-p-r';
+var _C_SGP_CONTENT2 = '.ea-S-R';
 var S_SGP_ORIGPOST_LINK = 'span[style^="font-size"]';
 var _C_SGP_COMMENT = '.a-b-f-i-W-r';
 
@@ -935,6 +940,15 @@ function updateItem($item, attempt) {
   var id = $item.attr('id');
   debug("updateItem: " + id);
 
+  var canHaveComments = true;
+  // If this is SGPlus post
+  var isSgpPost = false;
+  if (COMPAT_SGP) {
+    isSgpPost = $item.hasClass(C_SGP_UPDATE);
+    if (isSgpPost)
+      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+  }
+
   var enhanceItem = ! $item.hasClass('gpme-enh');
 
   if (enhanceItem) {
@@ -942,7 +956,7 @@ function updateItem($item, attempt) {
     // For Tweak, we also need the menu in there
     //var $itemContent = $item.find(_C_CONTENT);
     var $itemContent = $item.children('div:not(' + _C_CONTENT_PLACEHOLDER + ')');
-    if (! $itemContent.length) {
+    if (! isSgpPost && ! $itemContent.length) {
       // The content comes a bit later
       if ($item.find(_C_CONTENT_PLACEHOLDER).length) {
         if (typeof attempt === 'undefined')
@@ -963,10 +977,6 @@ function updateItem($item, attempt) {
     //debug("updateItem: enhancing");
     $item.addClass('gpme-enh');
 
-    // Add hover event handler
-    $item.hoverIntent(hoverIntentConfig);
-    //$item.hover(showPreview, hidePreview);
-
     var $titlebar = $titlebarTpl.clone(true);
     $titlebar.insertBefore($itemContent.first());
 
@@ -974,11 +984,6 @@ function updateItem($item, attempt) {
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
     $wrapper.append($itemContent);
-
-    // If this is SGPlus post
-    var isSgpPost = false;
-    if (COMPAT_SGP)
-      isSgpPost = $item.hasClass(C_SGP_UPDATE);
 
     var $commentbar;
     if (! isSgpPost) {
@@ -1003,11 +1008,13 @@ function updateItem($item, attempt) {
     } else { // If SGP post, as of SGP 1.4.0
       // We have to move the comments into the container
 
-      var $comments = $item.find(_C_SGP_COMMENT);
-      if ($comments.length) {
-        $commentbar = $commentbarTpl.clone(true);
-        $commentbar.insertBefore($comments.first());
-        $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar).append($comments);
+      if (canHaveComments) {
+        var $comments = $item.find(_C_SGP_COMMENT);
+        if ($comments.length) {
+          $commentbar = $commentbarTpl.clone(true);
+          $commentbar.insertBefore($comments.first());
+          $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar).append($comments);
+        }
       }
     }
   }
@@ -1041,7 +1048,7 @@ function updateItem($item, attempt) {
   }
 
   // Refresh fold of comments if visible
-  if (! itemFolded) {
+  if (! itemFolded && canHaveComments) {
     if (localStorage.getItem("gpme_comments_folded_" + id))
       foldComments(false, $item);
     else
@@ -1050,7 +1057,7 @@ function updateItem($item, attempt) {
 
   // Start listening to updates to comments.
   // We need to listen all the time since comments can come in or out.
-  if (enhanceItem) {
+  if (enhanceItem && ! isSgpPost) {
     // We must have one throttle function per comment section within item.
     var commentsUpdateHandler = $.throttle(200, 50, function(e) { onCommentsUpdated(e, $item); });
 
@@ -1123,7 +1130,7 @@ function toggleItemFolded($item, animated) {
  * @param animatedScroll: Optional
  */
 function toggleItemFoldedVariant(action, $item, animated) {
-  var $post = $item.find('.gpme-post-wrapper');
+  var $post = $item.children('.gpme-post-wrapper');
   //debug("toggleItemFolded: length=" + $posts.length);
   if ($post.length != 1) {
     error("toggleItemFolded: can't find post");
@@ -1266,7 +1273,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
  */
 function foldItem(interactive, $item, animated, $post) {
   if (typeof($post) == 'undefined') {
-    $post = $item.find('.gpme-post-wrapper');
+    $post = $item.children('.gpme-post-wrapper');
     if ($post.length != 1) {
       error("foldItem: Can't find post content node");
       error($item);
@@ -1288,6 +1295,9 @@ function foldItem(interactive, $item, animated, $post) {
     return;
   */
 
+  // Add hover event handler
+  $item.unbind('mouseenter mouseleave').hoverIntent(hoverIntentConfig);
+
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
     $post.slideUp('fast', function() {
@@ -1301,18 +1311,26 @@ function foldItem(interactive, $item, animated, $post) {
   }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
-  // If interactive folding and comments are showing, record the comment count
-  var commentCount = countComments($item.find('.gpme-comments-wrapper'));
-  if (interactive && ! areItemCommentsFolded($item))
-    saveSeenCommentCount(id, commentCount);
-
-  // Attached or pending title
-  var $subtree;
-
+  var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (COMPAT_SGP)
+  if (COMPAT_SGP) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
+    if (isSgpPost)
+      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+  }
+
+  // If interactive folding and comments are showing, record the comment count
+  var commentCount = 0;
+  if (canHaveComments) {
+    commentCount = countComments($item.find('.gpme-comments-wrapper'));
+    if (interactive && ! areItemCommentsFolded($item))
+      saveSeenCommentCount(id, commentCount);
+  }
+
+  var $snippet;
+  // Attached or pending title
+  var $subtree;
 
   // If not yet done, put content in titlebar
   var $title = $subtree = $item.find('.gpme-title');
@@ -1341,83 +1359,95 @@ function foldItem(interactive, $item, animated, $post) {
       // Insert fold icon
       $clonedTitle.prepend('<span class="gpme-fold-icon">\u25b6</span>');
 
-      // Take out permissions
-      var $perms = $clonedTitle.find(_C_PERMS);
-      if ($perms.length) {
-        $perms.remove();
-      } else if (! isSgpPost) {
-        error("foldItem: can't find permissions div");
-        error($clonedTitle);
-      }
-
-      // Take out Google+ Tweak's Easy mention feature
-      // Doesn't work, it looks for: #contentPane  div[id^="update"] a[oid] which includes mine
-      //$clonedTitle.find(_C_TWEAK_EZMNTN).remove();
-
-      // Take out Usability Boost's "- Mute"
-      var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
-      if ($muteLink.length) {
-        var $muteDash = $muteLink.prev();
-        if ($muteDash.length && $muteDash.text() == '-')
-          $muteDash.remove();
-        $muteLink.remove();
-      }
-
-      // Take out CircleStars
-      var $stars = $clonedTitle.find(_C_CIRCLESTARS);
-      if ($stars.length) {
-        var $starsDash = $stars.prev();
-        if ($starsDash.length && $starsDash.text() == ' - ')
-          $starsDash.remove();
-        $stars.remove();
-      }
-
-      // Take out Start G+'s original post link
+      // Special fast code for SGPlus
       if (isSgpPost) {
+        // Take out SGPlus's original post link
         //console.debug("foldItem: SG+", $clonedTitle.find('span[style^="font-size"]'));
         $clonedTitle.find(S_SGP_ORIGPOST_LINK ).remove();
-      }
-
-      // Put in snippet, trying differing things
-      var classes = [
-        '.a-b-f-i-u-ki', // poster text
-        '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
-        '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
-        '.a-f-i-ie-R', // hangout text
-        '.ea-S-pa-qa', // photo caption
-        '.a-f-i-p-qb .a-b-h-Jb', // photo album
-        '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
-        '.ea-S-R-h', // title of shared link
-        '.ea-S-Xj-Cc' // text of shared link
-      ];
-      for (var c in classes) {
-        var $snippet = $item.find(classes[c]);
-        if (! $snippet.length)
-          continue;
-
-        // We want to ignore link shares that only have the text Edit
-        // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
-        if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
-          $snippet = $snippet.clone();
-          $snippet.find('.a-b-f-i-Ka').remove();
+        $snippet = $post.find(_C_SGP_CONTENT);
+        if ($snippet.length) {
+          $clonedTitle.append($snippet.text());
+        } else {
+          $snippet = $post.find(_C_SGP_CONTENT2);
+          if ($snippet.length)
+            $clonedTitle.append($snippet.text());
         }
-        var text = $snippet.text();
-        if (text.match(/\S/)) {
-          if (classes[c] == '.a-f-i-ie-R') {
-            // FIXME: English-specific
-            text = text.replace(/.*hung out\s*/, '');
+
+      } else {
+        // Take out permissions
+        var $perms = $clonedTitle.find(_C_PERMS);
+        if ($perms.length) {
+          $perms.remove();
+        } else if (! isSgpPost) {
+          error("foldItem: can't find permissions div");
+          error($clonedTitle);
+        }
+
+        // Take out Google+ Tweak's Easy mention feature
+        // Doesn't work, it looks for: #contentPane  div[id^="update"] a[oid] which includes mine
+        //$clonedTitle.find(_C_TWEAK_EZMNTN).remove();
+
+        // Take out Usability Boost's "- Mute"
+        var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
+        if ($muteLink.length) {
+          var $muteDash = $muteLink.prev();
+          if ($muteDash.length && $muteDash.text() == '-')
+            $muteDash.remove();
+          $muteLink.remove();
+        }
+
+        // Take out CircleStars
+        var $stars = $clonedTitle.find(_C_CIRCLESTARS);
+        if ($stars.length) {
+          var $starsDash = $stars.prev();
+          if ($starsDash.length && $starsDash.text() == ' - ')
+            $starsDash.remove();
+          $stars.remove();
+        }
+
+        // Put in snippet, trying differing things
+        var classes = [
+          '.a-b-f-i-u-ki', // poster text
+          '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
+          '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
+          '.a-f-i-ie-R', // hangout text
+          '.ea-S-pa-qa', // photo caption
+          '.a-f-i-p-qb .a-b-h-Jb', // photo album
+          '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
+          '.ea-S-R-h', // title of shared link
+          '.ea-S-Xj-Cc' // text of shared link
+        ];
+        for (var c in classes) {
+          $snippet = $post.find(classes[c]);
+          if (! $snippet.length)
+            continue;
+
+          // We want to ignore link shares that only have the text Edit
+          // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
+          if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
+            $snippet = $snippet.clone();
+            $snippet.find('.a-b-f-i-Ka').remove();
           }
-          $snippet = $('<span class="gpme-snippet"></span');
-          $snippet.text(text); // We have to add separately to properly escape HTML tags
-          $clonedTitle.append($snippet);
-          break;
+          var text = $snippet.text();
+          if (text.match(/\S/)) {
+            if (classes[c] == '.a-f-i-ie-R') {
+              // FIXME: English-specific
+              text = text.replace(/.*hung out\s*/, '');
+            }
+            $snippet = $('<span class="gpme-snippet"></span');
+            $snippet.text(text); // We have to add separately to properly escape HTML tags
+            $clonedTitle.append($snippet);
+            break;
+          }
         }
       }
 
-      // Add comment-count container
-      $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-        '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
-        '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
+      if (canHaveComments) {
+        // Add comment-count container
+        $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
+          '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
+          '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
+      }
 
       // For Start G+ post, we're done
       if (isSgpPost) {
@@ -1494,14 +1524,16 @@ function foldItem(interactive, $item, animated, $post) {
   }
   */
 
-  // Show possibly-hidden comments so that they appear in the preview (but don't persist)
-  var $comments = $item.find('.gpme-comments-wrapper');
-  if ($comments.length) {
-    $comments.show();
-  }
+  if (canHaveComments) {
+    // Show possibly-hidden comments so that they appear in the preview (but don't persist)
+    var $comments = $item.find('.gpme-comments-wrapper');
+    if ($comments.length) {
+      $comments.show();
+    }
 
-  // Updated the count in the subtree
-  updateCommentCount(id, $subtree, commentCount);
+    // Updated the count in the subtree
+    updateCommentCount(id, $subtree, commentCount);
+  }
 }
 
 /**
@@ -1511,7 +1543,7 @@ function foldItem(interactive, $item, animated, $post) {
  */
 function unfoldItem(interactive, $item, animated, $post) {
   if (typeof($post) == 'undefined') {
-    $post = $item.find('.gpme-post-wrapper');
+    $post = $item.children('.gpme-post-wrapper');
     if ($post.length != 1) {
       // It is possible to not have a proper match during keyboard scrolling
       // (hit 'j' and 'o' in quick succession)
@@ -1522,6 +1554,15 @@ function unfoldItem(interactive, $item, animated, $post) {
 
   var id = $item.attr('id');
   debug("unfoldItem: id=" + id);
+
+  var canHaveComments = true;
+  // If this is SGPlus post
+  var isSgpPost = false;
+  if (COMPAT_SGP) {
+    isSgpPost = $item.hasClass(C_SGP_UPDATE);
+    if (isSgpPost)
+      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+  }
 
   // Persist for expanded mode
   if (interactive && displayMode == 'expanded')
@@ -1540,15 +1581,17 @@ function unfoldItem(interactive, $item, animated, $post) {
     $post.show();
   }
 
-  // Refresh fold of comments
-  // NOTE: this must be done after the CSS classes are updated
-  if (localStorage.getItem("gpme_comments_folded_" + id))
-    foldComments(false, $item);
-  else
-    unfoldComments(false, $item);
+  if (canHaveComments) {
+    // Refresh fold of comments
+    // NOTE: this must be done after the CSS classes are updated
+    if (localStorage.getItem("gpme_comments_folded_" + id))
+      foldComments(false, $item);
+    else
+      unfoldComments(false, $item);
 
-  if (interactive && ! areItemCommentsFolded($item))
-    deleteSeenCommentCount(id);
+    if (interactive && ! areItemCommentsFolded($item))
+      deleteSeenCommentCount(id);
+  }
 
   return true;
 }
@@ -1699,7 +1742,7 @@ function toggleItemMuted($item, goUp) {
     // NOTE: unlike when clicking G+'s "unmute" link, this will not automatically
     // re-show the preview, but that's not important.
     if (isItemFolded($item)) {
-      $post = $item.find('.gpme-post-wrapper');
+      $post = $item.children('.gpme-post-wrapper');
       if ($post.length != 1) {
         error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
       } else {
@@ -1723,7 +1766,7 @@ function toggleItemMuted($item, goUp) {
 
       if (isItemFolded($item)) {
         // We have to show the post content in order to display the "muted" message
-        $post = $item.find('.gpme-post-wrapper');
+        $post = $item.children('.gpme-post-wrapper');
         if ($post.length != 1) {
           error("toggleItemMuted: can't find post content for id=" + $item.attr('id'));
         } else {
@@ -2190,7 +2233,7 @@ function showPreview(e) {
   if (isItemMuted($item))
     return;
 
-  var $post = $item.find('.gpme-post-wrapper');
+  var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Block clicks temporarily
     var $clickWall = $item.find('.gpme-disable-clicks');
@@ -2277,7 +2320,7 @@ function hidePostItemPreview($item) {
   if (isItemMuted($item))
     return;
 
-  var $post = $item.find('.gpme-post-wrapper');
+  var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Change the max-height of the post content
     var $postContent = $post.children(_C_CONTENT);
