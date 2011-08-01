@@ -178,8 +178,8 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
   top: -20px; /* overridden dynamically */
   z-index: 10;
-  width: 313px; /* 574-(31+60+32) - 137 shrinking*/
-  padding: 6px 0 8px 6px; /* Gained (21-8)*2=26px */
+  width: 326px; /* OUTDATED: 574-(31+60+32) - 137 shrinking*/
+  padding: 6px 0 6px 8px; /* Gained (21-8)*2=26px; actually, now moved the 8px to .a-f-i-p's padding-right */
   background: white;
   outline: 1px solid #CCC;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
@@ -188,7 +188,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 .gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p { /* Post content */
   margin-left: 0; /* Gained 60px */
-  margin-right: 0; /* Gained 44-13=31 px */
+  margin-right: 0; /* OUTDATED: Gained 44-13=31 px */
   padding-right: 8px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -231,6 +231,17 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 .gpme-folded:not(.a-f-i-za) .gpme-post-wrapper img {
   max-width: 100%; /* Resizes image */
+}
+
+.gpme-link-comment {
+  display: none
+}
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment {
+  display: inline
+}
+/* NOTE: Replies and More incorrectly duplicates the .a-b-f-i-W-h class */
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-h {
+  display: none
 }
 
 .gpme-folded:not(.a-f-i-za) .a-f-i-Jf-Om {

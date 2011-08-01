@@ -58,6 +58,7 @@ var COMPAT_SGP_COMMENTS = false;
 //// For more class constants, see foldItem() in classes array
 
 var _ID_GBAR                    = '#gb';
+var _ID_GBAR_TOP                = '#gbw';
 var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
@@ -68,7 +69,7 @@ var _ID_CONTENT                 = '#content';
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
 var _C_COPYRIGHT                = '.a-b-Xa-T';
-var _FEEDBACK_LINK              = '.a-eo-eg';
+var _C_FEEDBACK_LINK            = '.a-eo-eg';
 var C_FEEDBACK                  = 'tk3N6e-e-vj';
 
 // Pages and streams
@@ -124,8 +125,13 @@ var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
 var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
 //var _C_COMMENTS_CONTAINER     = '.a-b-f-i-Xb-oa';
 var _C_COMMENT_EDITOR           = '.a-b-f-i-Pb-W-t';
-var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
+
+// Share line
+var _C_SHARE_LINE               = '.a-f-i-bg';
+var _C_LINK_COMMENT             = '.a-b-f-i-W-h';
+var C_LINK_COMMENT              = 'a-b-f-i-W-h';
+var _C_INPUTBOX_COMMENT         = '.a-b-f-i-Pb-W-t';
 
 // Menu
 var _C_MENU_MUTE                = '.a-b-f-i-Fb-C';
@@ -168,16 +174,21 @@ var _C_SGP_COMMENT = '.a-b-f-i-W-r';
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
 
-// Values shared with our CSS file
-var GBAR_HEIGHT = 30;
+// CSS values shared with our CSS file
 var TRIANGLE_HEIGHT = 30;
 var POST_WRAPPER_PADDING_TOP = 6;
 var POST_WRAPPER_PADDING_BOTTOM = 6;
-var HEADER_BAR_HEIGHT = 60; // This changes to 45 depending on Google+ Ultimate's options
 var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
-var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
-var GAP_ABOVE_ITEM_AT_TOP = 2;
 var MUTED_ITEM_HEIGHT = 45;
+// Other CSS values
+var GBAR_HEIGHT = 30;
+var HEADER_BAR_HEIGHT = 60; // This changes to 45 depending on Google+ Ultimate's options
+var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
+var ROOM_FOR_COMMENT_AREA = 70;
+// Independent CSS values that affect on this file
+var GAP_ABOVE_ITEM_AT_TOP = 2;
+var GAP_ABOVE_PREVIEW = 7;
+var SLACK_BELOW_PREVIEW  = 77; // Needed to prevent G+ from jumping page when user adds comment
 
 // For instant previews, hoverIntent
 var hoverIntentConfig = {    
@@ -372,6 +383,34 @@ function overlappingBarsHeight() {
   return result;
 }
 
+/**
+ * Update the folding status of an SGP post in the cache
+ */
+function cacheSgpItemFoldState($item) {
+  var id = $item.attr('id');
+  if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
+    var $copy = $sgpCachedItems[id];
+    if (typeof $copy !== 'undefined') {
+      if (isItemFolded($item)) {
+        $copy.addClass('gpme-folded');
+        $copy.removeClass('gpme-unfolded');
+      } else {
+        $copy.addClass('gpme-unfolded');
+        $copy.removeClass('gpme-folded');
+      }
+      if (COMPAT_SGP_COMMENTS) {
+        if (areItemCommentsFolded($item)) {
+          $copy.addClass('gpme-comments-folded');
+          $copy.removeClass('gpme-comments-unfolded');
+        } else {
+          $copy.addClass('gpme-comments-unfolded');
+          $copy.removeClass('gpme-comments-folded');
+        }
+      }
+    }
+  }
+}
+
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -470,34 +509,6 @@ function onSgpItemInserted(e) {
 
     // Postpone our work for 2 seconds
     sgpUpdateTimer = setTimeout(function() { enhanceAllSgpPosts($(e.target.parentNode)); }, 2000);
-  }
-}
-
-/**
- * Update the folding status of an SGP post in the cache
- */
-function cacheSgpItemFoldState($item) {
-  var id = $item.attr('id');
-  if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
-    var $copy = $sgpCachedItems[id];
-    if (typeof $copy !== 'undefined') {
-      if (isItemFolded($item)) {
-        $copy.addClass('gpme-folded');
-        $copy.removeClass('gpme-unfolded');
-      } else {
-        $copy.addClass('gpme-unfolded');
-        $copy.removeClass('gpme-folded');
-      }
-      if (COMPAT_SGP_COMMENTS) {
-        if (areItemCommentsFolded($item)) {
-          $copy.addClass('gpme-comments-folded');
-          $copy.removeClass('gpme-comments-unfolded');
-        } else {
-          $copy.addClass('gpme-comments-unfolded');
-          $copy.removeClass('gpme-comments-folded');
-        }
-      }
-    }
   }
 }
 
@@ -1045,8 +1056,6 @@ function updateItem($item, attempt) {
     if (isSgpPost)
       canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
-
-  var $commentbar;
 
   var enhanceItem = ! $item.hasClass('gpme-enh');
 
@@ -2347,6 +2356,24 @@ function showPreview(e) {
     $clickWall.show();
     setTimeout(function() { $clickWall.hide(); } , clickWallTimeout);
 
+    // Enhance with our own commenting links
+    if (! $item.hasClass('gpme-preview-enh')) {
+      var $commentLink = $item.find(_C_LINK_COMMENT);
+      // NOTE: Comments could be disabled for that post
+      if ($commentLink.length) {
+        // NOTE: Replies and More incorrectly injects the same 'a-b' class
+        // But this code will work for both G+ and Replies and More (if they've
+        // injected before the first preview pops up)
+        $commentLink.each(function(i, value) {
+          var $value = $(value);
+          $value.clone().removeClass(C_LINK_COMMENT).addClass('gpme-link-comment').
+            click(function() { startCommentInPreview($item, $value); }).
+            insertBefore($value);
+        });
+        $item.addClass('gpme-preview-enh');
+      }
+    }
+
     var fixedHeight = fixedBarsHeight();
     var overlappingHeight = overlappingBarsHeight();
 
@@ -2369,12 +2396,15 @@ function showPreview(e) {
     var offsetY = Math.max(POST_WRAPPER_PADDING_TOP,
       Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -
-         Math.max(document.body.scrollTop + fixedHeight, overlappingHeight) -
-        /* breathing room */ 7));
+         Math.max(document.body.scrollTop + fixedHeight, overlappingHeight) - GAP_ABOVE_PREVIEW));
     $post.css('top', '' + (-offsetY) + 'px');
     //$post.css('max-height', '' + (window.innerHeight - 14) + 'px');
     var $triangle = $post.children('.gpme-preview-triangle');
     $triangle.css('top',  '' + offsetY + 'px');
+
+    // Show the preview
+    $post.show();
+    $lastPreviewedItem = $item;
 
     // Change the max-height of the post content
     var $postContent = $post.children(_C_CONTENT);
@@ -2383,28 +2413,84 @@ function showPreview(e) {
     } else {
       $postContent.css(
         'max-height',
-          '' + (window.innerHeight - Math.max(document.body.scrollTop + fixedHeight, overlappingHeight) -
-                /* breathing room */ 7*2) +
+          '' + (window.innerHeight - Math.max(fixedHeight, overlappingHeight - document.body.scrollTop) -
+                GAP_ABOVE_PREVIEW * 2 - POST_WRAPPER_PADDING_TOP - POST_WRAPPER_PADDING_BOTTOM) +
           'px');
+      // Prevent mousewheel from scrolling entire page when hitting the ends
+/*
+      $postContent.mousewheel(function(e, delta) {
+        $postContent.scrollTop($postContent.scrollTop() - delta * 5);
+        return false; // This is what we're after
+      });
+*/
 
       // Workaround for scroll-position loss bug in Chrome
       // http://code.google.com/p/chromium/issues/detail?id=36428
-      var lastScrollTop = $postContent.attr('gpme-last-scrollTop');
-      if (typeof lastScrollTop !== undefined && lastScrollTop !== '')
+      var lastScrollTop = $postContent.attr('gpme-last-scrolltop');
+      if (typeof lastScrollTop !== undefined && lastScrollTop > 0 ) {
+        // NOTE: this must be done after show()
         $postContent.scrollTop(lastScrollTop);
+      }
     }
 
     // Only show the scrollbar when the mouse is inside
-    $post.hover(function() { $(this).addClass('gpme-hover'); },
-                function() { $(this).removeClass('gpme-hover'); });
-
-    // Show the preview
-    $post.show();
-    $lastPreviewedItem = $item;
+    $post.hover(function() { $(this).addClass('gpme-hover'); disableBodyScrollbarY(); },
+                function() { $(this).removeClass('gpme-hover'); enableBodyScrollbarY(); });
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);
   }
+}
+
+/**
+ * This indirect link prevents G+ from scrolling the page (the original direct link
+ * does the scrolling).
+ * We scroll the preview pane instead.
+ */
+function startCommentInPreview($item, $origLink) {
+  var $postContent = $item.children('.gpme-post-wrapper').children(_C_CONTENT);
+
+  // If there's no edit box, we need to make room
+  var $inputBox = $item.find(_C_INPUTBOX_COMMENT);
+  if (! $inputBox.length) {
+    //$postContent.append('<div style="' + 2
+  }
+
+  // NOTE: we take the first because Replies and More incorrectly inject the same 'a-b' class
+  click($origLink);
+
+  // Scroll to bottom
+  $postContent.scrollTop($postContent.height());
+}
+
+/**
+ * Disable the document's scrolling so that we can freely scroll inside the preview
+ */
+function disableBodyScrollbarY() {
+  var $body = $('html');
+  var width = $body.first().width();
+  $body.css('overflow-y', 'hidden');
+  var newWidth = $body.first().width();
+  $body.css({'overflow-y': 'hidden', 'max-width': '' + width + 'px' });
+  // Relative position is for the absolute-positioned #gbg to stay put
+  $(_ID_GBAR_TOP).css({'max-width': '' + width + 'px', 'position': 'relative'});
+  // XXX Can't get the header stretched out
+  //$(_C_HEADER).css('padding-right', '' + (newWidth - width) + 'px');
+  $(_ID_CONTENT).css('max-width', '' + width + 'px');
+  $(_C_FEEDBACK_LINK).css('right', '' + (newWidth - width) + 'px');
+}
+
+/**
+ * Re-enable the document's scrolling.  See disableBodyScrollbarY();
+ */
+function enableBodyScrollbarY() {
+  var $body = $('html');
+  $body.css({'overflow-y': '', 'max-width': ''});
+  var $gbar = $(_ID_GBAR);
+  $(_ID_GBAR_TOP).css({'max-width': '', 'position': ''});
+  // XXX Can't get the header stretched out
+  //$(_C_HEADER).css('padding-right', '');
+  $(_C_FEEDBACK_LINK).css('right', '');
 }
 
 /**
@@ -2436,7 +2522,7 @@ function hidePostItemPreview($item) {
     } else {
       // Workaround for scroll-position loss bug in Chrome
       // http://code.google.com/p/chromium/issues/detail?id=36428
-      $postContent.attr('gpme-last-scrollTop', $postContent.scrollTop());
+      $postContent.attr('gpme-last-scrolltop', $postContent.scrollTop());
 
       $postContent.css('max-height', '');
     }
