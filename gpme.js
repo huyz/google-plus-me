@@ -131,6 +131,8 @@ var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 var _C_SHARE_LINE               = '.a-f-i-bg';
 var _C_LINK_COMMENT             = '.a-b-f-i-W-h';
 var C_LINK_COMMENT              = 'a-b-f-i-W-h';
+var _C_FAKEINPUT_COMMENT        = '.a-b-f-i-W-O'; // Fake box that says "Add a comment...
+var C_FAKEINPUT_COMMENT         = 'a-b-f-i-W-O';
 var _C_INPUTBOX_COMMENT         = '.a-b-f-i-Pb-W-t';
 
 // Menu
@@ -2365,7 +2367,7 @@ function showPreview(e) {
 
     // Enhance with our own commenting links
     if (! $item.hasClass('gpme-preview-enh')) {
-      var $commentLink = $item.find(_C_LINK_COMMENT);
+      var $commentLink = $item.find(_C_LINK_COMMENT + ',' + _C_FAKEINPUT_COMMENT);
       // NOTE: Comments could be disabled for that post
       if ($commentLink.length) {
         // NOTE: Replies and More incorrectly injects the same 'a-b' class
@@ -2373,8 +2375,19 @@ function showPreview(e) {
         // injected before the first preview pops up)
         $commentLink.each(function(i, value) {
           var $value = $(value);
-          $value.clone().removeClass(C_LINK_COMMENT).addClass('gpme-link-comment').
+          // NOTE: we leave the C_FAKEINPUT_COMMENT so that G+ hides our box when
+          // user starts editing
+          $value.clone().removeClass(C_LINK_COMMENT).
+            addClass('gpme-link-comment').
             click(function() { startCommentInPreview($item, $value); }).
+          /* Let's try something else
+            // If G+ hides our box, then we have to hide theirs
+            bind('DOMAttrModified', function(e) {
+              debug("DOMAttrModified e.target.className=" + e.target.className);
+              if (e.attrName == 'display')
+                $value.css(e.attrName, e.newValue);
+            }).
+            */
             insertBefore($value);
         });
         $item.addClass('gpme-preview-enh');
@@ -2457,17 +2470,30 @@ function showPreview(e) {
 function startCommentInPreview($item, $origLink) {
   var $postContent = $item.children('.gpme-post-wrapper').children(_C_CONTENT);
 
-  // If there's no edit box, we need to make room
-  var $inputBox = $item.find(_C_INPUTBOX_COMMENT);
-  if (! $inputBox.length) {
-    //$postContent.append('<div style="' + 2
-  }
-
-  // NOTE: we take the first because Replies and More incorrectly inject the same 'a-b' class
+  // Hide so that there's no scrolling
+  $postContent.hide();
   click($origLink);
-
+  $postContent.show();
   // Scroll to bottom
-  $postContent.scrollTop($postContent.height());
+  $postContent.animate({ scrollTop: $postContent.height() * 2 }, 'fast');
+
+  // Get focus into the box
+  getFocusInCommentEditable($postContent);
+}
+
+/**
+ * Waits until there's a comment editing box and give keyboard focus to it
+ */
+function getFocusInCommentEditable($postContent, attempt) {
+  var $commentEditor = $postContent.find('div.editable[contenteditable="plaintext-only"]')
+  if ($commentEditor.length) {
+    $commentEditor.focus();
+  } else {
+    if (typeof attempt === 'undefined')
+      attempt = 0;
+    if (attempt < 20)
+      setTimeout(function() { getFocusInCommentEditable($postContent, attempt + 1) }, 50);
+  }
 }
 
 /**
@@ -2534,8 +2560,7 @@ function hidePostItemPreview($item) {
       $postContent.css('max-height', '');
     }
 
-    // Remove class just in case but not necessary
-    $post.hide().removeClass('gpme-hover').unbind('mouseenter mouseleave');
+    $post.hide().unbind('mouseenter mouseleave');
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);

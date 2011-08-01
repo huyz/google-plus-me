@@ -236,11 +236,18 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 .gpme-link-comment {
   display: none
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment:not(.a-f-i-W-O) { /* Link */
   display: inline
 }
+.gpme-preview-enh .gpme-post-wrapper .a-f-i-W-O.gpme-link-comment { /* Fake input */
+  display: block
+}
+.gpme-preview-enh .gpme-post-wrapper .a-f-i-W-O:not(.gpme-link-comment) { /* Fake input */
+  display: none
+}
 /* NOTE: Replies and More incorrectly duplicates the .a-b-f-i-W-h class */
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-h {
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-h,
+.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-O {
   display: none
 }
 
