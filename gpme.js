@@ -386,9 +386,9 @@ function overlappingBarsHeight() {
 }
 
 /**
- * Update the folding status of an SGP post in the cache
+ * Update the folding status maybe title of an SGP post in the cache
  */
-function cacheSgpItemFoldState($item) {
+function updateCachedSgpItem($item, $titleContent) {
   var id = $item.attr('id');
   if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
     var $copy = $sgpCachedItems[id];
@@ -410,6 +410,13 @@ function cacheSgpItemFoldState($item) {
           $copy.addClass('gpme-comments-unfolded');
           $copy.removeClass('gpme-comments-folded');
         }
+      }
+
+      // Preserve the popup settings
+      $copy.children('.gpme-post-wrapper').attr('style', $item.children('.gpme-post-wrapper').attr('style'));
+
+      if (typeof $titleContent != 'undefined') {
+        $copy.find('.gpme-title').empty().append($titleContent.clone(true, true)).addClass('gpme-has-content');
       }
     }
   }
@@ -1423,13 +1430,15 @@ function foldItem(interactive, $item, animated, $post) {
     $post.slideUp('fast', function() {
       $item.addClass('gpme-folded');
       $item.removeClass('gpme-unfolded');
-      cacheSgpItemFoldState($item);
+      if (interactive)
+        updateCachedSgpItem($item);
     });
   else {
     $post.hide();
     $item.addClass('gpme-folded');
     $item.removeClass('gpme-unfolded');
-    cacheSgpItemFoldState($item);
+    if (interactive)
+      updateCachedSgpItem($item);
   }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
@@ -1573,8 +1582,10 @@ function foldItem(interactive, $item, animated, $post) {
 
       // For Start G+ post, we're done
       if (isSgpPost) {
-          // Inject the summary title
-          $title.append($clonedTitle);
+        // Inject the summary title
+        $title.append($clonedTitle);
+        if (interactive)
+          updateCachedSgpItem($item, $clonedTitle);
 
       } else { // Regular G+ posts
 
@@ -1697,12 +1708,14 @@ function unfoldItem(interactive, $item, animated, $post) {
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
     $post.slideDown('fast');
-    cacheSgpItemFoldState($item);
+    if (interactive)
+      updateCachedSgpItem($item);
   } else {
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
     $post.show();
-    cacheSgpItemFoldState($item);
+    if (interactive)
+      updateCachedSgpItem($item);
   }
 
   if (canHaveComments) {
@@ -2032,7 +2045,7 @@ function foldComments(interactive, $item, $comments) {
       $item.removeClass('gpme-comments-unfolded');
       updateCommentbar(id, $item, commentCount);
       $commentbar.show(); // undo the hiding of sliding up
-      cacheSgpItemFoldState($item);
+      updateCachedSgpItem($item);
     });
 
     // Favor the share line first so there's no unnecessary motion
@@ -2044,7 +2057,6 @@ function foldComments(interactive, $item, $comments) {
     $comments.hide();
     $item.addClass('gpme-comments-folded');
     $item.removeClass('gpme-comments-unfolded');
-    cacheSgpItemFoldState($item);
   }
 
   // If not yet done, put content in titlebar
@@ -2101,7 +2113,7 @@ function unfoldComments(interactive, $item, $comments) {
       // NOTE: updateCommentbar needs to be done after updating classes
       updateCommentbar(id, $item, commentCount);
       $commentbar.fadeIn('fast');
-      cacheSgpItemFoldState($item);
+      updateCachedSgpItem($item);
     });
 
     deleteSeenCommentCount(id);
@@ -2112,7 +2124,6 @@ function unfoldComments(interactive, $item, $comments) {
     $item.addClass('gpme-comments-unfolded');
     // NOTE: updateCommentbar needs to be done after updating classes
     updateCommentbar(id, $item, commentCount);
-    cacheSgpItemFoldState($item);
   }
 }
 
@@ -2459,6 +2470,8 @@ function showPreview(e) {
     // Only show the scrollbar when the mouse is inside
     $post.hover(function() { $(this).addClass('gpme-hover'); disableBodyScrollbarY(); },
                 function() { $(this).removeClass('gpme-hover'); enableBodyScrollbarY(); });
+
+    updateCachedSgpItem($item);
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);
@@ -2488,14 +2501,14 @@ function startCommentInPreview($item, $origLink) {
  * Waits until there's a comment editing box and give keyboard focus to it
  */
 function getFocusInCommentEditable($postContent, attempt) {
-  var $commentEditor = $postContent.find('div.editable[contenteditable="plaintext-only"]')
+  var $commentEditor = $postContent.find('div.editable[contenteditable="plaintext-only"]');
   if ($commentEditor.length) {
     $commentEditor.focus();
   } else {
     if (typeof attempt === 'undefined')
       attempt = 0;
     if (attempt < 20)
-      setTimeout(function() { getFocusInCommentEditable($postContent, attempt + 1) }, 50);
+      setTimeout(function() { getFocusInCommentEditable($postContent, attempt + 1); }, 50);
   }
 }
 
@@ -2564,6 +2577,7 @@ function hidePostItemPreview($item) {
     }
 
     $post.hide().unbind('mouseenter mouseleave');
+    updateCachedSgpItem($item);
   } else {
     error("showPreview: Can't find post wrapper");
     error($item);
