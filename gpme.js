@@ -582,6 +582,13 @@ function onKeydown(e) {
   if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
       e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA')
     return;
+  // Just to make sure coz we have some user reports despite the above checks
+  var contentEditable = e.target.getAttribute('contenteditable');
+  if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
+    return;
+  contentEditable = e.target.getAttribute('g_editable');
+  if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
+    return;
 
   /*
   // Start catching key sequences
