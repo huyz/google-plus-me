@@ -1,6 +1,6 @@
 {
   "name": "G+me for Google Plus™",
-  "version": "4.21",
+  "version": "4.22",
   "minimum_chrome_version": "12",
 
   "description": "Collapses the Google+ stream while keeping live updates: hides comments, collapses posts, etc.",
