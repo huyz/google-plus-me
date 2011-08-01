@@ -422,6 +422,31 @@ function updateCachedSgpItem($item, $titleContent) {
   }
 }
 
+/**
+ * Returns height of scrollable element including hidden areas due to overflow
+ * From comments in http://api.jquery.com/outerHeight/
+ */
+jQuery.fn.outerScrollHeight = function(includeMargin) {
+  var element = this[0];
+  var jElement = $(element);
+  var totalHeight = element.scrollHeight; //includes padding
+  //totalHeight += parseInt(jElement.css("border-top-width"), 10) + parseInt(jElement.css("border-bottom-width"), 10);
+  //if(includeMargin) totalHeight += parseInt(jElement.css("margin-top"), 10) + parseInt(jElement.css("margin-bottom"), 10);
+  totalHeight += jElement.outerHeight(includeMargin) - jElement.innerHeight();
+  return totalHeight;
+};
+/*
+jQuery.fn.outerScrollWidth = function(includeMargin) {
+  var element = this[0];
+  var jElement = $(element);
+  var totalWidth = element.scrollWidth; //includes padding
+  //totalWidth += parseInt(jElement.css("border-left-width"), 10) + parseInt(jElement.css("border-right-width"), 10);
+  //if(includeMargin) totalWidth += parseInt(jElement.css("margin-left"), 10) + parseInt(jElement.css("margin-right"), 10);
+  totalWidth += jElement.outerWidth(includeMargin) - jElement.innerWidth();
+  return totalWidth;
+};
+*/
+
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -2491,7 +2516,7 @@ function startCommentInPreview($item, $origLink) {
   click($origLink);
   $postContent.show();
   // Scroll to bottom
-  $postContent.animate({ scrollTop: $postContent.height() * 2 }, 'fast');
+  $postContent.animate({ scrollTop: $postContent.outerScrollHeight()  }, 'fast');
 
   // Get focus into the box
   getFocusInCommentEditable($postContent);
