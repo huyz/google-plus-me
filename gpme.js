@@ -536,10 +536,10 @@ function onSgpItemInserted(e) {
     // we can nuke it.
     // "FYI, what I do is to keep the last inserted post stashed as a variable
     // and then use the insertBefore method to insert the next one."
-    $item.hide();
+    $item.hide().attr('gpme-nukeme');
     setTimeout(function() {
       $item.remove();
-    }, 500);
+    }, 50);
 
   } else { // Otherwise, we'll enhance later
     // Get rid of any ongoing timers
@@ -1071,7 +1071,7 @@ function updateAllItems($subtree) {
  * Enhance all the SGP items in the current page
  */
 function enhanceAllSgpPosts($stream) {
-  $stream.children(_C_ITEM + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh)').each(function(i, item) {
+  $stream.children(_C_ITEM + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh):not([gpme-nukeme])').each(function(i, item) {
     debug("enhanceAllSgpPosts #" + i);
     i++;
     // Space out the enhancements to make the browser more responsive
