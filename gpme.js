@@ -640,19 +640,20 @@ function onKeydown(e) {
   }
   */
 
-  // First, try the activeElement instead of C_SELECTED because it's already set before the
-  // scroll; but if that fails (e.g. when the user cancels the editing of a comment
-  // or clicks on area outside of contentpane), then we go look at C_SELECTED
-  var $selectedItem =
-    document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
-    document.activeElement.id !== null && document.activeElement.id.substring(0,7) == 'update-' ?
-      $(document.activeElement) : $(_C_SELECTED);
-
   // Skip all these modifiers
   // XXX Is there a jQuery method for this?
   if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 77) && (e.ctrlKey || e.altKey || e.metaKey) ||
       (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 77) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
     return;
+
+  var itemHasFocus =
+    document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
+    document.activeElement.id !== null && document.activeElement.id.substring(0,7) == 'update-';
+
+  // First, try the activeElement instead of C_SELECTED because it's already set before the
+  // scroll; but if that fails (e.g. when the user cancels the editing of a comment
+  // or clicks on area outside of contentpane), then we go look at C_SELECTED
+  var $selectedItem = itemHasFocus ? $(document.activeElement) : $(_C_SELECTED);
 
   // If we still don't have a selected item, then e.g. the page must have just loaded,
   // so just pick the first item.
@@ -733,18 +734,27 @@ function onKeydown(e) {
         clickMoreButton();
       }
       break;
-    case 38: // shift-up
-      if (e.shiftKey) {
+    case 38: // shift-up and up (restrict use of up only when item has focus)
+      if (e.shiftKey || itemHasFocus) {
         $sibling = getPrevItem($selectedItem);
-        if ($sibling.length)
-          navigateUnfolding($sibling, $selectedItem);
+        if ($sibling.length) {
+          if (e.shiftKey)
+            navigateUnfolding($sibling, $selectedItem);
+          else
+            // We want to navigate after the browser has responded to up/down
+            setTimeout(function() { navigateUnfolding($sibling, $selectedItem); }, 0);
+        }
       }
       break;
-    case 40: // shift-down
-      if (e.shiftKey) {
+    case 40: // shift-down and down (restrict use of up only when item has focus)
+      if (e.shiftKey || itemHasFocus) {
         $sibling = getNextItem($selectedItem);
         if ($sibling.length) {
-          navigateUnfolding($sibling, $selectedItem);
+          if (e.shiftKey)
+            navigateUnfolding($sibling, $selectedItem);
+          else
+            // We want to navigate after the browser has responded to up/down
+            setTimeout(function() { navigateUnfolding($sibling, $selectedItem); }, 0);
         } else {
           // If we're at the bottom, trigger the more button
           clickMoreButton();
