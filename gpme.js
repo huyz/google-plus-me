@@ -536,7 +536,7 @@ function onSgpItemInserted(e) {
     // we can nuke it.
     // "FYI, what I do is to keep the last inserted post stashed as a variable
     // and then use the insertBefore method to insert the next one."
-    $item.hide().attr('gpme-nukeme', '');
+    $item.hide().attr('gpme-nukeme', '1');
     setTimeout(function() {
       $item.remove();
     }, 50);
