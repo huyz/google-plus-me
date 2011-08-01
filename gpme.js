@@ -396,9 +396,11 @@ function cacheSgpItemFoldState($item) {
       if (isItemFolded($item)) {
         $copy.addClass('gpme-folded');
         $copy.removeClass('gpme-unfolded');
+        $copy.children('gpme-post-wrapper').hide();
       } else {
         $copy.addClass('gpme-unfolded');
         $copy.removeClass('gpme-folded');
+        $copy.children('gpme-post-wrapper').show();
       }
       if (COMPAT_SGP_COMMENTS) {
         if (areItemCommentsFolded($item)) {
@@ -1035,12 +1037,13 @@ function enhanceAllSgpPosts($stream) {
     debug("enhanceAllSgpPosts #" + i);
     i++;
     // Space out the enhancements to make the browser more responsive
-    // NOTE: We have to show because we temporarily hid in onSgpItemInserted()
     setTimeout(function() {
       var $item = $(item);
       updateItem($item);
 
+      // We have to show because we temporarily hid in onSgpItemInserted()
       $item.show();
+
       // Cache the DOM for re-use
       $item = $item.clone(true, true);
       $item.children('.gpme-post-wrapper').children(':not([class^="gpme-"])').remove();
