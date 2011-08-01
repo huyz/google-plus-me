@@ -1738,9 +1738,10 @@ function unfoldItem(interactive, $item, animated, $post) {
     // NOTE: changing of classes must be done after hidePostItemPreview()
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
-    $post.slideDown('fast');
-    if (interactive)
-      updateCachedSgpItem($item);
+    $post.slideDown('fast', function() {
+      if (interactive)
+        updateCachedSgpItem($item);
+    });
   } else {
     $item.removeClass('gpme-folded');
     $item.addClass('gpme-unfolded');
