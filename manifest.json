@@ -1,9 +1,10 @@
 {
-  "name": "G+me for Google Plus™",
-  "version": "4.18",
+  "default_locale": "en",
+  "name": "__MSG_extensionName__",
+  "version": "5.0",
   "minimum_chrome_version": "12",
 
-  "description": "Collapses the Google+ stream while keeping live updates: hides comments, collapses posts, etc.",
+  "description": "__MSG_extensionDescription__",
   "icons": { "16": "icons/icon16.png",
              "48": "icons/icon48.png",
             "128": "icons/icon128.png" },  
@@ -15,6 +16,7 @@
   },
 
   "background_page": "background.html",
+  "options_page": "fancy-settings/source/index.html",
 
   "content_scripts": [
     {

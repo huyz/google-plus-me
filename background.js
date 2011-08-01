@@ -7,6 +7,11 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
+var settings = new Store("settings", {
+  'previewEnableInExpanded': false,
+  'previewEnableInList': true
+});
+
 // Default options
 if (localStorage.getItem('gpme_options_mode') == null)
   localStorage.setItem('gpme_options_mode', 'expanded');
@@ -45,10 +50,12 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     chrome.browserAction.setBadgeText({text: (request.count ? request.count.toString() : "")});
   } else if (request.action == 'gpmeGetModeOption') {
     sendResponse(localStorage.getItem('gpme_options_mode'));
+  } else if (request.action == 'gpmeGetSettings') {
+    sendResponse(settings.toObject());
   }
 });
 
-// Listen to tab updates from Chrome (back and forward buttons)
+// Listen to tab updates from Chrome, e.g. back and forward buttons
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   if (changeInfo.status == 'complete' && tab.url.match(/plus\.google\.com\//i)) {
     chrome.tabs.sendRequest(tabId, {action: 'gpmeTabUpdateComplete'});
