@@ -529,14 +529,14 @@ function onSgpItemInserted(e) {
     //debug("onSgpItemInserted: hitting cache id=" + e.target.id);
     var $item = $(e.target);
     var $newItem = $sgpCachedItems[e.target.id].clone(true, true);
-    $newItem.insertBefore($item);
+    $newItem.insertAfter($item);
     $newItem.children('.gpme-post-wrapper').append($item.children());
 
     // Hide the item and give SGPlus time to use it to insert the next post, and then
     // we can nuke it.
     // "FYI, what I do is to keep the last inserted post stashed as a variable
     // and then use the insertBefore method to insert the next one."
-    $item.hide().attr('gpme-nukeme');
+    $item.hide().attr('gpme-nukeme', '');
     setTimeout(function() {
       $item.remove();
     }, 50);
