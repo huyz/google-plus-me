@@ -508,8 +508,7 @@ function onItemInserted(e) {
 }
 
 /**
- * Responds to DOM updates from the inefficient SGPlus which refreshes
- * too frequently and broadly.
+ * Responds to DOM updates from SGPlus which refreshes very frequently and broadly.
  * We use several tricks to make up for its inefficiencies:
  * - Since it consumes all the CPU while it refreshes, we want to do our
  *   refreshes a bit later to make the browser more responsive
@@ -532,8 +531,15 @@ function onSgpItemInserted(e) {
     var $newItem = $sgpCachedItems[e.target.id].clone(true, true);
     $newItem.insertBefore($item);
     $newItem.children('.gpme-post-wrapper').append($item.children());
-    //debug("onSgpItemInserted: after:", $newItem.html());
-    $item.remove();
+
+    // Hide the item and give SGPlus time to use it to insert the next post, and then
+    // we can nuke it.
+    // "FYI, what I do is to keep the last inserted post stashed as a variable
+    // and then use the insertBefore method to insert the next one."
+    $item.hide();
+    setTimeout(function() {
+      $item.remove();
+    }, 500);
 
   } else { // Otherwise, we'll enhance later
     // Get rid of any ongoing timers
@@ -544,7 +550,7 @@ function onSgpItemInserted(e) {
     $(e.target).hide();
 
     // Postpone our work for 2 seconds
-    sgpUpdateTimer = setTimeout(function() { enhanceAllSgpPosts($(e.target.parentNode)); }, 2000);
+    sgpUpdateTimer = setTimeout(function() { enhanceAllSgpPosts($(e.target.parentNode)); }, 1500);
   }
 }
 
