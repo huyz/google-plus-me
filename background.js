@@ -8,10 +8,22 @@
  */
 
 var options = new Store("settings", {
-  'commentsDefaultCollapsed': false,
+  /*
+   * General
+   */
+  'summaryIncludeThumbnails': false,
+  'summaryIncludeTime': false,
   'previewEnableInExpanded': false,
   'previewEnableInList': true,
 
+  /*
+   * Pages
+   */
+  'commentsDefaultCollapsed': false,
+
+  /*
+   * Compatibility
+   */
   'compatSgp': true,
   'compatSgpComments': false,
   'compatSgpCache': false,

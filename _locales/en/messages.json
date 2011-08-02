@@ -14,8 +14,19 @@
     "description": "Name of the tab in the options page"
   },
 
+  "options_label_summary": {
+    "message": "Post Summary",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_summaryIncludeThumbnails": {
+    "message": "Include timestamp"
+  },
+  "options_summaryIncludeThumbnails": {
+    "message": "Include image thumbnails"
+  },
+
   "options_label_preview": {
-    "message": "Mouse-over Instant Preview",
+    "message": "Post Preview",
     "description": "Name of the options group for mouse-over instant preview"
   },
   "options_previewEnableInExpanded": {
@@ -26,10 +37,6 @@
   },
 
 
-  "options_label_pages": {
-    "message": "Pages",
-    "description": "Name of the tab in the options page"
-  },
   "options_label_pages": {
     "message": "Pages",
     "description": "Name of the tab in the options page"
@@ -72,10 +79,10 @@
     "message": "Enable compatibility with SGPlus: make posts collapsible"
   },
   "options_compatSgpComments": {
-    "message": "Make comments collapsible and count comments <i>(compatibility must be enabled)</i>"
+    "message": "Make comments collapsible and track comments <i>(compatibility must be enabled)</i>"
   },
   "options_compatSgpCache": {
-    "message": "Enable speed cache to prevent refresh flicker<i>(compatibility must be enabled)</i> &mdash; $BEGIN_RED$ Experimental $END_RED$",
+    "message": "Enable speed cache to prevent refresh flicker <i>(compatibility must be enabled)</i> &mdash; $BEGIN_RED$ Experimental $END_RED$",
     "placeholders": {
       "BEGIN_RED": {
         "content": "<span style=\"color: red\">"

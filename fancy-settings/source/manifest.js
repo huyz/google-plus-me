@@ -2,13 +2,25 @@ this.manifest = {
   "name": "G+me",
   "icon": "../../icons/icon48.png",
   "settings": [
+    /*
+     * General
+     */
+    // Collapse summary
     {
       "tab"   : chrome.i18n.getMessage("options_label_general"),
-      "group" : chrome.i18n.getMessage("options_label_comments"),
-      "name"  : "commentsDefaultCollapsed",
+      "group" : chrome.i18n.getMessage("options_label_summary"),
+      "name"  : "summaryIncludeThumbnails",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_commentsDefaultCollapsed")
+      "label" : chrome.i18n.getMessage("options_summaryIncludeThumbnails")
     },
+    {
+      "tab"   : chrome.i18n.getMessage("options_label_general"),
+      "group" : chrome.i18n.getMessage("options_label_summary"),
+      "name"  : "summaryIncludeTime",
+      "type"  : "checkbox",
+      "label" : chrome.i18n.getMessage("options_summaryIncludeTime")
+    },
+    // Preview
     {
       "tab"   : chrome.i18n.getMessage("options_label_general"),
       "group" : chrome.i18n.getMessage("options_label_preview"),
@@ -24,6 +36,20 @@ this.manifest = {
       "label" : chrome.i18n.getMessage("options_previewEnableInList")
     },
 
+    /*
+     * Pages
+     */
+    {
+      "tab"   : chrome.i18n.getMessage("options_label_pages"),
+      "group" : chrome.i18n.getMessage("options_label_comments"),
+      "name"  : "commentsDefaultCollapsed",
+      "type"  : "checkbox",
+      "label" : chrome.i18n.getMessage("options_commentsDefaultCollapsed")
+    },
+
+    /*
+     * Compatibility
+     */
     {
       "tab"   : chrome.i18n.getMessage("options_label_compat"),
       "group" : "",
