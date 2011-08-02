@@ -1636,10 +1636,16 @@ function foldItem(interactive, $item, animated, $post) {
           error("foldItem: Can't find date marker");
           error($clonedTitle);
         } else {
-          $clonedDate.removeClass(C_DATE);
-
           // If any, move "- Muted" to right after date and before the " - "
           $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
+
+          // G+ changed the date format once again.
+          // Let's just nuke it for now and see if users miss it
+          //$clonedDate.removeClass(C_DATE);
+          var dashBefore = $clonedDate.get(0).previousSibling;
+          if (typeof dashBefore !== 'undefined' && dashBefore)
+            dashBefore.parentNode.removeChild(dashBefore);
+          $clonedDate.remove();
 
           // Inject the summary title
           $title.append($clonedTitle);
@@ -1650,15 +1656,16 @@ function foldItem(interactive, $item, animated, $post) {
             e.stopPropagation();
           });
 
+          /*
           // For first page display, the date is there, but for updates, the date isn't there yet.
           // So check, and try again later in case of updates.
           var attempt = 40;
-          (function insertTitleWhenDateUpdated($date) {
+          (function updateDateWhenReady($date) {
             attempt--;
             if ($date.length && $date.text() != '#' || attempt < 0) {
               var dateText = '';
               if (attempt < 0) {
-                error("insertTitleWhenDateUpdated: gave up on getting the date for id=" + id);
+                error("updateDateWhenReady: gave up on getting the date for id=" + id);
               } else {
                 dateText = abbreviateDate($date.text());
               }
@@ -1672,13 +1679,14 @@ function foldItem(interactive, $item, animated, $post) {
 
               if ($srcDateA.length) {
                 // Try again later in a little bit
-                setTimeout(function() { insertTitleWhenDateUpdated($srcDateA); }, 50);
+                setTimeout(function() { updateDateWhenReady($srcDateA); }, 50);
               } else {
-                error("insertTitleWhenDateUpdated: can't find the source date div");
+                error("updateDateWhenReady: can't find the source date div");
                 error($srcDateA);
               }
             }
           })($clonedDate.find('a'));
+          */
         }
       }
     }
