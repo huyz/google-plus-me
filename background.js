@@ -7,9 +7,14 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
-var settings = new Store("settings", {
+var options = new Store("settings", {
+  'commentsDefaultCollapsed': false,
   'previewEnableInExpanded': false,
-  'previewEnableInList': true
+  'previewEnableInList': true,
+
+  'compatSgp': true,
+  'compatSgpComments': false,
+  'compatSgpCache': false,
 });
 
 // Default options
@@ -50,8 +55,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     chrome.browserAction.setBadgeText({text: (request.count ? request.count.toString() : "")});
   } else if (request.action == 'gpmeGetModeOption') {
     sendResponse(localStorage.getItem('gpme_options_mode'));
-  } else if (request.action == 'gpmeGetSettings') {
-    sendResponse(settings.toObject());
+  } else if (request.action == 'gpmeGetOptions') {
+    sendResponse(options.toObject());
   }
 });
 

@@ -1,0 +1,92 @@
+{
+  "extensionName": {
+    "message": "G+me for Google Plus™",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Collapses the Google+ stream while keeping live updates: hides comments, collapses posts, etc.",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
+
+
+  "options_label_general": {
+    "message": "General",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_label_preview": {
+    "message": "Mouse-over Instant Preview",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_previewEnableInExpanded": {
+    "message": "Enable in expanded mode"
+  },
+  "options_previewEnableInList": {
+    "message": "Enable in list mode"
+  },
+
+
+  "options_label_pages": {
+    "message": "Pages",
+    "description": "Name of the tab in the options page"
+  },
+  "options_label_pages": {
+    "message": "Pages",
+    "description": "Name of the tab in the options page"
+  },
+  "options_label_comments": {
+    "message": "Comments",
+    "description": "Name of the options group for comments"
+  },
+  "options_commentsDefaultCollapsed": {
+    "message": "Collapse all comments by default",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+
+
+
+  "options_label_compat": {
+    "message": "Compatibility",
+    "description": "Name of the tab in the options page"
+  },
+  "options_text_compat": {
+    "message": "This page is related to compatibility with other extensions that you may have installed for Google+.<br />You can ignore these options.",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_label_compatSgp": {
+    "message": "SGPlus, a.k.a. Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_text_compatSgp": {
+    "message": "<b>WARNING:</b> Compatibility with SGPlus is in beta.  There are still performance and instability issues.  Each option below adds more processing to SGPlus's frequent heavy-duty refreshes, possibly slowing down your browser and causing frequent pauses (annoying when you're typing).<br />Please report any problems to the <a href=\"$URL$\" target=_default>discussion about SGPlus compatibility on Google+</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_compatSgp": {
+    "message": "Enable compatibility with SGPlus: make posts collapsible"
+  },
+  "options_compatSgpComments": {
+    "message": "Make comments collapsible and count comments <i>(compatibility must be enabled)</i>"
+  },
+  "options_compatSgpCache": {
+    "message": "Enable speed cache to prevent refresh flicker<i>(compatibility must be enabled)</i> &mdash; $BEGIN_RED$ Experimental $END_RED$",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_text_compatSgpUsage": {
+    "message": "<b>NOTE:<b> Google+ tabs must be reloaded after changing any of these options.",
+    "description": "Text giving users instructions for above options"
+  }
+}

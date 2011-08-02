@@ -44,14 +44,6 @@
 */
 
 /****************************************************************************
- * Config
- ***************************************************************************/
-
-// Set to true to enable compatibility with Start G+, a.k.a. SGPlus
-var COMPAT_SGP = true;
-var COMPAT_SGP_COMMENTS = false;
-
-/****************************************************************************
  * Constants
  ***************************************************************************/
 
@@ -210,6 +202,9 @@ var clickWallTimeout = 300;
  * Init
  ***************************************************************************/
 
+// Options, according to fancy-settings
+var options;
+
 // list or expanded mode (like on GReader)
 var displayMode;
 
@@ -290,12 +285,12 @@ function isEnabledOnThisPage($subtree) {
   if (typeof $subtree == 'undefined')
     return ! DISABLED_PAGES_URL_REGEXP.test(window.location.href);
 
-  for (var c in DISABLED_PAGES_CLASSES) {
-    if ($subtree.hasClass(DISABLED_PAGES_CLASSES[c]) || $subtree.find('.' + DISABLED_PAGES_CLASSES[c]).length) {
-      debug("isEnabledOnThisPage: disabling because match on " + DISABLED_PAGES_CLASSES[c]);
+  DISABLED_PAGES_CLASSES.forEach(function(i) {
+    if ($subtree.hasClass(i) || $subtree.find('.' + i).length) {
+      debug("isEnabledOnThisPage: disabling because match on " + i);
       return false;
     }
-  }
+  });
   return true;
 }
 
@@ -311,20 +306,23 @@ function abbreviateDate(text) {
  * Iterates through all the comment containers and calls the callback
  */
 function foreachCommentContainer($subtree, callback) {
-  for (var container in _C_COMMENT_CONTAINERS) {
-    var $container = $subtree.find(_C_COMMENT_CONTAINERS[container]);
+  _C_COMMENT_CONTAINERS.forEach(function(i) {
+    var $container = $subtree.find(i);
     if ($container.length)
       callback($container);
-  }
+  });
 }
 
 /**
  * Queries background page for options
  */
 function getOptionsFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetModeOption'}, function(response) {
-    displayMode = response;
-    callback();
+  chrome.extension.sendRequest({action: 'gpmeGetModeOption'}, function(theDisplayMode) {
+    displayMode = theDisplayMode;
+    chrome.extension.sendRequest({action: 'gpmeGetOptions'}, function(theOptions) {
+      options = theOptions;
+      callback();
+    });
   });
 }
 
@@ -390,7 +388,7 @@ function overlappingBarsHeight() {
  */
 function updateCachedSgpItem($item, $titleContent) {
   var id = $item.attr('id');
-  if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
+  if (options.compatSgp && options.compatSgpCache && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
     var $copy = $sgpCachedItems[id];
     if (typeof $copy !== 'undefined') {
       if (isItemFolded($item)) {
@@ -402,7 +400,7 @@ function updateCachedSgpItem($item, $titleContent) {
         $copy.removeClass('gpme-folded');
         $copy.children('gpme-post-wrapper').show();
       }
-      if (COMPAT_SGP_COMMENTS) {
+      if (options.compatSgpComments) {
         if (areItemCommentsFolded($item)) {
           $copy.addClass('gpme-comments-folded');
           $copy.removeClass('gpme-comments-unfolded');
@@ -525,18 +523,19 @@ function onSgpItemInserted(e) {
     return;
   
   // Try to find cached DOM
-  if (typeof e.target.id !== 'undefined' && e.target.id && e.target.id in $sgpCachedItems) {
+  if (options.compatSgpCache &&
+      typeof e.target.id !== 'undefined' && e.target.id && $sgpCachedItems.hasOwnProperty(e.target.id)) {
     //debug("onSgpItemInserted: hitting cache id=" + e.target.id);
     var $item = $(e.target);
     var $newItem = $sgpCachedItems[e.target.id].clone(true, true);
-    $newItem.insertBefore($item);
+    $newItem.insertAfter($item);
     $newItem.children('.gpme-post-wrapper').append($item.children());
 
     // Hide the item and give SGPlus time to use it to insert the next post, and then
     // we can nuke it.
     // "FYI, what I do is to keep the last inserted post stashed as a variable
     // and then use the insertBefore method to insert the next one."
-    $item.hide().attr('gpme-nukeme');
+    $item.hide().attr('gpme-nukeme', '1');
     setTimeout(function() {
       $item.remove();
     }, 50);
@@ -549,7 +548,7 @@ function onSgpItemInserted(e) {
     // Hide the item until we can enhance it
     $(e.target).hide();
 
-    // Postpone our work for 2 seconds
+    // Postpone our processing for a little
     sgpUpdateTimer = setTimeout(function() { enhanceAllSgpPosts($(e.target.parentNode)); }, 1500);
   }
 }
@@ -923,7 +922,7 @@ function onResetAll() {
 
   var oldMode = displayMode;
   for (var i in localStorage) {
-    if (i.substring(0,5) == 'gpme_')
+    if (localStorage.hasOwnProperty(i) && i.substring(0,5) == 'gpme_')
       localStorage.removeItem(i);
   }
 
@@ -1084,20 +1083,19 @@ function enhanceAllSgpPosts($stream) {
   $stream.children(_C_ITEM + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh):not([gpme-nukeme])').each(function(i, item) {
     debug("enhanceAllSgpPosts #" + i);
     i++;
-    // Space out the enhancements to make the browser more responsive
-    setTimeout(function() {
-      var $item = $(item);
-      updateItem($item);
+    var $item = $(item);
+    updateItem($item);
 
-      // We have to show because we temporarily hid in onSgpItemInserted()
-      $item.show();
+    // We have to show because we temporarily hid in onSgpItemInserted()
+    $item.show();
+    //console.debug("enhanceAllSgpPosts inserting id=" + item.id, $item);
 
-      // Cache the DOM for re-use
+    // Cache the DOM for re-use
+    if (options.compatSgpCache) {
       $item = $item.clone(true, true);
       $item.children('.gpme-post-wrapper').children(':not([class^="gpme-"])').remove();
       $sgpCachedItems[item.id] = $item;
-      //console.debug("enhanceAllSgpPosts inserting id=" + item.id, $item);
-    }, i * 50);
+    }
   });
 }
 
@@ -1111,10 +1109,10 @@ function updateItem($item, attempt) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (COMPAT_SGP) {
+  if (options.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   var enhanceItem = ! $item.hasClass('gpme-enh');
@@ -1486,10 +1484,10 @@ function foldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (COMPAT_SGP) {
+  if (options.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // If interactive folding and comments are showing, record the comment count
@@ -1590,26 +1588,28 @@ function foldItem(interactive, $item, animated, $post) {
           '.ea-S-Xj-Cc' // text of shared link
         ];
         for (var c in classes) {
-          $snippet = $post.find(classes[c]);
-          if (! $snippet.length)
-            continue;
+          if (classes.hasOwnProperty(c)) {
+            $snippet = $post.find(classes[c]);
+            if (! $snippet.length)
+              continue;
 
-          // We want to ignore link shares that only have the text Edit
-          // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
-          if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
-            $snippet = $snippet.clone();
-            $snippet.find('.a-b-f-i-Ka').remove();
-          }
-          var text = $snippet.text();
-          if (text.match(/\S/)) {
-            if (classes[c] == '.a-f-i-ie-R') {
-              // FIXME: English-specific
-              text = text.replace(/.*hung out\s*/, '');
+            // We want to ignore link shares that only have the text Edit
+            // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
+            if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
+              $snippet = $snippet.clone();
+              $snippet.find('.a-b-f-i-Ka').remove();
             }
-            $snippet = $('<span class="gpme-snippet"></span');
-            $snippet.text(text); // We have to add separately to properly escape HTML tags
-            $clonedTitle.append($snippet);
-            break;
+            var text = $snippet.text();
+            if (text.match(/\S/)) {
+              if (classes[c] == '.a-f-i-ie-R') {
+                // FIXME: English-specific
+                text = text.replace(/.*hung out\s*/, '');
+              }
+              $snippet = $('<span class="gpme-snippet"></span');
+              $snippet.text(text); // We have to add separately to properly escape HTML tags
+              $clonedTitle.append($snippet);
+              break;
+            }
           }
         }
       }
@@ -1732,10 +1732,10 @@ function unfoldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (COMPAT_SGP) {
+  if (options.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = COMPAT_SGP_COMMENTS ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // Persist for expanded mode
@@ -2196,7 +2196,7 @@ function updateCommentCount(id, $subtree, count) {
   var $countFg = $container.find(".gpme-comment-count-fg");
 
   // Clear any old timers we may have
-  if (id in lastCommentCountUpdateTimers) {
+  if (lastCommentCountUpdateTimers.hasOwnProperty(id)) {
     clearTimeout(lastCommentCountUpdateTimers[id]);
     delete lastCommentCountUpdateTimers[id];
   }
@@ -2397,8 +2397,9 @@ function deleteSeenCommentCount(id) {
 function showPreview(e) {
   debug("showPreview: this=" + this.className);
 
-  // Skip if this is expanded mode
-  if (displayMode == 'expanded')
+  // Skip depending on options
+  if (!( options.previewEnableInExpanded && displayMode == 'expanded' ||
+          options.previewEnableInList && displayMode == 'list'))
     return;
 
   var $item = $(this);
@@ -2673,7 +2674,7 @@ $(document).ready(function() {
         // Or it's a Start G+ post
         if (id && (id.substring(0,7) == 'update-'))
           onItemInserted(e);
-        else if (COMPAT_SGP && id.substring(0,9) == ID_SGP_POST_PREFIX )
+        else if (options.compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
           onSgpItemInserted(e);
         // This happens when switching from About page to Posts page
         // on profile
