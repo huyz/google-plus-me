@@ -7,7 +7,10 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
-var options = new Store("settings", {
+// i18n messages
+var i18nMessages = {};
+
+var settings = new Store("settings", {
   /*
    * General
    */
@@ -63,12 +66,22 @@ if (version != oldVersion) {
 
 // Listen to incoming messages from content scripts
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  if (request.action == 'gpmeStatusUpdate') {
-    chrome.browserAction.setBadgeText({text: (request.count ? request.count.toString() : "")});
-  } else if (request.action == 'gpmeGetModeOption') {
-    sendResponse(localStorage.getItem('gpme_options_mode'));
-  } else if (request.action == 'gpmeGetOptions') {
-    sendResponse(options.toObject());
+  switch (request.action) {
+    case 'gpmeStatusUpdate':
+      chrome.browserAction.setBadgeText({text: (request.count ? request.count.toString() : "")});
+      break;
+    case 'gpmeGetModeOption':
+      sendResponse(localStorage.getItem('gpme_options_mode'));
+      break;
+    case 'gpmeGetSettings':
+      sendResponse(settings.toObject());
+      break;
+    case 'gpmeGetMessages':
+      MESSAGE_NAMES.forEach(function(name) {
+        i18nMessages[name] = chrome.i18n.getMessage(name);
+      });
+      sendResponse(i18nMessages);
+      break;
   }
 });
 

@@ -43,11 +43,23 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// NOTE: Keep format the same as it is programmatically changed by package.sh
+var DEBUG = true;
+
+/****************************************************************************
+ * Utility for constants
+ ***************************************************************************/
+
+// http://stackoverflow.com/questions/2593637/how-to-escape-regular-expression-in-javascript
+RegExp.quote = function(str) {
+  return str.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1");
+};
+
 /****************************************************************************
  * Constants
  ***************************************************************************/
 
-//// For more class constants, see foldItem() in classes array
+// NOTE: For more class constants, see foldItem() in classes array
 
 var _ID_GBAR                    = '#gb';
 var _ID_GBAR_TOP                = '#gbw';
@@ -76,13 +88,12 @@ var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
 
 // Item
+var _C_ITEM                     = '.a-b-f-i';
 var C_SELECTED                  = 'a-f-oi-Ai';
 var _C_SELECTED                 = '.a-f-oi-Ai';
-var _C_ITEM                     = '.a-b-f-i';
 var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
-var _C_CONTENT                  = '.a-b-f-i-p';
-var _C_CONTENT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // For hangout and photo albums
-var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
+var _C_ITEM_GUTS                = '.a-b-f-i-p';
+var _C_ITEM_GUTS_PLACEHOLDER    = '.a-b-f-i-Qi-Nd'; // For hangout and photo albums
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
@@ -90,14 +101,24 @@ var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
 var _C_TITLE                    = '.gZgCtb';
-//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
+//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_ITEM_GUTS_PLACEHOLDER + ')';
 var C_TITLE                     = 'gZgCtb';
+var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
+var _C_NAME                     = '.a-f-i-go';
+var C_TITLE_COLOR               = 'a-f-i-yj';
+var S_SOURCE                    = 'a.a-f-i-Wd';
 var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
 var _C_MUTED                    = '.a-b-f-i-gg-eb';
 var C_DATE                      = 'a-b-f-i-Ad-Ub';
 var _C_DATE                     = '.a-b-f-i-Ad-Ub';
 var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
+var _C_CONTENT                  = '.a-f-i-p-r';
 var _C_EXPAND_POST              = '.a-b-f-i-p-gc-h';
+
+// Parts of content relevant for the summary
+var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
+var _C_QUOTED_PHOTO             = '.a-f-i-u-go > img';
+var _C_MAP_IMG                  = '.a-f-i-p-Dc-jd-Jd';
 
 // Comments
 var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
@@ -144,6 +165,8 @@ var DISABLED_PAGES_CLASSES = [
   C_SPARKS_MARKER,
   C_SINGLE_POST_MARKER
 ];
+
+var DATE_JUNK_REGEXP, DATE_LONG_REGEXP; // Due to Chrome bug, defined later, after response from background
 
 // G+me
 var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
@@ -199,31 +222,23 @@ var hoverIntentConfig = {
 var clickWallTimeout = 300;
 
 /****************************************************************************
- * Init
+ * Pre-created DOM elements
  ***************************************************************************/
 
-// Options, according to fancy-settings
-var options;
+// NOTE: started using regular JS, then switched to using jQuery; no grand master plan
+// behind the dual usage.
 
-// list or expanded mode (like on GReader)
-var displayMode;
+var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u25b6</span></div>');
+var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
+var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
+var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  &amp;  </span>');
+var $checkinIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X');
+var $mobileIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X').css({
+  'background-position': '0 -34px'
+});
+var $titleDateTpl = $('<span class="gpme-title-date"></span>');
+var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
-// In list mode, an item that was opened but may need to be reclosed
-// once the location.href is corrected
-var $lastTentativeOpen = null;
-
-// We track what's open so that we can close it
-var $lastPreviewedItem = null;
-
-// Timers to handle G+'s G+ dynamic comment list reconstruction
-var lastCommentCountUpdateTimers = {};
-
-// SGPlus update timer
-var sgpUpdateTimer = null;
-// SGPlus cached DOM
-var $sgpCachedItems = new Object();
-
-// Shared DOM: the titlebar
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
 titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div><div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div><span class="gpme-title"></span></div>';
@@ -257,6 +272,36 @@ commentsWrapperTpl.className = 'gpme-comments-wrapper';
 var $commentsWrapperTpl = $(commentsWrapperTpl);
 
 /****************************************************************************
+ * Init
+ ***************************************************************************/
+
+// Settings, according to fancy-settings
+var settings;
+
+// Hold all the messages from background
+// Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+if (DEBUG)
+  var i18nMessages;
+
+// list or expanded mode (like on GReader)
+var displayMode;
+
+// In list mode, an item that was opened but may need to be reclosed
+// once the location.href is corrected
+var $lastTentativeOpen = null;
+
+// We track what's open so that we can close it
+var $lastPreviewedItem = null;
+
+// Timers to handle G+'s G+ dynamic comment list reconstruction
+var lastCommentCountUpdateTimers = {};
+
+// SGPlus update timer
+var sgpUpdateTimer = null;
+// SGPlus cached DOM
+var $sgpCachedItems = new Object();
+
+/****************************************************************************
  * Utility
  ***************************************************************************/
 
@@ -264,10 +309,12 @@ var $commentsWrapperTpl = $(commentsWrapperTpl);
  * For debugging
  */
 function trace(msg) {
-  console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
+  if (DEBUG)
+    console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
 }
 function debug(msg) {
-  console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+  if (DEBUG)
+    console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
 }
 function warn(msg) {
   console.warn(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
@@ -285,12 +332,15 @@ function isEnabledOnThisPage($subtree) {
   if (typeof $subtree == 'undefined')
     return ! DISABLED_PAGES_URL_REGEXP.test(window.location.href);
 
-  DISABLED_PAGES_CLASSES.forEach(function(i) {
-    if ($subtree.hasClass(i) || $subtree.find('.' + i).length) {
-      debug("isEnabledOnThisPage: disabling because match on " + i);
-      return false;
+  for (var i in DISABLED_PAGES_CLASSES) {
+    if (DISABLED_PAGES_CLASSES.hasOwnProperty(i)) {
+      if ($subtree.hasClass(DISABLED_PAGES_CLASSES[i]) ||
+          $subtree.find('.' + DISABLED_PAGES_CLASSES[i]).length) {
+        debug("isEnabledOnThisPage: disabling because match on " + i);
+        return false;
+      }
     }
-  });
+  }
   return true;
 }
 
@@ -299,7 +349,7 @@ function isEnabledOnThisPage($subtree) {
  * FIXME: English-specific
  */
 function abbreviateDate(text) {
-  return text.replace(/\s*\(edited.*?\)/, '').replace(/Yesterday/g, 'Yest.');
+  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, '$1.');
 }
 
 /**
@@ -319,11 +369,43 @@ function foreachCommentContainer($subtree, callback) {
 function getOptionsFromBackground(callback) {
   chrome.extension.sendRequest({action: 'gpmeGetModeOption'}, function(theDisplayMode) {
     displayMode = theDisplayMode;
-    chrome.extension.sendRequest({action: 'gpmeGetOptions'}, function(theOptions) {
-      options = theOptions;
+    chrome.extension.sendRequest({action: 'gpmeGetSettings'}, function(theSettings) {
+      settings = theSettings;
       callback();
     });
   });
+}
+
+var getMessage;
+if (DEBUG) {
+  /**
+   * Ask the background for all the messages
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  function getMessagesFromBackground(callback) {
+    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
+      i18nMessages = response;
+
+      DATE_JUNK_REGEXP = new RegExp('\s*\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\)');
+      console.debug("Regexp", DATE_JUNK_REGEXP);
+      DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
+                                          RegExp.quote(getMessage('gplus_dateLongSuffix')));
+
+      callback();
+    });
+  }
+
+  /**
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  getMessage = function(name) {
+    return i18nMessages[name];
+  }
+} else {
+console.debug("WHAT THE FUCK?");
+  getMessage = function(name) {
+    return chrome.i18n.getMessage(name);
+  }
 }
 
 /**
@@ -388,7 +470,7 @@ function overlappingBarsHeight() {
  */
 function updateCachedSgpItem($item, $titleContent) {
   var id = $item.attr('id');
-  if (options.compatSgp && options.compatSgpCache && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
+  if (settings.compatSgp && settings.compatSgpCache && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
     var $copy = $sgpCachedItems[id];
     if (typeof $copy !== 'undefined') {
       if (isItemFolded($item)) {
@@ -400,7 +482,7 @@ function updateCachedSgpItem($item, $titleContent) {
         $copy.removeClass('gpme-folded');
         $copy.children('gpme-post-wrapper').show();
       }
-      if (options.compatSgpComments) {
+      if (settings.compatSgpComments) {
         if (areItemCommentsFolded($item)) {
           $copy.addClass('gpme-comments-folded');
           $copy.removeClass('gpme-comments-unfolded');
@@ -523,7 +605,7 @@ function onSgpItemInserted(e) {
     return;
   
   // Try to find cached DOM
-  if (options.compatSgpCache &&
+  if (settings.compatSgpCache &&
       typeof e.target.id !== 'undefined' && e.target.id && $sgpCachedItems.hasOwnProperty(e.target.id)) {
     //debug("onSgpItemInserted: hitting cache id=" + e.target.id);
     var $item = $(e.target);
@@ -1091,7 +1173,7 @@ function enhanceAllSgpPosts($stream) {
     //console.debug("enhanceAllSgpPosts inserting id=" + item.id, $item);
 
     // Cache the DOM for re-use
-    if (options.compatSgpCache) {
+    if (settings.compatSgpCache) {
       $item = $item.clone(true, true);
       $item.children('.gpme-post-wrapper').children(':not([class^="gpme-"])').remove();
       $sgpCachedItems[item.id] = $item;
@@ -1109,22 +1191,22 @@ function updateItem($item, attempt) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (options.compatSgp) {
+  if (settings.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   var enhanceItem = ! $item.hasClass('gpme-enh');
 
   if (enhanceItem) {
     // Add titlebar
-    // For Tweak, we also need the menu in there
-    //var $itemContent = $item.find(_C_CONTENT);
-    var $itemContent = $item.children('div:not(' + _C_CONTENT_PLACEHOLDER + ')');
-    if (! isSgpPost && ! $itemContent.length) {
+    // For Tweak, we also need the menu in there, not just the guts
+    //var $itemGuts = $item.children(_C_ITEM_GUTS);
+    var $itemGuts = $item.children('div:not(' + _C_ITEM_GUTS_PLACEHOLDER + ')');
+    if (! isSgpPost && ! $itemGuts.length) {
       // The content comes a bit later
-      if ($item.find(_C_CONTENT_PLACEHOLDER).length) {
+      if ($item.find(_C_ITEM_GUTS_PLACEHOLDER).length) {
         if (typeof attempt === 'undefined')
           attempt = 0;
         if (attempt < 29) {
@@ -1133,7 +1215,7 @@ function updateItem($item, attempt) {
           error("updateItem: Can't get any content within 3 seconds. Giving up");
         }
       } else {
-        error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
+        error("updateItem: Can't find content of item " + id + " hits=" + $itemGuts.length);
         console.error($item.get(0));
       }
       return;
@@ -1144,12 +1226,12 @@ function updateItem($item, attempt) {
     $item.addClass('gpme-enh');
 
     var $titlebar = $titlebarTpl.clone(true);
-    $titlebar.insertBefore($itemContent.first());
+    $titlebar.insertBefore($itemGuts.first());
 
     // Insert container for post content so that we can turn it into an instant
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
-    $wrapper.append($itemContent);
+    $wrapper.append($itemGuts);
 
     var $commentbar;
     if (! isSgpPost) {
@@ -1454,16 +1536,10 @@ function foldItem(interactive, $item, animated, $post) {
   if (interactive && displayMode == 'expanded')
     localStorage.setItem("gpme_post_folded_" + id, true);
 
-  // Visual changes
-  // Can't fold muted items
-  /*
-  if (isItemMuted($item))
-    return;
-  */
-
   // Add hover event handler
   $item.unbind('mouseenter mouseleave').hoverIntent(hoverIntentConfig);
 
+  // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
     $post.slideUp('fast', function() {
@@ -1484,10 +1560,10 @@ function foldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (options.compatSgp) {
+  if (settings.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // If interactive folding and comments are showing, record the comment count
@@ -1499,82 +1575,68 @@ function foldItem(interactive, $item, animated, $post) {
   }
 
   var $snippet;
-  // Attached or pending title
+  // Attached or pending title summary
   var $subtree;
 
-  // If not yet done, put content in titlebar
+  // If not yet done, put content in titlebar (summary)
   var $title = $subtree = $item.find('.gpme-title');
   if (! $title.hasClass('gpme-has-content')) {
     $title.addClass('gpme-has-content');
 
-    var $srcTitle;
-
-    $srcTitle = $item.find(_C_CONTENT + " " + (isSgpPost ? _C_SGP_TITLE : _C_TITLE));
+    // NOTE: don't just take the first div inside post content title because
+    // sometimes the hangout 'Live' icons is there
+    var $srcTitle = $item.find(_C_ITEM_GUTS + " " + (isSgpPost ? _C_SGP_TITLE : _C_TITLE));
     if ($srcTitle.length !== 1) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
     } else {
-      var $clonedTitle = $subtree = $srcTitle.clone();
+      var $clonedTitle = $subtree = $titleTpl.clone();
+      var $sender = $titleSenderTpl.clone();
+      $clonedTitle.append($sender);
+      var $clonedTitleName = $srcTitle.find(_C_NAME).clone();
+      $sender.append($clonedTitleName);
 
-      // 2011-07-30 Google Ultimate+ changes the overflow for .gZgCtb to visible.
-      // Let's just remove that class, since we've already copied its styles to
-      // ".gpme-title > div" for Start G+
-      $clonedTitle.removeClass(C_TITLE);
+      var $srcPhoto = $post.find(S_PHOTO);
+      if ($srcPhoto.length)
+        $sender.prepend($srcPhoto.clone());
 
-      var $srcPhoto = $item.find(S_PHOTO);
-      if ($srcPhoto.length) {
-        $clonedTitle.prepend($srcPhoto.clone());
+      // Insert "mobile"/"check-ins" icons
+      var $source = $srcTitle.find(S_SOURCE);
+      if ($source.length) {
+        // FIXME: English-only
+        if ($source.text() == 'Google Check-ins')
+          $clonedTitle.append($checkinIconTpl.clone());
+        else if ($source.text() == 'Mobile')
+          $clonedTitle.append($mobileIconTpl.clone());
+        else // For non-English
+          $clonedTitle.append($source.text());
       }
 
-      // Insert fold icon
-      $clonedTitle.prepend('<span class="gpme-fold-icon">\u25b6</span>');
-
-      // Special fast code for SGPlus
-      if (isSgpPost) {
-        // Take out SGPlus's original post link
-        //console.debug("foldItem: SG+", $clonedTitle.find('span[style^="font-size"]'));
-        $clonedTitle.find(S_SGP_ORIGPOST_LINK ).remove();
-        $snippet = $post.find(_C_SGP_CONTENT);
-        if ($snippet.length) {
-          $clonedTitle.append($snippet.text());
-        } else {
-          $snippet = $post.find(_C_SGP_CONTENT2);
-          if ($snippet.length)
-            $clonedTitle.append($snippet.text());
-        }
-
+      var $itemGuts = $post.children(_C_ITEM_GUTS);
+      var $content = $itemGuts.children(_C_CONTENT);
+      if (! $content.length) {
+        error("foldItem: Can't find the item guts or contents for id=" + id);
       } else {
-        // Take out permissions
-        var $perms = $clonedTitle.find(_C_PERMS);
-        if ($perms.length) {
-          $perms.remove();
-        } else if (! isSgpPost) {
-          error("foldItem: can't find permissions div");
-          error($clonedTitle);
+
+        // Quoted sender's photo plus a dash
+        $srcPhoto = $itemGuts.find(_C_QUOTED_PHOTO);
+        if ($srcPhoto.length)
+          $sender.append($titleQuoteTpl.clone()).append($srcPhoto.clone().attr('style', 'margin: 0'));
+
+        // Images in the content
+        var isDashNeeded = true;
+        if (settings.summaryIncludeThumbnails) {
+          $srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
+          if ($srcPhoto.length) {
+            $clonedTitle.append($titleDashTpl.clone()).append($srcPhoto.clone().attr('style', ''));
+            isDashNeeded = false;
+          }
         }
 
-        // Take out Google+ Tweak's Easy mention feature
-        // Doesn't work, it looks for: #contentPane  div[id^="update"] a[oid] which includes mine
-        //$clonedTitle.find(_C_TWEAK_EZMNTN).remove();
-
-        // Take out Usability Boost's "- Mute"
-        var $muteLink = $clonedTitle.find(_C_UBOOST_MUTELINK);
-        if ($muteLink.length) {
-          var $muteDash = $muteLink.prev();
-          if ($muteDash.length && $muteDash.text() == '-')
-            $muteDash.remove();
-          $muteLink.remove();
-        }
-
-        // Take out CircleStars
-        var $stars = $clonedTitle.find(_C_CIRCLESTARS);
-        if ($stars.length) {
-          var $starsDash = $stars.prev();
-          if ($starsDash.length && $starsDash.text() == ' - ')
-            $starsDash.remove();
-          $stars.remove();
-        }
-
+        // Insert a little dash
+        if (isDashNeeded)
+          $clonedTitle.append($titleDashTpl.clone());
+        
         // Put in snippet, trying differing things
         var classes = [
           '.a-b-f-i-u-ki', // poster text
@@ -1583,13 +1645,13 @@ function foldItem(interactive, $item, animated, $post) {
           '.a-f-i-ie-R', // hangout text
           '.ea-S-pa-qa', // photo caption
           '.a-f-i-p-qb .a-b-h-Jb', // photo album
-          '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
+          '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or SGPlus' tweets
           '.ea-S-R-h', // title of shared link
           '.ea-S-Xj-Cc' // text of shared link
         ];
         for (var c in classes) {
           if (classes.hasOwnProperty(c)) {
-            $snippet = $post.find(classes[c]);
+            $snippet = $content.find(classes[c]);
             if (! $snippet.length)
               continue;
 
@@ -1603,90 +1665,74 @@ function foldItem(interactive, $item, animated, $post) {
             if (text.match(/\S/)) {
               if (classes[c] == '.a-f-i-ie-R') {
                 // FIXME: English-specific
-                text = text.replace(/.*hung out\s*/, '');
+                text = text.replace(/.*(hung out)/, '$1');
               }
-              $snippet = $('<span class="gpme-snippet"></span');
-              $snippet.text(text); // We have to add separately to properly escape HTML tags
-              $clonedTitle.append($snippet);
+              // NOTE: careful of proper escaping, otherwise could break HTML or have XSS
+              $clonedTitle.append($titleSnippetTpl.clone().text(text));
               break;
             }
           }
         }
-      }
 
-      if (canHaveComments) {
-        // Add comment-count container
-        $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-          '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
-          '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
-      }
+        if (canHaveComments) {
+          // Add comment-count container
+          $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
+            '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
+            '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
+        }
 
-      // For Start G+ post, we're done
-      if (isSgpPost) {
+        // If any, move "- Muted" to right after date and before the " - "
+        $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
+
+        // Stop propagation of click from the name
+        // NOTE: done here coz it can't be done on a detached node.
+        $clonedTitle.find('a').click(function(e) {
+          e.stopPropagation();
+        });
+
         // Inject the summary title
         $title.append($clonedTitle);
-        if (interactive)
+        if (isSgpPost && interactive)
           updateCachedSgpItem($item, $clonedTitle);
 
-      } else { // Regular G+ posts
+        // Stop propagation of click from the name
+        // NOTE: done here coz it can't be done on a detached node.
+        $clonedTitle.find('a').click(function(e) {
+          e.stopPropagation();
+        });
 
-        // Take out date marker so that G+ doesn't update the wrong copy
-        var $clonedDate = $clonedTitle.find(_C_DATE);
-        if (! $clonedDate.length) {
-          error("foldItem: Can't find date marker");
-          error($clonedTitle);
-        } else {
-          // If any, move "- Muted" to right after date and before the " - "
-          $clonedTitle.find(_C_MUTED).insertAfter($clonedDate);
+        // Insert timestamp if applicable and if possible
+        if (settings.summaryIncludeTime) {
 
-          // G+ changed the date format once again.
-          // Let's just nuke it for now and see if users miss it
-          //$clonedDate.removeClass(C_DATE);
-          var dashBefore = $clonedDate.get(0).previousSibling;
-          if (typeof dashBefore !== 'undefined' && dashBefore)
-            dashBefore.parentNode.removeChild(dashBefore);
-          $clonedDate.remove();
-
-          // Inject the summary title
-          $title.append($clonedTitle);
-
-          // Stop propagation of click from the name
-          // NOTE: done here coz it can't be done on a detached node.
-          $clonedTitle.find('a').click(function(e) {
-            e.stopPropagation();
-          });
-
-          /*
-          // For first page display, the date is there, but for updates, the date isn't there yet.
-          // So check, and try again later in case of updates.
+          // The date for G+ posts comes later, so we need to check several times.
           var attempt = 40;
-          (function updateDateWhenReady($date) {
+          (function updateDateWhenReady($dateA) {
             attempt--;
-            if ($date.length && $date.text() != '#' || attempt < 0) {
+            if (typeof $dateA != 'undefined' && $dateA.length && $dateA.css('display') !== 'none' ||
+                attempt < 0) {
               var dateText = '';
               if (attempt < 0) {
                 error("updateDateWhenReady: gave up on getting the date for id=" + id);
               } else {
-                dateText = abbreviateDate($date.text());
+                dateText = abbreviateDate($dateA.text());
               }
               // Strip out the A link because we don't want to make it clickable
               // Not only does clicking it somehow opens a new window, but we need
               // the clicking space especially with instant previews
-              $clonedDate.text(dateText);
+              $sender.after($titleDateTpl.clone().text(dateText)).after($titleDashTpl.clone());
 
             } else {
-              var $srcDateA = $item.find(_C_DATE + ' a');
+              $dateA = $itemGuts.find(isSgpPost ? _C_DATE : _C_DATE + ' > a');
 
-              if ($srcDateA.length) {
+              if ($dateA.length) {
                 // Try again later in a little bit
-                setTimeout(function() { updateDateWhenReady($srcDateA); }, 50);
+                setTimeout(function() { updateDateWhenReady($dateA); }, 50);
               } else {
                 error("updateDateWhenReady: can't find the source date div");
-                error($srcDateA);
+                error($dateA);
               }
             }
-          })($clonedDate.find('a'));
-          */
+          })();
         }
       }
     }
@@ -1740,10 +1786,10 @@ function unfoldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (options.compatSgp) {
+  if (settings.compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = options.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // Persist for expanded mode
@@ -2406,8 +2452,8 @@ function showPreview(e) {
   debug("showPreview: this=" + this.className);
 
   // Skip depending on options
-  if (!( options.previewEnableInExpanded && displayMode == 'expanded' ||
-          options.previewEnableInList && displayMode == 'list'))
+  if (!( settings.previewEnableInExpanded && displayMode == 'expanded' ||
+          settings.previewEnableInList && displayMode == 'list'))
     return;
 
   var $item = $(this);
@@ -2492,29 +2538,29 @@ function showPreview(e) {
     $lastPreviewedItem = $item;
 
     // Change the max-height of the post content
-    var $postContent = $post.children(_C_CONTENT);
-    if (! $postContent.length) {
+    var $itemGuts = $post.children(_C_ITEM_GUTS);
+    if (! $itemGuts.length) {
       error("showPreview: Can't find post content style class");
     } else {
-      $postContent.css(
+      $itemGuts.css(
         'max-height',
           '' + (window.innerHeight - Math.max(fixedHeight, overlappingHeight - document.body.scrollTop) -
                 GAP_ABOVE_PREVIEW * 2 - POST_WRAPPER_PADDING_TOP - POST_WRAPPER_PADDING_BOTTOM) +
           'px');
       // Prevent mousewheel from scrolling entire page when hitting the ends
 /*
-      $postContent.mousewheel(function(e, delta) {
-        $postContent.scrollTop($postContent.scrollTop() - delta * 5);
+      $itemGuts.mousewheel(function(e, delta) {
+        $itemGuts.scrollTop($itemGuts.scrollTop() - delta * 5);
         return false; // This is what we're after
       });
 */
 
       // Workaround for scroll-position loss bug in Chrome
       // http://code.google.com/p/chromium/issues/detail?id=36428
-      var lastScrollTop = $postContent.attr('gpme-last-scrolltop');
+      var lastScrollTop = $itemGuts.attr('gpme-last-scrolltop');
       if (typeof lastScrollTop !== undefined && lastScrollTop > 0 ) {
         // NOTE: this must be done after show()
-        $postContent.scrollTop(lastScrollTop);
+        $itemGuts.scrollTop(lastScrollTop);
       }
     }
 
@@ -2535,31 +2581,31 @@ function showPreview(e) {
  * We scroll the preview pane instead.
  */
 function startCommentInPreview($item, $origLink) {
-  var $postContent = $item.children('.gpme-post-wrapper').children(_C_CONTENT);
+  var $itemGuts = $item.children('.gpme-post-wrapper').children(_C_ITEM_GUTS);
 
   // Hide so that there's no scrolling
-  $postContent.hide();
+  $itemGuts.hide();
   click($origLink);
-  $postContent.show();
+  $itemGuts.show();
   // Scroll to bottom
-  $postContent.animate({ scrollTop: $postContent.outerScrollHeight()  }, 'fast');
+  $itemGuts.animate({ scrollTop: $itemGuts.outerScrollHeight()  }, 'fast');
 
   // Get focus into the box
-  getFocusInCommentEditable($postContent);
+  getFocusInCommentEditable($itemGuts);
 }
 
 /**
  * Waits until there's a comment editing box and give keyboard focus to it
  */
-function getFocusInCommentEditable($postContent, attempt) {
-  var $commentEditor = $postContent.find('div.editable[contenteditable="plaintext-only"]');
+function getFocusInCommentEditable($itemGuts, attempt) {
+  var $commentEditor = $itemGuts.find('div.editable[contenteditable="plaintext-only"]');
   if ($commentEditor.length) {
     $commentEditor.focus();
   } else {
     if (typeof attempt === 'undefined')
       attempt = 0;
     if (attempt < 20)
-      setTimeout(function() { getFocusInCommentEditable($postContent, attempt + 1); }, 50);
+      setTimeout(function() { getFocusInCommentEditable($itemGuts, attempt + 1); }, 50);
   }
 }
 
@@ -2616,15 +2662,15 @@ function hidePostItemPreview($item) {
   var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Change the max-height of the post content
-    var $postContent = $post.children(_C_CONTENT);
-    if (! $postContent.length) {
+    var $itemGuts = $post.children(_C_ITEM_GUTS);
+    if (! $itemGuts.length) {
       error("showPreview: Can't find post content style class");
     } else {
       // Workaround for scroll-position loss bug in Chrome
       // http://code.google.com/p/chromium/issues/detail?id=36428
-      $postContent.attr('gpme-last-scrolltop', $postContent.scrollTop());
+      $itemGuts.attr('gpme-last-scrolltop', $itemGuts.scrollTop());
 
-      $postContent.css('max-height', '');
+      $itemGuts.css('max-height', '');
     }
 
     $post.hide().unbind('mouseenter mouseleave');
@@ -2650,6 +2696,85 @@ function hideAnyPostItemPreview() {
  * Main
  ***************************************************************************/
 
+/**
+ * Main function that's called after the document is ready and a number
+ * of callbacks return from the background page
+ */
+function main() {
+  // Listen for when there's a total AJAX refresh of the stream,
+  // on a regular page
+  var $contentPane = $(_ID_CONTENT_PANE);
+  if ($contentPane.length) {
+    var contentPane = $contentPane.get(0);
+    $contentPane.bind('DOMNodeInserted', function(e) {
+      // This happens when a new stream is selected
+      if (e.relatedNode.parentNode == contentPane) {
+        onContentPaneUpdated(e);
+        return;
+      }
+
+      var id = e.target.id;
+      // ':' is weak optimization attempt for comment editing
+      if (id && id.charAt(0) == ':')
+        return;
+
+      // This happens when posts' menus get inserted
+      if (e.target.className == 'a-f-i-Ia-D' || e.target.className == 'a-f-i-Ia-D d-D')
+        onItemMenuInserted(e);
+      // This happens when a new post is added, either through "More"
+      // or a new recent post.
+      // Or it's a Start G+ post
+      if (id && (id.substring(0,7) == 'update-'))
+        onItemInserted(e);
+      else if (settings.compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
+        onSgpItemInserted(e);
+      // This happens when switching from About page to Posts page
+      // on profile
+      else if (e.relatedNode.id.indexOf('-posts-page') > 0)
+        onContentPaneUpdated(e);
+    });
+  } else  {
+    // This can happen if we're in the settings page for example
+    warn("main: Can't find content pane");
+  }
+
+  // Listen when status change
+  // WARNING: DOMSubtreeModified is deprecated and degrades performance:
+  //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
+  var $status = $(_ID_STATUS_FG);
+  if ($status.length)
+    $status.bind('DOMSubtreeModified', onStatusUpdated);
+  else
+    debug("main: Can't find status node");
+
+  // Listen to incoming messages from background page
+  chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+    if (request.action == "gpmeTabUpdateComplete") {
+      // Handle G+'s history state pushing when user clicks on different streams (and back)
+      onTabUpdated();
+    } else if (request.action == "gpmeModeOptionUpdated") {
+      // Handle options changes
+      onModeOptionUpdated(request.mode);
+    } else if (request.action == "gpmeResetAll") {
+      onResetAll();
+    }
+  });
+
+  injectNewFeedbackLink();
+
+  // The initial update
+  if (isEnabledOnThisPage()) {
+    updateAllItems();
+
+    // Listen to keyboard shortcuts
+    $(window).keydown(onKeydown);
+  }
+}
+
+/**
+ * Initial code run when document is ready.
+ * Gets data from background page and then calls main()
+ */
 $(document).ready(function() {
   trace("event: initial page load.");
 
@@ -2657,74 +2782,10 @@ $(document).ready(function() {
   
   // Get options and then modify the page
   getOptionsFromBackground(function() {
-    // Listen for when there's a total AJAX refresh of the stream,
-    // on a regular page
-    var $contentPane = $(_ID_CONTENT_PANE);
-    if ($contentPane.length) {
-      var contentPane = $contentPane.get(0);
-      $contentPane.bind('DOMNodeInserted', function(e) {
-        // This happens when a new stream is selected
-        if (e.relatedNode.parentNode == contentPane) {
-          onContentPaneUpdated(e);
-          return;
-        }
-
-        var id = e.target.id;
-        // ':' is weak optimization attempt for comment editing
-        if (id && id.charAt(0) == ':')
-          return;
-
-        // This happens when posts' menus get inserted
-        if (e.target.className == 'a-f-i-Ia-D' || e.target.className == 'a-f-i-Ia-D d-D')
-          onItemMenuInserted(e);
-        // This happens when a new post is added, either through "More"
-        // or a new recent post.
-        // Or it's a Start G+ post
-        if (id && (id.substring(0,7) == 'update-'))
-          onItemInserted(e);
-        else if (options.compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
-          onSgpItemInserted(e);
-        // This happens when switching from About page to Posts page
-        // on profile
-        else if (e.relatedNode.id.indexOf('-posts-page') > 0)
-          onContentPaneUpdated(e);
-      });
-    } else  {
-      // This can happen if we're in the settings page for example
-      warn("main: Can't find content pane");
-    }
-
-    // Listen when status change
-    // WARNING: DOMSubtreeModified is deprecated and degrades performance:
-    //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-    var $status = $(_ID_STATUS_FG);
-    if ($status.length)
-      $status.bind('DOMSubtreeModified', onStatusUpdated);
-    else
-      debug("main: Can't find status node");
-
-    // Listen to incoming messages from background page
-    chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-      if (request.action == "gpmeTabUpdateComplete") {
-        // Handle G+'s history state pushing when user clicks on different streams (and back)
-        onTabUpdated();
-      } else if (request.action == "gpmeModeOptionUpdated") {
-        // Handle options changes
-        onModeOptionUpdated(request.mode);
-      } else if (request.action == "gpmeResetAll") {
-        onResetAll();
-      }
-    });
-
-    injectNewFeedbackLink();
-
-    // The initial update
-    if (isEnabledOnThisPage()) {
-      updateAllItems();
-
-      // Listen to keyboard shortcuts
-      $(window).keydown(onKeydown);
-    }
+    if (DEBUG)
+      getMessagesFromBackground(main);
+    else // Get i18n messages
+      main();
   });
 });
 

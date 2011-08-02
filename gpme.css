@@ -99,7 +99,7 @@
   float: left;
   font-size: 10px;
   line-height: 22px;
-  margin-right: 3px;
+  margin: 0 5px 0 3px;
   color: #CCCCCC;
 }
 
@@ -111,10 +111,30 @@
   text-overflow: ellipsis;
 }
 
-.gpme-title > div > a > img {
+/* User photos must be inline, not floating */
+.gpme-title img {
+  float: none;
+  vertical-align: -30%; /* so it doesn't shift the text down */
+}
+.gpme-title img:not(.gpme-title-sender img) {
+  width: auto;
+  opacity: 0.4;
+}
+/* User photos */
+.gpme-title-sender img {
   height: 20px;
   width: 20px;
-  margin: 0 3px 0 0;
+  margin: 0 5px 0 0;
+}
+
+/* Injected mobile/checkin icons */
+.gpme-title .n-Wa-q.n-Wa-q-Dc-X {
+  margin: 0 -4px 0 5px;
+  vertical-align: -30%
+}
+
+.gpme-title .a-f-i-yj {
+  margin: 0 3px;
 }
 
 .gpme-snippet {

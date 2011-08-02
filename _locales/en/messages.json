@@ -8,6 +8,19 @@
     "description": "Description of the extension, as shown in the Web Store"
   },
 
+  "gplus_dateEdited": {
+    "message": "edited",
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
+  },
+  "gplus_dateLongPrefix": {
+    "message": "Yest",
+    "description": "Text that needs to be preserved when abbreviating date text.  Used with gplus_date_long_suffix.  A '.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+  },
+  "gplus_dateLongSuffix": {
+    "message": "erday",
+    "description": "Text that is dropped when abbreviating date text.  Used with gplus_date_long_prefix.  The text is replaced with a '.', e.g. 'Yesterday' becomes 'Yest.'"
+  },
+
 
   "options_label_general": {
     "message": "General",
@@ -19,10 +32,10 @@
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_summaryIncludeThumbnails": {
-    "message": "Include timestamp"
+    "message": "Include thumbnails of photos inside post"
   },
-  "options_summaryIncludeThumbnails": {
-    "message": "Include image thumbnails"
+  "options_summaryIncludeTime": {
+    "message": "Include timestamp of the post"
   },
 
   "options_label_preview": {

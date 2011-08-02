@@ -1,0 +1,14 @@
+{
+  "gplus_date_edited": {
+    "message": "modificado",
+    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado)'"
+  },
+  "gplus_date_long_prefix": {
+    "message": "Yest",
+    "description": "Text that needs to be preserved when abbreviating date text.  Used with gplus_date_long_suffix.  A '.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+  },
+  "gplus_date_long_suffix": {
+    "message": "erday",
+    "description": "Text that is dropped when abbreviating date text.  Used with gplus_date_long_prefix.  The text is replaced with a '.', e.g. 'Yesterday' becomes 'Yest.'"
+  }
+}
