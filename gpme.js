@@ -88,7 +88,7 @@ var _C_SELECTED                 = '.kk';
 var _C_ITEM                     = '.al';
 var C_IS_MUTED                  = 'zp'; // Style is: Kk
 var _C_CONTENT                  = '.Wh';
-var _C_CONTENT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // FIXME: For hangout and photo albums
+var _C_ITEMGUTS_PLACEHOLDER     = '.ny'; // For hangout and photo albums
 var S_PHOTO                     = '.Fu > a.Bp';
 // _C_TITLE:
 // Watch out for these divs:
@@ -1119,10 +1119,10 @@ function updateItem($item, attempt) {
     // Add titlebar
     // For Tweak, we also need the menu in there
     //var $itemContent = $item.find(_C_CONTENT);
-    var $itemContent = $item.children('div:not(' + _C_CONTENT_PLACEHOLDER + ')');
+    var $itemContent = $item.children('div:not(' + _C_ITEMGUTS_PLACEHOLDER + ')');
     if (! isSgpPost && ! $itemContent.length) {
       // The content comes a bit later
-      if ($item.find(_C_CONTENT_PLACEHOLDER).length) {
+      if ($item.find(_C_ITEMGUTS_PLACEHOLDER).length) {
         if (typeof attempt === 'undefined')
           attempt = 0;
         if (attempt < 29) {
@@ -1575,10 +1575,14 @@ function foldItem(interactive, $item, animated, $post) {
 
         // Put in snippet, trying differing things
         var classes = [
-          '.uj', // poster text
-          '.Uj', // original poster text (and for one's own post, just "Edit")
+          // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+          '.Al',
+          // poster text that is resharing https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
+          // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+          // (and for one's own post, just "Edit")
+          '.Uj',
           '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
-          '.a-f-i-ie-R', // hangout text
+          '.fz > .Hr', // hangout text
           '.ea-S-pa-qa', // photo caption
           '.P-I-S .P-I-S-k', // photo album
           '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
@@ -1598,9 +1602,9 @@ function foldItem(interactive, $item, animated, $post) {
           }
           var text = $snippet.text();
           if (text.match(/\S/)) {
-            if (classes[c] == '.a-f-i-ie-R') {
+            if (classes[c] == '.fz > .Hr') {
               // FIXME: English-specific
-              text = text.replace(/.*hung out\s*/, '');
+              text = text.replace(/.*(hung|hanging) out\s*/, '');
             }
             $snippet = $('<span class="gpme-snippet"></span');
             $snippet.text(text); // We have to add separately to properly escape HTML tags
