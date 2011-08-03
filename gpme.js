@@ -1583,28 +1583,26 @@ function foldItem(interactive, $item, animated, $post) {
           '.Uj',
           '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
           '.fz > .Hr', // hangout text
-          '.ea-S-pa-qa', // photo caption
-          '.P-I-S .P-I-S-k', // photo album
-          '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
-          '.ea-S-R-h', // title of shared link
-          '.ea-S-Xj-Cc' // text of shared link
+          '.P-I-S > a', // photo album caption, title of shared link
+          '.cY > a', // photo caption
+          '.P-I-ri-ic' // text of shared link
         ];
         for (var c in classes) {
           $snippet = $post.find(classes[c]);
           if (! $snippet.length)
             continue;
 
-          // We want to ignore link shares that only have the text Edit
-          // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
-          if (classes[c] == '.uj' || classes[c] == '.Uj') {
+          // We want to ignore link shares that only have the text Edit -- this is one's own posts
+          // <span class="a-da-k ez Xq">Edit</span>
+          if (classes[c] == '.Al' || classes[c] == '.Uj') {
             $snippet = $snippet.clone();
-            $snippet.find('.a-b-f-i-Ka').remove();
+            $snippet.children('.ez').remove();
           }
           var text = $snippet.text();
           if (text.match(/\S/)) {
             if (classes[c] == '.fz > .Hr') {
-              // FIXME: English-specific
-              text = text.replace(/.*(hung|hanging) out\s*/, '');
+              // TODO: test in multiple languages (English, Spanish, Chinese ok)
+              text = text.replace(/.*(\d+)/, '$1');
             }
             $snippet = $('<span class="gpme-snippet"></span');
             $snippet.text(text); // We have to add separately to properly escape HTML tags

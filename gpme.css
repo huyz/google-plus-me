@@ -225,9 +225,9 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 
 /* Shrink images to fit preview */
-.gpme-folded:not(.Kk) .gpme-post-wrapper div.ea-S-rg-pa,
-.gpme-folded:not(.Kk) .gpme-post-wrapper div.ea-S-Bb { /* FIXME: Youtube image preview */
-  height: auto !important; /* Override inline height:239px */
+.gpme-folded:not(.Kk) .gpme-post-wrapper div.P-I-rf-ma /* Album photo */,
+.gpme-folded:not(.Kk) .gpme-post-wrapper div.P-I-ba /* Youtube image preview; candidates: P-I-ba P-I-Qa P-I */ {
+  height: auto !important; /* Overrides inline height */
 }
 .gpme-folded:not(.Kk) .gpme-post-wrapper img {
   max-width: 100%; /* Resizes image */
