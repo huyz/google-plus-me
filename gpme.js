@@ -80,7 +80,7 @@ var C_SINGLE_POST_MARKER        = 'a-Yh-oc-M';
 var C_STREAM                    = 'er';
 var _C_STREAM                   = '.er';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.Fq.Dy';
+var _C_MORE_BUTTON              = '.cm';
 
 // Item
 var C_SELECTED                  = 'kk';
