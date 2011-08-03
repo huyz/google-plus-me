@@ -63,82 +63,78 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-U-T';
+var _C_HEADER                   = '.a-b-fa-T'
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-b-Xa-T';
-var _C_FEEDBACK_LINK            = '.a-eo-eg';
-var C_FEEDBACK                  = 'tk3N6e-e-vj';
+var _C_COPYRIGHT                = '.a-b-Ya-T';
+var _C_FEEDBACK_LINK            = '.a-uk-ii';
+var C_FEEDBACK                  = 'l-e-Wa';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'MJI2hd';
-var _C_NOTIFICATION_STREAM      = '.a-b-l-Kc-Ze';
-var C_SPARKS_MARKER             = 'a-b-OL';
-var C_SINGLE_POST_MARKER        = 'a-Wf-i-M';
-var C_PROFILE_PANE              = 'a-p-M-T-hk-xc';
-var C_STREAM                    = 'a-b-f-i-oa';
-var _C_STREAM                   = '.a-b-f-i-oa';
+var C_NOTIFICATIONS_MARKER      = 'sy';
+var _C_NOTIFICATION_STREAM      = '.a-b-C-Ne-xo';
+var C_SPARKS_MARKER             = 'QW';
+var C_SINGLE_POST_MARKER        = 'a-Yh-oc-M';
+var C_STREAM                    = 'er';
+var _C_STREAM                   = '.er';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
+var _C_MORE_BUTTON              = '.Fq.Dy';
 
 // Item
-var C_SELECTED                  = 'a-f-oi-Ai';
-var _C_SELECTED                 = '.a-f-oi-Ai';
-var _C_ITEM                     = '.a-b-f-i';
-var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
-var _C_CONTENT                  = '.a-b-f-i-p';
-var _C_CONTENT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // For hangout and photo albums
-var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
+var C_SELECTED                  = 'kk';
+var _C_SELECTED                 = '.kk';
+var _C_ITEM                     = '.al';
+var C_IS_MUTED                  = 'zp'; // Style is: Kk
+var _C_CONTENT                  = '.Wh';
+var _C_CONTENT_PLACEHOLDER      = '.a-b-f-i-Qi-Nd'; // FIXME: For hangout and photo albums
+var S_PHOTO                     = '.Fu > a.Bp';
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                    = '.gZgCtb';
+var _C_TITLE                    = '.Xy';
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
 var C_TITLE                     = 'gZgCtb';
-var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
-var _C_MUTED                    = '.a-b-f-i-gg-eb';
-var C_DATE                      = 'a-b-f-i-Ad-Ub';
-var _C_DATE                     = '.a-b-f-i-Ad-Ub';
-var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
-var _C_EXPAND_POST              = '.a-b-f-i-p-gc-h';
+var _C_PERMS                    = '.Ar'; // Candidates: Ar zr
+var _C_MUTED                    = '.oz'; // "- Muted" text in profile page
+var C_DATE                      = 'Bl'; // Candidates: Bl Ir
+var _C_DATE                     = '.Bl';
+var _C_EXPAND_POST              = '.Sq';
+//var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 // Comments
-var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
-var C_COMMENTS_ALL_CONTAINER    = 'a-b-f-i-Xb';
-var C_COMMENTS_OLD_CONTAINER    = 'a-b-f-i-cf-W-xb';
-var _C_COMMENTS_OLD_CONTAINER   = '.a-b-f-i-cf-W-xb';
-var _C_COMMENTS_OLD             = '.a-b-f-i-gc-cf-Xb-h';
-var _C_COMMENTS_OLD_NAMES       = '.a-b-f-i-cf-W-xb .a-b-f-i-je-oa-Vb';
-var C_COMMENTS_SHOWN_CONTAINER  = 'a-b-f-i-Xb-oa';
-var _C_COMMENTS_SHOWN_CONTAINER = '.a-b-f-i-Xb-oa';
-var _C_COMMENTS_SHOWN           = '.a-b-f-i-W-r';
-var _C_COMMENTS_SHOWN_NAMES     = '.a-b-f-i-W-r a.a-f-i-W-Zb';
-var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p';
-var C_COMMENTS_MORE_CONTAINER   = 'a-b-f-i-Sb-W-xb';
-var _C_COMMENTS_MORE_CONTAINER  = '.a-b-f-i-Sb-W-xb';
-var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
-var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
-//var _C_COMMENTS_CONTAINER     = '.a-b-f-i-Xb-oa';
-var _C_COMMENT_EDITOR           = '.a-b-f-i-Pb-W-t';
-var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
+var _C_COMMENTS_ALL_CONTAINER   = '.em';
+var C_COMMENTS_ALL_CONTAINER    = 'em';
+var C_COMMENTS_OLD_CONTAINER    = 'wl';
+var _C_COMMENTS_OLD_CONTAINER   = '.wl';
+var _C_COMMENTS_OLD_COUNT       = '.Zk';
+var _C_COMMENTS_OLD_NAMES       = '.Lq .mr';
+var C_COMMENTS_SHOWN_CONTAINER  = 'Oq';
+var _C_COMMENTS_SHOWN_CONTAINER = '.Oq';
+var _C_COMMENTS_SHOWN           = '.pl';
+var _C_COMMENTS_SHOWN_NAMES     = '.pl a.Gq'; // Candidate: Gq Ny
+var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p'; // FIXME: what's this?
+var C_COMMENTS_MORE_CONTAINER   = 'vl';
+var _C_COMMENTS_MORE_CONTAINER  = '.vl';
+var _C_COMMENTS_MORE_COUNT      = '.Yk';
+var _C_COMMENTS_MORE_NAMES      = '.Lq .mr';
 
-// Share line
-var _C_SHARE_LINE               = '.a-f-i-bg';
-var _C_LINK_COMMENT             = '.a-b-f-i-W-h';
-var C_LINK_COMMENT              = 'a-b-f-i-W-h';
-var _C_FAKEINPUT_COMMENT        = '.a-b-f-i-W-O'; // Fake box that says "Add a comment...
-var C_FAKEINPUT_COMMENT         = 'a-b-f-i-W-O';
-var _C_INPUTBOX_COMMENT         = '.a-b-f-i-Pb-W-t';
+var _C_SHARE_LINE               = '.Xn';
+var _C_LINK_COMMENT             = '.Rf';
+var C_LINK_COMMENT              = 'Rf';
+var _C_FAKEINPUT_COMMENT        = '.ql'; // Fake box that says "Add a comment...
+var C_FAKEINPUT_COMMENT         = 'ql';
+var _C_INPUTBOX_COMMENT         = '.u-o-h-i-lc';
+//var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var _C_MENU_MUTE                = '.a-b-f-i-Fb-C';
-var _C_MENU_UNMUTE              = '.a-b-f-i-kb-C'; // Displayed on user's posts page
-var _C_LINK_UNMUTE              = '.a-b-f-i-kb-h';
+var _C_MENU_MUTE                = '.im';
+var _C_MENU_UNMUTE              = '.wr'; // Displayed on user's posts page
+var _C_LINK_UNMUTE              = '.qj';
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -1579,12 +1575,12 @@ function foldItem(interactive, $item, animated, $post) {
 
         // Put in snippet, trying differing things
         var classes = [
-          '.a-b-f-i-u-ki', // poster text
-          '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
+          '.uj', // poster text
+          '.Uj', // original poster text (and for one's own post, just "Edit")
           '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
           '.a-f-i-ie-R', // hangout text
           '.ea-S-pa-qa', // photo caption
-          '.a-f-i-p-qb .a-b-h-Jb', // photo album
+          '.P-I-S .P-I-S-k', // photo album
           '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or Start G+'s tweets
           '.ea-S-R-h', // title of shared link
           '.ea-S-Xj-Cc' // text of shared link
@@ -1596,7 +1592,7 @@ function foldItem(interactive, $item, animated, $post) {
 
           // We want to ignore link shares that only have the text Edit
           // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
-          if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
+          if (classes[c] == '.uj' || classes[c] == '.Uj') {
             $snippet = $snippet.clone();
             $snippet.find('.a-b-f-i-Ka').remove();
           }
@@ -2341,11 +2337,11 @@ function countComments($subtree) {
     return 0;
 
   var commentCount = 0, text;
-  var $comments = $subtree.find(_C_COMMENTS_OLD);
+  var $comments = $subtree.find(_C_COMMENTS_OLD_COUNT);
   if ($comments.length)
     commentCount += parseTextCount($comments.text());
   commentCount += countShownComments($subtree);
-  $comments = $subtree.find(_C_COMMENTS_MORE);
+  $comments = $subtree.find(_C_COMMENTS_MORE_COUNT);
   if ($comments.length)
     commentCount += parseTextCount($comments.text());
 
