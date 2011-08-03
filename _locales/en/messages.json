@@ -8,6 +8,7 @@
     "description": "Description of the extension, as shown in the Web Store"
   },
 
+
   "gplus_dateEdited": {
     "message": "edited",
     "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
@@ -22,63 +23,65 @@
   },
 
 
-  "options_label_general": {
-    "message": "General",
+  "options_nav_general_label": {
+    "message": "Navigation",
     "description": "Name of the tab in the options page"
   },
 
-  "options_label_summary": {
+  "options_nav_summary_label": {
     "message": "Post Summary",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
-  "options_summaryIncludeThumbnails": {
+  "options_nav_summaryIncludeThumbnails": {
     "message": "Include thumbnails of photos inside post"
   },
-  "options_summaryIncludeTime": {
+  "options_nav_summaryIncludeTime": {
     "message": "Include timestamp of the post"
   },
 
-  "options_label_preview": {
+  "options_nav_preview_label": {
     "message": "Post Preview",
     "description": "Name of the options group for mouse-over instant preview"
   },
-  "options_previewEnableInExpanded": {
+  "options_nav_previewEnableInExpanded": {
     "message": "Enable in expanded mode"
   },
-  "options_previewEnableInList": {
+  "options_nav_previewEnableInList": {
     "message": "Enable in list mode"
   },
 
 
-  "options_label_pages": {
+  "options_nav_pages_label": {
     "message": "Pages",
     "description": "Name of the tab in the options page"
   },
-  "options_label_comments": {
-    "message": "Comments",
-    "description": "Name of the options group for comments"
+  "options_nav_global_label": {
+    "message": "Global",
+    "description": "Name of the options group that acts as defaults for all pages"
   },
-  "options_commentsDefaultCollapsed": {
-    "message": "Collapse all comments by default",
-    "description": "Name of the options group for mouse-over instant preview"
+  "options_nav_global_desc": {
+    "message": "Configure these page options if you want to configure all types of pages (Stream, circles, Incoming, Notifications, Sparks, etc.) in the same way.",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Collapse all comments by default"
   },
 
 
-
-  "options_label_compat": {
+  "options_nav_compat_label": {
     "message": "Compatibility",
     "description": "Name of the tab in the options page"
   },
-  "options_text_compat": {
+  "options_nav_compat_desc": {
     "message": "This page is related to compatibility with other extensions that you may have installed for Google+.<br />You can ignore these options.",
     "description": "Name of the tab in the options page"
   },
 
-  "options_label_compatSgp": {
+  "options_nav_compatSgp_label": {
     "message": "SGPlus, a.k.a. Start G+",
     "description": "Name of the options group for SGPlus"
   },
-  "options_text_compatSgp": {
+  "options_nav_compatSgp_desc": {
     "message": "<b>WARNING:</b> Compatibility with SGPlus is in beta.  There are still performance and instability issues.  Each option below adds more processing to SGPlus's frequent heavy-duty refreshes, possibly slowing down your browser and causing frequent pauses (annoying when you're typing).<br />Please report any problems to the <a href=\"$URL$\" target=_default>discussion about SGPlus compatibility on Google+</a>.",
     "description": "Text notifying user of current state of compatibility and warning of problems",
     "placeholders": {
@@ -88,13 +91,13 @@
       }
     }
   },
-  "options_compatSgp": {
+  "options_nav_compatSgp": {
     "message": "Enable compatibility with SGPlus: make posts collapsible"
   },
-  "options_compatSgpComments": {
+  "options_nav_compatSgpComments": {
     "message": "Make comments collapsible and track comments <i>(compatibility must be enabled)</i>"
   },
-  "options_compatSgpCache": {
+  "options_nav_compatSgpCache": {
     "message": "Enable speed cache to prevent refresh flicker <i>(compatibility must be enabled)</i> &mdash; $BEGIN_RED$ Experimental $END_RED$",
     "placeholders": {
       "BEGIN_RED": {
@@ -105,7 +108,7 @@
       }
     }
   },
-  "options_text_compatSgpUsage": {
+  "options_nav_compatSgpUsage_desc": {
     "message": "<b>NOTE:<b> Google+ tabs must be reloaded after changing any of these options.",
     "description": "Text giving users instructions for above options"
   }

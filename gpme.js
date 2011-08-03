@@ -118,6 +118,12 @@ var _C_EXPAND_POST              = '.a-b-f-i-p-gc-h';
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
 var _C_QUOTED_PHOTO             = '.a-f-i-u-go > img';
+// Various images:
+// - Web page image: ea-S-Xj-pa
+// - Posted image: ea-S-ps-pa
+// - Main image in album: ea-S-rg-pa
+// - Smaller image thumbnails in album: ea-S-pd-pa
+var S_CONTENT_IMG              = '.ea-S-ps-pa > img, .ea-S-rg-pa > img, .ea-S-pd-pa > img'
 var _C_MAP_IMG                  = '.a-f-i-p-Dc-jd-Jd';
 
 // Comments
@@ -231,11 +237,12 @@ var clickWallTimeout = 300;
 var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u25b6</span></div>');
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
-var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  &amp;  </span>');
-var $checkinIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X');
-var $mobileIconTpl = $('<span></span>').addClass('n-Wa-q n-Wa-q-Dc-X').css({
-  'background-position': '0 -34px'
-});
+var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
+var $checkinIconTpl = $('<span class="gpme-title-icons n-Wa-q-Dc-X"></span>');
+var $mobileIconTpl = $('<span class="gpme-title-icons n-Wa-q n-Wa-q-Dc-X" style="background-position: 0 -34px"></span>');
+// Candidates: .n-xb .n-Wa-q-z, .n-Ka-wd .n-Wa-q-z, .n-Wa-ph-Ob-X .n-Wa-q-z
+// but we want to avoid: .n-xb .n-Wa-q-z:hover
+var $cameraIconTpl = $('<span class="n-Ka-wd"><span class="gpme-title-icons n-Wa-q n-Wa-q-z"></span></span>');
 var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
@@ -324,6 +331,11 @@ function error(msg) {
 }
 
 /**
+ * Mod jQuery
+ */
+$.fn.reverse = [].reverse;
+
+/**
  * Check if should enable on certain pages
  * @param $subtree: Optional, to force checking of DOM in cases when the
  *   href is not yet correct and the Ajax updates are pending
@@ -387,7 +399,6 @@ if (DEBUG) {
       i18nMessages = response;
 
       DATE_JUNK_REGEXP = new RegExp('\s*\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\)');
-      console.debug("Regexp", DATE_JUNK_REGEXP);
       DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
                                           RegExp.quote(getMessage('gplus_dateLongSuffix')));
 
@@ -470,7 +481,7 @@ function overlappingBarsHeight() {
  */
 function updateCachedSgpItem($item, $titleContent) {
   var id = $item.attr('id');
-  if (settings.compatSgp && settings.compatSgpCache && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
+  if (settings.nav_compatSgp && settings.nav_compatSgpCache && id.substring(0,9) == ID_SGP_POST_PREFIX ) {
     var $copy = $sgpCachedItems[id];
     if (typeof $copy !== 'undefined') {
       if (isItemFolded($item)) {
@@ -482,7 +493,7 @@ function updateCachedSgpItem($item, $titleContent) {
         $copy.removeClass('gpme-folded');
         $copy.children('gpme-post-wrapper').show();
       }
-      if (settings.compatSgpComments) {
+      if (settings.nav_compatSgpComments) {
         if (areItemCommentsFolded($item)) {
           $copy.addClass('gpme-comments-folded');
           $copy.removeClass('gpme-comments-unfolded');
@@ -605,7 +616,7 @@ function onSgpItemInserted(e) {
     return;
   
   // Try to find cached DOM
-  if (settings.compatSgpCache &&
+  if (settings.nav_compatSgpCache &&
       typeof e.target.id !== 'undefined' && e.target.id && $sgpCachedItems.hasOwnProperty(e.target.id)) {
     //debug("onSgpItemInserted: hitting cache id=" + e.target.id);
     var $item = $(e.target);
@@ -1173,7 +1184,7 @@ function enhanceAllSgpPosts($stream) {
     //console.debug("enhanceAllSgpPosts inserting id=" + item.id, $item);
 
     // Cache the DOM for re-use
-    if (settings.compatSgpCache) {
+    if (settings.nav_compatSgpCache) {
       $item = $item.clone(true, true);
       $item.children('.gpme-post-wrapper').children(':not([class^="gpme-"])').remove();
       $sgpCachedItems[item.id] = $item;
@@ -1191,10 +1202,10 @@ function updateItem($item, attempt) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (settings.compatSgp) {
+  if (settings.nav_compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.nav_compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   var enhanceItem = ! $item.hasClass('gpme-enh');
@@ -1560,10 +1571,10 @@ function foldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (settings.compatSgp) {
+  if (settings.nav_compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.nav_compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // If interactive folding and comments are showing, record the comment count
@@ -1603,7 +1614,7 @@ function foldItem(interactive, $item, animated, $post) {
       // Insert "mobile"/"check-ins" icons
       var $source = $srcTitle.find(S_SOURCE);
       if ($source.length) {
-        // FIXME: English-only
+        // FIXME: English-only, but so far Google uses only English
         if ($source.text() == 'Google Check-ins')
           $clonedTitle.append($checkinIconTpl.clone());
         else if ($source.text() == 'Mobile')
@@ -1623,14 +1634,19 @@ function foldItem(interactive, $item, animated, $post) {
         if ($srcPhoto.length)
           $sender.append($titleQuoteTpl.clone()).append($srcPhoto.clone().attr('style', 'margin: 0'));
 
-        // Images in the content
+        // Possibly-multiple images in the content
         var isDashNeeded = true;
-        if (settings.summaryIncludeThumbnails) {
-          $srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
-          if ($srcPhoto.length) {
-            $clonedTitle.append($titleDashTpl.clone()).append($srcPhoto.clone().attr('style', ''));
-            isDashNeeded = false;
-          }
+        //$srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
+        $srcPhoto = $content.find(S_CONTENT_IMG);
+        if ($srcPhoto.length) {
+          $clonedTitle.append($titleDashTpl.clone());
+          isDashNeeded = false;
+          $clonedTitle.addClass('gpme-has-images');
+          if (settings.nav_summaryIncludeThumbnails)
+            // NOTE: reverse the order coz we're floating them right
+            $clonedTitle.append($srcPhoto.clone().attr('style', '').reverse());
+          else
+            $clonedTitle.append($cameraIconTpl.clone());
         }
 
         // Insert a little dash
@@ -1702,7 +1718,7 @@ function foldItem(interactive, $item, animated, $post) {
         });
 
         // Insert timestamp if applicable and if possible
-        if (settings.summaryIncludeTime) {
+        if (settings.nav_summaryIncludeTime) {
 
           // The date for G+ posts comes later, so we need to check several times.
           var attempt = 40;
@@ -1786,10 +1802,10 @@ function unfoldItem(interactive, $item, animated, $post) {
   var canHaveComments = true;
   // If this is SGPlus post
   var isSgpPost = false;
-  if (settings.compatSgp) {
+  if (settings.nav_compatSgp) {
     isSgpPost = $item.hasClass(C_SGP_UPDATE);
     if (isSgpPost)
-      canHaveComments = settings.compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
+      canHaveComments = settings.nav_compatSgpComments ? $item.hasClass(C_SGP_UPDATE_FB) : false;
   }
 
   // Persist for expanded mode
@@ -2452,8 +2468,8 @@ function showPreview(e) {
   debug("showPreview: this=" + this.className);
 
   // Skip depending on options
-  if (!( settings.previewEnableInExpanded && displayMode == 'expanded' ||
-          settings.previewEnableInList && displayMode == 'list'))
+  if (!( settings.nav_previewEnableInExpanded && displayMode == 'expanded' ||
+          settings.nav_previewEnableInList && displayMode == 'list'))
     return;
 
   var $item = $(this);
@@ -2726,7 +2742,7 @@ function main() {
       // Or it's a Start G+ post
       if (id && (id.substring(0,7) == 'update-'))
         onItemInserted(e);
-      else if (settings.compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
+      else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
         onSgpItemInserted(e);
       // This happens when switching from About page to Posts page
       // on profile

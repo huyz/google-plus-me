@@ -14,22 +14,22 @@ var settings = new Store("settings", {
   /*
    * General
    */
-  'summaryIncludeThumbnails': false,
-  'summaryIncludeTime': false,
-  'previewEnableInExpanded': false,
-  'previewEnableInList': true,
+  'nav_summaryIncludeThumbnails': false,
+  'nav_summaryIncludeTime': false,
+  'nav_previewEnableInExpanded': false,
+  'nav_previewEnableInList': true,
 
   /*
    * Pages
    */
-  'commentsDefaultCollapsed': false,
+  'nav_global_commentsDefaultCollapsed': false,
 
   /*
    * Compatibility
    */
-  'compatSgp': true,
-  'compatSgpComments': false,
-  'compatSgpCache': false,
+  'nav_compatSgp': true,
+  'nav_compatSgpComments': false,
+  'nav_compatSgpCache': false,
 });
 
 // Default options

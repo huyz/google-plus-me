@@ -42,13 +42,13 @@
 .gpme-folded .gpme-titlebar {
 }
 
-.gpme-titlebar > div {
+.gpme-titlebar > div /* .tk3N6e-e-vj */ {
   width: 100%;
   height: 14px;
   margin-bottom: 4px;
 }
 
-.gpme-folded .gpme-titlebar > div {
+.gpme-folded .gpme-titlebar > div /* .gZgCtb */ {
   height: 24px;
 }
 
@@ -103,37 +103,46 @@
   color: #CCCCCC;
 }
 
-.gpme-title > div {
+.gpme-title > div /* .gZgCtb */ {
   white-space: nowrap;
   line-height: 22px;
-  /* Copied from gZgCtb, so that it works for Start G+ as well */
+  /* Copied from .gZgCtb, so that it works for Start G+ as well */
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.gpme-title > div.gpme-has-images {
+  margin-right: 27px;
+}
 
-/* User photos must be inline, not floating */
 .gpme-title img {
-  float: none;
-  vertical-align: -30%; /* so it doesn't shift the text down */
-}
-.gpme-title img:not(.gpme-title-sender img) {
-  width: auto;
-  opacity: 0.4;
-}
+  height: 20px; 
+  float: none; /* User photos must be inline, not floating */
+  vertical-align: -27%; /* so it doesn't shift the text down */
+} 
 /* User photos */
-.gpme-title-sender img {
-  height: 20px;
+.gpme-title .gpme-title-sender img {
   width: 20px;
   margin: 0 5px 0 0;
-}
+} 
+/* Other image s*/
+.gpme-title > div /* .gZgCtb */ > img {
+  float: right;
+  margin: 0 0 0 5px;
+  max-width: 60px;
+  opacity: 0.5;
+} 
+
 
 /* Injected mobile/checkin icons */
-.gpme-title .n-Wa-q.n-Wa-q-Dc-X {
-  margin: 0 -4px 0 5px;
-  vertical-align: -30%
+div.gpme-title .gpme-title-icons { /* Need to be more specific than G+ */
+  vertical-align: -27%;
+  margin: 0 5px 0 0;
+}
+.gpme-title-icons.n-Wa-q.n-Wa-q-Dc-X {
+  margin-right: -4px;
 }
 
-.gpme-title .a-f-i-yj {
+.gpme-title .a-f-i-yj { /* container for dashes */
   margin: 0 3px;
 }
 
@@ -284,12 +293,12 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   margin-right: 2px;
 }
 
-.gpme-commentbar > div {
+.gpme-commentbar > div /* .tk3N6e-e-vj */ {
   margin-bottom: 4px;
   position: relative;
 }
 
-.gpme-comments-unfolded .gpme-commentbar > div {
+.gpme-comments-unfolded .gpme-commentbar > div /* .tk3N6e-e-vj */ {
   float: left;
   margin-top: -1px; /* Like .a-f-i-Xb */
   margin-left: -12px;
@@ -302,7 +311,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   border-bottom-left-radius: 8px;
 }
 
-.gpme-comments-folded .gpme-commentbar > div {
+.gpme-comments-folded .gpme-commentbar > div /* .tk3N6e-e-vj */ {
   /*margin: 0;*/
   width: 100%;
   height: 24px;

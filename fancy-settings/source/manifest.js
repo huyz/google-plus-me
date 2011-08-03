@@ -7,91 +7,99 @@ this.manifest = {
      */
     // Collapse summary
     {
-      "tab"   : chrome.i18n.getMessage("options_label_general"),
-      "group" : chrome.i18n.getMessage("options_label_summary"),
-      "name"  : "summaryIncludeThumbnails",
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_summary_label"),
+      "name"  : "nav_summaryIncludeThumbnails",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_summaryIncludeThumbnails")
+      "label" : chrome.i18n.getMessage("options_nav_summaryIncludeThumbnails")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_general"),
-      "group" : chrome.i18n.getMessage("options_label_summary"),
-      "name"  : "summaryIncludeTime",
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_summary_label"),
+      "name"  : "nav_summaryIncludeTime",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_summaryIncludeTime")
+      "label" : chrome.i18n.getMessage("options_nav_summaryIncludeTime")
     },
     // Preview
     {
-      "tab"   : chrome.i18n.getMessage("options_label_general"),
-      "group" : chrome.i18n.getMessage("options_label_preview"),
-      "name"  : "previewEnableInExpanded",
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_preview_label"),
+      "name"  : "nav_previewEnableInExpanded",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_previewEnableInExpanded")
+      "label" : chrome.i18n.getMessage("options_nav_previewEnableInExpanded")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_general"),
-      "group" : chrome.i18n.getMessage("options_label_preview"),
-      "name"  : "previewEnableInList",
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_preview_label"),
+      "name"  : "nav_previewEnableInList",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_previewEnableInList")
+      "label" : chrome.i18n.getMessage("options_nav_previewEnableInList")
     },
 
     /*
      * Pages
      */
     {
-      "tab"   : chrome.i18n.getMessage("options_label_pages"),
-      "group" : chrome.i18n.getMessage("options_label_comments"),
-      "name"  : "commentsDefaultCollapsed",
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_global_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_commentsDefaultCollapsed",
       "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_commentsDefaultCollapsed")
+      "label" : chrome.i18n.getMessage("options_nav_global_commentsDefaultCollapsed")
     },
 
     /*
      * Compatibility
      */
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
       "group" : "",
-      "name"  : "text_compat",
+      "name"  : "nav_compat_desc",
       "type"  : "description",
-      "text"  : chrome.i18n.getMessage("options_text_compat")
+      "text"  : chrome.i18n.getMessage("options_nav_compat_desc")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
-      "group" : chrome.i18n.getMessage("options_label_compatSgp"),
-      "name"  : "text_compatSgp",
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
+      "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
+      "name"  : "nav_compatSgp_desc",
       "type"  : "description",
-      "text"  : chrome.i18n.getMessage("options_text_compatSgp", "http://goo.gl/NFCRE")
+      "text"  : chrome.i18n.getMessage("options_nav_compatSgp_desc", "http://goo.gl/NFCRE")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
-      "group" : chrome.i18n.getMessage("options_label_compatSgp"),
-      "name"  : "compatSgp",
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
+      "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
+      "name"  : "nav_compatSgp",
       "type"  : "checkbox",
-      "label"  : chrome.i18n.getMessage("options_compatSgp")
+      "label" : chrome.i18n.getMessage("options_nav_compatSgp")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
-      "group" : chrome.i18n.getMessage("options_label_compatSgp"),
-      "name"  : "compatSgpComments",
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
+      "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
+      "name"  : "nav_compatSgpComments",
       "type"  : "checkbox",
-      "label"  : chrome.i18n.getMessage("options_compatSgpComments")
+      "label" : chrome.i18n.getMessage("options_nav_compatSgpComments")
     },
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
-      "group" : chrome.i18n.getMessage("options_label_compatSgp"),
-      "name"  : "compatSgpCache",
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
+      "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
+      "name"  : "nav_compatSgpCache",
       "type"  : "checkbox",
-      "label"  : chrome.i18n.getMessage("options_compatSgpCache")
-    },
+      "label" : chrome.i18n.getMessage("options_nav_compatSgpCache")
+    }/*,
     {
-      "tab"   : chrome.i18n.getMessage("options_label_compat"),
-      "group" : chrome.i18n.getMessage("options_label_compatSgp"),
-      "name"  : "text_compatSgpUsage",
+      "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
+      "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
+      "name"  : "nav_compatSgpUsage_desc",
       "type"  : "description",
-      "text"  : chrome.i18n.getMessage("options_text_compatSgpusage")
+      "text"  : chrome.i18n.getMessage("options_nav_compatSgpUsage_desc")
     }
+*/
 
   ]
 };
