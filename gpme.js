@@ -63,78 +63,78 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-b-fa-T'
+var _C_HEADER                   = '.a-c-aa-S';
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-b-Ya-T';
-var _C_FEEDBACK_LINK            = '.a-uk-ii';
-var C_FEEDBACK                  = 'l-e-Wa';
+var _C_COPYRIGHT                = '.a-c-Sa-S';
+var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
+var C_FEEDBACK                  = 'j-e-Pa';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'sy';
-var _C_NOTIFICATION_STREAM      = '.a-b-C-Ne-xo';
+var C_NOTIFICATIONS_MARKER      = 'sy'; // FIXME
+var _C_NOTIFICATION_STREAM      = '.a-c-A-ve-jo';
 var C_SPARKS_MARKER             = 'QW';
-var C_SINGLE_POST_MARKER        = 'a-Yh-oc-M';
-var C_STREAM                    = 'er';
-var _C_STREAM                   = '.er';
+var C_SINGLE_POST_MARKER        = 'a-Yh-oc-M'; //FIXME
+var C_STREAM                    = 'Wq';
+var _C_STREAM                   = '.Wq';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.cm';
+var _C_MORE_BUTTON              = '.Ml';
 
 // Item
-var C_SELECTED                  = 'kk';
-var _C_SELECTED                 = '.kk';
-var _C_ITEM                     = '.al';
-var C_IS_MUTED                  = 'zp'; // Style is: Kk
-var _C_CONTENT                  = '.Wh';
-var _C_ITEMGUTS_PLACEHOLDER     = '.ny'; // For hangout and photo albums
-var S_PHOTO                     = '.Fu > a.Bp';
+var C_SELECTED                  = 'Lj';
+var _C_SELECTED                 = '.Lj';
+var _C_ITEM                     = '.tf';
+var C_IS_MUTED                  = 'vp'; // Style is: nk
+var _C_LINK_UNMUTE              = '.Pi';
+var _C_CONTENT                  = '.zh';
+var _C_ITEMGUTS_PLACEHOLDER     = '.ny'; // FIXME: For hangout and photo albums
+var S_PHOTO                     = '.Bu > a.xp';
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                    = '.Xy';
+var _C_TITLE                    = '.Uy';
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-var C_TITLE                     = 'gZgCtb';
-var _C_PERMS                    = '.Ar'; // Candidates: Ar zr
-var _C_MUTED                    = '.oz'; // "- Muted" text in profile page
-var C_DATE                      = 'Bl'; // Candidates: Bl Ir
-var _C_DATE                     = '.Bl';
-var _C_EXPAND_POST              = '.Sq';
+var C_TITLE                     = 'Uy';
+var _C_PERMS                    = '.gl'; // Candidates: gl rr Cp
+var _C_MUTED                    = '.Zq'; // "- Muted" text in profile page
+var C_DATE                      = 'fl'; // Candidates: fl Br
+var _C_DATE                     = '.fl';
+var _C_EXPAND_POST              = '.Kq';
 //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 // Comments
-var _C_COMMENTS_ALL_CONTAINER   = '.em';
-var C_COMMENTS_ALL_CONTAINER    = 'em';
-var C_COMMENTS_OLD_CONTAINER    = 'wl';
-var _C_COMMENTS_OLD_CONTAINER   = '.wl';
-var _C_COMMENTS_OLD_COUNT       = '.Zk';
-var _C_COMMENTS_OLD_NAMES       = '.Lq .mr';
-var C_COMMENTS_SHOWN_CONTAINER  = 'Oq';
-var _C_COMMENTS_SHOWN_CONTAINER = '.Oq';
-var _C_COMMENTS_SHOWN           = '.pl';
-var _C_COMMENTS_SHOWN_NAMES     = '.pl a.Gq'; // Candidate: Gq Ny
+var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
+var C_COMMENTS_ALL_CONTAINER    = 'Ol';
+var C_COMMENTS_OLD_CONTAINER    = 'al';
+var _C_COMMENTS_OLD_CONTAINER   = '.al';
+var _C_COMMENTS_OLD_COUNT       = '.Dk';
+var _C_COMMENTS_OLD_NAMES       = '.al .er';
+var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
+var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
+var _C_COMMENTS_SHOWN           = '.Tk';
+var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
 var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p'; // FIXME: what's this?
-var C_COMMENTS_MORE_CONTAINER   = 'vl';
-var _C_COMMENTS_MORE_CONTAINER  = '.vl';
-var _C_COMMENTS_MORE_COUNT      = '.Yk';
-var _C_COMMENTS_MORE_NAMES      = '.Lq .mr';
+var C_COMMENTS_MORE_CONTAINER   = 'Zk';
+var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
+var _C_COMMENTS_MORE_COUNT      = '.Ck';
+var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
 
-var _C_SHARE_LINE               = '.Xn';
-var _C_LINK_COMMENT             = '.Rf';
-var C_LINK_COMMENT              = 'Rf';
-var _C_FAKEINPUT_COMMENT        = '.ql'; // Fake box that says "Add a comment...
-var C_FAKEINPUT_COMMENT         = 'ql';
-var _C_INPUTBOX_COMMENT         = '.u-o-h-i-lc';
+var _C_SHARE_LINE               = '.Jn';
+var _C_LINK_COMMENT             = '.wf';
+var C_LINK_COMMENT              = 'wf';
+var _C_FAKEINPUT_COMMENT        = '.Uk'; // Fake box that says "Add a comment...
+var C_FAKEINPUT_COMMENT         = 'Uk';
+//var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var _C_MENU_MUTE                = '.im';
-var _C_MENU_UNMUTE              = '.wr'; // Displayed on user's posts page
-var _C_LINK_UNMUTE              = '.qj';
+var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
+var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -1122,7 +1122,9 @@ function updateItem($item, attempt) {
     var $itemContent = $item.children('div:not(' + _C_ITEMGUTS_PLACEHOLDER + ')');
     if (! isSgpPost && ! $itemContent.length) {
       // The content comes a bit later
+/*
       if ($item.find(_C_ITEMGUTS_PLACEHOLDER).length) {
+*/
         if (typeof attempt === 'undefined')
           attempt = 0;
         if (attempt < 29) {
@@ -1130,10 +1132,12 @@ function updateItem($item, attempt) {
         } else {
           error("updateItem: Can't get any content within 3 seconds. Giving up");
         }
+/*
       } else {
         error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
         console.error($item.get(0));
       }
+*/
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
@@ -1576,14 +1580,14 @@ function foldItem(interactive, $item, animated, $post) {
         // Put in snippet, trying differing things
         var classes = [
           // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-          '.Al',
+          '.el',
           // poster text that is resharing https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
           // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
           // (and for one's own post, just "Edit")
-          '.Uj',
-          '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
+          '.uj', // Goes together with next line
+          '.O-F-Q-k', // poster link (must come after the above, which sometimes it's just "Edit")
           '.fz > .Hr', // hangout text
-          '.P-I-S > a', // photo album caption, title of shared link
+          '.O-F-Q > a', // photo album caption, title of shared link
           '.cY > a', // photo caption
           '.P-I-ri-ic' // text of shared link
         ];
@@ -1594,7 +1598,7 @@ function foldItem(interactive, $item, animated, $post) {
 
           // We want to ignore link shares that only have the text Edit -- this is one's own posts
           // <span class="a-da-k ez Xq">Edit</span>
-          if (classes[c] == '.Al' || classes[c] == '.Uj') {
+          if (classes[c] == '.el' || classes[c] == '.uj') {
             $snippet = $snippet.clone();
             $snippet.children('.ez').remove();
           }
