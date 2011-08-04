@@ -89,7 +89,7 @@ var _C_ITEM                     = '.tf';
 var C_IS_MUTED                  = 'vp'; // Style is: nk
 var _C_LINK_UNMUTE              = '.Pi';
 var _C_CONTENT                  = '.zh';
-var _C_ITEMGUTS_PLACEHOLDER     = '.ny'; // FIXME: For hangout and photo albums
+var _C_ITEMGUTS_PLACEHOLDER     = '.my'; // For hangout and photo albums
 var S_PHOTO                     = '.Bu > a.xp';
 // _C_TITLE:
 // Watch out for these divs:
@@ -1122,9 +1122,7 @@ function updateItem($item, attempt) {
     var $itemContent = $item.children('div:not(' + _C_ITEMGUTS_PLACEHOLDER + ')');
     if (! isSgpPost && ! $itemContent.length) {
       // The content comes a bit later
-/*
       if ($item.find(_C_ITEMGUTS_PLACEHOLDER).length) {
-*/
         if (typeof attempt === 'undefined')
           attempt = 0;
         if (attempt < 29) {
@@ -1132,12 +1130,10 @@ function updateItem($item, attempt) {
         } else {
           error("updateItem: Can't get any content within 3 seconds. Giving up");
         }
-/*
       } else {
         error("updateItem: Can't find content of item " + id + " hits=" + $itemContent.length);
         console.error($item.get(0));
       }
-*/
       return;
     }
     // NOTE: we have to change the class before inserting or we'll get more
@@ -1600,7 +1596,7 @@ function foldItem(interactive, $item, animated, $post) {
           // <span class="a-da-k ez Xq">Edit</span>
           if (classes[c] == '.el' || classes[c] == '.uj') {
             $snippet = $snippet.clone();
-            $snippet.children('.ez').remove();
+            $snippet.children('.Pq').remove();
           }
           var text = $snippet.text();
           if (text.match(/\S/)) {
