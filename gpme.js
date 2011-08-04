@@ -73,10 +73,10 @@ var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
 var C_FEEDBACK                  = 'j-e-Pa';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'sy'; // FIXME
+var C_NOTIFICATIONS_MARKER      = 't6';
 var _C_NOTIFICATION_STREAM      = '.a-c-A-ve-jo';
-var C_SPARKS_MARKER             = 'QW';
-var C_SINGLE_POST_MARKER        = 'a-Yh-oc-M'; //FIXME
+var C_SPARKS_MARKER             = 'c1';
+var C_SINGLE_POST_MARKER        = 'a-Bh-fc-K';
 var C_STREAM                    = 'Wq';
 var _C_STREAM                   = '.Wq';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
