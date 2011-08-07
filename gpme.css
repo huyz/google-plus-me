@@ -245,7 +245,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   margin-right: 5px;
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper .Uy a.Bp /* User photo */,
+.gpme-folded:not(.vp) .gpme-post-wrapper .Uy a.xp /* User photo */,
 .gpme-folded:not(.vp) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* FIXME: Hangout's live */ {
   display: none;
 }
@@ -254,8 +254,11 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 
 /* Shrink images to fit preview */
-.gpme-folded:not(.vp) .gpme-post-wrapper div.P-I-rf-ma /* FIXME: Album photo */,
-.gpme-folded:not(.vp) .gpme-post-wrapper div.O-F-X /* Youtube image preview; candidates: O-F-X O-F-Ja O-F */ {
+/* Album photo (O-F-Nf-la)
+ * https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+ * or Youtube image preview (O-F-Ja)
+ */ 
+.gpme-folded:not(.vp) .gpme-post-wrapper div.O-F-X {
   height: auto !important; /* Overrides inline height */
 }
 .gpme-folded:not(.vp) .gpme-post-wrapper img {

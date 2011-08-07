@@ -122,11 +122,11 @@ var _C_EXPAND_POST              = '.Kq';
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
 var _C_QUOTED_PHOTO             = '.sz > img';
 // Various images:
-// - Web page image: ea-S-Xj-pa
-// - Posted image: ea-S-ps-pa
-// - Main image in album: ea-S-rg-pa
-// - Smaller image thumbnails in album: ea-S-pd-pa
-var S_CONTENT_IMG              = '.ea-S-ps-pa > img, .ea-S-rg-pa > img, .ea-S-pd-pa > img'
+// - Web page image: O-F-Th-la
+// - Posted image: O-F-Bj-la  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
+// - Main image in album: O-F-Nf-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+// - Smaller image thumbnails in album: O-F-nd-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+var S_CONTENT_IMG              = '.O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img'
 var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
