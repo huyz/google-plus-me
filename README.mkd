@@ -5,10 +5,10 @@ This is a Google Chrome browser extension that enhances the Google+ web app
 to unlock the potential of its real-time updates and make it much easier to
 process a large stream of incoming posts and comments.
 
-- Install at the [Chrome Web Store](http://goo.gl/jlY8E).
+- Install from the [Chrome Web Store](http://goo.gl/jlY8E).
 - Follow me on [Google+](http://goo.gl/UmSoR) and [Twitter](http://twitter.com/huyplus).
 - Web page for [G+me](http://huyz.us/google-plus-me/).
-- Give feedback in [discussion at Google+](http://goo.gl/VwkwX).
+- Give feedback in [discussion on Google+](http://huyz.us/gpme-release/).
 
 
 Screenshots
