@@ -67,97 +67,96 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-U-T';
+var _C_HEADER                   = '.a-c-aa-S';
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-b-Xa-T';
-var _C_FEEDBACK_LINK            = '.a-eo-eg';
-var C_FEEDBACK                  = 'tk3N6e-e-vj';
+var _C_COPYRIGHT                = '.a-c-Sa-S';
+var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
+var C_FEEDBACK                  = 'j-e-Pa';
+
+// Icons
+C_CHECKIN_ICON                  = '.h-na-o-Jf';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'MJI2hd';
-var _C_NOTIFICATION_STREAM      = '.a-b-l-Kc-Ze';
-var C_SPARKS_MARKER             = 'a-b-OL';
-var C_SINGLE_POST_MARKER        = 'a-Wf-i-M';
-var C_PROFILE_PANE              = 'a-p-M-T-hk-xc';
-var C_STREAM                    = 'a-b-f-i-oa';
-var _C_STREAM                   = '.a-b-f-i-oa';
+var C_NOTIFICATIONS_MARKER      = 't6';
+var _C_NOTIFICATION_STREAM      = '.a-c-A-ve-jo';
+var C_SPARKS_MARKER             = 'c1';
+var C_SINGLE_POST_MARKER        = 'a-Bh-fc-K';
+var C_STREAM                    = 'Wq';
+var _C_STREAM                   = '.Wq';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.a-b-f-zd-gb-h';
+var _C_MORE_BUTTON              = '.Ml';
 
 // Item
-var _C_ITEM                     = '.a-b-f-i';
-var C_SELECTED                  = 'a-f-oi-Ai';
-var _C_SELECTED                 = '.a-f-oi-Ai';
-var C_IS_MUTED                  = 'a-f-i-za'; // Candidates: a-f-i-za a-f-i-Fb-Un
-var _C_ITEM_GUTS                = '.a-b-f-i-p';
-var _C_ITEM_GUTS_PLACEHOLDER    = '.a-b-f-i-Qi-Nd'; // For hangout and photo albums
+var C_SELECTED                  = 'Lj';
+var _C_SELECTED                 = '.Lj';
+var _C_ITEM                     = '.tf';
+var _C_ITEM_GUTS                = '.zh';
+var _C_ITEM_GUTS_PLACEHOLDER    = '.my'; // For hangout and photo albums
+var C_IS_MUTED                  = 'vp'; // Style is: nk
+var _C_LINK_UNMUTE              = '.Pi';
+var C_TITLE_COLOR               = 'Mn';
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                    = '.gZgCtb';
-//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_ITEM_GUTS_PLACEHOLDER + ')';
-var C_TITLE                     = 'gZgCtb';
-var S_PHOTO                     = '.a-f-i-p-U > a.a-f-i-do';
-var _C_NAME                     = '.a-f-i-go';
-var C_TITLE_COLOR               = 'a-f-i-yj';
-var S_SOURCE                    = 'a.a-f-i-Wd';
-var _C_PERMS                    = '.a-b-f-i-aGdrWb'; // Candidates: a-b-f-i-aGdrWb a-b-f-i-lj62Ve
-var _C_MUTED                    = '.a-b-f-i-gg-eb';
-var C_DATE                      = 'a-b-f-i-Ad-Ub';
-var _C_DATE                     = '.a-b-f-i-Ad-Ub';
-var _C_DATE_CSS                 = '.a-f-i-Ad-Ub';
-var _C_CONTENT                  = '.a-f-i-p-r';
-var _C_EXPAND_POST              = '.a-b-f-i-p-gc-h';
+var _C_TITLE                    = '.Uy';
+//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
+var C_TITLE                     = 'Uy';
+var S_PHOTO                     = '.Bu > a.xp';
+var _C_NAME                     = '.IE';
+var S_SOURCE                    = 'a.Sg';
+var _C_CONTENT                  = '.Qy';
+var _C_PERMS                    = '.gl'; // Candidates: gl rr Cp
+var _C_MUTED                    = '.Zq'; // "- Muted" text in profile page
+var C_DATE                      = 'fl'; // Candidates: fl Br
+var _C_DATE                     = '.fl';
+var _C_EXPAND_POST              = '.Kq';
+//var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
-var _C_QUOTED_PHOTO             = '.a-f-i-u-go > img';
+var _C_QUOTED_PHOTO             = '.sz > img';
 // Various images:
 // - Web page image: ea-S-Xj-pa
 // - Posted image: ea-S-ps-pa
 // - Main image in album: ea-S-rg-pa
 // - Smaller image thumbnails in album: ea-S-pd-pa
 var S_CONTENT_IMG              = '.ea-S-ps-pa > img, .ea-S-rg-pa > img, .ea-S-pd-pa > img'
-var _C_MAP_IMG                  = '.a-f-i-p-Dc-jd-Jd';
+var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
-var _C_COMMENTS_ALL_CONTAINER   = '.a-b-f-i-Xb';
-var C_COMMENTS_ALL_CONTAINER    = 'a-b-f-i-Xb';
-var C_COMMENTS_OLD_CONTAINER    = 'a-b-f-i-cf-W-xb';
-var _C_COMMENTS_OLD_CONTAINER   = '.a-b-f-i-cf-W-xb';
-var _C_COMMENTS_OLD             = '.a-b-f-i-gc-cf-Xb-h';
-var _C_COMMENTS_OLD_NAMES       = '.a-b-f-i-cf-W-xb .a-b-f-i-je-oa-Vb';
-var C_COMMENTS_SHOWN_CONTAINER  = 'a-b-f-i-Xb-oa';
-var _C_COMMENTS_SHOWN_CONTAINER = '.a-b-f-i-Xb-oa';
-var _C_COMMENTS_SHOWN           = '.a-b-f-i-W-r';
-var _C_COMMENTS_SHOWN_NAMES     = '.a-b-f-i-W-r a.a-f-i-W-Zb';
-var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p';
-var C_COMMENTS_MORE_CONTAINER   = 'a-b-f-i-Sb-W-xb';
-var _C_COMMENTS_MORE_CONTAINER  = '.a-b-f-i-Sb-W-xb';
-var _C_COMMENTS_MORE            = '.a-b-f-i-gc-Sb-Xb-h';
-var _C_COMMENTS_MORE_NAMES      = '.a-b-f-i-Sb-W-xb .a-b-f-i-je-oa-Vb';
-//var _C_COMMENTS_CONTAINER     = '.a-b-f-i-Xb-oa';
-var _C_COMMENT_EDITOR           = '.a-b-f-i-Pb-W-t';
-var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
+var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
+var C_COMMENTS_ALL_CONTAINER    = 'Ol';
+var C_COMMENTS_OLD_CONTAINER    = 'al';
+var _C_COMMENTS_OLD_CONTAINER   = '.al';
+var _C_COMMENTS_OLD_COUNT       = '.Dk';
+var _C_COMMENTS_OLD_NAMES       = '.al .er';
+var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
+var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
+var _C_COMMENTS_SHOWN           = '.Tk';
+var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
+var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p'; // FIXME: what's this?
+var C_COMMENTS_MORE_CONTAINER   = 'Zk';
+var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
+var _C_COMMENTS_MORE_COUNT      = '.Ck';
+var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
 
-// Share line
-var _C_SHARE_LINE               = '.a-f-i-bg';
-var _C_LINK_COMMENT             = '.a-b-f-i-W-h';
-var C_LINK_COMMENT              = 'a-b-f-i-W-h';
-var _C_FAKEINPUT_COMMENT        = '.a-b-f-i-W-O'; // Fake box that says "Add a comment...
-var C_FAKEINPUT_COMMENT         = 'a-b-f-i-W-O';
-var _C_INPUTBOX_COMMENT         = '.a-b-f-i-Pb-W-t';
+var _C_SHARE_LINE               = '.Jn';
+var _C_LINK_COMMENT             = '.wf';
+var C_LINK_COMMENT              = 'wf';
+var _C_FAKEINPUT_COMMENT        = '.Uk'; // Fake box that says "Add a comment...
+var C_FAKEINPUT_COMMENT         = 'Uk';
+//var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
+//var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var _C_MENU_MUTE                = '.a-b-f-i-Fb-C';
-var _C_MENU_UNMUTE              = '.a-b-f-i-kb-C'; // Displayed on user's posts page
-var _C_LINK_UNMUTE              = '.a-b-f-i-kb-h';
+var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
+var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
@@ -238,8 +237,8 @@ var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u2
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
 var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
-var $checkinIconTpl = $('<span class="gpme-title-icons n-Wa-q-Dc-X"></span>');
-var $mobileIconTpl = $('<span class="gpme-title-icons n-Wa-q n-Wa-q-Dc-X" style="background-position: 0 -34px"></span>');
+var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '"></span>');
+var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="background-position: 0 -34px"></span>');
 // Candidates: .n-xb .n-Wa-q-z, .n-Ka-wd .n-Wa-q-z, .n-Wa-ph-Ob-X .n-Wa-q-z
 // but we want to avoid: .n-xb .n-Wa-q-z:hover
 var $cameraIconTpl = $('<span class="n-Ka-wd"><span class="gpme-title-icons n-Wa-q n-Wa-q-z"></span></span>');
@@ -398,7 +397,7 @@ if (DEBUG) {
     chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
       i18nMessages = response;
 
-      DATE_JUNK_REGEXP = new RegExp('\s*\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\)');
+      DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
       DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
                                           RegExp.quote(getMessage('gplus_dateLongSuffix')));
 
@@ -1655,38 +1654,40 @@ function foldItem(interactive, $item, animated, $post) {
         
         // Put in snippet, trying differing things
         var classes = [
-          '.a-b-f-i-u-ki', // poster text
-          '.a-b-f-i-p-R', // original poster text (and for one's own post, just "Edit")
-          '.a-b-f-S-oa', // poster link (must come after .a-b-f-i-p-R, which sometimes it's just "Edit")
-          '.a-f-i-ie-R', // hangout text
-          '.ea-S-pa-qa', // photo caption
-          '.a-f-i-p-qb .a-b-h-Jb', // photo album
-          '.w0wKhb', // "A was tagged in B", or "4 people commented on this photo", or SGPlus' tweets
-          '.ea-S-R-h', // title of shared link
-          '.ea-S-Xj-Cc' // text of shared link
+          // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+          '.el',
+          // poster text that is resharing https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
+          // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+          // (and for one's own post, just "Edit")
+          '.uj', // Goes together with next line
+          '.O-F-Q-k', // poster link (must come after the above, which sometimes it's just "Edit")
+          '.fz > .Hr', // hangout text
+          '.O-F-Q > a', // photo album caption, title of shared link
+          '.r2 > a', // photo caption
+          '.P-I-ri-ic', // text of shared link
+          '.tgGRJd' // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
         ];
         for (var c in classes) {
-          if (classes.hasOwnProperty(c)) {
-            $snippet = $content.find(classes[c]);
-            if (! $snippet.length)
-              continue;
+          $snippet = $post.find(classes[c]);
+          if (! $snippet.length)
+            continue;
 
-            // We want to ignore link shares that only have the text Edit
-            // <span class="a-Ja-h a-f-i-Ka-Ja a-b-f-i-Ka">Edit</span>
-            if (classes[c] == '.a-b-f-i-u-ki' || classes[c] == '.a-b-f-i-p-R') {
-              $snippet = $snippet.clone();
-              $snippet.find('.a-b-f-i-Ka').remove();
+          // We want to ignore link shares that only have the text Edit -- this is one's own posts
+          // <span class="a-da-k ez Xq">Edit</span>
+          if (classes[c] == '.el' || classes[c] == '.uj') {
+            $snippet = $snippet.clone();
+            $snippet.children('.Pq').remove();
+          }
+          var text = $snippet.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '');
+          if (text.match(/[^\s\u2022]/)) {
+            if (classes[c] == '.fz > .Hr') {
+              // TODO: test in multiple languages (English, Spanish, Chinese ok)
+              text = text.replace(/.*(\d+)/, '$1');
             }
-            var text = $snippet.text();
-            if (text.match(/\S/)) {
-              if (classes[c] == '.a-f-i-ie-R') {
-                // FIXME: English-specific
-                text = text.replace(/.*(hung out)/, '$1');
-              }
-              // NOTE: careful of proper escaping, otherwise could break HTML or have XSS
-              $clonedTitle.append($titleSnippetTpl.clone().text(text));
-              break;
-            }
+            $snippet = $titleSnippetTpl.clone();
+            $snippet.text(text.substring(0, 100)); // We have to call() to avoid XSS
+            $clonedTitle.append($snippet);
+            break;
           }
         }
 
@@ -1724,7 +1725,7 @@ function foldItem(interactive, $item, animated, $post) {
           var attempt = 40;
           (function updateDateWhenReady($dateA) {
             attempt--;
-            if (typeof $dateA != 'undefined' && $dateA.length && $dateA.css('display') !== 'none' ||
+            if (typeof $dateA != 'undefined' && $dateA.length && $dateA.get(0).style.display !== 'none' ||
                 attempt < 0) {
               var dateText = '';
               if (attempt < 0) {
@@ -2403,11 +2404,11 @@ function countComments($subtree) {
     return 0;
 
   var commentCount = 0, text;
-  var $comments = $subtree.find(_C_COMMENTS_OLD);
+  var $comments = $subtree.find(_C_COMMENTS_OLD_COUNT);
   if ($comments.length)
     commentCount += parseTextCount($comments.text());
   commentCount += countShownComments($subtree);
-  $comments = $subtree.find(_C_COMMENTS_MORE);
+  $comments = $subtree.find(_C_COMMENTS_MORE_COUNT);
   if ($comments.length)
     commentCount += parseTextCount($comments.text());
 

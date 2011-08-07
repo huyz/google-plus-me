@@ -2,9 +2,9 @@
  * Filename:         gpme.css
  * More info, see:   gpme.js
  *
- * Web:              http://huyz.us/google-plus-me/
+ * Web:              http://huyz.zh/google-plus-me/
  * Source:           https://github.com/huyz/google-plus-me
- * Author:           Huy Z  http://huyz.us/
+ * Author:           Huy Z  http://huyz.zh/
  */
 
 
@@ -12,12 +12,12 @@
  * The entire post item
  */
 
-.gpme-folded.a-f-i {
+.gpme-folded.tf {
   padding-bottom: 0;
 }
 
 /* Selected post; needs to be highly selective */
-.gpme-folded.a-f-i.a-f-oi-Ai {
+.gpme-folded.tf.Lj {
   border-bottom: none; /* This also shortens the left blue border */
   margin-bottom: 5px; /* 1 more than margin-bottm of ".gpme-titlebar > div" to replace deleted border */
 }
@@ -31,11 +31,11 @@
 }
 
 /* Muted post */
-.a-f-i-za .gpme-titlebar { /* Candidates: a-f-i-za a-f-i-Fb-Un */
+.vp .gpme-titlebar {
   margin: 0;
   display: none;
 }
-.a-f-i-za .a-f-i-Fb-L {
+.vp .pE { /* Item guts for muted post */
   margin-bottom: 5px;
 }
 
@@ -52,10 +52,10 @@
   height: 24px;
 }
 
-.tk3N6e-e-vj:hover {
+.j-e-Pa:hover /* Feedback button */ {
   cursor: pointer;
 }
-.tk3N6e-e-vj:hover .gpme-fold-icon {
+.j-e-Pa:hover /* Feedback button */ .gpme-fold-icon {
   color: #333333;
 }
 
@@ -173,14 +173,14 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 
 /*
  * Preview
- * :not(.a-f-i-za) means not muted
+ * :not(.vp) means not muted
  */
 
 .gpme-preview-triangle {
   display: none;
 }
 
-.gpme-folded:not(.a-f-i-za) .gpme-preview-triangle {
+.gpme-folded:not(.vp) .gpme-preview-triangle {
   display: inline;
   position: absolute;
   left: -16px;
@@ -189,7 +189,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   width: 17px;
 }
 
-.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D-h { /* Context menu button */
+.gpme-folded:not(.vp) .Oi { /* Context menu button */
   position: absolute;
   margin: 0;
   right: 2px;
@@ -198,11 +198,11 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   background-color: white;
 /*  margin-right: -13px; /* Gained 44-13=31 px */
 }
-.gpme-folded:not(.a-f-i-za) .a-f-i-Ia-D { /* context menu */
+.gpme-folded:not(.vp) .yp { /* context menu */
   z-index: 11;
 }
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper {
+.gpme-folded:not(.vp) .gpme-post-wrapper {
   position: absolute;
   left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
   top: -20px; /* overridden dynamically */
@@ -215,7 +215,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p { /* Post content */
+.gpme-folded:not(.vp) .gpme-post-wrapper > .zh { /* Post content */
   margin-left: 0; /* Gained 60px */
   margin-right: 0; /* OUTDATED: Gained 44-13=31 px */
   padding-right: 8px;
@@ -224,63 +224,64 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 
 /* From Google News */
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p::-webkit-scrollbar {
+.gpme-folded:not(.vp) .gpme-post-wrapper > .zh::-webkit-scrollbar {
   width: 8px;
   background: transparent;
   overflow: visible;
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper > .a-f-i-p::-webkit-scrollbar-thumb {
+.gpme-folded:not(.vp) .gpme-post-wrapper > .zh::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper.gpme-hover > .a-f-i-p::-webkit-scrollbar-thumb {
+.gpme-folded:not(.vp) .gpme-post-wrapper.gpme-hover > .zh::-webkit-scrollbar-thumb {
   background-color: #CCC;
 }
-.gpme-folded:not(.a-f-i-za) .a-f-i-p::-webkit-scrollbar-button {
+.gpme-folded:not(.vp) .a-f-i-p::-webkit-scrollbar-button {
   height: 7px;
   display: block;
   background-color: transparent;
 }
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U {
+.gpme-folded:not(.vp) .gpme-post-wrapper .Uy /* Title */{
   margin-right: 5px;
 }
 
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-f-i-do /* User photo */,
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* Hangout's live */{
+.gpme-folded:not(.vp) .gpme-post-wrapper .Uy a.Bp /* User photo */,
+.gpme-folded:not(.vp) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* FIXME: Hangout's live */ {
   display: none;
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
+.gpme-folded:not(.vp) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
   display: none;
 }
 
 /* Shrink images to fit preview */
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper div.ea-S-rg-pa,
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper div.ea-S-Bb { /* Youtube image preview */
-  height: auto !important; /* Override inline height:239px */
+.gpme-folded:not(.vp) .gpme-post-wrapper div.P-I-rf-ma /* FIXME: Album photo */,
+.gpme-folded:not(.vp) .gpme-post-wrapper div.O-F-X /* Youtube image preview; candidates: O-F-X O-F-Ja O-F */ {
+  height: auto !important; /* Overrides inline height */
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper img {
+.gpme-folded:not(.vp) .gpme-post-wrapper img {
   max-width: 100%; /* Resizes image */
 }
 
 .gpme-link-comment {
   display: none
 }
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment:not(.a-f-i-W-O) { /* Link */
+.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment:not(.Uk) /* not fake input */ { /* Link */
   display: inline
 }
-.gpme-preview-enh .gpme-post-wrapper .a-f-i-W-O.gpme-link-comment { /* Fake input */
+.gpme-preview-enh .gpme-post-wrapper .Uk.gpme-link-comment { /* Fake input -- my copy */
   display: block
 }
-.gpme-preview-enh .gpme-post-wrapper .a-f-i-W-O:not(.gpme-link-comment) { /* Fake input */
+.gpme-preview-enh .gpme-post-wrapper .Uk:not(.gpme-link-comment) { /* Fake input -- original */
   display: none
 }
-/* NOTE: Replies and More incorrectly duplicates the .a-b-f-i-W-h class */
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-h,
-.gpme-folded:not(.a-f-i-za) .gpme-post-wrapper .gpme-link-comment + .a-b-f-i-W-O {
+/* NOTE: Replies and More incorrectly duplicates the non-style wf class -- should have only copied d-k,
+ * but this makes it easier for us anyway */
+.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment + .wf /* Comment -> Reply to Author */,
+.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment + .Uk /* Add a comment... */ {
   display: none
 }
 
-.gpme-folded:not(.a-f-i-za) .a-f-i-Jf-Om {
+.gpme-folded:not(.vp) .a-f-i-Jf-Om { /* FIXME: what's this? */
   margin-left: 0;
   margin-right: -13px;
 }
@@ -321,7 +322,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
  * Comment bar
  */
 
-.gpme-folded:not(.a-f-i-za) .gpme-commentbar {
+.gpme-folded:not(.vp) .gpme-commentbar {
   display: none;
 }
 
@@ -329,7 +330,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
  * Unfolded comment bar
  */
 
-.gpme-folded:not(.a-f-i-za) .gpme-commentbar {
+.gpme-folded:not(.vp) .gpme-commentbar {
   display: none;
 }
 
@@ -350,10 +351,10 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
  * Folded comment bar
  */
 
-.gpme-comments-folded:not(.a-f-i-za) .gpme-comments-fold-icon-unfolded-top {
+.gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-top {
   display: none;
 }
-.gpme-comments-folded:not(.a-f-i-za) .gpme-comments-fold-icon-unfolded-bottom {
+.gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-bottom {
   display: none;
 }
 
@@ -368,7 +369,7 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   white-space: nowrap;
 }
 
-.gpme-comments-folded:not(.a-f-i-za) .gpme-comments-title {
+.gpme-comments-folded:not(.vp) .gpme-comments-title {
   display: block;
 }
 
@@ -382,6 +383,6 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
 }
 
 /* Adhik */
-.gpme-folded:not(.a-f-i-za) .ea-S-A {
+.gpme-folded:not(.vp) .ea-S-A {
   margin-right: 0; /* Overrides 20px */
 }
