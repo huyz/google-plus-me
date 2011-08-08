@@ -1702,7 +1702,7 @@ function foldItem(interactive, $item, animated, $post) {
         if ($source.text() == 'Google Check-ins')
           $clonedTitle.append($checkinIconTpl.clone());
         else if ($source.text() == 'Mobile')
-          $clonedTitle.append($mobileIconTpl.clone());
+          $sender.append($mobileIconTpl.clone());
         else if ($source.text() == 'Hangout')
           // FIXME: haven't checked what happens when hangout ends
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
