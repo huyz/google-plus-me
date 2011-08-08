@@ -50,7 +50,7 @@ this.manifest = {
       "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
       "group" : chrome.i18n.getMessage("options_nav_global_label"),
       "name"  : "nav_global_postsDefaultMode",
-      "type"  : "popupButton",
+      "type"  : "radioButtons",
       "label" : chrome.i18n.getMessage("options_nav_global_postsDefaultMode"),
       "options": [
         ["expanded", "Expanded — all default to expanded"],
