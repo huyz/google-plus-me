@@ -1708,7 +1708,9 @@ function foldItem(interactive, $item, animated, $post) {
         var $video = $content.find(_C_CONTENT_VIDEO);
         if ($video.length) {
           $clonedTitle.append($videoIconTpl.clone().css('float', 'right'));
-        } else { // Don't show link if we already have video
+        }
+        
+        if (! $srcPhoto.length && ! $video.length) { // Don't show link if we already have video
           // Link in content?
           var $link = $content.find(_C_CONTENT_LINK);
           if ($link.length) {
