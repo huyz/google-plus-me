@@ -360,6 +360,12 @@ var sgpUpdateTimer = null;
 // SGPlus cached DOM
 var $sgpCachedItems = new Object();
 
+function initDateRegexps() {
+  DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
+  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
+                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
+}
+
 /****************************************************************************
  * Utility
  ***************************************************************************/
@@ -453,36 +459,6 @@ function getOptionsFromBackground(callback) {
     displayMode = settings.nav_global_postsDefaultMode;
     callback();
   });
-}
-
-var getMessage;
-if (DEBUG) {
-  /**
-   * Ask the background for all the messages
-   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-   */
-  function getMessagesFromBackground(callback) {
-    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
-      i18nMessages = response;
-
-      DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
-      DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
-                                          RegExp.quote(getMessage('gplus_dateLongSuffix')));
-
-      callback();
-    });
-  }
-
-  /**
-   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-   */
-  getMessage = function(name) {
-    return i18nMessages[name];
-  };
-} else {
-  getMessage = function(name) {
-    return chrome.i18n.getMessage(name);
-  };
 }
 
 /**
@@ -2896,6 +2872,40 @@ function main() {
     // Listen to keyboard shortcuts
     $(window).keydown(onKeydown);
   }
+}
+
+
+/*
+ * Initializations that may depend on the background page
+ */
+var getMessage;
+if (DEBUG) {
+  /**
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  getMessage = function(name) {
+    return i18nMessages[name];
+  };
+
+  /**
+   * Ask the background for all the messages
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  function getMessagesFromBackground(callback) {
+    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
+      i18nMessages = response;
+
+      initDateRegexps();
+
+      callback();
+    });
+  }
+} else {
+  getMessage = function(name) {
+    return chrome.i18n.getMessage(name);
+  };
+
+  initDateRegexps();
 }
 
 /**
