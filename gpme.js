@@ -78,12 +78,14 @@ var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
 var C_FEEDBACK                  = 'j-e-Pa';
 
 // Icons
-var C_CHECKIN_ICON              = 'h-na-o-Jf';
 var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 var C_HANGOUT_LIVE_ICON         = 'x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 // C_CAMERA_ICON*
-var C_CAMERA_ICON_CONTAINER     = 'h-na-xe-Ua-N';
+var C_POST_CONTENT_ICON_CONTAINER = 'h-Ac';
 var C_CAMERA_ICON               = 'h-na-o-z';
+var C_VIDEO_ICON                = 'h-na-o-Ja';
+var C_LINK_ICON                 = 'h-na-o-k';
+var C_CHECKIN_ICON              = 'h-na-o-Jf';
 
 // Pages and streams
 var C_NOTIFICATIONS_MARKER      = 't6';
@@ -128,6 +130,7 @@ var _C_DATE                     = '.fl';
 var _C_EXPAND_POST              = '.Kq';
 //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
+
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
 // _C_QUOTED_PHOTO:
@@ -139,6 +142,8 @@ var _C_QUOTED_PHOTO             = '.sz > img';
 // - Main image in album: O-F-Nf-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 // - Smaller image thumbnails in album: O-F-nd-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 var S_CONTENT_IMG               = '.O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
+var _C_CONTENT_VIDEO            = '.O-F-Ja-vl';
+var _C_CONTENT_LINK             = '.O-F-Q-k';
 var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
@@ -250,12 +255,14 @@ var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u2
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
 var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
-var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
-var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
 var $hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>');
 var $hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
 // $cameraIconTpl: need container so it doesn't have the green of hover
-var $cameraIconTpl = $('<span class="' + C_CAMERA_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
+var $cameraIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
+var $videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_VIDEO_ICON + '" style="margin: 0 4px"></span></span>');
+var $linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
+var $checkinIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
+var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
 var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
@@ -1681,8 +1688,8 @@ function foldItem(interactive, $item, animated, $post) {
         if ($srcPhoto.length)
           $sender.append($titleQuoteTpl.clone()).append($srcPhoto.clone().attr('style', 'margin: 0'));
 
+        // Photos in content?
         // Possibly-multiple images in the content
-        var isDashNeeded = true;
         //$srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
         $srcPhoto = $content.find(S_CONTENT_IMG);
         if ($srcPhoto.length) {
@@ -1693,15 +1700,24 @@ function foldItem(interactive, $item, animated, $post) {
             $clonedTitle.append($titleThumbnails);
 //            $clonedTitle.addClass('gpme-has-images');
           } else {
-            $clonedTitle.append($titleDashTpl.clone());
-            isDashNeeded = false;
             $clonedTitle.append($cameraIconTpl.clone().css('float', 'right'));
           }
         }
 
+        // Video in content?
+        var $video = $content.find(_C_CONTENT_VIDEO);
+        if ($video.length) {
+          $clonedTitle.append($videoIconTpl.clone().css('float', 'right'));
+        } else { // Don't show link if we already have video
+          // Link in content?
+          var $link = $content.find(_C_CONTENT_LINK);
+          if ($link.length) {
+            $clonedTitle.append($linkIconTpl.clone().css('float', 'right'));
+          }
+        }
+
         // Insert a little dash
-        if (isDashNeeded)
-          $clonedTitle.append($titleDashTpl.clone());
+        $clonedTitle.append($titleDashTpl.clone());
         
         // Put in snippet, trying differing things
         var classes = isSgpPost ? [
@@ -1714,7 +1730,7 @@ function foldItem(interactive, $item, animated, $post) {
           // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
           // (and for one's own post, just "Edit")
           '.uj', // Goes together with next line
-          '.O-F-Q-k', // poster link (must come after the above, which sometimes it's just "Edit")
+          _C_CONTENT_LINK, // poster link (must come after the above, which sometimes it's just "Edit")
           '.cz > .Ar', // hangout text
           '.O-F-Q > a', // photo album caption, title of shared link
           '.r2 > a', // photo caption
