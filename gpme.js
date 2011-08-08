@@ -248,10 +248,21 @@ var clickWallTimeout = 300;
  * Pre-created DOM elements
  ***************************************************************************/
 
-// NOTE: started using regular JS, then switched to using jQuery; no grand master plan
-// behind the dual usage.
+//
+// Inside both post and comment title
+//
 
-var $titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
+var $commentCountContainerTpl = $('<div class="gpme-comment-count-container" style="visibility:hidden">' +
+'<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span>' +
+'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>').click(onCommentCountClick);
+
+//
+// Inside item title
+//
+
+// C_TITLE is no longer necessary now that copied styles over from C_TITLE for SGPlus
+//var $titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
+var $titleTpl = $('<div class="gpme-title-clickarea"></div>').click(onTitleClick);
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
 var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
@@ -267,10 +278,6 @@ var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
-var $commentCountContainerTpl = $('<div class="gpme-comment-count-container" style="visibility:hidden">' +
-'<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span>' +
-'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>').click(onCommentCountClick);
-
 var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').append(
     $('<div class="gpme-title-unfolded">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
@@ -278,15 +285,12 @@ var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').app
     </div>').click(onTitleClick)
   ).append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25b6</div></div>');
 
-var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
+//
+// Inside item's guts
+//
 
-var commentbarTpl = document.createElement('div');
-commentbarTpl.setAttribute('class', 'gpme-commentbar');
-commentbarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded-bottom">\u25bc</div><span class="gpme-comments-title"><div class="gpme-fold-icon">\u25b6</div></span></div>';
-
-var $commentbarTpl = $(commentbarTpl);
-$commentbarTpl.click(onCommentbarClick); // Moved to snippet
-
+// NOTE: started using regular DOM, then switched to using jQuery; no grand master plan
+// behind the dual usage.
 var postWrapperTpl = document.createElement('div');
 postWrapperTpl.className = 'gpme-post-wrapper';
 var clickWall = document.createElement('div');
@@ -303,9 +307,26 @@ postWrapperTpl.appendChild(clickWall);
 postWrapperTpl.appendChild(previewTriangleSpan);
 var $postWrapperTpl = $(postWrapperTpl);
 
-var commentsWrapperTpl = document.createElement('div');
-commentsWrapperTpl.className = 'gpme-comments-wrapper';
-var $commentsWrapperTpl = $(commentsWrapperTpl);
+//
+// Inside item's comments title
+//
+
+var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
+var $commentTitleTpl = $('<div class="gpme-comments-title-clickarea"></div>').click(onCommentTitleClick).append($commentSnippetTpl);
+
+// NOTE: unlike titlebarTpl we put C_FEEDBACK in each individual bar because one's vertical
+var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
+    $('<div class="gpme-comments-title-unfolded ' + C_FEEDBACK + '">\
+      <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
+      <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
+    </div>').click(onCommentTitleClick)
+  ).append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon">\u25b6</div></div>');
+
+//
+// Inside item's comments guts
+//
+
+var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
 
 /****************************************************************************
  * Init
@@ -752,6 +773,7 @@ function onTitleClick(e) {
  * Responds to clicks on the comment count
  */
 function onCommentCountClick(e) {
+  info("onCommentCountClick");
   markCommentsAsRead($(this).closest(_C_ITEM));
 }
 
@@ -759,9 +781,9 @@ function onCommentCountClick(e) {
  * Responds to click on post titlebar.
  * Calls toggleItemFolded()
  */
-function onCommentbarClick() {
+function onCommentTitleClick() {
   var $item = $(this).closest(_C_ITEM);
-  debug("onCommentbarClick: " + $item.attr('id'));
+  debug("onCommentTitleClick: " + $item.attr('id'));
 
   toggleCommentsFolded($item);
 }
@@ -1684,6 +1706,8 @@ function foldItem(interactive, $item, animated, $post) {
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+        else if ($source.text() == 'Photos')
+          /* no-op: we already picked out photos.  Move code into here?  */;
         else // For non-English
           $clonedTitle.append($source.text());
       }
@@ -2226,13 +2250,12 @@ function foldComments(interactive, $item, $comments) {
     // Visual changes
     var shownCommentCount = countShownComments($item);
     var duration = shownCommentCount <= 4 ? 50 : shownCommentCount <= 10 ? 150 : 250;
-    var $commentbar = $item.find('.gpme-commentbar > div');
-    $commentbar.slideUp(duration);
+    var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
+    $commentsTitleUnfolded.slideUp(duration);
     $comments.css('min-height', '27px').slideUp(duration, function() {
       $item.addClass('gpme-comments-folded');
       $item.removeClass('gpme-comments-unfolded');
       updateCommentbar(id, $item, commentCount);
-      $commentbar.show(); // undo the hiding of sliding up
       updateCachedSgpItem($item);
     });
 
@@ -2248,15 +2271,15 @@ function foldComments(interactive, $item, $comments) {
   }
 
   // If not yet done, put content in titlebar
-  var $title = $item.find('.gpme-comments-title');
+  var $title = $item.find('.gpme-comments-title-folded');
   if (! $title.hasClass('gpme-comments-has-content')) {
     $title.addClass('gpme-comments-has-content');
 
-    // Insert placeholder for snippet
-    $title.prepend($commentSnippetTpl.clone());
+    // Add floating comment-count container
+    $title.prepend($commentCountContainerTpl.clone(true));
 
-    // Add comment-count container
-    $title.before($commentCountContainerTpl.clone(true));
+    // Insert title/snippet after the fold icon
+    $title.append($commentTitleTpl.clone(true));
   }
 
   updateCommentbar(id, $item, commentCount);
@@ -2288,14 +2311,16 @@ function unfoldComments(interactive, $item, $comments) {
     // Interactive visual changes
     var shownCommentCount = countShownComments($item);
     var duration = shownCommentCount <= 4 ? 50 : shownCommentCount <= 10 ? 150 : 250;
-    var $commentbar = $item.find('.gpme-commentbar > div');
-    $commentbar.hide();
+    var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
+    var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
+    $commentsTitleFolded.hide(); // hide a bit early
     $comments.slideDown(duration, function() {
       $item.removeClass('gpme-comments-folded');
       $item.addClass('gpme-comments-unfolded');
+      $commentsTitleFolded.css('display', ''); // Undo the hide above
       // NOTE: updateCommentbar needs to be done after updating classes
       updateCommentbar(id, $item, commentCount);
-      $commentbar.fadeIn('fast');
+      $commentsTitleUnfolded.fadeIn('fast');
       updateCachedSgpItem($item);
     });
 
@@ -2430,7 +2455,7 @@ function updateCommentsSnippet(id, $item) {
 }
 
 /**
- * Update the commentbar's height
+ * Update the commentbar's height, more specifically gpme-comments-title-unfolded
  * @param commentCount Optionally provide the commentcount
  */
 function updateCommentbarHeight(id, $item, commentCount) {
@@ -2448,7 +2473,8 @@ function updateCommentbarHeight(id, $item, commentCount) {
   if (typeof commentCount == 'undefined')
     commentCount = countComments($commentWrapper);
 
-  var $commentbar = $item.find('.gpme-commentbar > div');
+  var $commentbar = $item.find('.gpme-commentbar');
+  var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
 
   // If no comments, no need for a bar
   if (commentCount === 0) {
@@ -2457,12 +2483,12 @@ function updateCommentbarHeight(id, $item, commentCount) {
     $commentbar.show();
     // If folded, Remove any dynamically-set height
     if (areItemCommentsFolded($item)) {
-      $commentbar.css('height', '');
+      $commentsTitleUnfolded.css('height', '');
     } else {
       // Update the height
       // Despite advertisements, jQuery 1.6.2 still cannot calculate
       // height within a hidden tree
-      $commentbar.height($commentWrapper.actual('outerHeight') - 2);
+      $commentsTitleUnfolded.height($commentWrapper.actual('outerHeight') - 2);
     }
   }
 }
@@ -2535,6 +2561,7 @@ function deleteSeenCommentCount(id) {
 function markCommentsAsRead($item) {
   var commentCount = countComments($item);
   var id = $item.attr('id');
+  deleteSeenCommentCount(id);
   saveSeenCommentCount(id, commentCount);
   updateCommentCount(id, $item, commentCount);
 }

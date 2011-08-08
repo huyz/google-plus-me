@@ -23,11 +23,26 @@
 }
 
 /*
+ * Common to titlebar and commentbar
+ */
+
+.gpme-fold-icon {
+  float: left;
+  font-size: 10px;
+  line-height: 22px;
+  color: #CCCCCC;
+}
+.gpme-title-folded .gpme-fold-icon,
+.gpme-comments-title-folded .gpme-fold-icon { /* We don't that to apply to side commentbar */
+  margin: 0 5px 0 3px;
+}
+
+/*
  * The titlebar
  */
 
 .gpme-titlebar {
-  margin: -16px -21px auto -21px; /* Break out of the margins */
+  margin: -16px -21px 4px -21px; /* Break out of the margins */
 }
 
 /* Muted post */
@@ -39,21 +54,26 @@
   margin-bottom: 5px;
 }
 
-.gpme-titlebar {
-  margin-bottom: 4px;
-}
-
 .gpme-title-unfolded {
   height: 14px;
 }
+.gpme-title-folded {
+  margin-top: 2px;
+  padding: 0 4px; /* Must match gpme-comment-count-bg's right */
+  position: relative;
+}
+
 .gpme-folded .gpme-title-unfolded {
   display: none
 }
+.gpme-unfolded .gpme-title-folded {
+  display: none;
+}
 
-.j-e-Pa:hover /* Feedback button */ {
+.j-e-Pa:hover /* Like Feedback button */ {
   cursor: pointer;
 }
-.j-e-Pa:hover /* Feedback button */ .gpme-fold-icon {
+.j-e-Pa:hover /* Like Feedback button */ .gpme-fold-icon {
   color: #333333;
 }
 
@@ -81,28 +101,6 @@
 /*
  * Title: inside folded title bar
  */
-
-.gpme-title-folded {
-  margin-top: 2px;
-  padding: 0 4px; /* Must match gpme-comment-count-bg's right */
-  display: none;
-  position: relative;
-}
-
-.gpme-folded .gpme-title-folded {
-  display: block;
-}
-
-.gpme-fold-icon {
-  float: left;
-  font-size: 10px;
-  line-height: 22px;
-  color: #CCCCCC;
-}
-.gpme-title-folded .gpme-fold-icon,
-.gpme-comments-title .gpme-fold-icon { /* We don't that to apply to side commentbar */
-  margin: 0 5px 0 3px;
-}
 
 .gpme-title-folded > div /* .gZgCtb */ {
   white-space: nowrap;
@@ -165,6 +163,13 @@ div.gpme-comment-count-container > .gpme-comment-count-bg {
   top: 0;
   right: 4px; /* Must match gpme-title-folded's padding */
 }
+/* In commentbar this is different because of the nature of the top-margin
+ * which has to be -1px for comments to overwrite that line
+ */
+.gpme-comments-title-folded > div.gpme-comment-count-container > .gpme-comment-count-bg {
+  top: 2px;
+}
+
 
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-fg {
@@ -293,19 +298,16 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
  * Commentbar
  */
 
-.gpme-commentbar {
-  margin-right: 2px;
+/* Hide in preview */
+.gpme-folded:not(.vp) .gpme-commentbar {
+  display: none;
 }
 
-.gpme-commentbar > div /* .tk3N6e-e-vj */ {
-  margin-bottom: 4px;
-  position: relative;
-}
-
-.gpme-comments-unfolded .gpme-commentbar > div /* .tk3N6e-e-vj */ {
+.gpme-comments-title-unfolded {
   float: left;
-  margin-top: -1px; /* Like .a-f-i-Xb */
   margin-left: -12px;
+  margin-top: -1px; /* To align with line above */
+  position: relative; /* So that gpme-comments-fold-icon-unfolded-bottom can find the bottom */
   width: 10px;
   height: 50px; /* Dynamically overridden */
   min-height: 24px; /* Constrain slideUp() */
@@ -314,28 +316,30 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
   -moz-border-radius-bottomleft: 8px;
   border-bottom-left-radius: 8px;
 }
-
-.gpme-comments-folded .gpme-commentbar > div /* .tk3N6e-e-vj */ {
-  /*margin: 0;*/
-  width: 100%;
+.gpme-comments-title-folded {
+  margin-top: -1px; /* To overwrite line above */
+  padding: 2px 4px 0 4px;
   height: 24px;
+  position: relative;
+}
+.gpme-comments-title-folded > div {
+  white-space: nowrap;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gpme-comments-folded .gpme-comments-title-unfolded {
+  display:none
+}
+.gpme-comments-unfolded .gpme-comments-title-folded {
+  display:none
 }
 
 /*
- * Comment bar
+ * Inside unfolded comment bar
  */
 
-.gpme-folded:not(.vp) .gpme-commentbar {
-  display: none;
-}
-
-/*
- * Unfolded comment bar
- */
-
-.gpme-folded:not(.vp) .gpme-commentbar {
-  display: none;
-}
 
 .gpme-comments-unfolded .gpme-comments-title {
   display: none;
@@ -351,7 +355,7 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 
 /*
- * Folded comment bar
+ * Inside folded comment bar
  */
 
 .gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-top {
@@ -359,21 +363,6 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 .gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-bottom {
   display: none;
-}
-
-.gpme-comments-title {
-  display: none;
-  margin-top: 2px;
-  padding: 0 6px 0 6px;
-  line-height: 19px;
-  position: relative;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.gpme-comments-folded:not(.vp) .gpme-comments-title {
-  display: block;
 }
 
 /*
@@ -386,6 +375,6 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 
 /* Adhik */
-.gpme-folded:not(.vp) .ea-S-A {
+.gpme-folded:not(.vp) .ea-S-A /* FIXME */ {
   margin-right: 0; /* Overrides 20px */
 }
