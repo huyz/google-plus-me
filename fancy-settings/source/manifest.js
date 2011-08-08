@@ -57,6 +57,7 @@ this.manifest = {
         ["list", "List — collapse all except for one"]
       ]
     },
+/*
     {
       "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
       "group" : chrome.i18n.getMessage("options_nav_global_label"),
@@ -64,6 +65,7 @@ this.manifest = {
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_global_commentsDefaultCollapsed")
     },
+*/
 
     /*
      * Compatibility
