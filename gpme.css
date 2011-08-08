@@ -86,7 +86,7 @@
 
 .gpme-title {
   margin-top: 2px;
-  padding: 0 6px 0 6px;
+  padding: 0 4px; /* Must match gpme-comment-count-bg's right */
   display: none;
   position: relative;
 }
@@ -110,9 +110,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/*
 .gpme-title > div.gpme-has-images {
   margin-right: 27px;
 }
+  */
 
 .gpme-title img {
   height: 20px; 
@@ -124,9 +126,12 @@
   width: 20px;
   margin: 0 5px 0 0;
 } 
-/* Other image s*/
-.gpme-title > div /* .gZgCtb */ > img {
+/* Other images */
+.gpme-title-thumbnails {
   float: right;
+  margin-right: 7px;
+}
+.gpme-title-thumbnails > img {
   margin: 0 0 0 5px;
   max-width: 60px;
   opacity: 0.5;
@@ -134,16 +139,11 @@
 
 
 /* Injected mobile/checkin icons */
-div.gpme-title .gpme-title-icons { /* Need to be more specific than G+ */
+span.gpme-title .gpme-title-icons { /* "span" coz need to be more specific than G+ */
   vertical-align: -27%;
-  margin: 0 5px 0 0;
-}
-.gpme-title-icons.n-Wa-q.n-Wa-q-Dc-X {
-  margin-right: -4px;
-}
-
-.gpme-title .a-f-i-yj { /* container for dashes */
-  margin: 0 3px;
+  margin: 0;
+  float: none; /* Override hangout live icon's float left */
+  display: inline-block; /* For hangout live icon */
 }
 
 .gpme-snippet {
@@ -160,15 +160,18 @@ div.gpme-title .gpme-title-icons { /* Need to be more specific than G+ */
 }
 
 /* Overrides injectCss(); add div just for higher specificity. */
-div.gpme-comment-count-container .gpme-comment-count-bg {
+div.gpme-comment-count-container > .gpme-comment-count-bg {
   top: 0;
-  right: 6px;
+  right: 4px; /* Must match gpme-title's padding */
 }
 
 /* Overrides injectCss(); add div just for higher specificity. */
-div.gpme-comment-count-container .gpme-comment-count-fg {
+div.gpme-comment-count-container > .gpme-comment-count-fg {
   height: 21px;
   line-height: 21px;
+}
+.gpme-has-images > div.gpme-comment-count-container > .gpme-comment-count-fg {
+  margin-right: -27px; /* Negate rule: .gpme-title > div.gpme-has-images  */
 }
 
 /*
@@ -245,10 +248,6 @@ div.gpme-comment-count-container .gpme-comment-count-fg {
   margin-right: 5px;
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper .Uy a.xp /* User photo */,
-.gpme-folded:not(.vp) .gpme-post-wrapper .a-f-i-p-U .a-lx-i-ie-ms-Ha-q /* FIXME: Hangout's live */ {
-  display: none;
-}
 .gpme-folded:not(.vp) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
   display: none;
 }

@@ -63,6 +63,7 @@ RegExp.quote = function(str) {
 
 var _ID_GBAR                    = '#gb';
 var _ID_GBAR_TOP                = '#gbw';
+var _ID_STATUS                  = '#gbg1';
 var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
@@ -77,7 +78,12 @@ var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
 var C_FEEDBACK                  = 'j-e-Pa';
 
 // Icons
-C_CHECKIN_ICON                  = '.h-na-o-Jf';
+var C_CHECKIN_ICON              = 'h-na-o-Jf';
+var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var C_HANGOUT_LIVE_ICON         = 'x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+// C_CAMERA_ICON*
+var C_CAMERA_ICON_CONTAINER     = 'h-na-xe-Ua-N';
+var C_CAMERA_ICON               = 'h-na-o-z';
 
 // Pages and streams
 var C_NOTIFICATIONS_MARKER      = 't6';
@@ -109,7 +115,11 @@ var _C_TITLE                    = '.Uy';
 var C_TITLE                     = 'Uy';
 var S_PHOTO                     = '.Bu > a.xp';
 var _C_NAME                     = '.IE';
-var S_SOURCE                    = 'a.Sg';
+// S_SOURCE:
+// - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
+// - hangout: https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+// - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
+var S_SOURCE                    = '.tz.d-q-p';
 var _C_CONTENT                  = '.Qy';
 var _C_PERMS                    = '.gl'; // Candidates: gl rr Cp
 var _C_MUTED                    = '.Zq'; // "- Muted" text in profile page
@@ -120,13 +130,15 @@ var _C_EXPAND_POST              = '.Kq';
 
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
+// _C_QUOTED_PHOTO:
+// - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
 var _C_QUOTED_PHOTO             = '.sz > img';
 // Various images:
 // - Web page image: O-F-Th-la
 // - Posted image: O-F-Bj-la  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
 // - Main image in album: O-F-Nf-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 // - Smaller image thumbnails in album: O-F-nd-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_IMG              = '.O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img'
+var S_CONTENT_IMG               = '.O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
 var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
@@ -164,7 +176,7 @@ var _C_COMMENT_CONTAINERS =
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
 var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + ')\\b');
-var DISABLED_PAGES_URL_REGEXP = new RegExp(/\/(posts|notifications|sparks)\//);
+var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
   C_SPARKS_MARKER,
@@ -187,11 +199,12 @@ var ID_SGP_POST_PREFIX = 'sgp-post-';
 var C_SGP_UPDATE = 'sgp_update';
 var C_SGP_UPDATE_FB = 'sgp_update_facebook';
 var C_SGP_UPDATE_TWITTER = 'sgp_update_twitter';
-var _C_SGP_TITLE = '.a-f-i-p-U > div'; // SGP doesn't have a 'gZgCtb' class as it should
-var _C_SGP_CONTENT = '.a-f-i-p-r';
-var _C_SGP_CONTENT2 = '.ea-S-R';
+var _C_SGP_TITLE = _C_TITLE; // Same as G+ now
+var _C_SGP_CONTENT = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
+var _C_SGP_TEXT1 = _C_CONTENT; // .Qy
+var _C_SGP_TEXT2 = '.ea-S-R';
 var S_SGP_ORIGPOST_LINK = 'span[style^="font-size"]';
-var _C_SGP_COMMENT = '.a-b-f-i-W-r';
+var _C_SGP_COMMENT = '.sgp_comments_wrapper';
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
@@ -237,13 +250,19 @@ var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u2
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
 var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
-var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '"></span>');
-var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="background-position: 0 -34px"></span>');
-// Candidates: .n-xb .n-Wa-q-z, .n-Ka-wd .n-Wa-q-z, .n-Wa-ph-Ob-X .n-Wa-q-z
-// but we want to avoid: .n-xb .n-Wa-q-z:hover
-var $cameraIconTpl = $('<span class="n-Ka-wd"><span class="gpme-title-icons n-Wa-q n-Wa-q-z"></span></span>');
+var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
+var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
+var $hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>');
+var $hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
+// $cameraIconTpl: need container so it doesn't have the green of hover
+var $cameraIconTpl = $('<span class="' + C_CAMERA_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
 var $titleDateTpl = $('<span class="gpme-title-date"></span>');
+var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
+
+var $commentCountContainerTpl = $('<div class="gpme-comment-count-container" style="visibility:hidden">' +
+'<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span>' +
+'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>');
 
 var titlebarTpl = document.createElement('div');
 titlebarTpl.setAttribute('class', 'gpme-titlebar');
@@ -251,9 +270,12 @@ titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-i
 var $titlebarTpl = $(titlebarTpl);
 $titlebarTpl.click(onTitlebarClick);
 
+var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
+
 var commentbarTpl = document.createElement('div');
 commentbarTpl.setAttribute('class', 'gpme-commentbar');
-commentbarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded-bottom">\u25bc</div><span class="gpme-comments-title"></span></div>';
+commentbarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded-bottom">\u25bc</div><span class="gpme-comments-title"><span class="gpme-fold-icon">\u25b6</span></span></div>';
+
 var $commentbarTpl = $(commentbarTpl);
 $commentbarTpl.click(onCommentbarClick);
 
@@ -314,19 +336,36 @@ var $sgpCachedItems = new Object();
 /**
  * For debugging
  */
-function trace(msg) {
-  if (DEBUG)
-    console.log(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me: ' + msg);
+function info() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift('g+me');
+  console.log.apply(console, args);
 }
-function debug(msg) {
-  if (DEBUG)
-    console.debug(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+function debug() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift('g+me');
+  console.debug.apply(console, args);
 }
-function warn(msg) {
-  console.warn(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+function warn() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift('g+me');
+  console.warn.apply(console, args);
+  console.trace();
 }
-function error(msg) {
-  console.error(typeof msg == 'object' ? msg instanceof jQuery ? msg.get() : msg : 'g+me.' + msg);
+function error() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift('g+me');
+  console.error.apply(console, args);
+  console.trace();
+}
+
+/**
+ * Unescape HTML entities.
+ * WARNING: make sure that you add the result careful, e.g. with jQuery.text(),
+ * to avoid XSS security problems.
+ */
+function htmlDecode(str) {
+  return $("<div/>").html(str).text();
 }
 
 /**
@@ -378,16 +417,13 @@ function foreachCommentContainer($subtree, callback) {
  * Queries background page for options
  */
 function getOptionsFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetModeOption'}, function(theDisplayMode) {
-    displayMode = theDisplayMode;
-    chrome.extension.sendRequest({action: 'gpmeGetSettings'}, function(theSettings) {
-      settings = theSettings;
-      callback();
-    });
+  chrome.extension.sendRequest({action: 'gpmeGetSettings'}, function(theSettings) {
+    settings = theSettings;
+    displayMode = settings.nav_global_postsDefaultMode;
+    callback();
   });
 }
 
-var getMessage;
 if (DEBUG) {
   /**
    * Ask the background for all the messages
@@ -408,12 +444,11 @@ if (DEBUG) {
   /**
    * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
    */
-  getMessage = function(name) {
+  function getMessage() {
     return i18nMessages[name];
-  }
+  };
 } else {
-console.debug("WHAT THE FUCK?");
-  getMessage = function(name) {
+  function getMessage(name) {
     return chrome.i18n.getMessage(name);
   }
 }
@@ -550,10 +585,18 @@ function onStatusUpdated(e) {
 }
 
 /**
+ * Responds to user click on browser action icon
+ */
+function onBrowserActionClick() {
+  info("event: browser action icon was clicked");
+  click($(_ID_STATUS));
+}
+
+/**
  * Responds to changes in the history state
  */
 function onTabUpdated() {
-  trace("event: Chrome says that tab was updated");
+  info("event: Chrome says that tab was updated");
 
   // Restrict to non-single-post Google+ pages
   if (!isEnabledOnThisPage())
@@ -573,7 +616,7 @@ function onTabUpdated() {
  */
 function onContentPaneUpdated(e) {
   // We're only interested in the insertion of entire content pane
-  trace("event: DOMNodeInserted within onContentPaneUpdated");
+  info("event: DOMNodeInserted within onContentPaneUpdated");
 
   var $subtree = $(e.target);
   if (isEnabledOnThisPage($subtree))
@@ -592,7 +635,7 @@ function onItemInserted(e) {
   if (! isEnabledOnThisPage())
     return;
 
-  trace("event: DOMNodeInserted of item into stream");
+  info("event: DOMNodeInserted of item into stream");
   debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
 }
@@ -1610,20 +1653,25 @@ function foldItem(interactive, $item, animated, $post) {
       if ($srcPhoto.length)
         $sender.prepend($srcPhoto.clone());
 
+      
       // Insert "mobile"/"check-ins" icons
       var $source = $srcTitle.find(S_SOURCE);
       if ($source.length) {
-        // FIXME: English-only, but so far Google uses only English
+        // Maybe FIXME: English-only, but so far Google uses only English
         if ($source.text() == 'Google Check-ins')
           $clonedTitle.append($checkinIconTpl.clone());
         else if ($source.text() == 'Mobile')
           $clonedTitle.append($mobileIconTpl.clone());
+        else if ($source.text() == 'Hangout')
+          $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
+            $hangoutLiveIconTpl.clone() :
+            $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
         else // For non-English
           $clonedTitle.append($source.text());
       }
 
       var $itemGuts = $post.children(_C_ITEM_GUTS);
-      var $content = $itemGuts.children(_C_CONTENT);
+      var $content = $itemGuts.children(isSgpPost ? _C_SGP_CONTENT : _C_CONTENT);
       if (! $content.length) {
         error("foldItem: Can't find the item guts or contents for id=" + id);
       } else {
@@ -1638,14 +1686,17 @@ function foldItem(interactive, $item, animated, $post) {
         //$srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
         $srcPhoto = $content.find(S_CONTENT_IMG);
         if ($srcPhoto.length) {
-          $clonedTitle.append($titleDashTpl.clone());
-          isDashNeeded = false;
-          $clonedTitle.addClass('gpme-has-images');
-          if (settings.nav_summaryIncludeThumbnails)
+          if (settings.nav_summaryIncludeThumbnails) {
+            var $titleThumbnails = $titleThumbnailsTpl.clone();
             // NOTE: reverse the order coz we're floating them right
-            $clonedTitle.append($srcPhoto.clone().attr('style', '').reverse());
-          else
-            $clonedTitle.append($cameraIconTpl.clone());
+            $titleThumbnails.append($srcPhoto.clone().attr('style', ''));
+            $clonedTitle.append($titleThumbnails);
+//            $clonedTitle.addClass('gpme-has-images');
+          } else {
+            $clonedTitle.append($titleDashTpl.clone());
+            isDashNeeded = false;
+            $clonedTitle.append($cameraIconTpl.clone().css('float', 'right'));
+          }
         }
 
         // Insert a little dash
@@ -1653,7 +1704,10 @@ function foldItem(interactive, $item, animated, $post) {
           $clonedTitle.append($titleDashTpl.clone());
         
         // Put in snippet, trying differing things
-        var classes = [
+        var classes = isSgpPost ? [
+          _C_SGP_TEXT1,
+          _C_SGP_TEXT2
+        ] : [
           // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
           '.el',
           // poster text that is resharing https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
@@ -1661,7 +1715,7 @@ function foldItem(interactive, $item, animated, $post) {
           // (and for one's own post, just "Edit")
           '.uj', // Goes together with next line
           '.O-F-Q-k', // poster link (must come after the above, which sometimes it's just "Edit")
-          '.fz > .Hr', // hangout text
+          '.cz > .Ar', // hangout text
           '.O-F-Q > a', // photo album caption, title of shared link
           '.r2 > a', // photo caption
           '.P-I-ri-ic', // text of shared link
@@ -1680,23 +1734,20 @@ function foldItem(interactive, $item, animated, $post) {
           }
           var text = $snippet.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '');
           if (text.match(/[^\s\u2022]/)) {
-            if (classes[c] == '.fz > .Hr') {
+            if (classes[c] == '.cz > .Ar') {
               // TODO: test in multiple languages (English, Spanish, Chinese ok)
               text = text.replace(/.*(\d+)/, '$1');
             }
             $snippet = $titleSnippetTpl.clone();
-            $snippet.text(text.substring(0, 100)); // We have to call() to avoid XSS
+            $snippet.text(htmlDecode(text.substring(0, 100))); // We have to call() to avoid XSS
             $clonedTitle.append($snippet);
             break;
           }
         }
 
-        if (canHaveComments) {
+        if (canHaveComments)
           // Add comment-count container
-          $clonedTitle.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-            '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
-            '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
-        }
+          $clonedTitle.prepend($commentCountContainerTpl.clone());
 
         // If any, move "- Muted" to right after date and before the " - "
         $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
@@ -2178,15 +2229,10 @@ function foldComments(interactive, $item, $comments) {
     $title.addClass('gpme-comments-has-content');
 
     // Insert placeholder for snippet
-    $title.prepend('<span class="gpme-comments-snippet"></span>');
-
-    // Insert fold icon
-    $title.prepend('<span class="gpme-fold-icon">\u25b6</span>');
+    $title.prepend($commentSnippetTpl.clone());
 
     // Add comment-count container
-    $title.prepend('<div class="gpme-comment-count-container" style="display:none">' +
-      '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span>' +
-      '<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></span></div>');
+    $title.prepend($commentCountContainerTpl.clone());
   }
 
   updateCommentbar(id, $item, commentCount);
@@ -2283,7 +2329,7 @@ function updateCommentCount(id, $subtree, count) {
     $countBg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
-    $container.show();
+    $container.css('visibility', 'visible');
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
@@ -2299,9 +2345,9 @@ function updateCommentCount(id, $subtree, count) {
     $countFg.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
     if (count) {
       $countFg.text(count);
-      $container.show();
+      $container.css('visibility', 'visible');
     } else {
-      $container.hide();
+      $container.css('visibility', 'hidden');
     }
   }
 }
@@ -2774,6 +2820,8 @@ function main() {
       onModeOptionUpdated(request.mode);
     } else if (request.action == "gpmeResetAll") {
       onResetAll();
+    } else if (request.action == "gpmeBrowserActionClick") {
+      onBrowserActionClick();
     }
   });
 
@@ -2793,7 +2841,7 @@ function main() {
  * Gets data from background page and then calls main()
  */
 $(document).ready(function() {
-  trace("event: initial page load.");
+  info("event: initial page load.");
 
   injectCSS();
   

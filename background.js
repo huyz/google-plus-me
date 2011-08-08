@@ -7,10 +7,21 @@
  * Author:           Huy Z  http://huyz.us/
  */
 
+
+/****************************************************************************
+ * Constants
+ ***************************************************************************/
+
+var GPLUS_URL_REGEXP = /^https?:\/\/plus\.google\.com\//;
+
+/****************************************************************************
+ * Init
+ ***************************************************************************/
+
 // i18n messages
 var i18nMessages = {};
 
-var settings = new Store("settings", {
+var defaultSettings = {
   /*
    * General
    */
@@ -22,6 +33,7 @@ var settings = new Store("settings", {
   /*
    * Pages
    */
+  'nav_global_postsDefaultMode': 'expanded',
   'nav_global_commentsDefaultCollapsed': false,
 
   /*
@@ -29,12 +41,28 @@ var settings = new Store("settings", {
    */
   'nav_compatSgp': true,
   'nav_compatSgpComments': false,
-  'nav_compatSgpCache': false,
-});
+  'nav_compatSgpCache': false
+};
 
+var settingStore = new Store("settings", defaultSettings);
+
+
+/*
 // Default options
-if (localStorage.getItem('gpme_options_mode') == null)
+if (localStorage.getItem('gpme_options_mode') === null)
   localStorage.setItem('gpme_options_mode', 'expanded');
+*/
+
+// Migration: option -> fancy-settings
+var displayMode = localStorage.getItem('gpme_options_mode');
+if (displayMode !== null) {
+  settingStore.set('nav_global_postsDefaultMode', displayMode);
+  localStorage.removeItem('gpme_options_mode');
+}
+
+/****************************************************************************
+ * Version check
+ ***************************************************************************/
 
 // Check installed version
 var oldVersion = localStorage.getItem('version');
@@ -43,7 +71,9 @@ if (version != oldVersion) {
   // NOTE: we don't use the prefix 'gpme_' so that it doesn't get wiped out by a reset
   localStorage.setItem('version', version);
 
-  // If first-time install, inject into any currently-open pages
+  // If first-time install, inject into any currently-open pages so that the
+  // user isn't confused.  Later users are only updating and should already have
+  // a running version (unless G+ changed its layout) and also know what to expect.
   if (oldVersion === null) {
     console.log("gpme: looks like first-time install");
     chrome.windows.getAll({populate: true}, function(windows) {
@@ -64,6 +94,18 @@ if (version != oldVersion) {
   }
 }
 
+/****************************************************************************
+ * Settings
+ ***************************************************************************/
+
+function reset() {
+  settingStore.fromObject(defaultSettings);
+}
+
+/****************************************************************************
+ * Event handlers
+ ***************************************************************************/
+
 // Listen to incoming messages from content scripts
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   switch (request.action) {
@@ -71,10 +113,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       chrome.browserAction.setBadgeText({text: (request.count ? request.count.toString() : "")});
       break;
     case 'gpmeGetModeOption':
-      sendResponse(localStorage.getItem('gpme_options_mode'));
+      sendResponse(settingStore.get('nav_global_postsDefaultMode'));
       break;
     case 'gpmeGetSettings':
-      sendResponse(settings.toObject());
+      sendResponse(settingStore.toObject());
       break;
     case 'gpmeGetMessages':
       MESSAGE_NAMES.forEach(function(name) {
@@ -82,7 +124,46 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       });
       sendResponse(i18nMessages);
       break;
+    default: break;
   }
+});
+
+// Listen to browser action clicks
+chrome.browserAction.onClicked.addListener(function(tab) {
+  function sendClick(tabId) {
+    // Click on the notification
+    chrome.tabs.sendRequest(tabId, {action: 'gpmeBrowserActionClick'});
+  }
+
+  chrome.tabs.getSelected(null, function(tab) {
+    // Check that the selected tab is Google+
+    if (GPLUS_URL_REGEXP.test(tab.url)) {
+      sendClick(tab.id);
+    } else {
+      chrome.tabs.getAllInWindow(null, function(tabs) {
+        var found = false;
+        tabs.forEach(function(tab) {
+        // If not, let's switch to the first one we can find
+          if (! found && GPLUS_URL_REGEXP.test(tab.url)) {
+            chrome.tabs.update(tab.id, { selected: true }, function() {
+              sendClick(tab.id);
+            });
+            found = true;
+          }
+        });
+
+        // Otherwise, let's open a new G+ tab
+        if (! found) {
+          chrome.tabs.create({url: 'https://plus.google.com/'});
+          // NOTE: can't send click because it takes a while for the page
+          // to set up.  The best we could do is have the content script
+          // query and ask us whether it should open the notification status
+          // on startup.  But not worth it and the user may have already clicked
+          // on it by then.
+        }
+      });
+    }
+  });
 });
 
 // Listen to tab updates from Chrome, e.g. back and forward buttons

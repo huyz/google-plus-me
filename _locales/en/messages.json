@@ -33,10 +33,10 @@
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryIncludeThumbnails": {
-    "message": "Include thumbnails of photos inside post"
+    "message": "Collapsed posts show thumbnails of photos from content"
   },
   "options_nav_summaryIncludeTime": {
-    "message": "Include timestamp of the post"
+    "message": "Collapsed posts show date-time"
   },
 
   "options_nav_preview_label": {
@@ -63,6 +63,10 @@
     "message": "Configure these page options if you want to configure all types of pages (Stream, circles, Incoming, Notifications, Sparks, etc.) in the same way.",
     "description": "Instructions for the global group"
   },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Collapse mode for posts:",
+    "description": "Text before the popupButton.  Don't remove the colon ':' at the end."
+  },
   "options_nav_global_commentsDefaultCollapsed": {
     "message": "Collapse all comments by default"
   },
@@ -82,7 +86,8 @@
     "description": "Name of the options group for SGPlus"
   },
   "options_nav_compatSgp_desc": {
-    "message": "<b>WARNING:</b> Compatibility with SGPlus is in beta.  There are still performance and instability issues.  Each option below adds more processing to SGPlus's frequent heavy-duty refreshes, possibly slowing down your browser and causing frequent pauses (annoying when you're typing).<br />Please report any problems to the <a href=\"$URL$\" target=_default>discussion about SGPlus compatibility on Google+</a>.",
+    "message": "<b>WARNING:</b> Compatibility with SGPlus is in beta.  There are still performance and instability issues.  Each option below adds more processing to SGPlus's frequent heavy-duty refreshes, possibly slowing down your browser and causing frequent pauses (annoying when you're typing).<br />
+    Please report any problems to the <a href=\"$URL$\" target=_blank>discussion about SGPlus compatibility on Google+</a>.",
     "description": "Text notifying user of current state of compatibility and warning of problems",
     "placeholders": {
       "URL": {
@@ -92,7 +97,7 @@
     }
   },
   "options_nav_compatSgp": {
-    "message": "Enable compatibility with SGPlus: make posts collapsible"
+    "message": "Enable compatibility with SGPlus, i.e. make posts collapsible"
   },
   "options_nav_compatSgpComments": {
     "message": "Make comments collapsible and track comments <i>(compatibility must be enabled)</i>"
@@ -111,5 +116,91 @@
   "options_nav_compatSgpUsage_desc": {
     "message": "<b>NOTE:<b> Google+ tabs must be reloaded after changing any of these options.",
     "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Questions",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_links_label": {
+    "message": "Links",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Follow the author Huy Z on <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> and <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+    <p>See usage instructions and the latest news at the <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me web page</a>.</p>
+    <p>Give feedback in the <a href=\"http://huyz.us/gpme-release/\" target=_blank>current discussion on Google+</a>.</p>
+    <p>Rate the extension at the <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
+    <p>For the source code, go to <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_faq_label": {
+    "message": "Frequently Asked Questions",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>Do you protect my privacy?</h3>
+    <p>
+    Yes, you're safe. Even though the Web Store says that this extension <i>could</i> see your \"browsing history\", it does <i>not</i>. This is an open-source project whose <a href=\"http://goo.gl/BM8CG\" target=_blank>source code</a> is available for you to check. You can read <a href=\"http://goo.gl/ld00X\" target=_blank>my comments about privacy</a> and the technical reasons why the Web Store is misleading.</p>
+    <h3>This extension slows down Google+</h3>
+    <p>This is most likely because of incompatibility with other extensions. Try disabling all other Google+ extensions. Please let me know which extensions seem to interact badly with <b>G+me</b>, and I'll take a look at it.
+    </p>
+    <h3>This extension conflicts with other extension X</h3>
+    <p>
+    On August 2nd and 3rd, Google+ changed its layout, breaking almost all extensions.  As a result, every extension had to change its code.  It will take some time before I can restore compatibility with other extensions.  Please be patient.
+    <!--
+    This extension is <i>incompatible</i> with <b>+Comment Toggle</b>.  It is <i>compatible</i> with <b>Start G+</b> (careful with performance issues), <b>Surplus</b>, <b>Replies and more</b> (you must turn off the 'm' key shortcut from its options), <b>Extended Share</b>, <b>G+ Ultimate</b> (except for \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (except for notifications), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+    -->
+    </p>
+    <h3>Will this be ported to Firefox or other browsers?</h3>
+    <p>
+    Once I've implemented other features, I plan to port to Firefox.  But this could take a couple of weeks.  Other browsers are not in the plans.
+    </p>",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Problems",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "In case of strange behavior, try the following:<br />
+    <ul>
+    <li>Reload the page (the problem could just be Google+)</li>
+    <li>Restart your browser (the browser has bugs too)</li>
+    <li>Make sure you have the latest version of <b>G+me</b>. To check, right-click on the G+me browser icon, go to \"Manage Extensions\" and then compare with the latest version at the <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Here's how to <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>force extensions to update</a>.</li>
+    <li>If you already have the latest version of <b>G+me</b>, you may try uninstalling and re-installing the extension.</li>
+    <li>You may try resetting all your options and history.  See below.</li>
+    </ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "You can always ask questions and give feedback in the <a href=\"http://huyz.us/gpme-release/\" target=_blank>current discussion about G+me on Google+</a>.",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Resetting",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "To return all the <b>G+me</b> options back to their defaults:",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetSettings": {
+    "message": "Reset all G+me options",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "In case of problems, try resetting all your options and history:",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Reset all G+me options and history",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "NOTE: These buttons have nothing to do with your Google+ data, which is always safe from this extension.",
+    "description": "Text shown on the button"
   }
 }

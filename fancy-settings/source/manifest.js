@@ -49,6 +49,17 @@ this.manifest = {
     {
       "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
       "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_postsDefaultMode",
+      "type"  : "popupButton",
+      "label" : chrome.i18n.getMessage("options_nav_global_postsDefaultMode"),
+      "options": [
+        ["expanded", "Expanded — all default to expanded"],
+        ["list", "List — collapse all except for one"]
+      ]
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
       "name"  : "nav_global_commentsDefaultCollapsed",
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_global_commentsDefaultCollapsed")
@@ -57,6 +68,7 @@ this.manifest = {
     /*
      * Compatibility
      */
+    
     {
       "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
       "group" : "",
@@ -85,21 +97,83 @@ this.manifest = {
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_compatSgpComments")
     },
+/*
     {
       "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
       "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
       "name"  : "nav_compatSgpCache",
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_compatSgpCache")
-    }/*,
+    },
+*/
+/*
     {
       "tab"   : chrome.i18n.getMessage("options_nav_compat_label"),
       "group" : chrome.i18n.getMessage("options_nav_compatSgp_label"),
       "name"  : "nav_compatSgpUsage_desc",
       "type"  : "description",
       "text"  : chrome.i18n.getMessage("options_nav_compatSgpUsage_desc")
-    }
+    },
 */
-
-  ]
+    /*
+     * Questions
+     */
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_links_label"),
+      "name"  : "nav_links_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_links_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_faq_label"),
+      "name"  : "nav_faq_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_faq_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_problems_label"),
+      "name"  : "nav_problemsTroubleshoot_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_problemsTroubleshoot")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_problems_label"),
+      "name"  : "nav_problemsFeedback_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_problemsFeedback")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_reset_label"),
+      "name"  : "nav_resetSettings",
+      "type"  : "button",
+      "label" : chrome.i18n.getMessage("options_nav_resetSettings_label"),
+      "text"  : chrome.i18n.getMessage("options_nav_resetSettings")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_reset_label"),
+      "name"  : "nav_resetAll",
+      "type"  : "button",
+      "label" : chrome.i18n.getMessage("options_nav_resetAll_label"),
+      "text"  : chrome.i18n.getMessage("options_nav_resetAll")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
+      "group" : chrome.i18n.getMessage("options_nav_reset_label"),
+      "name"  : "nav_reset_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_reset_desc")
+    }
+  ],
+  "alignment": [
+    [
+      "nav_resetSettings",
+      "nav_resetAll"
+    ]
+  ],
 };

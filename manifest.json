@@ -11,8 +11,7 @@
 
   "browser_action": {
      "default_icon": "icons/actions/1.png",
-     "default_title": "G+me",
-     "default_popup": "popup.html"
+     "default_title": "G+me"
   },
 
   "background_page": "background.html",
