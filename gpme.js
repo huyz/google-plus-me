@@ -138,10 +138,11 @@ var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quo
 var _C_QUOTED_PHOTO             = '.sz > img';
 // Various images:
 // - Web page image: O-F-Th-la
-// - Posted image: O-F-Bj-la  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
+// - Posted image: https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+// - Posted album: O-F-Bj-la  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
 // - Main image in album: O-F-Nf-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 // - Smaller image thumbnails in album: O-F-nd-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_IMG               = '.O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
+var S_CONTENT_IMG               = '.O-F-Dl-la > img, .O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
 var _C_CONTENT_VIDEO            = '.O-F-Ja-vl';
 var _C_CONTENT_LINK             = '.O-F-Q-k';
 var _C_MAP_IMG                  = 'img.LZkmfe';
@@ -253,9 +254,9 @@ var clickWallTimeout = 300;
 // Inside both post and comment title
 //
 
-var $commentCountContainerTpl = $('<div class="gpme-comment-count-container" style="visibility:hidden">' +
-'<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span>' +
-'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>').click(onCommentCountClick);
+var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:hidden">' +
+'<span class="gpme-comment-count-bg" style="visibility:inherit"></span>' +
+'<span class="gpme-comment-count-fg" style="visibility:inherit"></span></div>').click(onCommentCountClick);
 
 //
 // Inside item title
@@ -1160,7 +1161,7 @@ function injectCSS() {
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
       hardcodeCoordsHilite($statusNode) + ' } '));
     $statusNode.addClass(C_STATUS_BG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg.' + C_GPME_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.' + C_GPME_COMMENTCOUNT_NOHILITE + ' > .gpme-comment-count-bg' + ' { ' +
       hardcodeCoordsNohilite($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
@@ -1177,7 +1178,7 @@ function injectCSS() {
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     $statusNode.addClass(C_STATUS_FG_OFF);
-    styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg.' + C_GPME_COMMENTCOUNT_NOHILITE + ' { ' +
+    styleNode.appendChild(document.createTextNode('.' + C_GPME_COMMENTCOUNT_NOHILITE + ' > .gpme-comment-count-fg' + ' { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
@@ -2357,9 +2358,9 @@ function updateCommentbar(id, $item, commentCount) {
  */
 function updateCommentCount(id, $subtree, count) {
   //debug("updateCommentCount: id=" + id + " count=" + count);
-  //
+
   var $container = $subtree.find(".gpme-comment-count-container");
-  var $countBg = $container.find(".gpme-comment-count-bg");
+  //var $countBg = $container.find(".gpme-comment-count-bg");
   var $countFg = $container.find(".gpme-comment-count-fg");
 
   // Clear any old timers we may have
@@ -2376,8 +2377,7 @@ function updateCommentCount(id, $subtree, count) {
   //    different before, which means e.g. a comment was deleted and another inserted
   if ((seenCount === null && count > 0 ) || (seenCount !== null && count != seenCount) ||
       'gpme_post_seen_comment_count_changed_' + id in localStorage) {
-    $countBg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
-    $countFg.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
     $container.css('visibility', 'visible');
 
@@ -2392,8 +2392,7 @@ function updateCommentCount(id, $subtree, count) {
       }, 200);
     }
   } else {
-    $countBg.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
-    $countFg.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $container.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
     if (count) {
       $countFg.text(count);
       $container.css('visibility', 'visible');

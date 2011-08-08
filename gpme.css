@@ -156,6 +156,12 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 .gpme-comment-count-container {
   float: right;
   color: #999;
+  height: 20px;
+}
+.gpme-comment-count-container:not(.gpme-comment-count-nohilite):hover {
+  box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7);
+  -webkit-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
+  -moz-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
 }
 
 /* Overrides injectCss(); add div just for higher specificity. */
