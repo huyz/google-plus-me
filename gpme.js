@@ -172,6 +172,7 @@ var C_FAKEINPUT_COMMENT         = 'Uk';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
+var C_MENU                      = 'yp d-L';
 var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
 var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
@@ -2844,7 +2845,7 @@ function main() {
         return;
 
       // This happens when posts' menus get inserted
-      if (e.target.className == 'a-f-i-Ia-D' || e.target.className == 'a-f-i-Ia-D d-D')
+      if (e.target.className == C_MENU)
         onItemMenuInserted(e);
       // This happens when a new post is added, either through "More"
       // or a new recent post.
