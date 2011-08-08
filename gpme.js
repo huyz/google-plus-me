@@ -6,7 +6,7 @@
 # Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-08-01
+# Updated on:       2011-08-09
 # Created on:       2011-07-11
 #
 # Installation:
@@ -1785,7 +1785,7 @@ function foldItem(interactive, $item, animated, $post) {
           // <span class="a-da-k ez Xq">Edit</span>
           if (classes[c] == '.el' || classes[c] == '.uj') {
             $snippet = $snippet.clone();
-            $snippet.children('.Pq').remove();
+            $snippet.find('.Pq').remove();
           }
           var text = $snippet.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '');
           if (text.match(/[^\s\u2022]/)) {
