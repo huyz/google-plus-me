@@ -81,11 +81,11 @@ var C_FEEDBACK                  = 'j-e-Pa';
 var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 var C_HANGOUT_LIVE_ICON         = 'x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 // C_CAMERA_ICON*
-var C_POST_CONTENT_ICON_CONTAINER = 'h-Ac';
+var C_POST_CONTENT_ICON_CONTAINER = 'h-na-xe-Ua-N'; // Use the last one; don't use the first one 'h-Ac' otherwise hovers works
 var C_CAMERA_ICON               = 'h-na-o-z';
 var C_VIDEO_ICON                = 'h-na-o-Ja';
 var C_LINK_ICON                 = 'h-na-o-k';
-var C_CHECKIN_ICON              = 'h-na-o-Jf';
+var C_CHECKIN_ICON              = 'h-na-o-Jf-N';
 
 // Pages and streams
 var C_NOTIFICATIONS_MARKER      = 't6';
@@ -261,7 +261,7 @@ var $hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
 var $cameraIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
 var $videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_VIDEO_ICON + '" style="margin: 0 4px"></span></span>');
 var $linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
-var $checkinIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
+var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
 var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
 var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
