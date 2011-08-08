@@ -78,7 +78,7 @@ var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
 var C_FEEDBACK                  = 'j-e-Pa';
 
 // Icons
-var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 var C_HANGOUT_LIVE_ICON         = 'x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 // C_CAMERA_ICON*
 var C_POST_CONTENT_ICON_CONTAINER = 'h-na-xe-Ua-N'; // Use the last one; don't use the first one 'h-Ac' otherwise hovers works
@@ -119,7 +119,7 @@ var S_PHOTO                     = '.Bu > a.xp';
 var _C_NAME                     = '.IE';
 // S_SOURCE:
 // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
-// - hangout: https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+// - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 // - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
 var S_SOURCE                    = '.tz.d-q-p';
 var _C_CONTENT                  = '.Qy';
@@ -251,7 +251,7 @@ var clickWallTimeout = 300;
 // NOTE: started using regular JS, then switched to using jQuery; no grand master plan
 // behind the dual usage.
 
-var $titleTpl = $('<div class="' + C_TITLE + '"><span class="gpme-fold-icon">\u25b6</span></div>');
+var $titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
 var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
 var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
@@ -269,22 +269,23 @@ var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
 var $commentCountContainerTpl = $('<div class="gpme-comment-count-container" style="visibility:hidden">' +
 '<span class="gpme-comment-count-bg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span>' +
-'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>');
+'<span class="gpme-comment-count-fg ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:inherit"></span></div>').click(onCommentCountClick);
 
-var titlebarTpl = document.createElement('div');
-titlebarTpl.setAttribute('class', 'gpme-titlebar');
-titlebarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div><div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div><span class="gpme-title"></span></div>';
-var $titlebarTpl = $(titlebarTpl);
-$titlebarTpl.click(onTitlebarClick);
+var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').append(
+    $('<div class="gpme-title-unfolded">\
+      <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
+      <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
+    </div>').click(onTitleClick)
+  ).append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25b6</div></div>');
 
 var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
 
 var commentbarTpl = document.createElement('div');
 commentbarTpl.setAttribute('class', 'gpme-commentbar');
-commentbarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded-bottom">\u25bc</div><span class="gpme-comments-title"><span class="gpme-fold-icon">\u25b6</span></span></div>';
+commentbarTpl.innerHTML = '<div class="' + C_FEEDBACK + '"><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div><div class="gpme-fold-icon gpme-comments-fold-icon-unfolded-bottom">\u25bc</div><span class="gpme-comments-title"><div class="gpme-fold-icon">\u25b6</div></span></div>';
 
 var $commentbarTpl = $(commentbarTpl);
-$commentbarTpl.click(onCommentbarClick);
+$commentbarTpl.click(onCommentbarClick); // Moved to snippet
 
 var postWrapperTpl = document.createElement('div');
 postWrapperTpl.className = 'gpme-post-wrapper';
@@ -431,6 +432,7 @@ function getOptionsFromBackground(callback) {
   });
 }
 
+var getMessage;
 if (DEBUG) {
   /**
    * Ask the background for all the messages
@@ -451,13 +453,13 @@ if (DEBUG) {
   /**
    * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
    */
-  function getMessage() {
+  getMessage = function(name) {
     return i18nMessages[name];
   };
 } else {
-  function getMessage(name) {
+  getMessage = function(name) {
     return chrome.i18n.getMessage(name);
-  }
+  };
 }
 
 /**
@@ -548,7 +550,7 @@ function updateCachedSgpItem($item, $titleContent) {
       $copy.children('.gpme-post-wrapper').attr('style', $item.children('.gpme-post-wrapper').attr('style'));
 
       if (typeof $titleContent != 'undefined') {
-        $copy.find('.gpme-title').empty().append($titleContent.clone(true, true)).addClass('gpme-has-content');
+        $copy.find('.gpme-title-folded').empty().append($titleContent.clone(true, true)).addClass('gpme-has-content');
       }
     }
   }
@@ -738,11 +740,19 @@ function onCommentsUpdated(e, $item) {
  * Responds to click on post titlebar.
  * Calls toggleItemFolded()
  */
-function onTitlebarClick() {
-  var $item = $(this).parent();
-  debug("onTitlebarClick: " + $item.attr('id'));
+function onTitleClick(e) {
+  var $item = $(this).closest(_C_ITEM);
+  debug("onTitleClick: " + $item.attr('id'));
 
   toggleItemFolded($item, true);
+  e.stopImmediatePropagation();
+}
+
+/**
+ * Responds to clicks on the comment count
+ */
+function onCommentCountClick(e) {
+  markCommentsAsRead($(this).closest(_C_ITEM));
 }
 
 /**
@@ -1639,7 +1649,7 @@ function foldItem(interactive, $item, animated, $post) {
   var $subtree;
 
   // If not yet done, put content in titlebar (summary)
-  var $title = $subtree = $item.find('.gpme-title');
+  var $title = $subtree = $item.find('.gpme-title-folded');
   if (! $title.hasClass('gpme-has-content')) {
     $title.addClass('gpme-has-content');
 
@@ -1650,8 +1660,8 @@ function foldItem(interactive, $item, animated, $post) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
     } else {
-      var $clonedTitle = $subtree = $titleTpl.clone();
-      var $sender = $titleSenderTpl.clone();
+      var $clonedTitle = $titleTpl.clone(true);
+      var $sender = $titleSenderTpl.clone().click(onTitleClick);
       $clonedTitle.append($sender);
       var $clonedTitleName = $srcTitle.find(_C_NAME).clone();
       $sender.append($clonedTitleName);
@@ -1670,6 +1680,7 @@ function foldItem(interactive, $item, animated, $post) {
         else if ($source.text() == 'Mobile')
           $clonedTitle.append($mobileIconTpl.clone());
         else if ($source.text() == 'Hangout')
+          // FIXME: haven't checked what happens when hangout ends
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
@@ -1754,7 +1765,7 @@ function foldItem(interactive, $item, animated, $post) {
           if (text.match(/[^\s\u2022]/)) {
             if (classes[c] == '.cz > .Ar') {
               // TODO: test in multiple languages (English, Spanish, Chinese ok)
-              text = text.replace(/.*(\d+)/, '$1');
+              text = text.replace(/.*?(\d+)/, '$1');
             }
             $snippet = $titleSnippetTpl.clone();
             $snippet.text(htmlDecode(text.substring(0, 100))); // We have to call() to avoid XSS
@@ -1763,28 +1774,23 @@ function foldItem(interactive, $item, animated, $post) {
           }
         }
 
-        if (canHaveComments)
-          // Add comment-count container
-          $clonedTitle.prepend($commentCountContainerTpl.clone());
-
         // If any, move "- Muted" to right after date and before the " - "
         $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
-
-        // Stop propagation of click from the name
-        // NOTE: done here coz it can't be done on a detached node.
-        $clonedTitle.find('a').click(function(e) {
-          e.stopPropagation();
-        });
 
         // Inject the summary title
         $title.append($clonedTitle);
         if (isSgpPost && interactive)
           updateCachedSgpItem($item, $clonedTitle);
 
-        // Stop propagation of click from the name
+        // Add comment-count container
+        // NOTE: this must be done after injecting the title
+        if (canHaveComments)
+          $clonedTitle.before($commentCountContainerTpl.clone(true));
+
+        // Stop propagation of click so that clicking the name won't do anything
         // NOTE: done here coz it can't be done on a detached node.
         $clonedTitle.find('a').click(function(e) {
-          e.stopPropagation();
+          e.stopImmediatePropagation();
         });
 
         // Insert timestamp if applicable and if possible
@@ -2250,7 +2256,7 @@ function foldComments(interactive, $item, $comments) {
     $title.prepend($commentSnippetTpl.clone());
 
     // Add comment-count container
-    $title.prepend($commentCountContainerTpl.clone());
+    $title.before($commentCountContainerTpl.clone(true));
   }
 
   updateCommentbar(id, $item, commentCount);
@@ -2352,6 +2358,7 @@ function updateCommentCount(id, $subtree, count) {
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
     if (seenCount !== null && ! ('gpme_post_seen_comment_count_changed_' + id in localStorage)) {
+      // But give G+ time to quickly move comments from one section to another
       lastCommentCountUpdateTimers[id] = setTimeout(function() {
         debug("lastCommentCountUpdateTimers: setting id=" + id);
         localStorage['gpme_post_seen_comment_count_changed_' + id] = true;
@@ -2520,6 +2527,16 @@ function deleteSeenCommentCount(id) {
   // Remove the stored comment count
   localStorage.removeItem('gpme_post_seen_comment_count_' + id);
   localStorage.removeItem('gpme_post_seen_comment_count_changed_' + id);
+}
+
+/**
+ * Mark comments as read
+ */
+function markCommentsAsRead($item) {
+  var commentCount = countComments($item);
+  var id = $item.attr('id');
+  saveSeenCommentCount(id, commentCount);
+  updateCommentCount(id, $item, commentCount);
 }
 
 /****************************************************************************
