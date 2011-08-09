@@ -21,8 +21,7 @@
 *	handlerIn: showNav,  // function = onMouseOver callback (required)
 *	delayIn: 0,  // number = milliseconds delay before onMouseOver function call
 *	handlerOut: hideNav,   // function = onMouseOut callback (required)
-*	delayOut: 0,   // number = milliseconds delay before onMouseOut function call
-*	exclusiveSet:null // name of the exclusive set that these event handlers belong to
+*	delayOut: 0   // number = milliseconds delay before onMouseOut function call
 * });
 * 
 * @param  f  onMouseOver function || An object with configuration options
@@ -36,8 +35,7 @@
 			sensitivity: 7,
 			interval: 100,
 			timeoutIn: 0,
-			timeoutOut: 0,
-            exclusiveSet: null
+			timeoutOut: 0
 		};
         // Backwards-compatibility of options
         if (! g) {

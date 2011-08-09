@@ -232,15 +232,6 @@ var GAP_ABOVE_ITEM_AT_TOP = 2;
 var GAP_ABOVE_PREVIEW = 7;
 var SLACK_BELOW_PREVIEW  = 77; // Needed to prevent G+ from jumping page when user adds comment
 
-// For instant previews, hoverIntent
-var hoverIntentConfig = {    
-  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
-  delayIn: 400, // number = milliseconds delay before onMouseOver
-  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
-  delayOut: 350, // number = milliseconds delay before onMouseOut    
-  exclusiveSet: null // name of exclusiveSet to which the target belongs
-};
-
 // Duration of clickwall.
 // NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
 // the preview will go away.
@@ -284,8 +275,8 @@ var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').app
     $('<div class="gpme-title-unfolded">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
-    </div>').click(onTitleClick)
-  ).append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25b6</div></div>');
+    </div>').click(onTitleClick)).
+  append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25b6</div></div>');
 
 //
 // Inside item's guts
@@ -321,14 +312,24 @@ var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
     $('<div class="gpme-comments-title-unfolded ' + C_FEEDBACK + '">\
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
-    </div>').click(onCommentTitleClick)
-  ).append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon">\u25b6</div></div>');
+    </div>').click(onCommentTitleClick)).
+  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon">\u25b6</div></div>');
 
 //
 // Inside item's comments guts
 //
 
 var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
+
+//
+// Inside item bottombar
+//
+
+var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '"></div>').append(
+    $('<div class="gpme-title-unfolded">\
+      <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25b2</div>\
+      <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25b2</div>\
+    </div>').click(onTitleClick));
 
 /****************************************************************************
  * Init
@@ -360,6 +361,10 @@ var sgpUpdateTimer = null;
 // SGPlus cached DOM
 var $sgpCachedItems = new Object();
 
+
+/**
+ * Sets the date regexps, based on the user's locale
+ */
 function initDateRegexps() {
   DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
   DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
@@ -549,7 +554,7 @@ function updateCachedSgpItem($item, $titleContent) {
       $copy.children('.gpme-post-wrapper').attr('style', $item.children('.gpme-post-wrapper').attr('style'));
 
       if (typeof $titleContent != 'undefined') {
-        $copy.find('.gpme-title-folded').empty().append($titleContent.clone(true, true)).addClass('gpme-has-content');
+        $copy.find('.gpme-title-folded').empty().append($titleContent.clone(true, true)).attr('gpme-has-content', 'true');
       }
     }
   }
@@ -1086,6 +1091,23 @@ function onResetAll() {
   });
 }
 
+/**
+ * Responds to scrolling events
+ */
+
+function onScroll(e) {
+  debug("event: scrolling");
+  // Figure out which item is at the top
+  var $body = $('body');
+  var x = $body.width() / 2;
+  var el = document.elementFromPoint(x, 0);
+  var $item = $(el).closest(_C_ITEM);
+
+  if ($item.length) {
+    console.log("Item id=" + $item.attr('id'));
+  }
+}
+
 /****************************************************************************
  * DOM enhancements & post folding according to state
  ***************************************************************************/
@@ -1335,6 +1357,9 @@ function updateItem($item, attempt) {
         }
       }
     }
+
+    // Add hover event handler
+    $item.hover(showBottomCollapseBar, hideBottomCollapseBar);
   }
 
   // Refresh fold of post
@@ -1606,9 +1631,6 @@ function foldItem(interactive, $item, animated, $post) {
   if (interactive && displayMode == 'expanded')
     localStorage.setItem("gpme_post_folded_" + id, true);
 
-  // Add hover event handler
-  $item.unbind('mouseenter mouseleave').hoverIntent(hoverIntentConfig);
-
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
@@ -1648,10 +1670,18 @@ function foldItem(interactive, $item, animated, $post) {
   // Attached or pending title summary
   var $subtree;
 
-  // If not yet done, put content in titlebar (summary)
+  // If not yet done, put hover event handler and put content in titlebar (summary)
   var $title = $subtree = $item.find('.gpme-title-folded');
-  if (! $title.hasClass('gpme-has-content')) {
-    $title.addClass('gpme-has-content');
+  if (typeof $title.attr('gpme-has-content') == 'undefined') {
+    $title.attr('gpme-has-content', 'true');
+
+    // Add hover event handler
+    $item.hoverIntent({
+      handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
+      delayIn: 400, // number = milliseconds delay before onMouseOver
+      handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
+      delayOut: 350 // number = milliseconds delay before onMouseOut    
+    });
 
     // NOTE: don't just take the first div inside post content title because
     // sometimes the hangout 'Live' icons is there
@@ -1684,8 +1714,8 @@ function foldItem(interactive, $item, animated, $post) {
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
-        else if ($source.text() == 'Photos')
-          /* no-op: we already picked out photos.  Move code into here?  */;
+        else if ($source.text() != 'Photos')
+          /* We already picked out photos.  Move code into here?  */ true;
         else // For non-English
           $clonedTitle.append($source.text());
       }
@@ -1711,7 +1741,6 @@ function foldItem(interactive, $item, animated, $post) {
             // NOTE: reverse the order coz we're floating them right
             $titleThumbnails.append($srcPhoto.clone().attr('style', ''));
             $clonedTitle.append($titleThumbnails);
-//            $clonedTitle.addClass('gpme-has-images');
           } else {
             $clonedTitle.append($cameraIconTpl.clone().css('float', 'right'));
           }
@@ -2250,8 +2279,8 @@ function foldComments(interactive, $item, $comments) {
 
   // If not yet done, put content in titlebar
   var $title = $item.find('.gpme-comments-title-folded');
-  if (! $title.hasClass('gpme-comments-has-content')) {
-    $title.addClass('gpme-comments-has-content');
+  if (typeof $title.attr('gpme-comments-has-content') == 'undefined') {
+    $title.attr('gpme-comments-has-content', 'true');
 
     // Add floating comment-count container
     $title.prepend($commentCountContainerTpl.clone(true));
@@ -2794,6 +2823,48 @@ function hideAnyPostItemPreview() {
 }
 
 /****************************************************************************
+ * Bottom collapse bar (for expanded mode)
+ ***************************************************************************/
+
+/**
+ * Show bottom collapse bar if necessary
+ */
+function showBottomCollapseBar(e) {
+  // Only enable this in expanded mode
+  if (displayMode != 'expanded')
+    return;
+
+  var $item = $(this);
+  debug("showBottomCollapseBar: item=" + $item.attr('id'));
+
+  // Only applies to unfolded items
+  if (isItemFolded($item))
+    return;
+
+  // Only show bottombar if titlebar isn't visible
+  var currentScrollTop = $('body').scrollTop();
+  var offsetY = $item.offset().top;
+  if (currentScrollTop < offsetY)
+    return;
+
+  var $bottombar = $item.children('.gpme-bottombar');
+  if (! $bottombar.length) {
+    $item.append($bottombarTpl.clone(true));
+  } else {
+    $bottombar.show();
+  }
+}
+
+function hideBottomCollapseBar(e) {
+  var $item = $(this);
+  debug("hideBottomCollapseBar: item=" + $item.attr('id'));
+
+  var $bottombar = $item.children('.gpme-bottombar');
+  if ($bottombar.length)
+    /*$bottombar.hide()*/;
+}
+
+/****************************************************************************
  * Main
  ***************************************************************************/
 
@@ -2862,6 +2933,9 @@ function main() {
       onBrowserActionClick();
     }
   });
+
+  // Listen for scrolling events
+  //$(window).scroll($.throttle(500, 50, function(e) { onScroll(e); }));
 
   injectNewFeedbackLink();
 
