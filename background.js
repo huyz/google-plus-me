@@ -29,6 +29,7 @@ var defaultSettings = {
   'nav_summaryIncludeTime': false,
   'nav_previewEnableInExpanded': false,
   'nav_previewEnableInList': true,
+  'nav_browserActionOpensNewTab': false,
 
   /*
    * Pages
@@ -135,10 +136,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendRequest(tabId, {action: 'gpmeBrowserActionClick'});
   }
 
-  chrome.tabs.getSelected(null, function(tab) {
+  chrome.tabs.getSelected(null, function(selectedTab) {
     // Check that the selected tab is Google+
-    if (GPLUS_URL_REGEXP.test(tab.url)) {
-      sendClick(tab.id);
+    if (GPLUS_URL_REGEXP.test(selectedTab.url)) {
+      sendClick(selectedTab.id);
     } else {
       chrome.tabs.getAllInWindow(null, function(tabs) {
         var found = false;
@@ -152,9 +153,15 @@ chrome.browserAction.onClicked.addListener(function(tab) {
           }
         });
 
-        // Otherwise, let's open a new G+ tab
+        // Otherwise, let's open G+
         if (! found) {
-          chrome.tabs.create({url: 'https://plus.google.com/'});
+          // Re-use existing tab
+          if (settingStore.get('nav_browserActionOpensNewTab') === false ||
+              typeof selectedTab.url == 'undefined' || selectedTab.url === null || selectedTab.url === '' ||
+              selectedTab.url == 'chrome://newtab/')
+            chrome.tabs.update(selectedTab.id, {url: 'https://plus.google.com/'});
+          else // Open a new tab
+            chrome.tabs.create({url: 'https://plus.google.com/'});
           // NOTE: can't send click because it takes a while for the page
           // to set up.  The best we could do is have the content script
           // query and ask us whether it should open the notification status

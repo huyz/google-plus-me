@@ -35,6 +35,14 @@ this.manifest = {
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_previewEnableInList")
     },
+    // Browser action
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_browserAction_label"),
+      "name"  : "nav_browserActionOpensNewTab",
+      "type"  : "checkbox",
+      "label" : chrome.i18n.getMessage("options_nav_browserActionOpensNewTab")
+    },
 
     /*
      * Pages
