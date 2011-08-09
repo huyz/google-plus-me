@@ -29,7 +29,7 @@ var defaultSettings = {
   'nav_summaryIncludeTime': false,
   'nav_previewEnableInExpanded': false,
   'nav_previewEnableInList': true,
-  'nav_browserActionClick': true,
+  'nav_browserActionOpensNewTab': false,
 
   /*
    * Pages
@@ -156,7 +156,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         // Otherwise, let's open G+
         if (! found) {
           // Re-use existing tab
-          if (settingStore.get('nav_browserActionClick') === false ||
+          if (settingStore.get('nav_browserActionOpensNewTab') === false ||
               typeof selectedTab.url == 'undefined' || selectedTab.url === null || selectedTab.url === '' ||
               selectedTab.url == 'chrome://newtab/')
             chrome.tabs.update(selectedTab.id, {url: 'https://plus.google.com/'});
