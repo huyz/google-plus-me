@@ -1,3 +1,16 @@
+/*
+ * Filename:         fancy-settings/source/settings.js
+ * More info, see:   gpme.js
+ *
+ * Web:              http://huyz.us/google-plus-me/
+ * Source:           https://github.com/huyz/google-plus-me
+ * Author:           Huy Z  http://huyz.us/
+ */
+
+// If true, won't need the 'tabs' permission
+// NOTE: Keep format the same as it is programmatically changed by package.sh
+var PARANOID = true;
+
 // Broadcast message to all Google+ tabs
 function broadcast(request, callback) {
   chrome.windows.getAll({populate: true}, function(windows) {
@@ -56,8 +69,12 @@ window.addEvent("domready", function () {
             resetSettings(settings);
         });
         settings.manifest.nav_resetAll.addEvent('action', function () {
-          if (confirm("This will reset G+me as if you're installing it for the first time.  Are you sure?"))
-            resetAll(settings);
+          if (! PARANOID) {
+            if (confirm("This will reset G+me as if you're installing it for the first time.  Are you sure?"))
+              resetAll(settings);
+          } else {
+            alert("Sorry, this function is not available in the PARANOID edition of G+me");
+          }
         });
 
     });
