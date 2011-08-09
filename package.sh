@@ -38,6 +38,7 @@ perl -pi -e '
     s/G\+me\b/G+me (PARANOID Edition)/;
     s/__MSG_extensionName__/__MSG_extensionName__ (PARANOID Edition)/;
     s/__MSG_extensionDescription__/(PARANOID Edition) __MSG_extensionDescription__/;
+    s/^,\s*"tabs"//;
   ' manifest.json
 rm -f ../google-plus-me-$version-paranoid.zip
 zip -r ../google-plus-me-$version-paranoid.zip *

@@ -33,8 +33,8 @@
 
   "permissions": [
     "http://plus.google.com/*",
-    "https://plus.google.com/*",
-    "tabs"
+    "https://plus.google.com/*"
+,   "tabs"
   ],
 
   "homepage_url": "http://huyz.us/google-plus-me/"

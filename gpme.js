@@ -611,7 +611,8 @@ function onBrowserActionClick() {
 }
 
 /**
- * Responds to changes in the history state
+ * Responds to changes in the history state.
+ * NOTE: Will not be called in PARANOID Edition
  */
 function onTabUpdated() {
   info("event: Chrome says that tab was updated");
