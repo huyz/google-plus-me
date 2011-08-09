@@ -1729,7 +1729,7 @@ function foldItem(interactive, $item, animated, $post) {
       if ($source.length) {
         // Maybe FIXME: English-only, but so far Google uses only English
         if ($source.text() == 'Google Check-ins')
-          $clonedTitle.append($checkinIconTpl.clone());
+          $sender.append($checkinIconTpl.clone());
         else if ($source.text() == 'Mobile')
           $sender.append($mobileIconTpl.clone());
         else if ($source.text() == 'Hangout')
