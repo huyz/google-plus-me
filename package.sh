@@ -33,13 +33,13 @@ zip -r ../google-plus-me-$version.zip *
 echo "== Paranoid edition =="
 perl -pi -e 's/^(var DEBUG =).*/$1 false;/' $SOURCES
 perl -pi -e 's/^(var PARANOID =).*/$1 true;/' $SOURCES
-cp -a ../../manifest.json .
+rm -rf _locales
+cp -a ../../{manifest.json,_locales} .
 perl -pi -e '
     s/G\+me\b/G+me (PARANOID Edition)/;
-    s/__MSG_extensionName__/__MSG_extensionName__ (PARANOID Edition)/;
-    s/__MSG_extensionDescription__/(PARANOID Edition) __MSG_extensionDescription__/;
     s/^,\s*"tabs"//;
   ' manifest.json
+perl -pi -e 's/("message": "G\+me for Google Plus™)"/$1 (PARANOID Edition)"/g' _locales/*/messages.json
 rm -f ../google-plus-me-$version-paranoid.zip
 zip -r ../google-plus-me-$version-paranoid.zip *
 
@@ -47,12 +47,12 @@ zip -r ../google-plus-me-$version-paranoid.zip *
 echo "== Web Store beta =="
 perl -pi -e 's/^(var DEBUG =).*/$1 true;/' $SOURCES
 perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
-cp -a ../../manifest.json .
+rm -rf _locales
+cp -a ../../{manifest.json,_locales} .
 perl -pi -e '
     s/G\+me\b/G+me (BETA)/;
-    s/__MSG_extensionName__/__MSG_extensionName__ (BETA)/;
-    s/__MSG_extensionDescription__/(BETA) __MSG_extensionDescription__/;
   ' manifest.json
+perl -pi -e 's/("message": "G\+me for Google Plus™)"/$1 (BETA)"/g' _locales/*/messages.json
 rm -f ../google-plus-me-$version-beta.zip
 zip -r ../google-plus-me-$version-beta.zip *
 
