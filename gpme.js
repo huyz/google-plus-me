@@ -325,11 +325,16 @@ var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
 // Inside item bottombar
 //
 
-var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '"></div>').append(
+var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '" style="opacity:0"></div>').append(
     $('<div class="gpme-title-unfolded">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25b2</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25b2</div>\
-    </div>').click(onTitleClick));
+    </div>')).hoverIntent({
+      handlerIn: showBottomCollapseBar,
+      delayIn: 0,
+      handlerOut: hideBottomCollapseBar,
+      delayOut: 0
+});
 
 /****************************************************************************
  * Init
@@ -1357,9 +1362,6 @@ function updateItem($item, attempt) {
         }
       }
     }
-
-    // Add hover event handler
-    $item.hover(showBottomCollapseBar, hideBottomCollapseBar);
   }
 
   // Refresh fold of post
@@ -1388,6 +1390,12 @@ function updateItem($item, attempt) {
     } else {
       unfoldItem(false, $item);
     }
+  }
+
+  // Expanded mode has a bottombar
+  if (displayMode == 'expanded') {
+    if (! $item.children('.gpme-bottombar').length)
+      $item.append($bottombarTpl.clone(true));
   }
 
   // Refresh fold of comments if visible
@@ -2834,34 +2842,35 @@ function showBottomCollapseBar(e) {
   if (displayMode != 'expanded')
     return;
 
-  var $item = $(this);
+  var $item = $(this).parent();
   debug("showBottomCollapseBar: item=" + $item.attr('id'));
 
   // Only applies to unfolded items
   if (isItemFolded($item))
     return;
 
+/*
   // Only show bottombar if titlebar isn't visible
   var currentScrollTop = $('body').scrollTop();
   var offsetY = $item.offset().top;
   if (currentScrollTop < offsetY)
     return;
+*/
 
   var $bottombar = $item.children('.gpme-bottombar');
-  if (! $bottombar.length) {
-    $item.append($bottombarTpl.clone(true));
-  } else {
-    $bottombar.show();
-  }
+  if ($bottombar.length)
+    $bottombar.addClass('gpme-hover').click(onTitleClick).animate({opacity: 1}, 50);
 }
 
 function hideBottomCollapseBar(e) {
-  var $item = $(this);
+  var $item = $(this).parent();
   debug("hideBottomCollapseBar: item=" + $item.attr('id'));
 
   var $bottombar = $item.children('.gpme-bottombar');
   if ($bottombar.length)
-    /*$bottombar.hide()*/;
+    $bottombar.animate({opacity: 0}, 50, function() {
+      $bottombar.removeClass('gpme-hover').unbind('click');
+    });
 }
 
 /****************************************************************************

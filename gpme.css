@@ -70,10 +70,12 @@
   display: none;
 }
 
-.j-e-Pa:hover /* Like Feedback button */ {
+.gpme-titlebar:hover, /* Like C_FEEDBACK */
+.gpme-commentbar:hover {
   cursor: pointer;
 }
-.j-e-Pa:hover /* Like Feedback button */ .gpme-fold-icon {
+.gpme-titlebar:hover /* Like C_FEEDBACK */ .gpme-fold-icon,
+.gpme-commentbar:hover .gpme-fold.icon {
   color: #333333;
 }
 
@@ -367,11 +369,23 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
  * Bottombar
  */
 
-.gpme-bottombar {
+div.gpme-bottombar { /* div for higher specificity */
   margin: 2px -21px -16px -21px; /* Break out of the paddings */
+  border-top: 1px solid rgba(0, 0, 0, 0.01); /* Make top edge lighter than C_FEEDBACK */
 }
+div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
+  cursor: pointer;
+}
+.gpme-folded:not(.vp) div.gpme-bottombar {
+  display: none;
+}
+
 .gpme-bottombar .gpme-title-unfolded {
   height: 12px;
+}
+.gpme-bottombar .gpme-fold-icon {
+  line-height: 20px; /* To properly place from top of parent */
+  margin-bottom: -2px; /* So that it doesn't push next post down, coz 20px > 16px */
 }
 
 /*
