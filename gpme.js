@@ -245,9 +245,15 @@ var clickWallTimeout = 300;
 // Inside both post and comment title
 //
 
-var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '" style="visibility:hidden">' +
-'<span class="gpme-comment-count-bg" style="visibility:inherit"></span>' +
-'<span class="gpme-comment-count-fg" style="visibility:inherit"></span></div>').click(onCommentCountClick);
+var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '">' +
+'<span class="gpme-comment-count-bg"></span>' +
+'<span class="gpme-comment-count-fg"></span></div>').click(onCommentCountClick);
+var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
+// NOTE: commentCount has to come before mutebutton so that it takes
+// precedence in clicking
+var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
+  append($commentCountContainerTpl).
+  append($muteButtonTpl);
 
 //
 // Inside item title
@@ -767,6 +773,14 @@ function onCommentCountClick(e) {
 }
 
 /**
+ * Responds to clicks on mute button
+ */
+function onMuteClick(e) {
+  info("onMuteClick");
+  toggleItemMuted($(this).closest(_C_ITEM));
+}
+
+/**
  * Responds to click on post titlebar.
  * Calls toggleItemFolded()
  */
@@ -846,7 +860,7 @@ function onKeydown(e) {
         toggleItemFolded($selectedItem);
       break;
     case 77: // 'm' and 'M'
-      toggleItemMuted($selectedItem, e.shiftKey);
+      toggleItemMuted($selectedItem, e.shiftKey ? 'up' : 'down');
       break;
     case 67: // 'c' and 'C'
       if (! isItemFolded($selectedItem)) {
@@ -1825,7 +1839,7 @@ function foldItem(interactive, $item, animated, $post) {
         // Add comment-count container
         // NOTE: this must be done after injecting the title
         if (canHaveComments)
-          $clonedTitle.before($commentCountContainerTpl.clone(true));
+          $clonedTitle.before($buttonAreaTpl.clone(true));
 
         // Stop propagation of click so that clicking the name won't do anything
         // NOTE: done here coz it can't be done on a detached node.
@@ -2078,9 +2092,9 @@ function scrollToTop($item) {
  * - we preserve their last fold/unfold state, so that when we unmute, it goes back to what it was.
  *   That means other fold/unfold operations have no effect on that state.
  * - the post-wrapper must be unhidden for G+'s muted div to display.
- * @param goUp: optional, tries to go up after mute instead of down
+ * @param navigate: optional, 'up' or 'down'
  */
-function toggleItemMuted($item, goUp) {
+function toggleItemMuted($item, navigate) {
   if (typeof $item === 'undefined' || $item === null)
     return;
 
@@ -2141,15 +2155,17 @@ function toggleItemMuted($item, goUp) {
 
       // Now automatically go to the next message, just like in gmail
       // This code is just like for shift-down
-      if (goUp)
-        $sibling = getPrevItem($item);
-      else
-        $sibling = getNextItem($item);
-      if ($sibling.length) {
-        navigateUnfolding($sibling, $item, ! goUp);
-      } else if (! goUp) {
-        // If we're at the bottom, trigger the more button
-        clickMoreButton();
+      if (navigate == 'up' || navigate == 'down') {
+        if (navigate == 'up')
+          $sibling = getPrevItem($item);
+        else
+          $sibling = getNextItem($item);
+        if ($sibling.length) {
+          navigateUnfolding($sibling, $item, navigate == 'down');
+        } else if (navigate == 'down') {
+          // If we're at the bottom, trigger the more button
+          clickMoreButton();
+        }
       }
     }
   }
@@ -2292,7 +2308,7 @@ function foldComments(interactive, $item, $comments) {
     $title.attr('gpme-comments-has-content', 'true');
 
     // Add floating comment-count container
-    $title.prepend($commentCountContainerTpl.clone(true));
+    $title.prepend($buttonAreaTpl.clone(true));
 
     // Insert title/snippet after the fold icon
     $title.append($commentTitleTpl.clone(true));
@@ -2393,7 +2409,7 @@ function updateCommentCount(id, $subtree, count) {
       'gpme_post_seen_comment_count_changed_' + id in localStorage) {
     $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
-    $container.css('visibility', 'visible');
+    $container.removeClass('gpme-hide');
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
@@ -2409,9 +2425,9 @@ function updateCommentCount(id, $subtree, count) {
     $container.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
     if (count) {
       $countFg.text(count);
-      $container.css('visibility', 'visible');
-    } else {
-      $container.css('visibility', 'hidden');
+      $container.removeClass('gpme-hide');
+    } else { // If 0, no need to show
+      $container.addClass('gpme-hide');
     }
   }
 }
@@ -2654,12 +2670,11 @@ function showPreview(e) {
     $post.css('left',
       '' + (430 + Math.max(0, Math.floor((document.body.clientWidth - 960) / 2))) + 'px');
 */
-    $post.css('left', '0');
     // We give slack of 10 coz otherwise you get the horizontal bar flashing on Chrome OSX.
-    // The width of the popup is reduced by 5 in CSS to leave a bit of a gap between posts and the popup so
+    // The width of the popup is reduced by 8 in CSS to leave a bit of a gap between posts and the popup so
     // that the popup triangle can nicely overlay a big commentcount.
     $post.css('right', '' +
-      -Math.min($post.outerWidth() + 5,
+      -Math.min($post.outerWidth() + 8,
         ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)) +
       'px');
     $post.css('left', 'auto');

@@ -147,37 +147,78 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 }
 
 /*
- * Comment counter
+ * Button area
  */
 
-.gpme-comment-count-container {
+.gpme-button-area {
   float: right;
-  color: #999;
-  height: 20px;
+  height: 20px; /* Must match height of gpme-comment-count-bg or get weird space */
+  width: 21px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
-.gpme-comment-count-container:not(.gpme-comment-count-nohilite):hover {
+.gpme-button-area:hover {
   box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7);
   -webkit-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
   -moz-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
 }
+.gpme-button-area:active { /* Bring in the shadow */
+  box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7);
+  -webkit-box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7); 
+  -moz-box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7); 
+}
+
+.gpme-mute-button {
+  display: none;
+}
+.gpme-button-area:hover > .gpme-mute-button {
+  display: block;
+  width: 21px;
+  height: 20px;
+  /* http://findicons.com/icon/70079/mute */
+  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/mute21.png') no-repeat;
+  background-color: #CCC;
+}
+.gpme-button-area:hover > .gpme-mute-button:active { /* Inset shadow & shift down */
+  box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
+  -webkit-box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
+  -moz-box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
+  background-position: 0 1px; 
+}
+
+
+/*
+ * Comment counter
+ */
+
+.gpme-comment-count-container.gpme-hide {
+  display: none; /* hide if no comments and no highlight */
+}
 
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-bg {
-  top: 0;
-  right: 4px; /* Must match gpme-title-folded's padding */
+  position: static; /* Override the absolute */
+
+  /* Float so that fg can overlap */
+  float: right;
+  margin-left: -21px; /* So that it doesn't push the fg to the left and keep fg from centering */
 }
 /* In commentbar this is different because of the nature of the top-margin
- * which has to be -1px for comments to overwrite that line
+ * which has to be -1px for comments to overwrite that line above comments
  */
-.gpme-comments-title-folded > div.gpme-comment-count-container > .gpme-comment-count-bg {
+.gpme-comments-title-folded div.gpme-comment-count-container > .gpme-comment-count-bg {
   top: 2px;
 }
-
 
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-fg {
   height: 21px;
   line-height: 21px;
+}
+
+/* Hides if hovered and not highlighted, to show buttons */
+.gpme-button-area:hover > .gpme-comment-count-container.gpme-comment-count-nohilite {
+  display:none
 }
 
 /*
@@ -213,10 +254,10 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 
 .gpme-folded:not(.vp) .gpme-post-wrapper {
   position: absolute;
-  left: 432px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 17 slack; overridden dynamically */
+  left: 435px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 20 slack; overridden dynamically */
   top: -20px; /* overridden dynamically */
   z-index: 10;
-  width: 326px; /* OUTDATED: 574-(31+60+32) - 137 shrinking*/
+  width: 323px; /* OUTDATED: 574-(31+60+32) - 137 shrinking*/
   padding: 6px 0 6px 8px; /* Gained (21-8)*2=26px; actually, now moved the 8px to .a-f-i-p's padding-right */
   background: white;
   outline: 1px solid #CCC;

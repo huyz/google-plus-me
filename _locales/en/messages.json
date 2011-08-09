@@ -150,6 +150,9 @@
     "message": "<h3>Do you protect my privacy?</h3>
     <p>
     Yes, you're safe. Even though the Web Store says that this extension <i>could</i> see your \"browsing history\", it does <i>not</i>. This is an open-source project whose <a href=\"http://goo.gl/BM8CG\" target=_blank>source code</a> is available for you to check. You can read <a href=\"http://goo.gl/ld00X\" target=_blank>my comments about privacy</a> and the technical reasons why the Web Store is misleading.</p>
+    <p>
+    You can also install a slightly less-featureful version of <b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID Edition)</a>.
+    </p>
     <h3>This extension slows down Google+</h3>
     <p>This is most likely because of incompatibility with other extensions. Try disabling all other Google+ extensions. Please let me know which extensions seem to interact badly with <b>G+me</b>, and I'll take a look at it.
     </p>
