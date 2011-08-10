@@ -1186,6 +1186,10 @@ function injectCSS() {
       hardcodeCoordsNohilite($statusNode) + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_BG_OFF);
+  } else {
+    // Sometimes this happens with G+ for some reason.  Happened at times when I was
+    // reloading a profile page.
+    error("injectCSS: Can't find status bg node.");
   }
 
   // Copy G+ notification status fg style because original is by ID
@@ -1203,6 +1207,10 @@ function injectCSS() {
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
       $statusNode.removeClass(C_STATUS_FG_OFF);
+  } else {
+    // Sometimes this happens with G+ for some reason.  Happened at times when I was
+    // reloading a profile page.
+    error("injectCSS: Can't find status fg node.");
   }
 
   document.getElementsByTagName('head')[0].appendChild(styleNode);
@@ -2959,7 +2967,9 @@ function main() {
   if ($status.length)
     $status.bind('DOMSubtreeModified', onStatusUpdated);
   else
-    debug("main: Can't find status node");
+    // Sometimes this happens with G+ for some reason.  Happened at times when I was
+    // reloading a profile page.
+    debug("main: Can't find status node; badges won't work.");
 
   // Listen to incoming messages from background page
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {

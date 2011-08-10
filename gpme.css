@@ -195,6 +195,22 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
   display: none; /* hide if no comments and no highlight */
 }
 
+/* Default in case injectCSS() fails:
+ * Sometimes this happens with G+ for some reason.  Happened at times when I was reloading a profile page. */
+.gpme-comment-count-bg {
+  /* Rest from #gbi1a */
+  background: url(https://ssl.gstatic.com/gb/images/h_bedf916a.png);
+  background-position: 0 -274px;
+  position: absolute;
+  right: 5px;
+  top: 3px;
+  height: 20px;
+  width: 21px;
+}
+.gpme-comment-count-nohilite > .gpme-comment-count-bg {
+  background-position: -26px -274px; /* From #gbi1a.gbid */
+}
+
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-bg {
   position: static; /* Override the absolute */
@@ -210,6 +226,21 @@ div.gpme-comment-count-container > .gpme-comment-count-bg {
   top: 2px;
 }
 
+/* Default in case injectCSS() fails:
+ * Sometimes this happens with G+ for some reason.  Happened at times when I was reloading a profile page. */
+.gpme-comment-count-fg {
+  text-align: center; /* Inherited from parent #gbgs1 */
+  /* Rest from #gbi1 */
+  color: #fff;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  position: relative;
+  width: 21px;
+}
+.gpme-comment-count-nohilite > .gpme-comment-count-fg {
+  color: #999; /* From #gbi1.gbids */
+}
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-fg {
   height: 21px;
