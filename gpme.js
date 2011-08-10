@@ -364,8 +364,11 @@ var $lastTentativeOpen = null;
 // We track what's open so that we can close it
 var $lastPreviewedItem = null;
 
-// Timers to handle G+'s G+ dynamic comment list reconstruction
+// Timers to handle G+'s dynamic comment list reconstruction
 var lastCommentCountUpdateTimers = {};
+
+// Cache the year
+var yearRegexp = new RegExp(',? *' + new Date().getFullYear());
 
 // SGPlus update timer
 var sgpUpdateTimer = null;
@@ -452,7 +455,7 @@ function isEnabledOnThisPage($subtree) {
  * FIXME: English-specific
  */
 function abbreviateDate(text) {
-  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, '$1.');
+  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, '$1.').replace(/ PM/, 'p').replace(/ AM/, 'a').replace(yearRegexp, '');
 }
 
 /**
@@ -1415,10 +1418,7 @@ function updateItem($item, attempt) {
 
   // Refresh fold of comments if visible
   if (! itemFolded && canHaveComments) {
-    if (localStorage.getItem("gpme_comments_folded_" + id))
-      foldComments(false, $item);
-    else
-      unfoldComments(false, $item);
+    refreshCommentsFold(id, $item);
   }
 
   // Start listening to updates to comments.
@@ -1961,12 +1961,8 @@ function unfoldItem(interactive, $item, animated, $post) {
   }
 
   if (canHaveComments) {
-    // Refresh fold of comments
     // NOTE: this must be done after the CSS classes are updated
-    if (localStorage.getItem("gpme_comments_folded_" + id))
-      foldComments(false, $item);
-    else
-      unfoldComments(false, $item);
+    refreshCommentsFold(id, $item);
 
     if (interactive && ! areItemCommentsFolded($item))
       deleteSeenCommentCount(id);
@@ -2229,6 +2225,23 @@ function areItemCommentsFolded($item) {
 }
 
 /**
+ * Refreshes the fold state depending on settings and saved history
+ */
+function refreshCommentsFold(id, $item) {
+  if (settings.nav_global_commentsDefaultCollapsed) {
+    if (localStorage.getItem("gpme_comments_unfolded_" + id))
+      unfoldComments(false, $item);
+    else
+      foldComments(false, $item);
+  } else {
+    if (localStorage.getItem("gpme_comments_folded_" + id))
+      foldComments(false, $item);
+    else
+      unfoldComments(false, $item);
+  }
+}
+
+/**
  * Toggle viewable state of the comments of an item.
  * This is only called as a result of a user action.
  * Calls foldComments() or unfoldComments().
@@ -2275,7 +2288,9 @@ function foldComments(interactive, $item, $comments) {
   // If result of user action
   if (interactive) {
     // Persist
-    localStorage.setItem("gpme_comments_folded_" + id, true);
+    if (! settings.nav_global_commentsDefaultCollapsed)
+      localStorage.setItem("gpme_comments_folded_" + id, true);
+    localStorage.removeItem("gpme_comments_unfolded_" + id);
 
     saveSeenCommentCount(id, commentCount);
 
@@ -2338,6 +2353,8 @@ function unfoldComments(interactive, $item, $comments) {
 
   if (interactive) {
     // Persist
+    if (settings.nav_global_commentsDefaultCollapsed)
+      localStorage.setItem("gpme_comments_unfolded_" + id, true);
     localStorage.removeItem("gpme_comments_folded_" + id);
 
     // Interactive visual changes
