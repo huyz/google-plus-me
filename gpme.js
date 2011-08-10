@@ -1702,7 +1702,6 @@ function toggleItemFoldedVariant(action, $item, animated) {
 function foldItem(options, $item, $post) {
   var interactive = options.interactive;
   var animated = options.animated; // Optional
-  var batch = options.batch; // Optional
 
   if (typeof($post) == 'undefined') {
     $post = $item.children('.gpme-post-wrapper');
@@ -1728,7 +1727,7 @@ function foldItem(options, $item, $post) {
       $item.removeClass('gpme-unfolded');
       if (interactive) {
         updateCachedSgpItem($item);
-        if (! batch)
+        if (! options.batch)
           updateContentPaneButtons();
       }
     });
@@ -1738,7 +1737,7 @@ function foldItem(options, $item, $post) {
     $item.removeClass('gpme-unfolded');
     if (interactive) {
       updateCachedSgpItem($item);
-      if (! batch)
+      if (! options.batch)
         updateContentPaneButtons();
     }
   }
@@ -1785,6 +1784,12 @@ function foldItem(options, $item, $post) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
     } else {
+      // Check if the permissions are limited
+      // Other possibilities: Public, Extended circles
+      var $perms = $srcTitle.find(_C_PERMS);
+      if ($perms.length && $perms.text() == getMessage('gplus_permsLimited'))
+        $title.addClass('gpme-perms-limited');
+
       var $clonedTitle = $titleTpl.clone(true);
       var $sender = $titleSenderTpl.clone().click(onTitleClick);
       $clonedTitle.append($sender);
@@ -1794,7 +1799,6 @@ function foldItem(options, $item, $post) {
       var $srcPhoto = $post.find(S_PHOTO);
       if ($srcPhoto.length)
         $sender.prepend($srcPhoto.clone());
-
       
       // Insert "mobile"/"check-ins" icons
       var $source = $srcTitle.find(S_SOURCE);
@@ -1989,7 +1993,6 @@ function foldItem(options, $item, $post) {
 function unfoldItem(options, $item, $post) {
   var interactive = options.interactive;
   var animated = options.animated; // Optional
-  var batch = options.batch; // Optional
 
   if (typeof($post) == 'undefined') {
     $post = $item.children('.gpme-post-wrapper');
@@ -2032,7 +2035,7 @@ function unfoldItem(options, $item, $post) {
     if (interactive)
       updateCachedSgpItem($item);
   }
-  if (interactive)
+  if (interactive && ! options.batch)
     updateContentPaneButtons();
 
   if (canHaveComments) {
@@ -3119,6 +3122,7 @@ if (DEBUG) {
    * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
    */
   getMessage = function(name) {
+    debug('getMessage: from background: ' + name);
     return i18nMessages[name];
   };
 
@@ -3137,6 +3141,7 @@ if (DEBUG) {
   }
 } else {
   getMessage = function(name) {
+    debug('getMessage: direct: ' + name);
     return chrome.i18n.getMessage(name);
   };
 

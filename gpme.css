@@ -46,11 +46,15 @@
 }
 
 /* Muted post */
+.vp { /* Matches .gpme-folded.tf.Lj */
+  border-bottom: none;
+  margin-bottom: 5px;
+}
 .vp .gpme-titlebar {
   margin: 0;
   display: none;
 }
-.vp .pE { /* Item guts for muted post */
+.vp .pg { /* Item guts for muted post */
   margin-bottom: 5px;
 }
 
@@ -68,6 +72,11 @@
 }
 .gpme-unfolded .gpme-title-folded {
   display: none;
+}
+
+/* Color fold icons depending on importance */
+.gpme-title-folded.gpme-perms-limited > .gpme-fold-icon {
+  color: #3d9400; /* color from hangout button .j-e-Da */
 }
 
 .gpme-titlebar:hover, /* Like C_FEEDBACK */

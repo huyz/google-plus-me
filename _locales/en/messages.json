@@ -21,6 +21,10 @@
     "message": "erday",
     "description": "Text that is dropped when abbreviating date text.  Used with gplus_date_long_prefix.  The text is replaced with a '.', e.g. 'Yesterday' becomes 'Yest.'"
   },
+  "gplus_permsLimited": {
+    "message": "Limited",
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
 
 
   "options_nav_general_label": {
