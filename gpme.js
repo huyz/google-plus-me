@@ -1737,7 +1737,7 @@ function foldItem(interactive, $item, animated, $post) {
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
-        else if ($source.text() != 'Photos')
+        else if ($source.text() == 'Photos')
           /* We already picked out photos.  Move code into here?  */ true;
         else // For non-English
           $clonedTitle.append($source.text());
