@@ -5,6 +5,6 @@
   },
   "gplus_permsLimited": {
     "message": "Con límites",
-    "description": "Text displayed at the top of a post for a non-public post"
+    "description": "Text displayed at the top of a post not for Public or Extended Circles"
   }
 }

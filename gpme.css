@@ -496,6 +496,7 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   opacity: 0.5;
 }
 .gpme-content-button:hover {
+  cursor: pointer;
   box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7);
   -webkit-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
   -moz-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
