@@ -97,6 +97,8 @@ var _C_STREAM                   = '.Wq';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 var _C_MORE_BUTTON              = '.Ml';
 
+var _C_CONTENT_PANE_HEADING     = '.kp';
+
 // Item
 var C_SELECTED                  = 'Lj';
 var _C_SELECTED                 = '.Lj';
@@ -341,6 +343,17 @@ var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '" style="opa
       handlerOut: hideBottomCollapseBar,
       delayOut: 0
 });
+
+//
+// Content Pane butotns
+//
+
+var $collapseAllButtonTpl = $('<span class="gpme-button-collapse-all gpme-content-button"></span>').click(foldAllItems);
+var $expandAllButtonTpl = $('<span class="gpme-button-expand-all gpme-content-button"></span>').click(unfoldAllItems);
+var $contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
+  append($('<div class="gpme-button-expand-or-collapse-all"></div>').
+    append($collapseAllButtonTpl).
+    append($expandAllButtonTpl));
 
 /****************************************************************************
  * Init
@@ -643,16 +656,13 @@ function onTabUpdated() {
  * on a profile page.
  */
 function onContentPaneUpdated(e) {
-  // We're only interested in the insertion of entire content pane
   info("event: DOMNodeInserted within onContentPaneUpdated");
 
   var $subtree = $(e.target);
-  if (isEnabledOnThisPage($subtree))
-    updateAllItems($subtree);
+  if (! isEnabledOnThisPage($subtree))
+    return;
 
-  // (Re-)create handler for insertions into the stream
-  // No longer needed: we'll just handle it in the single DOMNodeInserted event handler
-  //$stream = $(e.target).find(_C_STREAM).bind('DOMNodeInserted', onItemInserted);
+  updateAllItems($subtree);
 }
 
 /**
@@ -996,7 +1006,7 @@ function navigateUnfolding($item, $previousItem, scrollPreviousItem) {
   // In expanded mode, we want these shortcuts fold the previous item, unlike with the mouse.
   if (typeof $previousItem != 'undefined' && $previousItem !== null &&
       $previousItem.length && displayMode == 'expanded' && ! isItemMuted($previousItem))
-    foldItem(true, $previousItem);
+    foldItem({interactive: true}, $previousItem);
 
   click($item);
   toggleItemFoldedVariant('list-like-unfold', $item);
@@ -1248,7 +1258,7 @@ function refreshAllFolds() {
       var $item = $('#' + id);
       //debug("onModeOptionUpdated: last open id=" + id + " $item.length=" + $item.length);
       if ($item.length == 1) {
-        unfoldItem(false, $item);
+        unfoldItem({interactive: false}, $item);
         click($item);
       }
     }
@@ -1262,14 +1272,11 @@ function refreshAllFolds() {
 function updateAllItems($subtree) {
   //debug("updateAllItems");
   
+  // Update all items
   // Default to updating all divs in contentpane,
   // but sometimes we know which one was just inserted by
   // an Ajax refresh
-  if (typeof $subtree == 'undefined')
-    $subtree = $(_C_STREAM);
-  
-  // Update all items
-  $subtree.find(_C_ITEM).each(function(i, item) {
+  ( typeof $subtree != 'undefined' ? $subtree : $(_C_STREAM) ).find(_C_ITEM).each(function(i, item) {
     debug("updateAllItems #" + i);
     i++;
     updateItem($(item));
@@ -1279,6 +1286,9 @@ function updateAllItems($subtree) {
   // only when we know that window.location.href is correct
   if (typeof $subtree == 'undefined' && displayMode == 'list')
     unfoldLastOpenInListMode();
+
+  // Update the buttons accordingly
+  updateContentPaneButtons($subtree);
 }
 
 /**
@@ -1399,22 +1409,22 @@ function updateItem($item, attempt) {
     var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
 
     if (lastOpenId !== null && id == lastOpenId) {
-      unfoldItem(false, $item);
+      unfoldItem({interactive: false}, $item);
 
       // Record this operation because we may have to undo it once location.href is
       // known to be correct
       $lastTentativeOpen = $item;
     } else {
-      foldItem(false, $item);
+      foldItem({interactive: false}, $item);
       itemFolded = true;
     }
   } else if (displayMode == 'expanded') {
     itemFolded = localStorage.getItem("gpme_post_folded_" + id);
     // Fold if necessary
     if (itemFolded !== null) {
-      foldItem(false, $item);
+      foldItem({interactive: false}, $item);
     } else {
-      unfoldItem(false, $item);
+      unfoldItem({interactive: false}, $item);
     }
   }
 
@@ -1480,6 +1490,51 @@ function isItemFolded($item) {
 }
 
 /**
+ * Folds all items.
+ * Called after user interaction.
+ * (only makes sense in expanded mode)
+ */
+function foldAllItems() {
+  var $stream = $(_C_STREAM);
+  if (! $stream.length) {
+    error("foldAllItems: Can't find stream");
+    return;
+  }
+  
+  // Update all items
+  $stream.find(_C_ITEM).each(function(i, item) {
+    foldItem({interactive: true, batch: true, animated: false}, $(item));
+  });
+
+  updateContentPaneButtons();
+}
+
+/**
+ * Unfolds all items.
+ * Called after user interaction.
+ * (only makes sense in expanded mode)
+ */
+function unfoldAllItems() {
+  var $stream = $(_C_STREAM);
+  if (! $stream.length) {
+    error("unfoldAllItems: Can't find stream");
+    return;
+  }
+
+  if (displayMode != 'expanded') {
+    error("unfoldAllItems: can only unfold in expanded mode");
+    return;
+  }
+  
+  // Update all items
+  $stream.find(_C_ITEM).each(function(i, item) {
+    unfoldItem({interactive: true, batch: true, animated: false}, $(item));
+  });
+
+  updateContentPaneButtons();
+}
+
+/**
  * Toggle folding state of the content of an item.
  * This is only called as a result of a user action.
  * Calls setOrToggleItemFolded()
@@ -1540,7 +1595,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
           }
 
           // Fold the last opened item
-          foldItem(true, $lastItem, animated);
+          foldItem({interactive: true, animated: animated}, $lastItem);
         }
       }
     }
@@ -1561,7 +1616,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
       localStorage.removeItem('gpme_post_last_open_' + window.location.href);
     } else {
       // Unfold the selected item
-      unfoldItem(true, $item, animated, $post);
+      unfoldItem({interactive: true, animated: animated}, $item, $post);
       // Since this thread is a result of an interactive toggle, we record last open
       debug("toggleItemFolded: href=" + window.location.href);
       debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
@@ -1579,7 +1634,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
         predictedItemHeight = COLLAPSED_ITEM_HEIGHT;
 
       // Fold the selected item
-      foldItem(true, $item, animated, $post);
+      foldItem({interactive: true, animated: animated}, $item, $post);
 
       // Since this thread is a result of an interactive toggle, we delete last open
       if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
@@ -1642,10 +1697,13 @@ function toggleItemFoldedVariant(action, $item, animated) {
 
 /**
  * Fold item, and give titlebar summary content if necessary
- * @param animated: Optional
  * @param $post: Optional if you have it
  */
-function foldItem(interactive, $item, animated, $post) {
+function foldItem(options, $item, $post) {
+  var interactive = options.interactive;
+  var animated = options.animated; // Optional
+  var batch = options.batch; // Optional
+
   if (typeof($post) == 'undefined') {
     $post = $item.children('.gpme-post-wrapper');
     if ($post.length != 1) {
@@ -1668,15 +1726,21 @@ function foldItem(interactive, $item, animated, $post) {
     $post.slideUp('fast', function() {
       $item.addClass('gpme-folded');
       $item.removeClass('gpme-unfolded');
-      if (interactive)
+      if (interactive) {
         updateCachedSgpItem($item);
+        if (! batch)
+          updateContentPaneButtons();
+      }
     });
   else {
     $post.hide();
     $item.addClass('gpme-folded');
     $item.removeClass('gpme-unfolded');
-    if (interactive)
+    if (interactive) {
       updateCachedSgpItem($item);
+      if (! batch)
+        updateContentPaneButtons();
+    }
   }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
 
@@ -1920,10 +1984,13 @@ function foldItem(interactive, $item, animated, $post) {
 
 /**
  * For both list and expanded mode, unfolds the item.
- * @param animated: Optional
  * @param $post: Optional if you have it
  */
-function unfoldItem(interactive, $item, animated, $post) {
+function unfoldItem(options, $item, $post) {
+  var interactive = options.interactive;
+  var animated = options.animated; // Optional
+  var batch = options.batch; // Optional
+
   if (typeof($post) == 'undefined') {
     $post = $item.children('.gpme-post-wrapper');
     if ($post.length != 1) {
@@ -1952,21 +2019,21 @@ function unfoldItem(interactive, $item, animated, $post) {
 
   // Visual changes
   hidePostItemPreview($item);
+  // NOTE: changing of classes must be done after hidePostItemPreview()
+  $item.removeClass('gpme-folded');
+  $item.addClass('gpme-unfolded');
   if (animated) {
-    // NOTE: changing of classes must be done after hidePostItemPreview()
-    $item.removeClass('gpme-folded');
-    $item.addClass('gpme-unfolded');
     $post.slideDown('fast', function() {
       if (interactive)
         updateCachedSgpItem($item);
     });
   } else {
-    $item.removeClass('gpme-folded');
-    $item.addClass('gpme-unfolded');
     $post.show();
     if (interactive)
       updateCachedSgpItem($item);
   }
+  if (interactive)
+    updateContentPaneButtons();
 
   if (canHaveComments) {
     // NOTE: this must be done after the CSS classes are updated
@@ -1997,7 +2064,7 @@ function unfoldLastOpenInListMode() {
   // has to do with the way the DOM updates happen with G+.
   if ($lastTentativeOpen !== null && $lastTentativeOpen.attr('id') != lastOpenId) {
     //debug("unfoldLastOpenInListMode: unfolding " + $lastTentativeOpen.attr('id'));
-    foldItem(false, $lastTentativeOpen);
+    foldItem({interactive: false}, $lastTentativeOpen);
     $lastTentativeOpen = null;
   }
 
@@ -2005,7 +2072,7 @@ function unfoldLastOpenInListMode() {
     var $item = $('#' + lastOpenId);
     // We explicitly unfold in order to fold any previously opened item
     // FIXME: this favors the oldest instead of the most recent opened item
-    unfoldItem(false, $item);
+    unfoldItem({interactive: false}, $item);
     click($item);
   }
 }
@@ -2915,6 +2982,47 @@ function hideBottomCollapseBar(e) {
 }
 
 /****************************************************************************
+ * Buttons for entire page
+ ***************************************************************************/
+
+/**
+ * Updates display of buttons in the stream
+ * TODO: could use some optimization; this gets called for every
+ *   fold/unfold of each item as a response to clicking the buttons.
+ */
+function updateContentPaneButtons($subtree) {
+  debug("updateContentPaneButtons");
+  var $heading = typeof $subtree != 'undefined' ?
+    $subtree.find(_C_CONTENT_PANE_HEADING) : $(_C_CONTENT_PANE_HEADING);
+
+  if (! $heading.length) {
+    debug("updateContentPaneButtons: Can't find content pane heading");
+    return;
+  }
+
+  // Add buttons if don't already exist
+  var $buttons = $heading.siblings('.gpme-content-buttons');
+  if (! $buttons.length)
+    $buttons = $contentPaneButtonsTpl.clone(true).insertAfter($heading);
+
+  // Show buttons only in expanded mode
+  if (displayMode == 'expanded') {
+    var $expandOrCollapse = $buttons.children('.gpme-button-expand-or-collapse-all');
+    // Count how many items are unfolded
+    var unfoldedItemsCount = (typeof $subtree != 'undefined' ?
+      $subtree.find(_C_ITEM + '.gpme-unfolded') : $(_C_ITEM + '.gpme-unfolded')).length;
+    if (unfoldedItemsCount)
+      $expandOrCollapse.removeClass('gpme-select-expand-all');
+    else
+      $expandOrCollapse.addClass('gpme-select-expand-all');
+
+    $buttons.children().show();
+  } else {
+    $buttons.children().hide();
+  }
+}
+
+/****************************************************************************
  * Main
  ***************************************************************************/
 
@@ -2931,6 +3039,7 @@ function main() {
     $contentPane.bind('DOMNodeInserted', function(e) {
       // This happens when a new stream is selected
       if (e.relatedNode.parentNode == contentPane) {
+        // We're only interested in the insertion of entire content pane
         onContentPaneUpdated(e);
         return;
       }

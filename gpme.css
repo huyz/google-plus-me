@@ -472,6 +472,51 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 
 /*
+ * Content Pane buttons
+ */
+
+.gpme-content-buttons {
+  float: right;
+}
+
+.gpme-content-button {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  margin-left: 5px;
+  opacity: 0.5;
+}
+.gpme-content-button:hover {
+  box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7);
+  -webkit-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
+  -moz-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
+  opacity: 1;
+}
+.gpme-content-button:active { /* Inset shadow & shift down */
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  margin-top: 1px;
+  margin-bottom: -1px;
+  opacity: 1;
+}
+
+.gpme-button-collapse-all {
+  background: url(https://mail.google.com/mail/u/0/?ui=2&view=dim&iv=jby7jc4gx732&it=ic) no-repeat -60px -60px;
+  display: inline-block;
+}
+.gpme-button-expand-all {
+  background: url(https://mail.google.com/mail/u/0/?ui=2&view=dim&iv=jby7jc4gx732&it=ic) no-repeat -40px -60px;
+  display: none;
+}
+.gpme-button-expand-or-collapse-all.gpme-select-expand-all .gpme-button-collapse-all {
+  display: none;
+}
+.gpme-button-expand-or-collapse-all.gpme-select-expand-all .gpme-button-expand-all {
+  display: inline-block;
+}
+
+/*
  * Compatibility with other extensions
  */
 
