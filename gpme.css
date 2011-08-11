@@ -538,6 +538,9 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 
 /* List mode button */
+.gpme-button-mark-all-read {
+  display: none
+}
 .gpme-list-mode > .gpme-button-mark-all-read {
   display: inline-block;
   background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmarks16.png') no-repeat;
