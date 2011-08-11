@@ -542,8 +542,8 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   display: inline-block;
   background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmarks16.png') no-repeat;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 
 /* Expanded mode buttons */
