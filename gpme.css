@@ -523,9 +523,9 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 .gpme-content-button:hover {
   cursor: pointer;
-  box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7);
-  -webkit-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
-  -moz-box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.7); 
+  box-shadow: 0 0 2px 0 rgba(128, 128, 128, 0.7);
+  -webkit-box-shadow: 0 0 2px 0 rgba(128, 128, 128, 0.7); 
+  -moz-box-shadow: 0 0 2px 0 rgba(128, 128, 128, 0.7); 
   opacity: 1;
 }
 .gpme-content-button:active { /* Inset shadow & shift down */
@@ -537,6 +537,26 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   opacity: 1;
 }
 
+/* List mode button */
+.gpme-list-mode > .gpme-button-mark-all-read {
+  display: inline-block;
+  background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmarks16.png') no-repeat;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+/* Expanded mode buttons */
+.gpme-button-expand-or-collapse-all {
+  display: none;
+}
+.gpme-expanded-mode > .gpme-button-expand-or-collapse-all {
+  display: block;
+}
+.gpme-button-expand-all {
+  background: url(https://mail.google.com/mail/u/0/?ui=2&view=dim&iv=jby7jc4gx732&it=ic) no-repeat -40px -60px;
+  display: none;
+}
 .gpme-button-collapse-all {
   background: url(https://mail.google.com/mail/u/0/?ui=2&view=dim&iv=jby7jc4gx732&it=ic) no-repeat -60px -60px;
   display: inline-block;

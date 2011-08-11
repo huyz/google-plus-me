@@ -101,6 +101,7 @@ var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 var _C_MORE_BUTTON              = '.Ml';
 
 var _C_CONTENT_PANE_HEADING     = '.kp';
+var _C_PROFILE_HEADING          = '.fn';
 
 // Item
 var C_SELECTED                  = 'Lj';
@@ -376,7 +377,9 @@ var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '" style="opa
 
 var $collapseAllButtonTpl = $('<span class="gpme-button-collapse-all gpme-content-button"></span>').click(foldAllItems);
 var $expandAllButtonTpl = $('<span class="gpme-button-expand-all gpme-content-button"></span>').click(unfoldAllItems);
+var $markAllReadButtonTpl = $('<span class="gpme-button-mark-all-read gpme-content-button"></span>').click(markAllItemsAsRead);
 var $contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
+  append($markAllReadButtonTpl).
   append($('<div class="gpme-button-expand-or-collapse-all"></div>').
     append($collapseAllButtonTpl).
     append($expandAllButtonTpl));
@@ -581,6 +584,21 @@ function foreachCommentContainer($subtree, callback) {
     var $container = $subtree.find(i);
     if ($container.length)
       callback($container);
+  });
+}
+
+/**
+ * Iterates through all the posts and calls the callback
+ */
+function foreachItem(callback) {
+  var $stream = $(_C_STREAM);
+  if (! $stream.length) {
+    error("forEachItem: Can't find stream");
+    return;
+  }
+  
+  $stream.find(_C_ITEM).each(function(i, item) {
+    callback($(item));
   });
 }
 
@@ -1633,15 +1651,8 @@ function isItemFolded($item) {
  * (only makes sense in expanded mode)
  */
 function foldAllItems() {
-  var $stream = $(_C_STREAM);
-  if (! $stream.length) {
-    error("foldAllItems: Can't find stream");
-    return;
-  }
-  
-  // Update all items
-  $stream.find(_C_ITEM).each(function(i, item) {
-    foldItem({interactive: true, batch: true, animated: false}, $(item));
+  foreachItem(function($item) {
+    foldItem({interactive: true, batch: true, animated: false}, $item);
   });
 
   updateContentPaneButtons();
@@ -1653,20 +1664,13 @@ function foldAllItems() {
  * (only makes sense in expanded mode)
  */
 function unfoldAllItems() {
-  var $stream = $(_C_STREAM);
-  if (! $stream.length) {
-    error("unfoldAllItems: Can't find stream");
-    return;
-  }
-
   if (displayMode != 'expanded') {
     error("unfoldAllItems: can only unfold in expanded mode");
     return;
   }
   
-  // Update all items
-  $stream.find(_C_ITEM).each(function(i, item) {
-    unfoldItem({interactive: true, batch: true, animated: false}, $(item));
+  foreachItem(function($item) {
+    unfoldItem({interactive: true, batch: true, animated: false}, $item);
   });
 
   updateContentPaneButtons();
@@ -2818,7 +2822,7 @@ function countShownComments($subtree) {
  */
 function saveSeenCommentCount(id, commentCount) {
   debug("saveSeenCommentCount: id=" + id + " saving count=" + commentCount);
-  /*
+  /* Why only if not already set?
   // Update the shown comment count, only if not already set.
   var oldCount = lsGet(LS_COMMENTS_READ_COUNT, id);
   if (oldCount === null)
@@ -2837,6 +2841,17 @@ function deleteSeenCommentCount(id) {
 }
 
 /**
+ * Mark all items as read
+ */
+function markAllItemsAsRead() {
+  foreachItem(function($item) {
+    markItemAsRead($item);
+  });
+
+  updateContentPaneButtons();
+}
+
+/**
  * Mark item as read
  */
 function markItemAsRead($item) {
@@ -2848,7 +2863,7 @@ function markItemAsRead($item) {
   $item.addClass('gpme-read');
 
   // Mark comments as read
-  deleteSeenCommentCount(id);
+  //deleteSeenCommentCount(id);
   saveSeenCommentCount(id, commentCount);
   updateCommentCount(id, $item, commentCount);
 }
@@ -3167,8 +3182,14 @@ function hideBottomCollapseBar(e) {
  */
 function updateContentPaneButtons($subtree) {
   debug("updateContentPaneButtons");
+
+  // Try for streams
   var $heading = typeof $subtree != 'undefined' ?
     $subtree.find(_C_CONTENT_PANE_HEADING) : $(_C_CONTENT_PANE_HEADING);
+  // Try for profile
+  if (! $heading.length)
+    $heading = typeof $subtree != 'undefined' ?
+      $subtree.find(_C_PROFILE_HEADING) : $(_C_PROFILE_HEADING);
 
   if (! $heading.length) {
     debug("updateContentPaneButtons: Can't find content pane heading");
@@ -3180,20 +3201,21 @@ function updateContentPaneButtons($subtree) {
   if (! $buttons.length)
     $buttons = $contentPaneButtonsTpl.clone(true).insertAfter($heading);
 
-  // Show buttons only in expanded mode
+  // Show buttons for expanded mode
   if (displayMode == 'expanded') {
-    var $expandOrCollapse = $buttons.children('.gpme-button-expand-or-collapse-all');
+    $buttons.addClass('gpme-expanded-mode');
+    $buttons.removeClass('gpme-list-mode');
     // Count how many items are unfolded
     var unfoldedItemsCount = (typeof $subtree != 'undefined' ?
       $subtree.find(_C_ITEM + '.gpme-unfolded') : $(_C_ITEM + '.gpme-unfolded')).length;
+    var $expandOrCollapse = $buttons.children('.gpme-button-expand-or-collapse-all');
     if (unfoldedItemsCount)
       $expandOrCollapse.removeClass('gpme-select-expand-all');
     else
       $expandOrCollapse.addClass('gpme-select-expand-all');
-
-    $buttons.children().show();
   } else {
-    $buttons.children().hide();
+    $buttons.addClass('gpme-list-mode');
+    $buttons.removeClass('gpme-expanded-mode');
   }
 }
 
