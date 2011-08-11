@@ -4,6 +4,7 @@ var MESSAGE_NAMES = [
   "gplus_dateEdited",
   "gplus_dateLongPrefix",
   "gplus_dateLongSuffix",
+  "gplus_dateLongSuffixReplacement",
   "gplus_permsLimited",
   "options_nav_general_label",
   "options_nav_summary_label",

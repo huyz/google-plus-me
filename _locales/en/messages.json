@@ -15,11 +15,15 @@
   },
   "gplus_dateLongPrefix": {
     "message": "Yest",
-    "description": "Text that needs to be preserved when abbreviating date text.  Used with gplus_date_long_suffix.  A '.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "erday",
-    "description": "Text that is dropped when abbreviating date text.  Used with gplus_date_long_prefix.  The text is replaced with a '.', e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that is dropped when abbreviating date text.  Use with gplus_dateLongPrefix and gplus_dateLongSuffixReplacement."
+  },
+  "gplus_dateLongSuffixReplacement": {
+    "message": ".",
+    "description": "Text that replaces the dropped part when abbreviating date text.  Used with gplus_dateLongPrefix and gplus_dateLongSuffix."
   },
   "gplus_permsLimited": {
     "message": "Limited",
@@ -76,7 +80,15 @@
   },
   "options_nav_global_postsDefaultMode": {
     "message": "Collapse mode for posts:",
-    "description": "Text before the popupButton.  Don't remove the colon ':' at the end."
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Expanded — all default to expanded",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "List — collapse all except for one",
+    "description": "Text after one of the options for collapsed mode for posts."
   },
   "options_nav_global_commentsDefaultCollapsed": {
     "message": "Collapse all comments by default"
@@ -89,7 +101,7 @@
   },
   "options_nav_compat_desc": {
     "message": "This page is related to compatibility with other extensions that you may have installed for Google+.<br />You can ignore these options.",
-    "description": "Name of the tab in the options page"
+    "description": "Introductory text for the Compatibility page"
   },
 
   "options_nav_compatSgp_label": {
@@ -199,7 +211,7 @@
   },
   "options_nav_resetSettings_label": {
     "message": "To return all the <b>G+me</b> options back to their defaults:",
-    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+    "description": "Text before the button that resets the options."
   },
   "options_nav_resetSettings": {
     "message": "Reset all G+me options",
@@ -215,6 +227,6 @@
   },
   "options_nav_reset_desc": {
     "message": "NOTE: These buttons have nothing to do with your Google+ data, which is always safe from this extension.",
-    "description": "Text shown on the button"
+    "description": "Footnote for the reset buttons"
   }
 }

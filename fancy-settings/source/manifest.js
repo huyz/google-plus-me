@@ -61,8 +61,8 @@ this.manifest = {
       "type"  : "radioButtons",
       "label" : chrome.i18n.getMessage("options_nav_global_postsDefaultMode"),
       "options": [
-        ["expanded", "Expanded — all default to expanded"],
-        ["list", "List — collapse all except for one"]
+        ["expanded", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_expanded")],
+        ["list", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_list")]
       ]
     },
     {

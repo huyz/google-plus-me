@@ -381,7 +381,7 @@ var $lastPreviewedItem = null;
 var lastCommentCountUpdateTimers = {};
 
 // Cache the year
-var yearRegexp = new RegExp(',? *' + new Date().getFullYear());
+var yearRegexp = new RegExp('(,? *|[/-]?| de )' + new Date().getFullYear() + '[/-]?');
 
 // SGPlus update timer
 var sgpUpdateTimer = null;
@@ -394,8 +394,9 @@ var $sgpCachedItems = new Object();
  */
 function initDateRegexps() {
   DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
-  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
-                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
+//  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
+//                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
+  DATE_LONG_REGEXP = new RegExp(RegExp.quote(getMessage('gplus_dateLongSuffix')));
 }
 
 /****************************************************************************
@@ -468,7 +469,7 @@ function isEnabledOnThisPage($subtree) {
  * FIXME: English-specific
  */
 function abbreviateDate(text) {
-  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, '$1.').replace(/ PM/, 'p').replace(/ AM/, 'a').replace(yearRegexp, '');
+  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, getMessage('gplus_dateLongSuffixReplacement')).replace(/ PM/, 'p').replace(/ AM/, 'a').replace(yearRegexp, '');
 }
 
 /**
