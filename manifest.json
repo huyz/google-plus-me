@@ -26,6 +26,7 @@
 	"jquery.hoverIntent.js",
 	"jquery.scrollintoview.js",
 	"jquery.actual.js",
+        "lscache.js",
 	"gpme.js"],
       "run_at": "document_start"
     }

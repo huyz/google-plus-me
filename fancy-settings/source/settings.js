@@ -9,7 +9,7 @@
 
 // If true, won't need the 'tabs' permission
 // NOTE: Keep format the same as it is programmatically changed by package.sh
-var PARANOID = true;
+var PARANOID = false;
 
 // Broadcast message to all Google+ tabs
 function broadcast(request, callback) {

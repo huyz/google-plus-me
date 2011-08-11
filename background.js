@@ -9,7 +9,7 @@
 
 // If true, won't need the 'tabs' permission
 // NOTE: Keep format the same as it is programmatically changed by package.sh
-var PARANOID = true;
+var PARANOID = false;
 
 /****************************************************************************
  * Constants
@@ -91,6 +91,7 @@ if (version != oldVersion) {
               chrome.tabs.executeScript(tab.id, {file: 'jquery.hoverIntent.js', allFrames: true});
               chrome.tabs.executeScript(tab.id, {file: 'jquery.scrollintoview.js', allFrames: true});
               chrome.tabs.executeScript(tab.id, {file: 'jquery.actual.js', allFrames: true});
+              chrome.tabs.executeScript(tab.id, {file: 'lscache.js', allFrames: true});
               chrome.tabs.executeScript(tab.id, {file: 'gpme.js', allFrames: true});
             }
           });

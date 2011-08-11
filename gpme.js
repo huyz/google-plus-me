@@ -45,6 +45,9 @@
 
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var DEBUG = true;
+// If true, won't need the 'tabs' permission
+// NOTE: Keep format the same as it is programmatically changed by package.sh
+var PARANOID = false;
 
 /****************************************************************************
  * Utility for constants
@@ -198,46 +201,66 @@ var DATE_JUNK_REGEXP, DATE_LONG_REGEXP; // Due to Chrome bug, defined later, aft
 var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
 // Usability Boost
-var _C_UBOOST_MUTELINK = '.mute_link';
+var _C_UBOOST_MUTELINK           = '.mute_link';
 
 // Circlestars
-var _C_CIRCLESTARS = '.circlestars';
+var _C_CIRCLESTARS               = '.circlestars';
 
 // Start G+, a.k.a. SGPlus
-var ID_SGP_POST_PREFIX = 'sgp-post-';
-var C_SGP_UPDATE = 'sgp_update';
-var C_SGP_UPDATE_FB = 'sgp_update_facebook';
-var C_SGP_UPDATE_TWITTER = 'sgp_update_twitter';
-var _C_SGP_TITLE = _C_TITLE; // Same as G+ now
-var _C_SGP_CONTENT = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
-var _C_SGP_TEXT1 = _C_CONTENT; // .Qy
-var _C_SGP_TEXT2 = '.ea-S-R';
-var S_SGP_ORIGPOST_LINK = 'span[style^="font-size"]';
-var _C_SGP_COMMENT = '.sgp_comments_wrapper';
+var ID_SGP_POST_PREFIX           = 'sgp-post-';
+var C_SGP_UPDATE                 = 'sgp_update';
+var C_SGP_UPDATE_FB              = 'sgp_update_facebook';
+var C_SGP_UPDATE_TWITTER         = 'sgp_update_twitter';
+var _C_SGP_TITLE                 = _C_TITLE; // Same as G+ now
+var _C_SGP_CONTENT               = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
+var _C_SGP_TEXT1                 = _C_CONTENT; // .Qy
+var _C_SGP_TEXT2                 = '.ea-S-R';
+var S_SGP_ORIGPOST_LINK          = 'span[style                                                                       ^= "font-size"]';
+var _C_SGP_COMMENT               = '.sgp_comments_wrapper';
 
 // Google+ Tweaks
-var _C_TWEAK_EZMNTN = '.bcGTweakEzMntn';
+var _C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
 
 // CSS values shared with our CSS file
-var TRIANGLE_HEIGHT = 30;
-var POST_WRAPPER_PADDING_TOP = 6;
-var POST_WRAPPER_PADDING_BOTTOM = 6;
-var COLLAPSED_ITEM_HEIGHT = 32; // Not sure exactly how it ends up being that.
-var MUTED_ITEM_HEIGHT = 45;
+var TRIANGLE_HEIGHT                               = 30;
+var POST_WRAPPER_PADDING_TOP                      = 6;
+var POST_WRAPPER_PADDING_BOTTOM                   = 6;
+var COLLAPSED_ITEM_HEIGHT                         = 32; // Not sure exactly how it ends up being that.
+var MUTED_ITEM_HEIGHT                             = 45;
 // Other CSS values
-var GBAR_HEIGHT = 30;
-var HEADER_BAR_HEIGHT = 60; // This changes to 45 depending on Google+ Ultimate's options
+var GBAR_HEIGHT                                   = 30;
+var HEADER_BAR_HEIGHT                             = 60; // This changes to 45 depending on Google+ Ultimate's options
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
-var ROOM_FOR_COMMENT_AREA = 70;
+var ROOM_FOR_COMMENT_AREA                         = 70;
 // Independent CSS values that affect on this file
-var GAP_ABOVE_ITEM_AT_TOP = 2;
-var GAP_ABOVE_PREVIEW = 7;
-var SLACK_BELOW_PREVIEW  = 77; // Needed to prevent G+ from jumping page when user adds comment
+var GAP_ABOVE_ITEM_AT_TOP                         = 2;
+var GAP_ABOVE_PREVIEW                             = 7;
+var SLACK_BELOW_PREVIEW                           = 77; // Needed to prevent G+ from jumping page when user adds comment
 
 // Duration of clickwall.
 // NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
 // the preview will go away.
 var clickWallTimeout = 300;
+
+// lscache key prefixes
+var LS_HISTORY_                    = 'gpme_h_';
+var LS_POST_                       = LS_HISTORY_ + 'p';
+var LS_READ                        = LS_POST_ + 'r_'; // Applies in list/expanded mode, but only useful in list
+var LS_FOLDED                      = LS_POST_ + 'f_'; // Applies in expanded mode
+var LS_COMMENTS_                   = LS_POST_ + 'c';
+var LS_COMMENTS_FOLDED             = LS_COMMENTS_ + 'f_'; // Applies by default
+var LS_COMMENTS_UNFOLDED           = LS_COMMENTS_ + 'u_'; // Applies if comments are collapsed by default
+var LS_COMMENTS_READ_COUNT         = LS_COMMENTS_ + 'rc_';
+var LS_COMMENTS_READ_COUNT_CHANGED = LS_COMMENTS_ + 'rcc_';
+var LS_URL_LIST_LAST_UNFOLDED      = LS_HISTORY_ + 'ullu_'; // Applies in list mode
+// DEPRECATED: old localStorage keys
+var OLD_KEYS = {};
+OLD_KEYS[LS_FOLDED]                 = 'gpme_post_folded_';
+OLD_KEYS[LS_COMMENTS_FOLDED]        = 'gpme_comments_folded_';
+OLD_KEYS[LS_COMMENTS_UNFOLDED]      = 'gpme_comments_unfolded_';
+OLD_KEYS[LS_COMMENTS_READ_COUNT]    = 'gpme_post_seen_comment_count_';
+OLD_KEYS[LS_COMMENTS_READ_COUNT_CHANGED] = 'gpme_post_seen_comment_count_changed_';
+OLD_KEYS[LS_URL_LIST_LAST_UNFOLDED] = 'gpme_post_last_open_';
 
 /****************************************************************************
  * Pre-created DOM elements
@@ -250,12 +273,14 @@ var clickWallTimeout = 300;
 var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '">' +
 '<span class="gpme-comment-count-bg"></span>' +
 '<span class="gpme-comment-count-fg"></span></div>').click(onCommentCountClick);
+var $markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
 var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
 // NOTE: commentCount has to come before mutebutton so that it takes
 // precedence in clicking
 var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
   append($commentCountContainerTpl).
-  append($muteButtonTpl);
+  append($muteButtonTpl).
+  append($markReadButtonTpl);
 
 //
 // Inside item title
@@ -397,6 +422,81 @@ function initDateRegexps() {
 //  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
 //                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
   DATE_LONG_REGEXP = new RegExp(RegExp.quote(getMessage('gplus_dateLongSuffix')));
+}
+
+/****************************************************************************
+ * Persistence
+ ***************************************************************************/
+
+/**
+ * Gets the specified key from lscache.
+ * This helps in the transition period from the old scheme to the new scheme
+ */
+function lsGet(type, key) {
+  var result = lscache.get(type + stripKey(type, key));
+
+  // Fallback to old data
+  if (result === null)
+    result = localStorage.getItem(OLD_KEYS[type] + key);
+
+  return result;
+}
+
+/**
+ * Sets the specified key into lscache
+ */
+function lsSet(type, key, value) {
+  lscache.set(type + stripKey(type, key), value);
+  //localStorage.setItem(OLD_KEYS[type] + key, value);
+}
+
+/**
+ * Removs the specified key from lscache
+ */
+function lsRemove(type, key) {
+  lscache.remove(type + stripKey(type, key));
+  localStorage.removeItem(OLD_KEYS[type] + key);
+}
+
+/**
+ * Strips key to essentials.
+ * 2 usages:
+ * - when called from ls*(), this takes a key and strips it based on the
+ *   lscache types that we've created.
+ * - when called with the following special types:
+ *   'url': removes the scheme and domain names
+ *   'postId': removes the 'update-'
+ *   This is meant to save space, but it's not useful yet as we don't write
+ *   out many IDs.
+ */
+function stripKey(type, key) {
+  switch(type) {
+    case 'postId':
+    case LS_READ:
+    case LS_FOLDED:
+    case LS_COMMENTS_FOLDED:
+    case LS_COMMENTS_UNFOLDED:
+    case LS_COMMENTS_READ_COUNT:
+    case LS_COMMENTS_READ_COUNT_CHANGED:
+      return key.replace(/^update-/, '');
+    case 'url':
+    case LS_URL_LIST_LAST_UNFOLDED:
+      return key.replace(/^https:\/\/plus\.google\.com/, '');
+    default:
+      return key;
+  }
+}
+
+/**
+ * Resets persisted history
+ */
+function resetHistory() {
+  for (var i = 0; i < localStorage.length; i++) {
+    var storedKey = localStorage.key(i);
+    if (storedKey.indexOf(LS_HISTORY_) === 0) {
+      localStorage.removeItem(storedKey);
+    }
+  }
 }
 
 /****************************************************************************
@@ -783,7 +883,7 @@ function onTitleClick(e) {
  */
 function onCommentCountClick(e) {
   info("onCommentCountClick");
-  markCommentsAsRead($(this).closest(_C_ITEM));
+  markItemAsRead($(this).closest(_C_ITEM));
 }
 
 /**
@@ -792,6 +892,14 @@ function onCommentCountClick(e) {
 function onMuteClick(e) {
   info("onMuteClick");
   toggleItemMuted($(this).closest(_C_ITEM));
+}
+
+/**
+ * Responds to clicks on mark-read button
+ */
+function onMarkReadClick(e) {
+  info("onMarkReadClick");
+  markItemAsRead($(this).closest(_C_ITEM));
 }
 
 /**
@@ -831,9 +939,9 @@ function onKeydown(e) {
   */
 
   // Skip all these modifiers
-  // XXX Is there a jQuery method for this?
-  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 77) && (e.ctrlKey || e.altKey || e.metaKey) ||
-      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 77) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
+  // TODO: Is there a jQuery plugin for this?
+  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 73 || e.which == 77 || e.which == 85) && (e.ctrlKey || e.altKey || e.metaKey) ||
+      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 73 && e.which != 77 && e.which != 85) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
     return;
 
   var itemHasFocus =
@@ -845,20 +953,24 @@ function onKeydown(e) {
   // or clicks on area outside of contentpane), then we go look at C_SELECTED
   var $selectedItem = itemHasFocus ? $(document.activeElement) : $(_C_SELECTED);
 
+  // Use a key code that works with a switch statement
+  var key = e.which + (e.shiftKey ? 1000 : 0);
+
   // If we still don't have a selected item, then e.g. the page must have just loaded,
   // so just pick the first item.
   if (! $selectedItem.length) {
     $selectedItem = $(_C_ITEM).filter(':first');
     if ($selectedItem.length) {
-      switch (e.which) {
+      switch (key) {
         case 80: // 'p'
         case 78: // 'n'
           click($selectedItem);
           break;
-        case 38: // shift-up
-        case 40: // shift-down
-          if (e.shiftKey)
-            navigateUnfolding($selectedItem);
+        case 1038: // shift-up
+        case 1040: // shift-down
+        case 73: // 'i'
+        case 85: // 'u'
+          navigateUnfolding($selectedItem);
           break;
         default: break;
       }
@@ -867,16 +979,24 @@ function onKeydown(e) {
   }
 
   var $sibling, $moreButton;
-  switch (e.which) {
+  switch (key) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
       if (! isItemMuted($selectedItem) && isItemFolded($selectedItem))
         toggleItemFolded($selectedItem);
       break;
-    case 77: // 'm' and 'M'
+    case 1073: // shift-I, like Gmail
+      markItemAsRead($selectedItem);
+      break;
+    case 1085: // shift-U, like Gmail
+      markItemAsUnread($selectedItem);
+      break;
+    case 77: // 'm', like Gmail
+    case 1077: // shift-M; shift for reversing direction is similar to shift-SPACE
       toggleItemMuted($selectedItem, e.shiftKey ? 'up' : 'down');
       break;
-    case 67: // 'c' and 'C'
+    case 67: // 'c'
+    case 1067: // 'C'
       if (! isItemFolded($selectedItem)) {
         // For 'C' we want to unfold comments > get more comments > get older comments
         if (e.shiftKey) {
@@ -891,7 +1011,7 @@ function onKeydown(e) {
         }
       }
       break;
-    case 79: // 'o'
+    case 79: // 'o', like Greader
       if (! isItemMuted($selectedItem)) {
         toggleItemFolded($selectedItem);
         if (! isItemFolded($selectedItem))
@@ -905,7 +1025,7 @@ function onKeydown(e) {
         togglePostExpansion($selectedItem);
       }
       break;
-    case 80: // 'p'
+    case 80: // 'p', like Greader
       hideAnyPostItemPreview();
       $sibling = getPrevItem($selectedItem);
       if ($sibling.length) {
@@ -913,7 +1033,7 @@ function onKeydown(e) {
         // NOTE: G+ already scrolls everything for us
       }
       break;
-    case 78: // 'n'
+    case 78: // 'n', like Greader
       hideAnyPostItemPreview();
       $sibling = getNextItem($selectedItem);
       if ($sibling.length) {
@@ -924,8 +1044,11 @@ function onKeydown(e) {
         clickMoreButton();
       }
       break;
-    case 38: // shift-up and up (restrict use of up only when item has focus)
-      if (e.shiftKey || itemHasFocus) {
+    //case 1032: // shift-space, like Greader
+    //case 38: // up (restrict use of up only when item has focus)
+    case 1038: // shift-up
+    case 73: // 'i', similar to what 'k' would be in Greader
+      if (key != 38 || itemHasFocus) {
         $sibling = getPrevItem($selectedItem);
         if ($sibling.length) {
           if (e.shiftKey)
@@ -936,8 +1059,11 @@ function onKeydown(e) {
         }
       }
       break;
-    case 40: // shift-down and down (restrict use of up only when item has focus)
-      if (e.shiftKey || itemHasFocus) {
+    //case 32: // space, like Greader.
+    //case 40: // down (restrict use of up only when item has focus)
+    case 1040: // shift-down
+    case 85: // 'u', similar to what 'j' would be in Greader
+      if (key != 40 || itemHasFocus) {
         $sibling = getNextItem($selectedItem);
         if ($sibling.length) {
           if (e.shiftKey)
@@ -1254,7 +1380,7 @@ function refreshAllFolds() {
 
   // If going to expanded mode, we want to unfold the last item opened in list mode
   if (displayMode == 'expanded') {
-    var id = localStorage.getItem("gpme_post_last_open_" + window.location.href);
+    var id = lsGet(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
     if (id !== null) {
       var $item = $('#' + id);
       //debug("onModeOptionUpdated: last open id=" + id + " $item.length=" + $item.length);
@@ -1404,23 +1530,33 @@ function updateItem($item, attempt) {
   // Refresh fold of post
   var itemFolded = false;
   if (displayMode == 'list') {
-    // Check if it's supposed to be unfolded
-    // NOTE: the href may be incorrect at this point if the user is clicking on a new
-    // stream link and the updates are coming in through AJAX *before* a tabUpdated event
-    var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
-
-    if (lastOpenId !== null && id == lastOpenId) {
-      unfoldItem({interactive: false}, $item);
-
-      // Record this operation because we may have to undo it once location.href is
-      // known to be correct
-      $lastTentativeOpen = $item;
-    } else {
+    // In paranoid mode, there's no way to know to re-fold the tentatively open item.
+    // So we fold everything.
+    // NOTE: unfoldLastOpenInListMode() will still work when first loading, just not
+    // during ajax navigation
+    if (PARANOID) {
       foldItem({interactive: false}, $item);
       itemFolded = true;
+    } else {
+
+      // Check if it's supposed to be unfolded
+      // NOTE: the href may be incorrect at this point if the user is clicking on a new
+      // stream link and the updates are coming in through AJAX *before* a tabUpdated event
+      var lastOpenId = lsGet(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
+
+      if (lastOpenId !== null && id == lastOpenId) {
+        unfoldItem({interactive: false}, $item);
+
+        // Record this operation because we may have to undo it once location.href is
+        // known to be correct
+        $lastTentativeOpen = $item;
+      } else {
+        foldItem({interactive: false}, $item);
+        itemFolded = true;
+      }
     }
   } else if (displayMode == 'expanded') {
-    itemFolded = localStorage.getItem("gpme_post_folded_" + id);
+    itemFolded = lsGet(LS_FOLDED, id);
     // Fold if necessary
     if (itemFolded !== null) {
       foldItem({interactive: false}, $item);
@@ -1580,7 +1716,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
   if (action == 'unfold' || action == 'list-like-unfold' || isItemFolded($item)) {
     // If in list mode, we need to fold the previous one
     if (displayMode == 'list' || action == 'list-like-unfold') {
-      lastOpenId = localStorage.getItem('gpme_post_last_open_' + window.location.href);
+      var lastOpenId = lsGet(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
       //debug("unfoldItem: last open id=" + lastOpenId);
       if (lastOpenId !== null && lastOpenId != id) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
@@ -1614,14 +1750,14 @@ function toggleItemFoldedVariant(action, $item, animated) {
     }
 
     if (isItemMuted($item)) {
-      localStorage.removeItem('gpme_post_last_open_' + window.location.href);
+      lsRemove(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
     } else {
       // Unfold the selected item
       unfoldItem({interactive: true, animated: animated}, $item, $post);
       // Since this thread is a result of an interactive toggle, we record last open
       debug("toggleItemFolded: href=" + window.location.href);
       debug("toggleItemFolded: gpme_post_last_open_" + window.location.href + "->id = " + id);
-      localStorage.setItem("gpme_post_last_open_" + window.location.href, id);
+      lsSet(LS_URL_LIST_LAST_UNFOLDED, window.location.href, id);
     }
 
   } else { // For 'toggle' action, if the item is unfolded, we fold it.
@@ -1638,8 +1774,8 @@ function toggleItemFoldedVariant(action, $item, animated) {
       foldItem({interactive: true, animated: animated}, $item, $post);
 
       // Since this thread is a result of an interactive toggle, we delete last open
-      if (localStorage.getItem("gpme_post_last_open_" + window.location.href) == id)
-        localStorage.removeItem("gpme_post_last_open_" + window.location.href);
+      if (lsGet(LS_URL_LIST_LAST_UNFOLDED, window.location.href) == id)
+        lsRemove(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
     }
   }
 
@@ -1701,6 +1837,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
  * @param $post: Optional if you have it
  */
 function foldItem(options, $item, $post) {
+  // Legacy aliases
   var interactive = options.interactive;
   var animated = options.animated; // Optional
 
@@ -1718,7 +1855,10 @@ function foldItem(options, $item, $post) {
   // Persist for expanded mode
   debug("foldItem: id=" + id);
   if (interactive && displayMode == 'expanded')
-    localStorage.setItem("gpme_post_folded_" + id, true);
+    lsSet(LS_FOLDED, id, 1);
+  // Persist for both list/expanded mode
+  if (interactive)
+    lsSet(LS_READ, id, 1);
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
@@ -1961,6 +2101,12 @@ function foldItem(options, $item, $post) {
     }
   }
 
+  // Show as read
+  if (lsGet(LS_READ, id))
+    $item.addClass('gpme-read');
+  else
+    $item.removeClass('gpme-read');
+
   /* Gonna be harder than this :)
   // If interactive, then we want to stop any playing youtube video
   // by undoing what clicking play does
@@ -1992,6 +2138,7 @@ function foldItem(options, $item, $post) {
  * @param $post: Optional if you have it
  */
 function unfoldItem(options, $item, $post) {
+  // Legacy aliases
   var interactive = options.interactive;
   var animated = options.animated; // Optional
 
@@ -2019,7 +2166,7 @@ function unfoldItem(options, $item, $post) {
 
   // Persist for expanded mode
   if (interactive && displayMode == 'expanded')
-    localStorage.removeItem("gpme_post_folded_" + id);
+    lsRemove(LS_FOLDED, id);
 
   // Visual changes
   hidePostItemPreview($item);
@@ -2056,7 +2203,7 @@ function unfoldItem(options, $item, $post) {
  */
 function unfoldLastOpenInListMode() {
   //debug("unfoldLastOpenInListMode: href=" + window.location.href);
-  var lastOpenId = localStorage.getItem("gpme_post_last_open_" + window.location.href);
+  var lastOpenId = lsGet(LS_URL_LIST_LAST_UNFOLDED,  window.location.href);
 
   // Undo any incorrectly-unfolded item
   // NOTE: lastOpenId could be null, which means this is a page that wasn't visited
@@ -2308,12 +2455,12 @@ function areItemCommentsFolded($item) {
  */
 function refreshCommentsFold(id, $item) {
   if (settings.nav_global_commentsDefaultCollapsed) {
-    if (localStorage.getItem("gpme_comments_unfolded_" + id))
+    if (lsGet(LS_COMMENTS_UNFOLDED, id))
       unfoldComments(false, $item);
     else
       foldComments(false, $item);
   } else {
-    if (localStorage.getItem("gpme_comments_folded_" + id))
+    if (lsGet(LS_COMMENTS_FOLDED, id))
       foldComments(false, $item);
     else
       unfoldComments(false, $item);
@@ -2368,8 +2515,8 @@ function foldComments(interactive, $item, $comments) {
   if (interactive) {
     // Persist
     if (! settings.nav_global_commentsDefaultCollapsed)
-      localStorage.setItem("gpme_comments_folded_" + id, true);
-    localStorage.removeItem("gpme_comments_unfolded_" + id);
+      lsSet(LS_COMMENTS_FOLDED, id, 1);
+    lsRemove(LS_COMMENTS_UNFOLDED, id);
 
     saveSeenCommentCount(id, commentCount);
 
@@ -2433,8 +2580,8 @@ function unfoldComments(interactive, $item, $comments) {
   if (interactive) {
     // Persist
     if (settings.nav_global_commentsDefaultCollapsed)
-      localStorage.setItem("gpme_comments_unfolded_" + id, true);
-    localStorage.removeItem("gpme_comments_folded_" + id);
+      lsSet(LS_COMMENTS_UNFOLDED, id, 1);
+    lsRemove(LS_COMMENTS_FOLDED, id);
 
     // Interactive visual changes
     var shownCommentCount = countShownComments($item);
@@ -2496,24 +2643,25 @@ function updateCommentCount(id, $subtree, count) {
   }
 
   // Change background of count
-  var seenCount = localStorage.getItem('gpme_post_seen_comment_count_' + id);
+  var seenCount = lsGet(LS_COMMENTS_READ_COUNT, id);
+  var seenCountChanged = false;
   // seenCount === null && count > 0 : in list mode, there is no seen count on new folded posts
   // seenCount !== null && count != seenCount : count has changed since last seen
   // 'gpme_post_seen_comment_count_changed_' + id in localStorage : count is the same but was
   //    different before, which means e.g. a comment was deleted and another inserted
   if ((seenCount === null && count > 0 ) || (seenCount !== null && count != seenCount) ||
-      'gpme_post_seen_comment_count_changed_' + id in localStorage) {
+      (seenCountChanged = lsGet(LS_COMMENTS_READ_COUNT_CHANGED, id))) {
     $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
     $container.removeClass('gpme-hide');
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
-    if (seenCount !== null && ! ('gpme_post_seen_comment_count_changed_' + id in localStorage)) {
+    if (seenCount !== null && ! seenCountChanged) {
       // But give G+ time to quickly move comments from one section to another
       lastCommentCountUpdateTimers[id] = setTimeout(function() {
         debug("lastCommentCountUpdateTimers: setting id=" + id);
-        localStorage['gpme_post_seen_comment_count_changed_' + id] = true;
+        lsSet(LS_COMMENTS_READ_COUNT_CHANGED, id, 1);
         delete lastCommentCountUpdateTimers[id];
       }, 200);
     }
@@ -2667,9 +2815,9 @@ function countShownComments($subtree) {
 function saveSeenCommentCount(id, commentCount) {
   debug("saveSeenCommentCount: id=" + id + " saving count=" + commentCount);
   // Update the shown comment count, only if not already set.
-  var oldCount = localStorage.getItem('gpme_post_seen_comment_count_' + id);
-  if (typeof(oldCount) == 'undefined' || oldCount === null)
-    localStorage.setItem('gpme_post_seen_comment_count_' + id, commentCount);
+  var oldCount = lsGet(LS_COMMENTS_READ_COUNT, id);
+  if (oldCount === null)
+    lsSet(LS_COMMENTS_READ_COUNT, id, commentCount);
 }
 
 /**
@@ -2677,19 +2825,35 @@ function saveSeenCommentCount(id, commentCount) {
  */
 function deleteSeenCommentCount(id) {
   // Remove the stored comment count
-  localStorage.removeItem('gpme_post_seen_comment_count_' + id);
-  localStorage.removeItem('gpme_post_seen_comment_count_changed_' + id);
+  lsRemove(LS_COMMENTS_READ_COUNT, id);
+  lsRemove(LS_COMMENTS_READ_COUNT_CHANGED, id);
 }
 
 /**
- * Mark comments as read
+ * Mark item as read
  */
-function markCommentsAsRead($item) {
+function markItemAsRead($item) {
   var commentCount = countComments($item);
   var id = $item.attr('id');
+
+  // Mark post as read
+  lsSet(LS_READ, id, 1);
+  $item.addClass('gpme-read');
+
+  // Mark comments as read
   deleteSeenCommentCount(id);
   saveSeenCommentCount(id, commentCount);
   updateCommentCount(id, $item, commentCount);
+}
+
+/**
+ * Mark item as unread
+ */
+function markItemAsUnread($item) {
+  var id = $item.attr('id');
+
+  lsRemove(LS_READ, id);
+  $item.removeClass('gpme-read');
 }
 
 /****************************************************************************
@@ -3110,6 +3274,9 @@ function main() {
 
     // Listen to keyboard shortcuts
     $(window).keydown(onKeydown);
+
+    // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
+    setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
   }
 }
 

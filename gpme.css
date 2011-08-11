@@ -44,6 +44,9 @@
 .gpme-titlebar {
   margin: -16px -21px 4px -21px; /* Break out of the paddings */
 }
+.gpme-enh:not(.gpme-read) .gpme-title-clickarea > * { /* Star so that even dashes get bolded, in case there is no snippet */
+  color: black;
+}
 
 /* Muted post */
 .vp { /* Matches .gpme-folded.tf.Lj */
@@ -178,17 +181,26 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 }
 
 .gpme-mute-button {
+  /* http://findicons.com/icon/70079/mute */
+  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/mute21.png') no-repeat;
+}
+.gpme-mark-read-button {
+  /* http://findicons.com/icon/267830/checkmark?id=268147 */
+  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/checkmark21.png') no-repeat;
+}
+.gpme-mute-button,
+.gpme-mark-read-button {
   display: none;
 }
-.gpme-button-area:hover > .gpme-mute-button {
+.gpme-enh.gpme-read .gpme-button-area:hover > .gpme-mute-button,
+.gpme-enh:not(.gpme-read) .gpme-button-area:hover > .gpme-mark-read-button {
   display: block;
   width: 21px;
   height: 20px;
-  /* http://findicons.com/icon/70079/mute */
-  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/mute21.png') no-repeat;
   background-color: #CCC;
 }
-.gpme-button-area:hover > .gpme-mute-button:active { /* Inset shadow & shift down */
+.gpme-button-area:hover > .gpme-mute-button:active,
+.gpme-button-area:hover > .gpme-mark-read-button:active { /* Inset shadow & shift down */
   box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
   -webkit-box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
   -moz-box-shadow: inset 0 0 3px 1px rgba(128, 128, 128, 0.5);
