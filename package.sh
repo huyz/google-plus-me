@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # huyz 2011-07-14
 # Package files for distribution as CRX and for Chrome Web Store
 
