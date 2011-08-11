@@ -885,7 +885,7 @@ function onTitleClick(e) {
   debug("onTitleClick: " + $item.attr('id'));
 
   toggleItemFolded($item, true);
-  e.stopImmediatePropagation();
+  //e.stopImmediatePropagation();
 }
 
 /**
@@ -2057,6 +2057,7 @@ function foldItem(options, $item, $post) {
         // Stop propagation of click so that clicking the name won't do anything
         // NOTE: done here coz it can't be done on a detached node.
         $clonedTitle.find('a').click(function(e) {
+          // Doesn't seem to work on the avatar or name
           e.stopImmediatePropagation();
         });
 
