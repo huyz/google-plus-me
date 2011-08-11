@@ -8,6 +8,14 @@ SOURCES="gpme.js background.js fancy-settings/source/settings.js"
 
 ### End config
 
+# Get version number from file
+version=$(sed -n 's/.*"version" *: *"\([0-9\.]*\)".*/\1/p' manifest.json)
+
+### For sanity check, give a chance to cancel
+echo -n "G+me version $version.   Ok? "
+read input
+
+
 if [ ! -d dist ]; then
   mkdir dist || exit 1
 fi
@@ -49,10 +57,10 @@ perl -pi -e 's/^(var DEBUG =).*/$1 true;/' $SOURCES
 perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
 rm -rf _locales
 cp -a ../../{manifest.json,_locales} .
-perl -pi -e '
-    s/G\+me\b/G+me (BETA)/;
-  ' manifest.json
-perl -pi -e 's/("message": "G\+me for Google Plus™)"/$1 (BETA)"/g' _locales/*/messages.json
+perl -pi -e "
+    s/G\\+me\\b/G+me v$version (BETA)/;
+  " manifest.json
+perl -pi -e "s/(\"message\": \"G\\+me for Google Plus™)\"/\$1 v$version (BETA)\"/g" _locales/*/messages.json
 rm -f ../google-plus-me-$version-beta.zip
 zip -r ../google-plus-me-$version-beta.zip *
 
