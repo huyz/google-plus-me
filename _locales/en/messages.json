@@ -15,7 +15,7 @@
   },
   "gplus_dateLongPrefix": {
     "message": "Yest",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "erday",
@@ -30,6 +30,27 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "Mark all posts as read",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Expand all posts",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Collapse all posts",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Mark this post as read",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Mute this post",
+    "description": "Tooltip that shows up when hovering over button"
+  },
 
   "options_nav_general_label": {
     "message": "Navigation",

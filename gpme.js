@@ -271,9 +271,9 @@ OLD_KEYS[LS_URL_LIST_LAST_UNFOLDED] = 'gpme_post_last_open_';
 // Inside both post and comment title
 //
 
-var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '">' +
-'<span class="gpme-comment-count-bg"></span>' +
-'<span class="gpme-comment-count-fg"></span></div>').click(onCommentCountClick);
+var $commentCountBgTpl = $('<span class="gpme-comment-count-bg"></span>');
+var $commentCountFgTpl = $('<span class="gpme-comment-count-fg"></span>');
+var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></div>').append($commentCountBgTpl).append($commentCountFgTpl).click(onCommentCountClick);
 var $markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
 var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
 // NOTE: order matters.
@@ -384,6 +384,7 @@ var $contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
     append($collapseAllButtonTpl).
     append($expandAllButtonTpl));
 
+
 /****************************************************************************
  * Init
  ***************************************************************************/
@@ -417,16 +418,6 @@ var sgpUpdateTimer = null;
 // SGPlus cached DOM
 var $sgpCachedItems = new Object();
 
-
-/**
- * Sets the date regexps, based on the user's locale
- */
-function initDateRegexps() {
-  DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
-//  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
-//                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
-  DATE_LONG_REGEXP = new RegExp(RegExp.quote(getMessage('gplus_dateLongSuffix')));
-}
 
 /****************************************************************************
  * Persistence
@@ -3223,6 +3214,79 @@ function updateContentPaneButtons($subtree) {
  * Main
  ***************************************************************************/
 
+
+/**
+ * Initial code run when document is ready.
+ * Gets data from background page and then calls main()
+ */
+$(document).ready(function() {
+  info("event: initial page load.");
+
+  injectCSS();
+  
+  // Get options and then modify the page
+  getOptionsFromBackground(function() {
+    if (DEBUG)
+      getMessagesFromBackground(main);
+    else // Get i18n messages
+      main();
+  });
+});
+
+/*
+ * Initializations that may depend on the background page
+ */
+var getMessage;
+if (DEBUG) {
+  /**
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  getMessage = function(name) {
+    debug('getMessage: from background: ' + name);
+    return i18nMessages[name];
+  };
+
+  /**
+   * Ask the background for all the messages
+   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+   */
+  function getMessagesFromBackground(callback) {
+    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
+      i18nMessages = response;
+
+      i18nInit();
+
+      callback();
+    });
+  }
+} else {
+  getMessage = function(name) {
+    debug('getMessage: direct: ' + name);
+    return chrome.i18n.getMessage(name);
+  };
+
+  i18nInit();
+}
+
+/**
+ * Initializes constants that depend on i18n messages.
+ */
+function i18nInit() {
+  // Sets the date regexps, based on the user's locale
+  DATE_JUNK_REGEXP = new RegExp('\\s*\\(' + RegExp.quote(getMessage('gplus_dateEdited')) + '.*?\\)');
+//  DATE_LONG_REGEXP = new RegExp('(' + RegExp.quote(getMessage('gplus_dateLongPrefix')) + ')' +
+//                                      RegExp.quote(getMessage('gplus_dateLongSuffix')));
+  DATE_LONG_REGEXP = new RegExp(RegExp.quote(getMessage('gplus_dateLongSuffix')));
+
+  $collapseAllButtonTpl.attr('title', getMessage('ui_posts_collapseAllButton'));
+  $expandAllButtonTpl.attr('title', getMessage('ui_posts_expandAllButton'));
+  $markAllReadButtonTpl.attr('title', getMessage('ui_posts_markAllReadButton'));
+  // Disabled because the stupid tooltips overlay the popups.
+  //$markReadButtonTpl.attr('title', getMessage('ui_posts_markReadButton'));
+  //$muteButtonTpl.attr('title', getMessage('ui_posts_muteButton'));
+}
+
+
 /**
  * Main function that's called after the document is ready and a number
  * of callbacks return from the background page
@@ -3308,59 +3372,5 @@ function main() {
     setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
   }
 }
-
-
-/*
- * Initializations that may depend on the background page
- */
-var getMessage;
-if (DEBUG) {
-  /**
-   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-   */
-  getMessage = function(name) {
-    debug('getMessage: from background: ' + name);
-    return i18nMessages[name];
-  };
-
-  /**
-   * Ask the background for all the messages
-   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-   */
-  function getMessagesFromBackground(callback) {
-    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
-      i18nMessages = response;
-
-      initDateRegexps();
-
-      callback();
-    });
-  }
-} else {
-  getMessage = function(name) {
-    debug('getMessage: direct: ' + name);
-    return chrome.i18n.getMessage(name);
-  };
-
-  initDateRegexps();
-}
-
-/**
- * Initial code run when document is ready.
- * Gets data from background page and then calls main()
- */
-$(document).ready(function() {
-  info("event: initial page load.");
-
-  injectCSS();
-  
-  // Get options and then modify the page
-  getOptionsFromBackground(function() {
-    if (DEBUG)
-      getMessagesFromBackground(main);
-    else // Get i18n messages
-      main();
-  });
-});
 
 // vim:set iskeyword+=-,36:
