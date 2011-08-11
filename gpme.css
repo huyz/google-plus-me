@@ -44,6 +44,17 @@
 .gpme-titlebar {
   margin: -16px -21px 4px -21px; /* Break out of the paddings */
 }
+/* Unread posts need to have light background */
+.gpme-folded:not(.gpme-read) .gpme-titlebar {
+  border: 1px solid rgba(0,0,0,0.2);
+  background-image: -webkit-linear-gradient(top,#fbfbfb,#f7f7f7);
+  background-image: -moz-linear-gradient(top,#fbfbfb,#f7f7f7);
+  background-image: -ms-linear-gradient(top,#fbfbfb,#f7f7f7);
+  background-image: -o-linear-gradient(top,#fbfbfb,#f7f7f7);
+  background-image: linear-gradient(top,#fbfbfb,#f7f7f7);
+}
+
+/* Unread posts need to have dark text color */
 .gpme-enh:not(.gpme-read) .gpme-title-clickarea > * { /* Star so that even dashes get bolded, in case there is no snippet */
   color: black;
 }
@@ -169,16 +180,18 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+/* No longer needed, now that red is no longer a button
 .gpme-button-area:hover {
   box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7);
   -webkit-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
   -moz-box-shadow: 0 0 5px 1px rgba(128, 128, 128, 0.7); 
 }
-.gpme-button-area:active { /* Bring in the shadow */
+.gpme-button-area:active {
   box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7);
   -webkit-box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7); 
   -moz-box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.7); 
 }
+*/
 
 .gpme-mute-button {
   /* http://findicons.com/icon/70079/mute */
@@ -192,8 +205,9 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 .gpme-mark-read-button {
   display: none;
 }
-.gpme-enh.gpme-read .gpme-button-area:hover > .gpme-mute-button,
-.gpme-enh:not(.gpme-read) .gpme-button-area:hover > .gpme-mark-read-button {
+.gpme-enh.gpme-read .gpme-button-area:not(.gpme-new-comments):hover > .gpme-mute-button,
+.gpme-enh:not(.gpme-read) .gpme-button-area:hover > .gpme-mark-read-button,
+.gpme-button-area.gpme-new-comments:hover > .gpme-mark-read-button {
   display: block;
   width: 21px;
   height: 20px;

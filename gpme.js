@@ -275,12 +275,13 @@ var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + 
 '<span class="gpme-comment-count-fg"></span></div>').click(onCommentCountClick);
 var $markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
 var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
-// NOTE: commentCount has to come before mutebutton so that it takes
-// precedence in clicking
+// NOTE: order matters.
+// - if commentCount comes before mutebutton, it takes precedence in clicking
+// - actually, we put commentCount later, now that we have the markread button
 var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
-  append($commentCountContainerTpl).
+  append($markReadButtonTpl).
   append($muteButtonTpl).
-  append($markReadButtonTpl);
+  append($commentCountContainerTpl);
 
 //
 // Inside item title
@@ -2633,8 +2634,9 @@ function updateCommentCount(id, $subtree, count) {
   //debug("updateCommentCount: id=" + id + " count=" + count);
 
   var $container = $subtree.find(".gpme-comment-count-container");
-  //var $countBg = $container.find(".gpme-comment-count-bg");
-  var $countFg = $container.find(".gpme-comment-count-fg");
+  var $buttonArea = $container.parent();
+  //var $countBg = $container.children(".gpme-comment-count-bg");
+  var $countFg = $container.children(".gpme-comment-count-fg");
 
   // Clear any old timers we may have
   if (lastCommentCountUpdateTimers.hasOwnProperty(id)) {
@@ -2654,6 +2656,7 @@ function updateCommentCount(id, $subtree, count) {
     $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $countFg.text(count - (seenCount !== null ? seenCount : 0));
     $container.removeClass('gpme-hide');
+    $buttonArea.addClass('gpme-new-comments');
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
@@ -2667,6 +2670,7 @@ function updateCommentCount(id, $subtree, count) {
     }
   } else {
     $container.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $buttonArea.removeClass('gpme-new-comments');
     if (count) {
       $countFg.text(count);
       $container.removeClass('gpme-hide');
