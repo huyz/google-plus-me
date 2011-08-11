@@ -182,11 +182,11 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 
 .gpme-mute-button {
   /* http://findicons.com/icon/70079/mute */
-  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/mute21.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/icons/mute21.png') no-repeat;
 }
 .gpme-mark-read-button {
   /* http://findicons.com/icon/267830/checkmark?id=268147 */
-  background: url('chrome-extension://ppnfjkiooepckdcibpkimmgdgjbfaini/icons/checkmark21.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmark21.png') no-repeat;
 }
 .gpme-mute-button,
 .gpme-mark-read-button {
