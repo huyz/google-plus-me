@@ -2814,10 +2814,13 @@ function countShownComments($subtree) {
  */
 function saveSeenCommentCount(id, commentCount) {
   debug("saveSeenCommentCount: id=" + id + " saving count=" + commentCount);
+  /*
   // Update the shown comment count, only if not already set.
   var oldCount = lsGet(LS_COMMENTS_READ_COUNT, id);
   if (oldCount === null)
-    lsSet(LS_COMMENTS_READ_COUNT, id, commentCount);
+  */
+  lsSet(LS_COMMENTS_READ_COUNT, id, commentCount);
+  lsRemove(LS_COMMENTS_READ_COUNT_CHANGED, id);
 }
 
 /**
