@@ -33,7 +33,7 @@
   background-image: -ms-linear-gradient(top,#f5f5f5,#f1f1f1);
   background-image: -o-linear-gradient(top,#f5f5f5,#f1f1f1);
   background-image: linear-gradient(top,#f5f5f5,#f1f1f1);
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid #DCDCDC;
   color: #444;
 }
 .gpme-bar:active {
@@ -98,7 +98,7 @@
   padding: 2px 4px 0 4px; /* Must match gpme-comment-count-bg's right */
   position: relative;
   border: 1px solid #f5f5f5; /* Overrides gpme-bar. transparent so that gpme-read doesn't shift */
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 1px solid #DCDCDC;
 }
 
 .gpme-folded .gpme-title-unfolded {
@@ -530,7 +530,7 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 
 div.gpme-bottombar { /* div for higher specificity */
   margin: 2px -21px -16px -21px; /* Break out of the paddings */
-  border-top: 1px solid rgba(0, 0, 0, 0.01); /* Make top edge lighter than C_FEEDBACK */
+  border-top: 1px solid #EFEFEF; /* Make top edge lighter than C_FEEDBACK */
 }
 div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   cursor: pointer;
