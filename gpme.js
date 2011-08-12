@@ -308,12 +308,7 @@ var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
 //  ('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
-var $titlebarFolded = $('<div class="gpme-title-folded ' + C_FEEDBACK + '"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>').hoverIntent({
-  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
-  delayIn: 400, // number = milliseconds delay before onMouseOver
-  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
-  delayOut: 350 // number = milliseconds delay before onMouseOut    
-});
+var $titlebarFolded = $('<div class="gpme-title-folded ' + C_FEEDBACK + '"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
 var $titlebarTpl = $('<div class="gpme-titlebar"></div>').append(
     $('<div class="gpme-title-unfolded ' + C_FEEDBACK + '" style="opacity: 0">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
@@ -341,6 +336,15 @@ previewTriangleSpan.style.backgroundImage = 'url(' + chrome.extension.getURL('/i
 postWrapperTpl.appendChild(clickWall);
 postWrapperTpl.appendChild(previewTriangleSpan);
 var $postWrapperTpl = $(postWrapperTpl);
+/*
+.hoverIntent({
+  handlerIn: showTopCollapseBar, // function = onMouseOver callback (REQUIRED)    
+  delayIn: 0, // number = milliseconds delay before onMouseOver
+  handlerOut: hideTopCollapseBar, // function = onMouseOut callback (REQUIRED)    
+  delayOut: 0 // number = milliseconds delay before onMouseOut    
+});
+*/
+
 
 //
 // Inside item's comments title
@@ -1519,17 +1523,9 @@ function updateItem($item, attempt) {
     var $titlebar = $titlebarTpl.clone(true);
     $titlebar.insertBefore($itemGuts.first());
 
-    // Add hover event handler when unfolded
-    $item.hoverIntent({
-      handlerIn: showTopCollapseBar, // function = onMouseOver callback (REQUIRED)    
-      delayIn: 0, // number = milliseconds delay before onMouseOver
-      handlerOut: hideTopCollapseBar, // function = onMouseOut callback (REQUIRED)    
-      delayOut: 0 // number = milliseconds delay before onMouseOut    
-    });
-
     // Insert container for post content so that we can turn it into an instant
     // preview
-    var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
+    var $wrapper = $postWrapperTpl.clone(true).insertAfter($titlebar);
     $wrapper.append($itemGuts);
 
     var $commentbar;
@@ -1564,6 +1560,16 @@ function updateItem($item, attempt) {
         }
       }
     }
+
+    // Add hover event handler
+    $item.hoverIntent({
+      handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
+      delayIn: 400, // number = milliseconds delay before onMouseOver
+      handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
+      delayOut: 350, // number = milliseconds delay before onMouseOut    
+      immediateHandlerIn: showTopCollapseBar, // G+me-specific functionality
+      immediateHandlerOut: hideTopCollapseBar // G+me-specific functionality
+    });
   }
 
   // Refresh opacity of titlebar
@@ -2943,7 +2949,7 @@ function showPreview(e) {
           settings.nav_previewEnableInList && displayMode == 'list'))
     return;
 
-  var $item = $(this).closest(_C_ITEM);
+  var $item = $(this);
   debug("showPreview: this=" + $item.attr('class'));
 
   if (!$item || ! isItemFolded($item))
@@ -3052,8 +3058,7 @@ function showPreview(e) {
     }
 
     // Only show the scrollbar when the mouse is inside
-    $post.hover(function() { $(this).addClass('gpme-hover'); disableBodyScrollbarY(); },
-                function() { $(this).removeClass('gpme-hover'); enableBodyScrollbarY(); });
+    $post.hover(showPreviewScrollbar, hidePreviewScrollbar);
 
     updateCachedSgpItem($item);
   } else {
@@ -3097,6 +3102,23 @@ function getFocusInCommentEditable($itemGuts, attempt) {
 }
 
 /**
+ * Show the preview's scrollbars and hide the body's
+ */
+function showPreviewScrollbar() {
+  $(this).closest(_C_ITEM).addClass('gpme-hover');
+  disableBodyScrollbarY();
+}
+
+/**
+ * Show the preview's scrollbars and hide the body's
+ */
+function hidePreviewScrollbar() {
+  $(this).closest(_C_ITEM).removeClass('gpme-hover');
+  enableBodyScrollbarY();
+}
+
+
+/**
  * Disable the document's scrolling so that we can freely scroll inside the preview
  */
 function disableBodyScrollbarY() {
@@ -3130,7 +3152,7 @@ function enableBodyScrollbarY() {
  * Hides the preview of the item that was moused-out
  */
 function hidePreview(e) {
-  var $item = $(this).closest(_C_ITEM);
+  var $item = $(this);
   debug("hidePreview: this=" + $item.attr('class'));
   hidePostItemPreview($item);
 }
@@ -3161,7 +3183,8 @@ function hidePostItemPreview($item) {
       $itemGuts.css('max-height', '');
     }
 
-    $post.hide().unbind('mouseenter mouseleave');
+    // Unbind to restore scrollbars
+    $post.hide().unbind('mouseenter', showPreviewScrollbar).unbind('mouseleave', hidePreviewScrollbar);
     updateCachedSgpItem($item);
   } else {
     error("showPreview: Can't find post wrapper");
@@ -3189,27 +3212,17 @@ function hideAnyPostItemPreview() {
  */
 function showTopCollapseBar(e) {
   // Only need to show in list mode or if the setting is not set
+  // NOTE: this must run even when folded; otherwise the top bar won't appear
+  // if folded and then user unfolds.
   if (displayMode != 'expanded' || settings.nav_alwaysShowCollapseBarInExpanded)
     return;
 
   var $item = $(this);
   debug("showTopCollapseBar: item=" + $item.attr('id'));
 
-  // Only applies to unfolded items
-  if (isItemFolded($item))
-    return;
-
-/*
-  // Only show bottombar if titlebar isn't visible
-  var currentScrollTop = $('body').scrollTop();
-  var offsetY = $item.offset().top;
-  if (currentScrollTop < offsetY)
-    return;
-*/
-
   var $topbar = $item.find('.gpme-title-unfolded');
   if ($topbar.length)
-    $topbar.click(onTitleClick).animate({opacity: 1}, 100);
+    $topbar.animate({opacity: 1}, 100);
 }
 
 /**
@@ -3225,9 +3238,7 @@ function hideTopCollapseBar(e) {
 
   var $topbar = $item.find('.gpme-title-unfolded');
   if ($topbar.length)
-    $topbar.animate({opacity: 0}, 100, function() {
-      $topbar.unbind('click');
-    });
+    $topbar.animate({opacity: 0}, 100);
 }
 
 /****************************************************************************
@@ -3258,6 +3269,7 @@ function showBottomCollapseBar(e) {
 */
 
   var $bottombar = $item.children('.gpme-bottombar');
+  // NOTE: We only bind click just now to avoid some inadvertent clicks
   if ($bottombar.length)
     $bottombar.addClass('gpme-hover').click(onTitleClick).animate({opacity: 1}, 100);
 }

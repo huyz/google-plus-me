@@ -1,4 +1,6 @@
 /**
+ * huyz: butchered it for g+me
+ *
 * hoverIntent is similar to jQuery's built-in "hover" function except that
 * instead of firing the onMouseOver event immediately, hoverIntent checks
 * to see if the user's mouse has slowed down (beneath the sensitivity
@@ -64,6 +66,11 @@
 			if ( ( Math.abs(pX-cX) + Math.abs(pY-cY) ) < cfg.sensitivity ) {
 				$(ob).unbind("mousemove",track);
 				ob.hoverIntent_t = setTimeout( function(){delayOver(ev, ob);} , cfg.delayIn );
+
+                // huyz 2011-08-13
+                // Call any immediateHandlerIn if applicable
+                if (cfg.immediateHandlerIn)
+                  cfg.immediateHandlerIn.call(ob, ev);
 			} else {
 				// set previous coordinates for next time
 				pX = cX; pY = cY;
@@ -116,6 +123,11 @@
 				$(ob).unbind("mousemove",track);
 				// if hoverIntent state is true, then call the mouseOut function after the specified delay
 				ob.hoverIntent_t = setTimeout( function(){delayOut(ev,ob);} , cfg.delayOut );
+
+                // huyz 2011-08-13
+                // Call any immediateHandlerOut if applicable
+                if (cfg.immediateHandlerOut)
+                  cfg.immediateHandlerOut.call(ob, ev);
 			}
 		};
 
@@ -123,3 +135,5 @@
 		return this.bind('mouseenter',handleHover).bind('mouseleave',handleHover);
 	};
 })(jQuery);
+
+// vim:set ts=4:
