@@ -627,17 +627,26 @@ function getHeaderBarHeight() {
  * Returns true if Gbar is fixed in place
  */
 function isGbarFixed() {
+  var result = false;
   // Detect fixed gbar for compatibility (with "Replies and more for Google+",
   // Usability Boost, and Google+ Ultimate)
   var $gbar = $(_ID_GBAR);
-  return $gbar.length && $gbar.parent().css('position') == 'fixed';
+  if ($gbar.length && $gbar.parent().css('position') == 'fixed') {
+    result = true;
+  } else {
+    // Detect for Google+ Tweaks
+    var styles = window.getComputedStyle($gbar.get(0));
+    if (styles.position == 'fixed')
+      result = true;
+  }
+  return result;
 }
 
 /**
  * Returns true if header bar (the part below Gbar) is fixed in place
  */
 function isHeaderBarFixed() {
-  // Detect fixed gbar for compatibility (with "Google+ Ultimate")
+  // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
   var $header = $(_C_HEADER);
   return $header.length && $header.css('position') == 'fixed';
 }

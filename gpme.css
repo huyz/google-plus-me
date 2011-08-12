@@ -584,6 +584,13 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   top: 18px;
 }
 
+#content .a-m-C-S.a-C.a-m-C-wb-Qb .a-m-K-S.a-m-K-S-Rh-wb > div:first-child > div > div.gpme-content-buttons {
+  width: auto; /* Override width: 100% */
+}
+#content .a-m-C-S.a-C.a-m-C-wb-Qb .a-m-K-S.a-m-K-S-Rh-wb > div:first-child > div:first-child {
+  width: auto; /* Override width: 100% */
+}
+
 /* Adhik */
 .gpme-folded:not(.vp) .ea-S-A /* FIXME */ {
   margin-right: 0; /* Overrides 20px */
