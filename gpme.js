@@ -13,10 +13,10 @@
 #   Like any other browser extension.
 #
 # Usage:
-#   Click on the titlebar of each shared post.
+#   See http://huyz.us/google-plus-me/
 #
 # Thanks:
-#   This extension takes some ideas from
+#   This extension originally took some ideas from
 #   https://github.com/mohamedmansour/google-plus-extension/
 #   http://code.google.com/p/buzz-plus/
 #   https://github.com/wittman/googleplusplus_hide_comments .
@@ -307,13 +307,18 @@ var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
-var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').append(
-    $('<div class="gpme-title-unfolded">\
+//  ('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
+var $titlebarFolded = $('<div class="gpme-title-folded ' + C_FEEDBACK + '"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>').hoverIntent({
+  handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
+  delayIn: 400, // number = milliseconds delay before onMouseOver
+  handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
+  delayOut: 350 // number = milliseconds delay before onMouseOut    
+});
+var $titlebarTpl = $('<div class="gpme-titlebar"></div>').append(
+    $('<div class="gpme-title-unfolded ' + C_FEEDBACK + '" style="opacity: 0">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
-    </div>').click(onTitleClick)).
-  append('<div class="gpme-title-folded"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
-//  append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
+    </div>').click(onTitleClick)).append($titlebarFolded);
 
 //
 // Inside item's guts
@@ -1514,6 +1519,14 @@ function updateItem($item, attempt) {
     var $titlebar = $titlebarTpl.clone(true);
     $titlebar.insertBefore($itemGuts.first());
 
+    // Add hover event handler when unfolded
+    $item.hoverIntent({
+      handlerIn: showTopCollapseBar, // function = onMouseOver callback (REQUIRED)    
+      delayIn: 0, // number = milliseconds delay before onMouseOver
+      handlerOut: hideTopCollapseBar, // function = onMouseOut callback (REQUIRED)    
+      delayOut: 0 // number = milliseconds delay before onMouseOut    
+    });
+
     // Insert container for post content so that we can turn it into an instant
     // preview
     var $wrapper = $postWrapperTpl.clone().insertAfter($titlebar);
@@ -1551,6 +1564,14 @@ function updateItem($item, attempt) {
         }
       }
     }
+  }
+
+  // Refresh opacity of titlebar
+  var $unfoldTitlebar = $item.find('.gpme-title-unfolded');
+  if (displayMode == 'list' || settings.nav_alwaysShowCollapseBarInExpanded) {
+    $unfoldTitlebar.css('opacity', 1);
+  } else {
+    $unfoldTitlebar.css('opacity', 0);
   }
 
   // Refresh fold of post
@@ -1922,14 +1943,6 @@ function foldItem(options, $item, $post) {
   var $title = $subtree = $item.find('.gpme-title-folded');
   if (typeof $title.attr('gpme-has-content') == 'undefined') {
     $title.attr('gpme-has-content', 'true');
-
-    // Add hover event handler
-    $item.hoverIntent({
-      handlerIn: showPreview, // function = onMouseOver callback (REQUIRED)    
-      delayIn: 400, // number = milliseconds delay before onMouseOver
-      handlerOut: hidePreview, // function = onMouseOut callback (REQUIRED)    
-      delayOut: 350 // number = milliseconds delay before onMouseOut    
-    });
 
     // NOTE: don't just take the first div inside post content title because
     // sometimes the hangout 'Live' icons is there
@@ -2925,14 +2938,13 @@ function markItemAsUnread($item) {
  * Pops up the preview of the hovered item
  */
 function showPreview(e) {
-  debug("showPreview: this=" + this.className);
-
   // Skip depending on options
   if (!( settings.nav_previewEnableInExpanded && displayMode == 'expanded' ||
           settings.nav_previewEnableInList && displayMode == 'list'))
     return;
 
-  var $item = $(this);
+  var $item = $(this).closest(_C_ITEM);
+  debug("showPreview: this=" + $item.attr('class'));
 
   if (!$item || ! isItemFolded($item))
     return;
@@ -3118,8 +3130,9 @@ function enableBodyScrollbarY() {
  * Hides the preview of the item that was moused-out
  */
 function hidePreview(e) {
-  debug("hidePreview: this=" + this.className);
-  hidePostItemPreview($(this));
+  var $item = $(this).closest(_C_ITEM);
+  debug("hidePreview: this=" + $item.attr('class'));
+  hidePostItemPreview($item);
 }
 
 /**
@@ -3168,6 +3181,56 @@ function hideAnyPostItemPreview() {
 }
 
 /****************************************************************************
+ * Top collapse bar (for expanded mode)
+ ***************************************************************************/
+
+/**
+ * Show top collapse bar if necessary
+ */
+function showTopCollapseBar(e) {
+  // Only need to show in list mode or if the setting is not set
+  if (displayMode != 'expanded' || settings.nav_alwaysShowCollapseBarInExpanded)
+    return;
+
+  var $item = $(this);
+  debug("showTopCollapseBar: item=" + $item.attr('id'));
+
+  // Only applies to unfolded items
+  if (isItemFolded($item))
+    return;
+
+/*
+  // Only show bottombar if titlebar isn't visible
+  var currentScrollTop = $('body').scrollTop();
+  var offsetY = $item.offset().top;
+  if (currentScrollTop < offsetY)
+    return;
+*/
+
+  var $topbar = $item.find('.gpme-title-unfolded');
+  if ($topbar.length)
+    $topbar.click(onTitleClick).animate({opacity: 1}, 100);
+}
+
+/**
+ * Hide top collapse bar
+ */
+function hideTopCollapseBar(e) {
+  // Only hide in list mode or if the setting is not set
+  if (displayMode != 'expanded' || settings.nav_alwaysShowCollapseBarInExpanded)
+    return;
+
+  var $item = $(this);
+  debug("hideTopCollapseBar: item=" + $item.attr('id'));
+
+  var $topbar = $item.find('.gpme-title-unfolded');
+  if ($topbar.length)
+    $topbar.animate({opacity: 0}, 100, function() {
+      $topbar.unbind('click');
+    });
+}
+
+/****************************************************************************
  * Bottom collapse bar (for expanded mode)
  ***************************************************************************/
 
@@ -3196,7 +3259,7 @@ function showBottomCollapseBar(e) {
 
   var $bottombar = $item.children('.gpme-bottombar');
   if ($bottombar.length)
-    $bottombar.addClass('gpme-hover').click(onTitleClick).animate({opacity: 1}, 50);
+    $bottombar.addClass('gpme-hover').click(onTitleClick).animate({opacity: 1}, 100);
 }
 
 function hideBottomCollapseBar(e) {
@@ -3205,7 +3268,7 @@ function hideBottomCollapseBar(e) {
 
   var $bottombar = $item.children('.gpme-bottombar');
   if ($bottombar.length)
-    $bottombar.animate({opacity: 0}, 50, function() {
+    $bottombar.animate({opacity: 0}, 100, function() {
       $bottombar.removeClass('gpme-hover').unbind('click');
     });
 }

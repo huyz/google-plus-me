@@ -57,6 +57,13 @@
     "description": "Name of the tab in the options page"
   },
 
+  "options_nav_postStyle_label": {
+    "message": "Post Style",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_alwaysShowCollapseBarInExpanded": {
+    "message": "Always display the collapse bar at the top of a post; otherwise, only when mouse hovers the post"
+  },
   "options_nav_summary_label": {
     "message": "Post Summary",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"

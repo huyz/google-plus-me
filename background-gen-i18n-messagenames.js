@@ -12,6 +12,8 @@ var MESSAGE_NAMES = [
   "ui_posts_markReadButton",
   "ui_posts_muteButton",
   "options_nav_general_label",
+  "options_nav_postStyle_label",
+  "options_nav_alwaysShowCollapseBarInExpanded",
   "options_nav_summary_label",
   "options_nav_summaryIncludeThumbnails",
   "options_nav_summaryIncludeTime",

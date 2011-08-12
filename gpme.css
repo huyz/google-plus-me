@@ -75,8 +75,7 @@
   height: 14px;
 }
 .gpme-title-folded {
-  margin-top: 2px;
-  padding: 0 4px; /* Must match gpme-comment-count-bg's right */
+  padding: 2px 4px 0 4px; /* Must match gpme-comment-count-bg's right */
   position: relative;
 }
 

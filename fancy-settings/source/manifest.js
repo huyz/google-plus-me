@@ -5,6 +5,14 @@ this.manifest = {
     /*
      * General
      */
+    // Collapse bar
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_postStyle_label"),
+      "name"  : "nav_alwaysShowCollapseBarInExpanded",
+      "type"  : "checkbox",
+      "label" : chrome.i18n.getMessage("options_nav_alwaysShowCollapseBarInExpanded")
+    },
     // Collapse summary
     {
       "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
