@@ -136,7 +136,6 @@ var _C_DATE                     = '.fl';
 var _C_EXPAND_POST              = '.Kq';
 //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
-
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
 // _C_QUOTED_PHOTO:
@@ -151,6 +150,7 @@ var _C_QUOTED_PHOTO             = '.sz > img';
 var S_CONTENT_IMG               = '.O-F-Dl-la > img, .O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
 var _C_CONTENT_VIDEO            = '.O-F-Ja-vl';
 var _C_CONTENT_LINK             = '.O-F-Q-k';
+var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
 var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
@@ -1031,6 +1031,9 @@ function onKeydown(e) {
           // NOTE: if folded, we don't want to scroll to top.
           // and toggleItemFolded already scrolls into view.
       }
+      break;
+    case 86: // 'v', a bit like GReader
+      openLinkInContent($selectedItem);
       break;
     case 1079: // shift-O
       if (! isItemMuted($selectedItem) && ! isItemFolded($selectedItem)) {
@@ -2256,9 +2259,13 @@ function getNextItem($item) {
  *   in this case, G+ actually scrolls the item without animation.
  *   And since we have to correct that scrolling, we can't animate
  *   either or it would sometimes look reversed.
+ * @param {jQuery or DOM element} elem
  */
-function click($element) {
-  var e, elem = $element.get(0);
+function click(elem) {
+  var e;
+  if (elem.jquery)
+    elem = elem.get(0);
+
   e = document.createEvent("MouseEvents");
   e.initEvent("mousedown", true, true);
   elem.dispatchEvent(e);
@@ -2447,6 +2454,22 @@ function togglePostExpansion($item) {
       click($expandLink);
     }
   }
+}
+
+/**
+ * Opens any embedded link
+ */
+function openLinkInContent($item) {
+  var urls = [];
+  var $links = $item.find(_C_CONTENT_ANY_LINK);
+  $links.each(function(i, item) {
+    var url = item.getAttribute('href');
+    // Ignore duplicates as in https://plus.google.com/103716847685048716973/posts/bKNjwdNUoRB
+    if (urls.indexOf(url) < 0) {
+      window.open(url); // Force a tab to be opened
+      urls.push(url);
+    }
+  });
 }
 
 /****************************************************************************
