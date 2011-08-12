@@ -169,6 +169,7 @@ var C_COMMENTS_MORE_CONTAINER   = 'Zk';
 var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
 var _C_COMMENTS_MORE_COUNT      = '.Ck';
 var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
+var _C_EXPAND_COMMENT           = '.Wq';
 
 var _C_SHARE_LINE               = '.Jn';
 var _C_LINK_COMMENT             = '.wf';
@@ -950,8 +951,8 @@ function onKeydown(e) {
 
   // Skip all these modifiers
   // TODO: Is there a jQuery plugin for this?
-  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 73 || e.which == 77 || e.which == 85) && (e.ctrlKey || e.altKey || e.metaKey) ||
-      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 73 && e.which != 77 && e.which != 85) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
+  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 73 || e.which == 77 || e.which == 79 || e.which == 85) && (e.ctrlKey || e.altKey || e.metaKey) ||
+      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 73 && e.which != 77 && e.which != 79 && e.which != 85) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
     return;
 
   var itemHasFocus =
@@ -1006,14 +1007,15 @@ function onKeydown(e) {
       toggleItemMuted($selectedItem, e.shiftKey ? 'up' : 'down');
       break;
     case 67: // 'c'
-    case 1067: // 'C'
+    case 1067: // shift-c
       if (! isItemFolded($selectedItem)) {
-        // For 'C' we want to unfold comments > get more comments > get older comments
+        // For shift-C we want to unfold comments > "Expand" long comments & get more comments >
+        //   "Expand" long comments & get older comments > "expand" long comments
         if (e.shiftKey) {
           if (areItemCommentsFolded($selectedItem)) {
             toggleCommentsFolded($selectedItem);
           } else {
-            clickMoreCommentsButton($selectedItem);
+            expandComments($selectedItem);
           }
         } else {
           // For 'c' we want to unfold or fold comments 
@@ -1030,7 +1032,7 @@ function onKeydown(e) {
           // and toggleItemFolded already scrolls into view.
       }
       break;
-    case 88: // 'x'
+    case 1079: // shift-O
       if (! isItemMuted($selectedItem) && ! isItemFolded($selectedItem)) {
         togglePostExpansion($selectedItem);
       }
@@ -1556,6 +1558,7 @@ function updateItem($item, attempt) {
 
       if (lastOpenId !== null && id == lastOpenId) {
         unfoldItem({interactive: false}, $item);
+        click($item);
 
         // Record this operation because we may have to undo it once location.href is
         // known to be correct
@@ -2218,10 +2221,13 @@ function unfoldLastOpenInListMode() {
 
   if (lastOpenId !== null) {
     var $item = $('#' + lastOpenId);
-    // We explicitly unfold in order to fold any previously opened item
-    // FIXME: this favors the oldest instead of the most recent opened item
-    unfoldItem({interactive: false}, $item);
-    click($item);
+    // It's possible the last open is no longer in the list of posts after a reload
+    if ($item.length) {
+      // We explicitly unfold in order to fold any previously opened item
+      // FIXME: this favors the oldest instead of the most recent opened item
+      unfoldItem({interactive: false}, $item);
+      click($item);
+    }
   }
 }
 
@@ -2410,9 +2416,16 @@ function clickMoreButton() {
 }
 
 /**
- * Trigger the "More comments" button, or "Older comments" button
+ * We want to unfold comments > "Expand" long comments & get more comments >
+ *   "Expand" long comments & get older comments > "Expand" long comments
  */
-function clickMoreCommentsButton($item) {
+function expandComments($item) {
+  // Regardless of round, we expand whatever long coments are visible
+  var $expandLink = $item.find(_C_EXPAND_COMMENT);
+  if ($expandLink.length) {
+    click($expandLink);
+  }
+
   var $commentsButton = $item.find(_C_COMMENTS_MORE_CONTAINER);
   if ($commentsButton.length && $commentsButton.is(':visible')) {
     click($commentsButton);
