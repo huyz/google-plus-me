@@ -18,8 +18,7 @@
 
 /* Selected post; needs to be highly selective */
 .gpme-folded.tf.Lj {
-  border-bottom: none; /* This also shortens the left blue border */
-  margin-bottom: 5px; /* 1 more than margin-bottm of ".gpme-titlebar > div" to replace deleted border */
+  border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 
 /*
@@ -583,12 +582,20 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 .gpme-enh .bcGTweaksMute {
   top: 18px;
 }
-
+/* G+ Tweaks 2011-08-12 */
 #content .a-m-C-S.a-C.a-m-C-wb-Qb .a-m-K-S.a-m-K-S-Rh-wb > div:first-child > div > div.gpme-content-buttons {
   width: auto; /* Override width: 100% */
 }
 #content .a-m-C-S.a-C.a-m-C-wb-Qb .a-m-K-S.a-m-K-S-Rh-wb > div:first-child > div:first-child {
   width: auto; /* Override width: 100% */
+}
+
+/* Usability Boost 2011-08-12 */
+.gpme-titlebar .gpme-sep {
+  visibility: visible !important;
+}
+.gpme-titlebar .gpme-sep > span {
+  display: none;
 }
 
 /* Adhik */

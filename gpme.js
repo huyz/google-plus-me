@@ -293,8 +293,8 @@ var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
 //var $titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
 var $titleTpl = $('<div class="gpme-title-clickarea"></div>').click(onTitleClick);
 var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
-var $titleDashTpl = $('<span class="' + C_TITLE_COLOR + '">  -  </span>');
-var $titleQuoteTpl = $('<span class="' + C_TITLE_COLOR + '">  +  </span>');
+var $titleDashTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  -  </span>');
+var $titleQuoteTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  +  </span>');
 var $hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>');
 var $hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
 // $cameraIconTpl: need container so it doesn't have the green of hover
