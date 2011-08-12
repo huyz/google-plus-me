@@ -88,8 +88,22 @@
 }
 
 /* Color fold icons depending on importance */
-.gpme-title-folded.gpme-perms-limited > .gpme-fold-icon {
-  color: #3d9400; /* color from hangout button .j-e-Da */
+/*.gpme-title-folded > .gpme-fold-icon {*/
+  /*visibility: hidden;*/
+/*}*/
+/*.gpme-title-folded.gpme-perms-limited > .gpme-fold-icon {*/
+  /*visibility: visible;*/
+  /*color: #3d9400; [> color from hangout button .j-e-Da <]*/
+/*}*/
+.gpme-circle-icon {
+  height: 20px;
+  width: 20px;
+}
+.gpme-title-folded.gpme-perms-limited .gpme-circle-icon {
+  background: url('chrome-extension://__MSG_@@extension_id__/icons/circle_orange13.png') no-repeat;
+  background-position: 4px 5px;
+  background-size: 50%;
+  opacity: 0.6;
 }
 
 .gpme-titlebar:hover, /* Like C_FEEDBACK */
@@ -169,7 +183,7 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 }
 
 /*
- * Button area
+ * Right button area
  */
 
 .gpme-button-area {
@@ -220,6 +234,17 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
   background-position: 0 1px; 
 }
 
+/*
+ * Left button area
+ */
+
+.gpme-button-area-left { /* To match gpme-button-area */
+  float: left;
+  height: 20px;
+  width: 21px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
 
 /*
  * Comment counter

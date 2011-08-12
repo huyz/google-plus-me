@@ -312,7 +312,8 @@ var $titlebarTpl = $('<div class="gpme-titlebar ' + C_FEEDBACK + '"></div>').app
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
     </div>').click(onTitleClick)).
-  append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25b6</div></div>');
+  append('<div class="gpme-title-folded"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
+//  append('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
 
 //
 // Inside item's guts
@@ -349,7 +350,8 @@ var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
     </div>').click(onCommentTitleClick)).
-  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon">\u25b6</div></div>');
+  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"></div>');
+//  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon" style="visibility: hidden">\u25b6</div></div>');
 
 //
 // Inside item's comments guts
