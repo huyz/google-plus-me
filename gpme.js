@@ -227,7 +227,7 @@ var _C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
 var TRIANGLE_HEIGHT                               = 30;
 var POST_WRAPPER_PADDING_TOP                      = 6;
 var POST_WRAPPER_PADDING_BOTTOM                   = 6;
-var COLLAPSED_ITEM_HEIGHT                         = 32; // Not sure exactly how it ends up being that.
+var ITEM_LINE_HEIGHT                              = 22;
 var MUTED_ITEM_HEIGHT                             = 45;
 // Other CSS values
 var GBAR_HEIGHT                                   = 30;
@@ -308,9 +308,9 @@ var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
 
 //  ('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
-var $titlebarFolded = $('<div class="gpme-title-folded ' + C_FEEDBACK + '"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
+var $titlebarFolded = $('<div class="gpme-title-folded gpme-bar"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
 var $titlebarTpl = $('<div class="gpme-titlebar"></div>').append(
-    $('<div class="gpme-title-unfolded ' + C_FEEDBACK + '" style="opacity: 0">\
+    $('<div class="gpme-title-unfolded gpme-bar" style="opacity: 0">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
     </div>').click(onTitleClick)).append($titlebarFolded);
@@ -353,14 +353,13 @@ var $postWrapperTpl = $(postWrapperTpl);
 var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
 var $commentTitleTpl = $('<div class="gpme-comments-title-clickarea"></div>').click(onCommentTitleClick).append($commentSnippetTpl);
 
-// NOTE: unlike titlebarTpl we put C_FEEDBACK in each individual bar because one's vertical
 var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
-    $('<div class="gpme-comments-title-unfolded ' + C_FEEDBACK + '">\
+    $('<div class="gpme-comments-title-unfolded gpme-bar">\
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
       <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
     </div>').click(onCommentTitleClick)).
-  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"></div>');
-//  append('<div class="gpme-comments-title-folded ' + C_FEEDBACK + '"><div class="gpme-fold-icon" style="visibility: hidden">\u25b6</div></div>');
+  append('<div class="gpme-comments-title-folded gpme-bar"></div>');
+//  append('<div class="gpme-comments-title-folded gpme-bar"><div class="gpme-fold-icon" style="visibility: hidden">\u25b6</div></div>');
 
 //
 // Inside item's comments guts
@@ -372,7 +371,7 @@ var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
 // Inside item bottombar
 //
 
-var $bottombarTpl = $('<div class="gpme-bottombar ' + C_FEEDBACK + '" style="opacity:0"></div>').append(
+var $bottombarTpl = $('<div class="gpme-bottombar gpme-bar" style="opacity:0"></div>').append(
     $('<div class="gpme-title-unfolded">\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25b2</div>\
       <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25b2</div>\
@@ -680,6 +679,13 @@ function overlappingBarsHeight() {
   }
 
   return result;
+}
+
+/**
+ * Returns the height of a folded item, i.e. gpme-title-folded
+ */
+function foldedItemHeight() {
+  return settings.nav_summaryLines * ITEM_LINE_HEIGHT + 2 /* padding-top */ + 2 /* border */
 }
 
 /**
@@ -1767,7 +1773,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
             // If we're animating, we have to do our own calculations because
             // two opposing animations are going simultaneously, which is too
             // complex for regular animations to calculate.
-            lastItemHeightLoss = $lastItem.outerHeight() - COLLAPSED_ITEM_HEIGHT;
+            lastItemHeightLoss = $lastItem.outerHeight() - foldedItemHeight();
             lastItemOffset = $lastItem.offset().top;
           }
 
@@ -1808,7 +1814,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
     } else {
       // Predict the height of the item
       if (animated)
-        predictedItemHeight = COLLAPSED_ITEM_HEIGHT;
+        predictedItemHeight = foldedItemHeight();
 
       // Fold the selected item
       foldItem({interactive: true, animated: animated}, $item, $post);
@@ -1843,7 +1849,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
 
     // Calc the body height once the last item is folded and the selected
     // item is unfolded
-    predictedBodyHeight = $body.height() - lastItemHeightLoss + (predictedItemHeight - COLLAPSED_ITEM_HEIGHT);
+    predictedBodyHeight = $body.height() - lastItemHeightLoss + (predictedItemHeight - foldedItemHeight());
 
     // There are two forces that make the page scroll up:
     // 1) getting the top of the selected item within view
@@ -2071,7 +2077,7 @@ function foldItem(options, $item, $post) {
               text = text.replace(/.*?(\d+)/, '$1');
             }
             $snippet = $titleSnippetTpl.clone();
-            $snippet.text(htmlDecode(text.substring(0, 100))); // We have to call() to avoid XSS
+            $snippet.text(htmlDecode(text.substring(0, 500))); // We have to call() to avoid XSS
             $clonedTitle.append($snippet);
             break;
           }
@@ -3349,6 +3355,9 @@ $(document).ready(function() {
   
   // Get options and then modify the page
   getOptionsFromBackground(function() {
+    // Set the height of a folded bar
+    $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
+
     if (DEBUG)
       getMessagesFromBackground(main);
     else // Get i18n messages

@@ -12,18 +12,35 @@
  * The entire post item
  */
 
-.gpme-folded.tf {
-  padding-bottom: 0;
+.gpme-folded {
+  padding: 0;
 }
 
 /* Selected post; needs to be highly selective */
-.gpme-folded.tf.Lj {
+.gpme-folded.Lj {
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 
 /*
  * Common to titlebar and commentbar
  */
+
+/* Tweaked from C_FEEDBACK */
+.gpme-bar {
+  background-color: #f5f5f5;
+  background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -moz-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -ms-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -o-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: linear-gradient(top,#f5f5f5,#f1f1f1);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #444;
+}
+.gpme-bar:active {
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
 
 .gpme-fold-icon {
   float: left;
@@ -40,17 +57,20 @@
  * The titlebar
  */
 
-.gpme-titlebar {
+.gpme-unfolded > .gpme-titlebar {
   margin: -16px -21px 4px -21px; /* Break out of the paddings */
 }
 /* Unread posts need to have light background */
-.gpme-folded:not(.gpme-read) .gpme-titlebar {
-  border: 1px solid rgba(0,0,0,0.2);
-  background-image: -webkit-linear-gradient(top,#fbfbfb,#f7f7f7);
-  background-image: -moz-linear-gradient(top,#fbfbfb,#f7f7f7);
-  background-image: -ms-linear-gradient(top,#fbfbfb,#f7f7f7);
-  background-image: -o-linear-gradient(top,#fbfbfb,#f7f7f7);
-  background-image: linear-gradient(top,#fbfbfb,#f7f7f7);
+.gpme-folded:not(.gpme-read) .gpme-title-folded {
+  background-image: -webkit-linear-gradient(top,#fdfdfd,#f7f7f7);
+  background-image: -moz-linear-gradient(top,#fdfdfd,#f7f7f7);
+  background-image: -ms-linear-gradient(top,#fdfdfd,#f7f7f7);
+  background-image: -o-linear-gradient(top,#fdfdfd,#f7f7f7);
+  background-image: linear-gradient(top,#fdfdfd,#f7f7f7);
+}
+
+.gpme-title-clickarea {
+  height: 100%
 }
 
 /* Unread posts need to have dark text color */
@@ -59,7 +79,7 @@
 }
 
 /* Muted post */
-.vp { /* Matches .gpme-folded.tf.Lj */
+.vp { /* Matches .gpme-folded.Lj */
   border-bottom: none;
   margin-bottom: 5px;
 }
@@ -77,6 +97,8 @@
 .gpme-title-folded {
   padding: 2px 4px 0 4px; /* Must match gpme-comment-count-bg's right */
   position: relative;
+  border: 1px solid #f5f5f5; /* Overrides gpme-bar. transparent so that gpme-read doesn't shift */
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .gpme-folded .gpme-title-unfolded {
@@ -140,7 +162,6 @@
  */
 
 .gpme-title-folded > div /* .gZgCtb */ {
-  white-space: nowrap;
   line-height: 22px;
   /* Copied from .gZgCtb, so that it works for Start G+ as well */
   overflow: hidden;
@@ -177,10 +198,6 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
   display: inline-block; /* For hangout live icon */
 }
 
-.gpme-snippet {
-  white-space: nowrap;
-}
-
 /*
  * Right button area
  */
@@ -191,6 +208,7 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
   width: 21px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+  margin-left: 3px;
 }
 /* No longer needed, now that red is no longer a button
 .gpme-button-area:hover {

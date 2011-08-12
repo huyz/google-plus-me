@@ -28,6 +28,7 @@ var defaultSettings = {
   /*
    * General
    */
+  'nav_summaryLines': 1,
   'nav_summaryIncludeThumbnails': false,
   'nav_summaryIncludeTime': false,
   'nav_previewEnableInExpanded': false,

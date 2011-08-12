@@ -17,6 +17,18 @@ this.manifest = {
     {
       "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
       "group" : chrome.i18n.getMessage("options_nav_summary_label"),
+      "name"  : "nav_summaryLines",
+      "type"  : "popupButton",
+      "label" : chrome.i18n.getMessage("options_nav_summaryLines"),
+      "options": [
+        ["1", "1"],
+        ["2", "2"],
+        ["3", "3"]
+      ]
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_summary_label"),
       "name"  : "nav_summaryIncludeThumbnails",
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_summaryIncludeThumbnails")
