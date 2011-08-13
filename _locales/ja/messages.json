@@ -1,11 +1,17 @@
 {
+  "extensionName": {
+    "message": "G+me for Google Plus™",
+    "description": "Name of the extension"
+  },
+
+
   "gplus_dateEdited": {
     "message": "編集",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "昨日",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "",
@@ -17,6 +23,159 @@
   },
   "gplus_permsLimited": {
     "message": "限定されている",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+  "options_nav_general_label": {
+    "message": "ナビゲーション",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_summary_label": {
+    "message": "ポストサマリー",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "写真のサムネイルをを表示する。"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "日時を表示する。"
+  },
+
+  "options_nav_preview_label": {
+    "message": "プレビュー",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "拡張表示モードを有効にする。"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "リスト表示モードを有効にする。"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "ブラウザアイコン",
+    "description": "Name of the options group for the browser icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "Google+がまだ表示されていないのであれば、ブラウザアイコンをクリックする時に表示されます。"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "折りたたみモードでの投稿:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Expanded - 全てを拡張表示にする。",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "List - 全て折りたたんで表示する。",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "デフォルトで全てのコメントを折りたたむ。"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "互換",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "このページは、あなたがGoogle+のためにインストールしたかもしれない他の機能拡張との互換性に関連します。<br/>Youは、これらのオプションを無視することができます。",
+    "description": "Introductory text for the Compatibility page"
+  },
+  "options_nav_compatSgp": {
+    "message": "SGPlusとの互換性を有効にして、ポストを折りたためるようする。"
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "これらのオプションのどれかを変更した後は、Google+タブをリロードしなければなりません。",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "質問",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "よくある質問",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>あなたは私のプライバシーを守りますか?</h3>
+<p>
+はい、守ります。
+Webストアでは、この拡張機能があなたの閲覧履歴を閲覧すると記載されていますが、そのようなことはありません。
+あなたが<a href=\"http://goo.gl/BM8CG\" target=_blank>ソースコード</a>の確認が可能であるオープンソース・プロジェクトです。
+あなたはプライバシーとWebストアでの誤解させる技術的な事柄について、<a href=\"http://goo.gl/ld00X\" target=_blank>私からのコメント</a>を読むことができます。</p>
+<p>
+<b>G+me</b>のless-featurefulバージョンもインストールできます。:<a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOIDバージョン)
+</a>
+</p>
+<h3>この拡張機能は、他の拡張機能とコンフリクトを起こします。</h3>
+
+<p>8月2日と3日、Google+はレイアウトを変更しました。そして、ほとんどすべての拡張機能が動作しなくなりました。
+その結果、あらゆる拡張機能はコードを変更しなければなりませんでした。他の拡張との互換性を元に戻すためには、かなりの時間がかかります。
+我慢して下さい。
+
+<!--
+    This extension is <i>incompatible</i> with <b>+Comment Toggle</b>.  It is <i>compatible</i> with <b>Start G+</b> (careful with performance issues), <b>Surplus</b>, <b>Replies and more</b> (you must turn off the 'm' key shortcut from its options), <b>Extended Share</b>, <b>G+ Ultimate</b> (except for \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (except for notifications), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+    -->
+    </p>
+これをFirefoxか他のブラウザに移植するのでしょうか?
+
+私はFirefoxへの移植を計画しています。
+しかし、これは2、3週間かかります。
+他のブラウザへの計画はありません。",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "問題",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "あなたはいつも質問することができ、<a href=\"http://huyz.us/gpme-release/\" target=_blank>Google+上でG+meについてのディスカッションを行うことができる。</a>",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "リセット",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "全ての<b>G+me</b>オプションをデフォルトに設定して戻る。",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "全てのG+meオプションをリセットする。",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "問題が発生した場合、あなたが設定した全てのオプションと履歴をリセットしてください。",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "G+meのオプションと履歴をリセットする。",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "NOTE:これらのボタンはあなたのGoogle+データと関係ありません。
+常にデータはExtensionによって安全です。",
+    "description": "Footnote for the reset buttons"
+  },
+  "options_nav_links_label": {
+    "message": "リンク",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p><a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a>と<a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>でHuy Zをフォローできます。</p>
+<p><a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+meウェブページ</a>で使い方と最新ニュースを見てください。</p>
+<p><a href=\"http://huyz.us/gpme-release/\" target=_blank>Google+に関するディスカッション</a>について、フィードバックをしてください。</p>
+<p>拡張機能について、<a href=\"http://goo.gl/m837O\" target=_blank>Chromeウェブストア</a>にて評価してください。</p>
+<p>ソースコードについては、<a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>に行ってください。</p>",
+    "description": "Text with important links"
   }
 }

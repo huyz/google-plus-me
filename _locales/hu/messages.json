@@ -1,0 +1,285 @@
+{
+  "extensionName": {
+    "message": "G+én a Google Plus™hoz",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Összecsukja a Google+ falat az élő frissítéseket megtartva: elrejti a hozzászólásokat, összecsukja a bejegyzéseket stb.",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
+
+
+  "gplus_dateEdited": {
+    "message": "szerkesztve",
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
+  },
+  "gplus_dateLongPrefix": {
+    "message": "Tegnap",
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+  },
+  "gplus_dateLongSuffix": {
+    "message": ",",
+    "description": "Text that is dropped when abbreviating date text.  Use with gplus_dateLongPrefix and gplus_dateLongSuffixReplacement."
+  },
+  "gplus_dateLongSuffixReplacement": {
+    "message": "",
+    "description": "Text that replaces the dropped part when abbreviating date text.  Used with gplus_dateLongPrefix and gplus_dateLongSuffix."
+  },
+  "gplus_permsLimited": {
+    "message": "Korlátozott",
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "Legyen az összes bejegyzés olvasott",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Nyisd ki az összes bejegyzést",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Csukd össze az összes bejegyzést",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Ez a bejegyzés legyen olvasott",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Némítsd el ezt a bejegyzést",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigáció",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Bejegyzés stílusa",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Mikor jelenjen meg az összecsukó dobozka"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "mindig",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "amikor a bejegyzés az egér alatt van",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "soha",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "Bejegyzések összegzése",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "Az összecsukott bejegyzéseknél jelenjenek meg a képek előnézetei"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "Az összecsukott bejegyzéseknél jelenjen meg a dátum-idő"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Bejegyzések előnézete",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "Kifejtett módban engedélyezve"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "Lista módban engedélyezve"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "G+én ikon",
+    "description": "Name of the options group for the browser icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "A G+én ikonra kattintva megnyílik a Google+, ha még nincs nyitva. Ezt a lehetőséget bejelölve egy új tabban nyílik meg az aktuális helyett"
+  },
+
+  "options_nav_pages_label": {
+    "message": "Oldalak",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Általános",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "Ezeket a beállításokat használd, ha mindenfajta oldalt (Fal, Körök, Bejövő, Értesítések stb.) ugyanúgy szeretnél látni",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "A bejegyzések összecsukásának módja:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Kifejtve — minden bejegyzés alapból nyitva",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "Lista — egy kivételével minden összecsukva",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Az összes hozzászólás alapból legyen összecsukva"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "Kompatibilitás",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "Ez az oldal a más Google+hoz írt kiterjesztésekkel való összeférhetőséggel foglalkozik. <br />Ezeket nyugodtan figyelmen kívül hagyhatod",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, azaz Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "<b>FIGYELEM:</b> az SGPlusszal való kompatibilitás jelenleg béta állapotban van. Instabilitás és teljesítmény problémák léphetnek fel. Az összes alábbi opció több és több számításigényt ad hozzá az SGPlus gyakori, nehézsúlyú frissítéseihez, valószínűleg az egész böngészőt lelassítva, valamint gyakori kihagyásokat okozva (idegesítő, ha gépelsz).<br />Bármilyen problémát szívesen várunk a <a href=\"$URL$\" target=_blank>SGPlus kompatibilitás témára Google+on</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "Az SGPlusszal való kompatibilitás engedélyezése (legyenek összecsukhatók a bejegyzések)"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "A hozzászólások legyenek összecsukhatóak, és figyelje a frissítéseket <i>(a kompatibilitást engedélyezd!)</i>"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "Gyorstárazás engedélyezése a villogás elkerülése érdekében <i>(a kompatibilitást engedélyezd!)</i> -- Kísérleti állapotban",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "<b>MEGJEGYZÉS:</b> A Google+ tabokat újra kell tölteni a fentiek megváltoztatása után.",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Kérdések",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Gyakori Kérdések",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>Tiszteletben tartjátok az érzékeny adataim?</h3>
+<p>
+Igen, biztonságban vagy. Annak ellenére, hogy a Web Store azt mondja, hogy ez a kiterjesztés megnéz<i>het</i>i az \"előzményeket\", <i>nem</i> teszi. Ez egy nyílt forrású projekt, aminek a <a href=\"http://goo.gl/BM8CG\" target=_blank>forráskódja</a> szabadon elérhető, hogy te magad ellenőrizhesd ezt. Elolvashatod a <a href=\"http://goo.gl/ld00X\" target=_blank>véleményem a témáról</a>, és a technikai okait annak, hogy a Web Store félrevezető.
+</p>
+<p>
+Emellett lehetőséged van egy kicsit kisebb tudású verzióját a <b>G+én</b>-nek: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+én (PARANOID Kiadás)</a>.
+</p>
+
+<h3>Ez a kiterjesztés lelassítja a Google+t</h3>
+<p>Ez leginkább más kiterjesztésekkel történő interferencia szokott lenni. Próbáld kikapcsolni az összes többi Google+os kiterjesztést. Légy szíves tudasd velem, hogy melyik másik kiterjesztés nem fér össze a <b>G+én</b>nel, és megnézem, hogy lehetne javítani a helyzeten.
+</p>
+<h3>Ez a kiterjesztés egy másikkal inkompatibilis</h3>
+<p>
+Augusztus másodikán és harmadikán a Google+ megváltoztatta az elrendezését, ezzel majdnem az összes kiterjesztést elrontva. Ennek eredményeként minden kiterjesztésnek át kellett írni a kódját. Kis időbe telik, míg teljesen visszaáll a kompatibilitás más kiterjesztésekkel. Légy türelemmel.
+</p>
+<h3>Ez a kiterjesztés elérhető lesz Firefoxhoz is?</h3>
+<p>
+Amint elkészült az összes funkció, átírom az egészet Firefox alá is, de ez eltarthat pár hétig. Más böngészőkre nem tervezem.
+</p>",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Problémák",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "Ha furán működne a kiterjesztés próbáld az alábbiakat:<br />
+<ul>
+<li>Az oldal újratöltése (lehet, hogy a probléma a Google+ban van)</li>
+<li>A böngésző újraindítása (a böngészőnek is vannak hibái)</li>
+<li>Bizonyosodj meg, hogy a <b>G+én</b> legfrissebb verzióját használod. Ehhez jobb klikkelj a G+én ikonra, kattints a \"Kiterjesztések kezelése\" menüre, és hasonlítsd össze a legfrissebb verzióval a <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>ban. Itt egy leírás arról, <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>hogyan kényszerítsük ki a kiegészítők frissítését</a>.</li>
+<li>Ha a legfrissebb <b>G+én</b> verziót használod, megpróbálhatod újratelepíteni.</li>
+<li>Megpróbálhatod az összes beállítást alaphelyzetbe állítani. Lásd lent</li>
+</ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Bármikor szívesen vesszük kérdésedet, visszajelzésedet <a href=\"http://huyz.us/gpme-release/\" target=_blank>az aktuális G+én kibeszélőben Google+on</a>",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Alaphelyzet",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "Ha az összes <b>G+én</b> beállítást alaphelyzetbe szeretnéd állítani:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Az összes G+én beállítás visszaállítása",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "Problémák esetén próbáld kitörölni az összes beállítást és feljegyzést",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Az összes G+én beállítás és feljegyzés kitörlése",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "MEGJEGYZÉS: Ezek a gombok semmit nem fognak csinálni a Google+ adataiddal, ami mindig biztonságban van ettől a kiterjesztéstől.",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Információ",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "Linkek",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Kövesd a készítőt, Huy Z-t, <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+on</a> és <a href=\"http://twitter.com/huyplus\" target=_blank>Twitteren</a>.</p>
+<p>Használati utasítások és a legfrissebb hírek <a href=\"http://huyz.us/google-plus-me/\" target=_blank>a G+én weboldalon</a>.</p>
+<p>Küldj visszajelzést az <a href=\"http://huyz.us/gpme-release/\" target=_blank>aktuális Google+ beszélgetésben</a>.</p>
+<p>Értékeld a kiterjesztést a <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Storeban</a>.</p>
+<p>A forráskód a <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHubon</a> található.</p>  ",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Fordítók",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy őszintén köszöni az összes fordító munkáját"
+  }
+}

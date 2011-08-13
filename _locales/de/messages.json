@@ -1,11 +1,21 @@
 {
+  "extensionName": {
+    "message": "G+me für Google Plus™",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Listenansicht für den Google+ Stream: Kommentare verbergen, Posts einklappen, etc",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
+
+
   "gplus_dateEdited": {
     "message": "bearbeitet",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "Gest",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "ern um",
@@ -17,6 +27,262 @@
   },
   "gplus_permsLimited": {
     "message": "Eingeschränkt",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "Alle Beiträge als gelesen markieren",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Alle Beiträge aufklappen",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Alle Beiträge einklappen",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Diesen Beitrag als gelesen markieren",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Diesen Beitrag ignorieren",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigation",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Beitrag Stil",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Wann soll das Einklapp-Menü angezeigt werden?"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "Immer",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "Wenn Sie mit dem Mauszeiger über den Beitrag fahren",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "Nie",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "Beitrag Zusammenfassung",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "Miniaturbild von Fotos des eingeklappten Beitrag anzeigen"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "Datum von eingeklappten Beitrag anzeigen"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Beitrag Vorschau",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "Erweiterte Ansicht aktivieren"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "Listenansicht aktivieren"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "G+me Icon",
+    "description": "Name of the options group for the browser icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "Ein Klick auf das G+me Icon wird Google+ öffnen, falls es nicht schon in einem Tab geöffnet ist. Wenn Sie diese Option aktivieren wird ein neuer Tab geöffnet anstatt den aktuellen Tab zu verwenden."
+  },
+
+  "options_nav_pages_label": {
+    "message": "Bereiche",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Global",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "Konfigurieren Sie diese Optionen wenn Sie alle Bereiche (Stream, Kreise, Nicht in Kreisen, Benachrichtigungen, Sparks, etc) gleich behandeln möchten",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Ansichten Modus für Beiträge:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Erweitert -- Alle Beiträge werden aufgeklappt angezeigt",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "Liste -- Alle Beiträge bis auf eine werden eingeklappt angezeigt",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Alle Kommentare einklappen"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "Kompatibilität",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "Diese Seite beschäftigt sich mit Kompatibilitäts-Problemen mit anderen Erweiterungen die Sie für Google+ installiert haben. <br /> Sie können diese Optionen ignorieren",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, a.k.a. Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "<b>WARNUNG:</b> Kompatibilität mit SGPlus ist in Beta. Es gibt immer noch Leistungs und Stabilitäts Probleme. Jede der nachfolgende Optionen beeinflusst SGPlu's häufige Aktualisierungsrate mit möglichen Geschwindgkeitsverlusten oder pausieren Ihres Browsers (nervig wenn Sie gerade schreiben).<br />
+    Bitte posten Sie alle Probleme in der <a href=\"$URL$\" target=_blank>Diskussion über SGplus' Kompatibilität mit Google+</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "Aktivierung der SGPlus Kompatibilität, z.B. Beitrag einklappen"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "Kommentare einklappen und zählen <i>(Kompatibilität muss aktiviert sein)</i>"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "Geschwindigkeits-Cache aktivieren um Aktualisierungs-Flickern zu vermeiden <i>(Kompatibilität muss eingeschaltet sein</i> -- Experimentell",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "<b>ANMERKUNG:</b> Der Google+ Tab muss nach einer Änderung der Optionen neu geladen werden.",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Fragen",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Häufig gestellte Fragen",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>Respektieren Sie meine Privatsphäre?</h3>
+    <p>
+    Selbstverständlich! Der Web Store sagt zwar das diese Erweiterung Ihren Browser Verlauf sehen <i>könnte</i> aber dies ist <i>nicht</i> der Fall. Dies ist ein Open-Source Projekt dessen <a href=\"http://goo.gl/BM8CG\" target=_blank>Quellcode</a> sie sich gerne anschauen können. Lesen Sie <a href=\"http://goo.gl/ld00X\" target=_blank>meine Kommentare über Privatsphäre</a> und die technischen Gründe warum die Aussage des Web Stores falsch ist.</p>
+    <p>
+    Sie können auch eine weniger Feature-reiche Version von <b>G+me</b> installieren: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID Edition)</a>.
+    </p>
+
+    <h3>Die Erweiterung verlangsamt Google+</h3>
+    <p>Eine mögliche Ursache könnte die inkompatibilität mit einer anderen Erweiterung sein. Versuchen Sie alle anderen Erweiterungen zu deaktivieren. Bitte informieren Sie mich, wenn Sie heraus gefunden haben welche Erweiterung Probleme mit  <b>G+me</b> verursacht und ich werde mir dies einmal näher anschauen.
+    </p>
+
+    <h3>Diese Erweiterung verursacht Probleme mit anderen Erweiterungen</h3>
+    <p>Am 2. und 3. August hat Google+ sein Layout verändert. Das neue Layout verursachte viele Probleme mit fast allen Erweiterungen. Dadurch mussten viele Erweiterungen im Quellcode angepasst werden. Es wird einige Zeit dauern bis ich die Kompatibilität mit anderen Produkten wieder herstellen kann. Bitte haben Sie ein wenig Geduld.
+    <!--
+    This extension is <i>incompatible</i> with <b>+Comment Toggle</b>.  It is <i>compatible</i> with <b>Start G+</b> (careful with performance issues), <b>Surplus</b>, <b>Replies and more</b> (you must turn off the 'm' key shortcut from its options), <b>Extended Share</b>, <b>G+ Ultimate</b> (except for \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (except for notifications), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+    -->
+    </p>
+
+    <h3>Wird es G+me auch für Firefox und andere Browser geben?</h3>
+    <p>Sobald ich diverse andere Funktionen eingebaut habe, werde ich eine Erweiterung für Firefox planen. Aber dies wird einige Wochen in Anspruch nehmen. Andere Browser sind bisher nicht in Planung.
+    </p>",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Probleme",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "Sollten Sie ungewöhnliche Fehler erhalten, versuchen Sie bitte folgendes:<br />
+    <ul>
+    <li>Erneutes laden der Seite (Das Problem könnte einfach nur bei Google+ liegen)</li>
+    <li>Starten Sie Ihren Browser erneut (Auch Browser haben einige Fehler)</li>
+    <li>Stellen Sie sicher das sie die aktuellste Version von <b>G+me</b> verwenden. Um dies zu überprüfen klicken Sie bitte auf das G+me Icon, wechseln Sie zu \"Manage Extensions\" und vergleichen Sie die Version mit der aktuellsten im <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Hier ist ein How-To <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>wie Updates erzwungen werden</a>.</li>
+    <li>Sollten Sie die aktuellste Version von <b>G+me</b> schon installiert haben, versuchen Sie bitte die Erweitertung erneut zu installieren.</li>
+    <li>Versuchen Sie die G+me Optionen zurückzusetzen.</li>
+    </ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Ihr Feedback und Ihre Fragen können Sie immer in der <a href=\"http://huyz.us/gpme-release/\" target=_blank>aktuellen G+me Diskussion auf Google+</a>stellen.",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Zurücksetzen",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "Um alle <b>G+me</b> Optionen zurückzusetzen:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Alle G+me Optionen zurücksetzen",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "Sollten Probleme auftreten versuchen Sie bitte alle G+me Optionen zurückzusetzen",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Alle G+me Optionen zurücksetzen",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "ANMERKUNG: Diese Optionen haben keinen Einfluss auf Ihre Google+ Daten.",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Informationen",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "Links",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Folgen Sie dem Entwickler Huy Z auf <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> und <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+    <p>Finden Sie die Bedienungsanleitung und die letzten News auf der <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me Webseite</a>.</p>
+    <p>Bitte posten Sie Ihr Feedback in der <a href=\"http://huyz.us/gpme-release/\" target=_blank>aktuellen Diskussion auf Google+</a>.</p>
+    <p>Bewerten Sie diese Erweiterung im <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
+    <p>Für den Quellcode besuchen Sie bitte <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Übersetzer",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy dankt allen Übersetzern für Ihre Mühe und Hilfe"
   }
 }

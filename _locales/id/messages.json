@@ -1,11 +1,17 @@
 {
+  "extensionName": {
+    "message": "G+me untuk Google Plus™",
+    "description": "Name of the extension"
+  },
+
+
   "gplus_dateEdited": {
     "message": "telah diedit",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "K",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "emarin",
@@ -17,6 +23,172 @@
   },
   "gplus_permsLimited": {
     "message": "Terbatas",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "Tandai semua pos sebagai dibaca",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Perpanjang semua pos",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Pendekkan semua pos",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Tandai Pos ini Sebagai Dibaca",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Bungkam Pos ini",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigasi",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Pos Gaya",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Ketika menamplikan bar yang pendek"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "Selalu",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "Ketika mouse diatas pos",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "Tidak Pernah",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "Pos Ringkasan",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Pos Pratinjau",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "Ikon G+me",
+    "description": "Name of the options group for the browser icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "Ketika mengklik ikon G+me, Google+ akan dibuka jika sebelumnya belum terbuka. Mengecek kotak ini akan membuka tab baru."
+  },
+
+  "options_nav_pages_label": {
+    "message": "Halaman",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Global",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Mode untuk memperpendek pos:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Diperpanjang - semua standar diperpanjang",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Perpendek semua komentar sesuai standar"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "Kecocokan / Kompabilitas",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "Halaman ini berhubungan dengan kecocokan ekstensi lainnya yang mungkin telah kamu pasang untuk Google+. Kamu dapat mengabaikan pilihan-pilihan ini.",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, a.k.a Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp": {
+    "message": "Mengaktifkan kompabilitas dengan SGPlus, i.e membuat pos dapat diperpendek"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "Membuat komentar dapat diperpendek dan mengikuti komentar (kompabilitas harus diaktifkan)"
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "CATATAN: Google+ tabs harus diulang setelah merubah semua pilihan-pilihan ini",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Pertanyaan",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Pertanyaan yang sering ditanyakan",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Masalah",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Kamu dapat selalu bertanya dan memberi tanggapan melalui diskusi yang sedang berjalan tentang G+me di Google+",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Mengulang",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "Untuk mengembalikan ke semua pilihan G+me kembali ke semula:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Ulangi semua pilihan G+me",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "Jika seandainya ada masalah, coba mengulangi semua pilihan kamu dan pilihan sebelumnya",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Ulangi semua pilihan G+me dan pilihan sebelumnya",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "CATATAN: Tombol-tombol ini tidak berhubungan dengan data Google+ kamu, yang mana selalu aman dari ekstensi ini.",
+    "description": "Footnote for the reset buttons"
+  },
+  "options_nav_links_label": {
+    "message": "Links",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_translators_label": {
+    "message": "Penterjemah",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy mengucapkan terima kasih yang setulusnya kepada penterjemah atas kemampuan dan usaha mereka."
   }
 }

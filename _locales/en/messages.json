@@ -102,7 +102,7 @@
   },
 
   "options_nav_browserAction_label": {
-    "message": "Browser Icon",
+    "message": "G+me Icon",
     "description": "Name of the options group for the browser icon"
   },
   "options_nav_browserActionOpensNewTab": {
@@ -180,7 +180,7 @@
     }
   },
   "options_nav_compatSgpUsage_desc": {
-    "message": "<b>NOTE:<b> Google+ tabs must be reloaded after changing any of these options.",
+    "message": "<b>NOTE:</b> Google+ tabs must be reloaded after changing any of these options.",
     "description": "Text giving users instructions for above options"
   },
 
@@ -188,18 +188,6 @@
   "options_nav_questions_label": {
     "message": "Questions",
     "description": "Name of the tab in the options page for questions and problems"
-  },
-  "options_nav_links_label": {
-    "message": "Links",
-    "description": "Name of the options group for URL links"
-  },
-  "options_nav_links_desc": {
-    "message": "<p>Follow the author Huy Z on <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> and <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
-    <p>See usage instructions and the latest news at the <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me web page</a>.</p>
-    <p>Give feedback in the <a href=\"http://huyz.us/gpme-release/\" target=_blank>current discussion on Google+</a>.</p>
-    <p>Rate the extension at the <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
-    <p>For the source code, go to <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
-    "description": "Text with important links"
   },
   "options_nav_faq_label": {
     "message": "Frequently Asked Questions",
@@ -271,5 +259,29 @@
   "options_nav_reset_desc": {
     "message": "NOTE: These buttons have nothing to do with your Google+ data, which is always safe from this extension.",
     "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Information",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "Links",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Follow the author Huy Z on <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> and <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+    <p>See usage instructions and the latest news at the <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me web page</a>.</p>
+    <p>Give feedback in the <a href=\"http://huyz.us/gpme-release/\" target=_blank>current discussion on Google+</a>.</p>
+    <p>Rate the extension at the <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
+    <p>For the source code, go to <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Translators",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy sincerely thanks all the translators for their skills and effort."
   }
 }

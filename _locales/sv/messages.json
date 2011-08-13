@@ -1,11 +1,17 @@
 {
+  "extensionName": {
+    "message": "G+me for Google Plus™",
+    "description": "Name of the extension"
+  },
+
+
   "gplus_dateEdited": {
     "message": "redigerad",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "Igår",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "",
@@ -17,6 +23,9 @@
   },
   "gplus_permsLimited": {
     "message": "Begränsad",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
   }
 }

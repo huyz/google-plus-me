@@ -8,6 +8,12 @@ SOURCES="gpme.js background.js fancy-settings/source/settings.js"
 
 ### End config
 
+[ -e package.sh ] && cd ..
+if [ ! -r manifest.json ]; then
+  echo "Can't find manifest.json.  Running from the extension root directory?" >&2
+  exit 1
+fi
+
 # Get version number from file
 version=$(sed -n 's/.*"version" *: *"\([0-9\.]*\)".*/\1/p' manifest.json)
 

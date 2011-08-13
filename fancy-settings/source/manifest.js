@@ -153,13 +153,6 @@ this.manifest = {
      */
     {
       "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
-      "group" : chrome.i18n.getMessage("options_nav_links_label"),
-      "name"  : "nav_links_desc",
-      "type"  : "description",
-      "text"  : chrome.i18n.getMessage("options_nav_links_desc")
-    },
-    {
-      "tab"   : chrome.i18n.getMessage("options_nav_questions_label"),
       "group" : chrome.i18n.getMessage("options_nav_faq_label"),
       "name"  : "nav_faq_desc",
       "type"  : "description",
@@ -201,6 +194,50 @@ this.manifest = {
       "name"  : "nav_reset_desc",
       "type"  : "description",
       "text"  : chrome.i18n.getMessage("options_nav_reset_desc")
+    },
+
+    /*
+     * Information
+     */
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_info_label"),
+      "group" : chrome.i18n.getMessage("options_nav_links_label"),
+      "name"  : "nav_links_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_links_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_info_label"),
+      "group" : chrome.i18n.getMessage("options_nav_translators_label"),
+      "name"  : "nav_translators_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_translators_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_info_label"),
+      "group" : chrome.i18n.getMessage("options_nav_translators_label"),
+      "name"  : "nav_translatorsList",
+      "type"  : "description",
+      "text"  : "\
+<table>\
+<tr><td style=\"width: 20%\">Deutsch</td>\
+<td><a href=\"https://plus.google.com/111611377225917333080\" target=_blank>Nick Rock</a></td></tr>\
+<tr><td>Español AL</td>\
+<td><a href=\"https://plus.google.com/103470335401117697610\" target=_blank>Andrés D Bevilacqua (aka PaiSand)</a></td></tr>\
+<tr><td>Français</td>\
+<td><a href=\"https://plus.google.com/107140639929094144668\" target=_blank>Olivier de Broqueville</a>, <a href=\"https://plus.google.com/100633553439138235276\" target=_blank>Eddy Deligne</a></td></tr>\
+<tr><td>Hungarian</td>\
+<td><a href=\"https://plus.google.com/108092012091902688220\" target=_blank>Zsolt Dollenstein</a></td></tr>\
+<tr><td>Indonesian</td>\
+<td><a href=\"https://plus.google.com/104214201726373605313\" target=_blank>Teddy Yuliustanto</a></td></tr>\
+<tr><td>Italiano</td>\
+<td><a href=\"https://plus.google.com/108442963639756243080\" target=_blank>Marco Mililotti</a></td></tr>\
+<tr><td>Japanese</td>\
+<td><a href=\"https://plus.google.com/104214201726373605313\" target=_blank>Toshitsugu Miyoshi</a></td></tr>\
+<tr><td>Portuguese PT</td>\
+<td><a href=\"https://plus.google.com/102936041566944563648\" target=_blank>Pedro Ricardo</a></td></tr>\
+</table>\
+        "
     }
   ],
   "alignment": [

@@ -2,17 +2,23 @@
 this.i18n = {
     "settings": {
         "en": "Options",
-        "de": "Optionen"
+        "de": "Optionen",
+        "hu": "Beállítások",
+        "nl": "Instellingen"
     },
     "search": {
         "en": "Search",
-        "de": "Suche"
+        "de": "Suche",
+        "hu": "Keresés",
+        "nl": "Zoeken"
     },
     "nothing-found": {
         "en": "No matches were found.",
-        "de": "Keine Übereinstimmungen gefunden."
+        //"de": "Keine Übereinstimmungen gefunden."
+        "de": "Keine Ergebnisse gefunden.",
+        "hu": "Nincs találat.",
+        "nl": "Niets gevonden"
     },
-    
     
     
     "information": {

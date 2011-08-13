@@ -1,11 +1,21 @@
 {
+  "extensionName": {
+    "message": "G+me voor Google Plus™",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Voegt de Google+ updates samen en live updates blijven verschijnen: verberg commentaar, voegt posts samen, etc.",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
+
+
   "gplus_dateEdited": {
     "message": "bewerkt",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "Gist",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": "eren",
@@ -17,6 +27,264 @@
   },
   "gplus_permsLimited": {
     "message": "Beperkt",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "Markeer alle posts als gelezen",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Klap alle posts uit",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Klap alle posts in",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Marker deze post als gelezen",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Demp deze post",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigatie",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Post Stijl",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Wanneer moet de uitklapbalk zichtbaar zijn"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "altijd",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "Als de muis over de post heen gaat",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "nooit",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "Post Overzicht",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "Samengevoegde posts laten thumbnails van foto's uit de posts zien"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "Samengevoegde posts laten datum zien"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Post Voorbeeld",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "Aanzetten in uitgebreide modus"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "Aanzetten in lijst modus"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "G+me Icoon",
+    "description": "Name of the options group for the browser icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "Als je op het G+me icoon klikt, zal Google+ geopened worden, als dit al niet het geval is. Na het aanzetten van deze checkbox zal Google+ in een nieuw tabblad openen i.p.v. in het huidige tabblad"
+  },
+
+  "options_nav_pages_label": {
+    "message": "Pagina's",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Globaal",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "Selecteer hier de pagina opties om alle streams op dezeffde wijze te laten zien (Updates, Kringen, Inkomend, Meldigen, Sparks, etc,)",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Samenvoeg modus voor posts:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Uitgebreid - allemaal uitgeklapt",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "Lijst — Samengevoegd, behalve een",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Standaard alle opmerkingen samenvoegen"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "Compatibiliteit",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "Deze pagina is om de compatibiliteit met andere extensies aan te geven welke je ook geïnstalleerd hebt voor Google+.<br />Je kan deze opties negeren.",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, ook bekend als Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "<b>LET OP!:</b> Compatibiliteit met SGPlus bevindt zich nog in de beta status.  Er zijn nog steeds prestatie en instabiliteit problemen.  Iedere optie hieronder kan extra vertraging opleveren, vanwege het frekwent verversen wat SGPlus doet. Dit kan mogelijk je browser vertragen en regelmatige tijdelijke pauzes opleveren (kan erg vervelend zijn als je typt).<br />
+    Rapporteer problemen hieromtrent op de  <a href=\"$URL$\" target=_blank>discussie over SGPlus compatibiliteit op Google+</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "Zet compatibiliteit met SGPlus aan, maak het mogelijk posts in-/uit te klappen"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "Maak opmerkingen in-/uitklapbaar en volg de opmerkingen <i>(compatibiliteit moet aanstaan)</i>"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "Zet snelheids cache aan om verversings trillingen te voorkomen <i>(compatibiliteit moet aanstaan)</i> -- Experimenteel",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "<b>OPMERKING:</b> Google+ schermen moeten worden ververst (Shift-F5) na het veranderen van deze instellingen. Soms moet de browser geheel worden afgesloten en opnieuw worden gestart.",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Vragen",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Vaak gestelde vragen (FAQ)",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>Wordt mijn privacy beschermd?</h3>
+    <p>
+    Ja, dit wordt beschermd. Ondanks dat de Web Store zegt dat deze extensie je \"browsing geschiedenis\" <i>kan</i> zien, gebeurt dit <i>niet</i>. Dit is een open-source project, waarvan de <a href=\"http://goo.gl/BM8CG\" target=_blank>bron code</a> beschikbaar is, zodat je deze kan controleren. Je kan mijn  <a href=\"http://goo.gl/ld00X\" target=_blank>opmerkingen over privacy lezen</a> en de technische reden waarom de melding van de Web Store misleidend is.</p>
+    <p>
+    Niet overtuigd? Dan kan je ook een versie van  <b>G+me</b> installeren met iets minder mogelijkheden : <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOÏDE Editie)</a>.
+    </p>
+
+    <h3>Deze extensie maakt Google+ langzamer</h3>
+    <p>Dit komt zeer waarschijnlijk vanwege incompatibiliteit met andere extensions. Probeer d.m.v. het uitschakelen van andere Google+ extensies uit te vinden welke niet goed lijken samen te werken met <b>G+me</b>. Laat mij weten welke dat zijn en ik zal er naar kijken.
+    </p>
+
+    <h3>Deze extensie werkt niet samen met extensie X</h3>
+    <p>
+    Op 2 en 3 Augustus heeft Google+ de opmaak verandert, waardoor vrijwel alle extensies niet meer functioneerden. Ten gevolge hiervan, moest iedere extensie zijn code aanpassen.  Het zal enige tijd duren, voordat ik de volledige compatibiliteit met andere extensies kan herstellen. Heb geduld.
+    <!--
+    Deze extensie is <i>niet compatibel</i> met <b>+Comment Toggle</b>.  Hij is <i>compatibel</i> met <b>Start G+</b> (let op met prestatie problemen), <b>Surplus</b>, <b>Replies and more</b> (zet wel de  'm' toets shortcut uit bij de opties), <b>Extended Share</b>, <b>G+ Ultimate</b> (behalve voor de \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (behalve voor de notifications), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+    -->
+    </p>
+
+    <h3>Komt de extensie ook beschikbaar voor Firefox of andere browsers?</h3>
+    <p>
+    Nadat er nog meer opties zijn toegevoegd, zal het beschikbaar worden gemaakt voor Firefox.  Maar dit kan nog enkele weken duren.  Voor andere browsers zijn er geen plannen.
+    </p>",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Problemen",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "Bij vreemd gedrag probeer het volgende:<br />
+    <ul>
+    <li>Herlaad de pagina  (het probleem kan in Google+ zelf zitten)</li>
+    <li>Herstart je browser (ook deze is niet foutloos)</li>
+    <li>Controleer of je de laatste versie van <b>G+me</b> hebt. Controleer d.m.v. een klik met de rechter muis knop op het G+me browser icoon, ga naar  \"Extensies beheren\" en vergelijk deze met de laatste versie in de <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Hier staat (in het engels) hoe je <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>extensies geforceerd kan bijwerken</a>.</li>
+    <li>Als je de laatste versie van <b>G+me</b> al hebt, maak dan de installatie ongedaan en herinstalleer de extensie.</li>
+    <li>Je kan ook alle instellingen en geschiedenis verwijderen. Zie hieronder.</li>
+    </ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Je kan altijd vragen stellen en feedback geven in de <a href=\"http://huyz.us/gpme-release/\" target=_blank>huidige discussie over G+me op Google+</a>",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Resetten",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "Zet alle instellingen van  <b>G+me</b> terug naar de standaard waarden:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Reset alle G+me instellingen",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "In geval van problemen, probeer alle geschiedenis en instellingen te resetten",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Reset alle G+me instellingen en geschiedenis",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "OPMERKING: Deze knoppen doens niets met je Google+ gegevens, deze zijn altijd veilig met deze extensie.",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Informatie",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "Links",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Volg de auteur Huy Z op <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> en <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+    <p>Gebruikers instructies (in het engels) en het laatste nieuws staan op mijn <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me web pagina</a>.</p>
+    <p>Geef feedback in de <a href=\"http://huyz.us/gpme-release/\" target=_blank>huidige discussie op Google+</a>.</p>
+    <p>Waardeer de extensie in de <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
+    <p>Voor de bron code, ga naar <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Vertalers",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy bedankt alle vartalers voor hun inspanningen en bekwaamheid"
   }
 }

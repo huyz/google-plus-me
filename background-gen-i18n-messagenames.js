@@ -42,8 +42,6 @@ var MESSAGE_NAMES = [
   "options_nav_compatSgpCache",
   "options_nav_compatSgpUsage_desc",
   "options_nav_questions_label",
-  "options_nav_links_label",
-  "options_nav_links_desc",
   "options_nav_faq_label",
   "options_nav_faq_desc",
   "options_nav_problems_label",
@@ -54,5 +52,10 @@ var MESSAGE_NAMES = [
   "options_nav_resetSettings",
   "options_nav_resetAll_label",
   "options_nav_resetAll",
-  "options_nav_reset_desc"
+  "options_nav_reset_desc",
+  "options_nav_info_label",
+  "options_nav_links_label",
+  "options_nav_links_desc",
+  "options_nav_translators_label",
+  "options_nav_translators_desc"
 ];

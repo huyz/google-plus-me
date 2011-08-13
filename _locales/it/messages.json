@@ -1,11 +1,21 @@
 {
+  "extensionName": {
+    "message": "G+me per Google Plus™",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Riduce la visualizzazione del flusso di Google+ mantenendo gli aggiornamenti correnti: nasconde i commenti, condensa gli articoli, etc.",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
+
+
   "gplus_dateEdited": {
     "message": "modificato",
-    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+    "description": "Text in parentheses after the date for edited posts, e.g. '5:09 PM (edited)'"
   },
   "gplus_dateLongPrefix": {
     "message": "Ieri",
-    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement.' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
     "message": " alle ore",
@@ -17,6 +27,21 @@
   },
   "gplus_permsLimited": {
     "message": "Con restrizioni",
-    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+    "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigazione",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_summary_label": {
+    "message": "Riassunto di un articolo ",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Number of lines in the summary of a collapsed post"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "Gli articoli in visualizzazione ridotta mostrano le miniature delle foto dal contenuto"
   }
 }
