@@ -165,12 +165,13 @@ var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
 var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
 var _C_COMMENTS_SHOWN           = '.Tk';
 var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
-var C_COMMENTS_SHOWN_CONTENT    = 'a-f-i-ZP25p'; // FIXME: what's this?
+var C_COMMENTS_SHOWN_CONTENT    = 'tp'; // The div below the first <a> within the comment, for when the comment is expanded (.tp.sp becomes .tp): https://plus.google.com/105190043964183708400/posts/f6gDun2334n b
+var C_COMMENTS_EDITOR           = 'Ah';
 var C_COMMENTS_MORE_CONTAINER   = 'Zk';
 var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
 var _C_COMMENTS_MORE_COUNT      = '.Ck';
 var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
-var _C_EXPAND_COMMENT           = '.Wq';
+var _C_EXPAND_COMMENT           = '.Wk';
 
 var _C_SHARE_LINE               = '.Jn';
 var _C_LINK_COMMENT             = '.wf';
@@ -190,7 +191,7 @@ var _C_COMMENT_CONTAINERS =
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
-var COMMENT_CONTAINER_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + ')\\b');
+var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
 var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
@@ -1647,17 +1648,22 @@ function updateItem($item, attempt) {
 
     //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
     foreachCommentContainer($item.find('.gpme-comments-wrapper'), function($container) {
+      // NOTE: when a truncated comment is expanded, we don't get a DOMAttrModified event
+      // (or a non-zero e.attrChange) for some reason even though the class changes.
       $container.bind('DOMSubtreeModified', function(e) {
         // We have to filter out junk before we call the throttle function; otherwise
         // the last callback call will have junk arguments.
         var id = e.target.id;
         // Some optimizations, especially to prevent lag when typing comments.
-        if (id && id.charAt(0) == ':' || ! isEnabledOnThisPage())
+        // But we are interested in the ':4a.editor' event which happens in the beginning and end
+        // of comment editing
+        if (id && id.charAt(0) == ':' && id.indexOf('.editor') < 0 || ! isEnabledOnThisPage())
           return;
 
+        // Process when target has an id (it's probably a comment),
+        // or the class is one of the divs we want
         var className = e.target.className;
-        // If the target has id, then it's probably a comment
-        if (! id && ! COMMENT_CONTAINER_REGEXP.test(className))
+        if (! id && ! COMMENT_MODIFIED_REGEXP.test(className))
           return;
 
         // Finally call our throttled callback
@@ -2464,14 +2470,15 @@ function clickMoreButton() {
 }
 
 /**
- * We want to unfold comments > "Expand" long comments & get more comments >
- *   "Expand" long comments & get older comments > "Expand" long comments
+ * We want to unfold comments > get more comments > get older comments.
+ * But always check for truncated comments first, to expand.
  */
 function expandComments($item) {
   // Regardless of round, we expand whatever long coments are visible
   var $expandLink = $item.find(_C_EXPAND_COMMENT);
   if ($expandLink.length) {
     click($expandLink);
+    return;
   }
 
   var $commentsButton = $item.find(_C_COMMENTS_MORE_CONTAINER);
