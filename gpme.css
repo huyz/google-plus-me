@@ -99,6 +99,7 @@
   position: relative;
   border: 1px solid #f5f5f5; /* Overrides gpme-bar. transparent so that gpme-read doesn't shift */
   border-bottom: 1px solid #DCDCDC;
+  white-space: nowrap; /* Overridden when summaries have more than one line */
 }
 
 .gpme-folded .gpme-title-unfolded {

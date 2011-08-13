@@ -3374,6 +3374,8 @@ $(document).ready(function() {
   getOptionsFromBackground(function() {
     // Set the height of a folded bar
     $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
+    if ( settings.nav_summaryLines > 1)
+      $titlebarFolded.css('white-space', 'inherit');
 
     if (DEBUG)
       getMessagesFromBackground(main);
