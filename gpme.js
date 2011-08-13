@@ -89,6 +89,7 @@ var C_CAMERA_ICON               = 'h-na-o-z';
 var C_VIDEO_ICON                = 'h-na-o-Ja';
 var C_LINK_ICON                 = 'h-na-o-k';
 var C_CHECKIN_ICON              = 'h-na-o-Jf-N';
+var C_GAME_ICON                 = 'pm';
 
 // Pages and streams
 var C_NOTIFICATIONS_MARKER      = 't6';
@@ -304,6 +305,7 @@ var $videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span
 var $linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
 var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
 var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
+var $gameIconTpl = $('<span class="gpme-title-icons ' + C_GAME_ICON + '" style="margin-left: 2px; margin-right: -3px; background-size: 80%; background-position: 0 -221px; height: 14px"></span>');
 var $titleDateTpl = $('<span class="gpme-title-date"></span>');
 var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
 var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
@@ -1995,6 +1997,8 @@ function foldItem(options, $item, $post) {
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
         else if ($source.text() == 'Photos')
           /* We already picked out photos.  Move code into here?  */ true;
+        else if ($source.text() == 'Game Update')
+          $sender.append($gameIconTpl.clone());
         else // For non-English
           $clonedTitle.append($source.text());
       }
