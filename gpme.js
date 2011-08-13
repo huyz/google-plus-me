@@ -171,7 +171,7 @@ var C_COMMENTS_MORE_CONTAINER   = 'Zk';
 var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
 var _C_COMMENTS_MORE_COUNT      = '.Ck';
 var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
-var _C_EXPAND_COMMENT           = '.Wk';
+var _C_EXPAND_COMMENT           = '.sp > .Wk';
 
 var _C_SHARE_LINE               = '.Jn';
 var _C_LINK_COMMENT             = '.wf';
