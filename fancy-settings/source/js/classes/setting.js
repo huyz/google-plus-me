@@ -684,6 +684,10 @@
             if (types.hasOwnProperty(params.type)) {
                 bundle = new Bundle[types[params.type]](params);
                 bundle.bundleContainer = this.container;
+
+                // huyz 2011-08-13
+                bundle.bundle.set('id', params.name);
+
                 bundle.bundle.inject(this.container);
                 return bundle;
             } else {
