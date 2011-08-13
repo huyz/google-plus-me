@@ -103,7 +103,7 @@
 
   "options_nav_browserAction_label": {
     "message": "G+me Icoon",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
     "message": "Als je op het G+me icoon klikt, zal Google+ geopened worden, als dit al niet het geval is. Na het aanzetten van deze checkbox zal Google+ in een nieuw tabblad openen i.p.v. in het huidige tabblad"

@@ -83,7 +83,7 @@
 
   "options_nav_browserAction_label": {
     "message": "Icono G+me",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
     "message": "Al hacer clic sobre el icono de G+me se abrirá Google+ si aún no está abierto. Al marcar esta casilla lo abrirá en una pestaña nueva en vez de la actual."

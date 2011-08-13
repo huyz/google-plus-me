@@ -30,9 +30,51 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "Marquer tous les messages comme lus",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Étendre tous les messages",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Réduire tous les messages.",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Marquer ce message comme lu",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Ignorer ce message",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
   "options_nav_general_label": {
     "message": "Navigation",
     "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Style du message",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Afficher la barre de réduction"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "Toujours",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "Au passage de la souris",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "Jamais",
+    "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Résumé d'un article",
@@ -61,7 +103,7 @@
 
   "options_nav_browserAction_label": {
     "message": "Icône de G+me",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
     "message": "Cliquer sur l'icône de l'extension lance Google+, si ce dernier n'est pas encore ouvert. Cocher cette option afin d'ouvrir un nouvel onglet au lieu d'utiliser l'onglet existant."
@@ -187,7 +229,7 @@ Lorsque j'aurai mis en place toutes les fonctionnalités envisagées, je prévoi
 <ul>
 <li>Rafraichir la page (le problème pourrait provenir de Google+)</li>
 <li>Redémarrer votre navigateur (les navigateurs peuvent aussi contenir des erreurs)</li>
-<li>Vous assurer que vous avez la dernière version de <b>G+me</b>. Pour le vérifier, effectuez un clic droit sur l'icône de l'extension et sélectionnez "Gérer les extensions", puis comparez votre version avec celle disponible dans le <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>. Pour forcer la mise à jour de vos extensions suivez <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>ces instructions</a>.</li> 
+<li>Vous assurer que vous avez la dernière version de <b>G+me</b>. Pour le vérifier, effectuez un clic droit sur l'icône de l'extension et sélectionnez \"Gérer les extensions\", puis comparez votre version avec celle disponible dans le <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>. Pour forcer la mise à jour de vos extensions suivez <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>ces instructions</a>.</li> 
 <li>Si vous avez déjà la dernière version de <b>G+me</b>, vous pouvez encore essayer de dés-installer, puis de réinstaller l'extension.</li>
 <li>Ré-initialiser toutes les options et l'historique de <b>G+me</b>, comme indiqué ci-dessous.</li>
 </ul>",
@@ -222,6 +264,11 @@ Lorsque j'aurai mis en place toutes les fonctionnalités envisagées, je prévoi
     "message": "<b>N.B.:</b> Ces boutons n'ont rien à voir avec vos données dans Google+, qui sont inaccessibles à l'extension.",
     "description": "Footnote for the reset buttons"
   },
+
+  "options_nav_info_label": {
+    "message": "Informations",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
   "options_nav_links_label": {
     "message": "Liens",
     "description": "Name of the options group for URL links"
@@ -233,5 +280,12 @@ Lorsque j'aurai mis en place toutes les fonctionnalités envisagées, je prévoi
     <p>Notez l'extension sur <a href=\"http://goo.gl/m837O\" target=_blank>le Chrome Web Store</a>.</p>
     <p>Le code source est disponible sur <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Traducteurs",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy remercie sincèrement tous les traductuers pour leurs compétences et leurs efforts"
   }
 }

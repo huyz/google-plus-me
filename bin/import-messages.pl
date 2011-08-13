@@ -207,6 +207,10 @@ for my $worksheet ( $workbook->worksheets() ) {
           }
         }
 
+        # Check for 2 double quotes or unquoted double-quotes
+        die "$cell" if $cell =~ /""/;
+        die "$cell" if $cell =~ /(?<!\\)"/;
+
         # Track which translation had an entry
         $entryCount{$sheetName}[$transIndex]++;
         # But just take the first non-empty one
@@ -256,8 +260,8 @@ for my $worksheet ( $workbook->worksheets() ) {
     chomp $message;
     $message =~ s/^\s*//;
 
-
-    print "$key=\"$message\"\n";
+    my $snippet = substr($message, 0, 70);
+    print "$key=\"$snippet\"\n";
 
     ### Do substitution
 

@@ -26,9 +26,44 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "マークした投稿を全て読む。",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "投稿を開く。",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "投稿を折りたたむ。",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "マークした投稿を読む。",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "投稿を消す。",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
   "options_nav_general_label": {
     "message": "ナビゲーション",
     "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "投稿スタイル",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "常に",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "しない",
+    "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_summary_label": {
     "message": "ポストサマリー",
@@ -57,7 +92,7 @@
 
   "options_nav_browserAction_label": {
     "message": "ブラウザアイコン",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
     "message": "Google+がまだ表示されていないのであれば、ブラウザアイコンをクリックする時に表示されます。"
@@ -166,6 +201,11 @@ Webストアでは、この拡張機能があなたの閲覧履歴を閲覧す�
 常にデータはExtensionによって安全です。",
     "description": "Footnote for the reset buttons"
   },
+
+  "options_nav_info_label": {
+    "message": "インフォメーション",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
   "options_nav_links_label": {
     "message": "リンク",
     "description": "Name of the options group for URL links"
@@ -177,5 +217,12 @@ Webストアでは、この拡張機能があなたの閲覧履歴を閲覧す�
 <p>拡張機能について、<a href=\"http://goo.gl/m837O\" target=_blank>Chromeウェブストア</a>にて評価してください。</p>
 <p>ソースコードについては、<a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>に行ってください。</p>",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "訳者",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huyは彼らの技能と努力について、翻訳を行った全ての方々に心から感謝します。"
   }
 }

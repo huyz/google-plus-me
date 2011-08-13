@@ -87,7 +87,7 @@
 
   "options_nav_browserAction_label": {
     "message": "Ikon G+me",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
     "message": "Ketika mengklik ikon G+me, Google+ akan dibuka jika sebelumnya belum terbuka. Mengecek kotak ini akan membuka tab baru."
