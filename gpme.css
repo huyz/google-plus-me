@@ -127,12 +127,10 @@
   opacity: 0.6;
 }
 
-.gpme-titlebar:hover, /* Like C_FEEDBACK */
-.gpme-commentbar:hover {
+.gpme-bar:not(.gpme-bottombar):hover {
   cursor: pointer;
 }
-.gpme-titlebar:hover /* Like C_FEEDBACK */ .gpme-fold-icon,
-.gpme-commentbar:hover .gpme-fold.icon {
+.gpme-bar:hover /* Like C_FEEDBACK */ .gpme-fold-icon {
   color: #333333;
 }
 
