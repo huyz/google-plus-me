@@ -222,6 +222,8 @@ this.manifest = {
 <table>\
 <tr><td style=\"width: 20%\">Deutsch</td>\
 <td><a href=\"https://plus.google.com/111611377225917333080\" target=_blank>Nick Rock</a></td></tr>\
+<tr><td>Dutch</td>\
+<td><a href=\"https://plus.google.com/105310358762146417461\" target=_blank>Peter Klein</a></td></tr>\
 <tr><td>Español AL</td>\
 <td><a href=\"https://plus.google.com/103470335401117697610\" target=_blank>Andrés D Bevilacqua (aka PaiSand)</a></td></tr>\
 <tr><td>Français</td>\

@@ -3,8 +3,12 @@ this.i18n = {
     "settings": {
         "en": "Options",
         "de": "Optionen",
+        "es": "Opciones",
+        "es_419": "Opciones"
         "hu": "Beállítások",
-        "nl": "Instellingen"
+        "nl": "Instellingen",
+        "pt_BR": "Opções",
+        "pt_PT": "Opções"
     },
     "search": {
         "en": "Search",

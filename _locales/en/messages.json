@@ -103,10 +103,10 @@
 
   "options_nav_browserAction_label": {
     "message": "G+me Icon",
-    "description": "Name of the options group for the browser icon"
+    "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
-    "message": "When clicking the browser icon, Google+ will be opened if not yet already opened.  Checking this checkbox will open a new tab instead of re-using the current tab."
+    "message": "When clicking the G+me icon, Google+ will be opened if not yet already opened.  Checking this checkbox will open a new tab instead of re-using the current tab."
   },
 
   "options_nav_pages_label": {
