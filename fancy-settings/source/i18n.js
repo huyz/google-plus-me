@@ -4,7 +4,7 @@ this.i18n = {
         "en": "Options",
         "de": "Optionen",
         "es": "Opciones",
-        "es_419": "Opciones"
+        "es_419": "Opciones",
         "hu": "Beállítások",
         "nl": "Instellingen",
         "pt_BR": "Opções",
