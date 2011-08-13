@@ -30,7 +30,7 @@ var defaultSettings = {
    */
   'nav_summaryLines': 1,
   'nav_summaryIncludeThumbnails': false,
-  'nav_summaryIncludeTime': false,
+  'nav_summaryIncludeTime': true,
   'nav_previewEnableInExpanded': false,
   'nav_previewEnableInList': true,
   'nav_browserActionOpensNewTab': false,
