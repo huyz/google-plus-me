@@ -2,3 +2,98 @@
 // Add your own style rules here, not in css/main.css
 // or css/setting.css for easy updating reasons.
 */
+
+.bundle.radio-buttons {
+  margin-bottom: 1.5em;
+}
+
+.bundle {
+  clear: both;
+}
+#nav_previewEnableInList {
+  clear: none;
+}
+
+#nav_showTopCollapseBarWhen::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-top-collapse-bar-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_summaryLines::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-summary-lines-300.png');
+}
+#nav_summaryIncludeThumbnails::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-thumbnails-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_summaryIncludeTime::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-summary-date-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_previewEnableInExpanded::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-post-preview-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_browserActionOpensNewTab::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-browser-icon.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/*
+#nav_global_postsDefaultMode::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-list-mode-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+*/
+
+#nav_global_commentsDefaultCollapsed::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-collapsed-comments-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+
+#nav_compatSgp::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-sgplus-collapsed-post-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_compatSgpComments::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-sgplus-collapsed-comments-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}

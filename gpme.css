@@ -121,7 +121,7 @@
   width: 20px;
 }
 .gpme-title-folded.gpme-perms-limited .gpme-circle-icon {
-  background: url('chrome-extension://__MSG_@@extension_id__/icons/circle_orange13.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/circle_orange13.png') no-repeat;
   background-position: 4px 5px;
   background-size: 50%;
   opacity: 0.6;
@@ -223,11 +223,11 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 
 .gpme-mute-button {
   /* http://findicons.com/icon/70079/mute */
-  background: url('chrome-extension://__MSG_@@extension_id__/icons/mute21.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/mute21.png') no-repeat;
 }
 .gpme-mark-read-button {
   /* http://findicons.com/icon/267830/checkmark?id=268147 */
-  background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmark21.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/checkmark21.png') no-repeat;
 }
 .gpme-mute-button,
 .gpme-mark-read-button {
@@ -377,7 +377,7 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
   padding: 6px 0 6px 8px; /* Gained (21-8)*2=26px; actually, now moved the 8px to .a-f-i-p's padding-right */
   background: white;
   outline: 1px solid #CCC;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
@@ -582,7 +582,7 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 .gpme-list-mode > .gpme-button-mark-all-read {
   display: inline-block;
-  background: url('chrome-extension://__MSG_@@extension_id__/icons/checkmarks16.png') no-repeat;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/checkmarks16.png') no-repeat;
   border: 1px solid rgba(0, 0, 0, 0.2);
   -moz-border-radius: 3px;
   border-radius: 3px;
