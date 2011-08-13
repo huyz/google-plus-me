@@ -818,6 +818,10 @@ function onItemInserted(e) {
   info("event: DOMNodeInserted of item into stream");
   debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
+
+  // We call this manually because otherwise it only happens on interactive
+  // folding/unfolding.
+  updateContentPaneButtons();
 }
 
 /**
