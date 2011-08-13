@@ -236,6 +236,8 @@ this.manifest = {
 <td><a href=\"https://plus.google.com/108442963639756243080\" target=_blank>Marco Mililotti</a></td></tr>\
 <tr><td>Japanese</td>\
 <td><a href=\"https://plus.google.com/104214201726373605313\" target=_blank>Toshitsugu Miyoshi</a></td></tr>\
+<tr><td>Portuguese BR</td>\
+<td><a href=\"https://plus.google.com/117755969537089366397\" target=_blank>Cesar JB</a></td></tr>\
 <tr><td>Portuguese PT</td>\
 <td><a href=\"https://plus.google.com/102936041566944563648\" target=_blank>Pedro Ricardo</a></td></tr>\
 </table>\
