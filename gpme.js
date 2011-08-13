@@ -228,6 +228,7 @@ var TRIANGLE_HEIGHT                               = 30;
 var POST_WRAPPER_PADDING_TOP                      = 6;
 var POST_WRAPPER_PADDING_BOTTOM                   = 6;
 var ITEM_LINE_HEIGHT                              = 22;
+var FOLDED_ITEM_OUTER_HEIGHT_EXTRAS               = 2 * (4 + 1);
 var MUTED_ITEM_HEIGHT                             = 45;
 // Other CSS values
 var GBAR_HEIGHT                                   = 30;
@@ -685,7 +686,7 @@ function overlappingBarsHeight() {
  * Returns the height of a folded item, i.e. gpme-title-folded
  */
 function foldedItemHeight() {
-  return settings.nav_summaryLines * ITEM_LINE_HEIGHT + 2 /* padding-top */ + 2 /* border */
+  return settings.nav_summaryLines * ITEM_LINE_HEIGHT + FOLDED_ITEM_OUTER_HEIGHT_EXTRAS;
 }
 
 /**
@@ -1580,7 +1581,7 @@ function updateItem($item, attempt) {
 
   // Refresh opacity of titlebar
   var $unfoldTitlebar = $item.find('.gpme-title-unfolded');
-  if (displayMode == 'list' || settings.nav_alwaysShowCollapseBarInExpanded) {
+  if (settings.nav_showTopCollapseBarWhen == 'always') {
     $unfoldTitlebar.css('opacity', 1);
   } else {
     $unfoldTitlebar.css('opacity', 0);
@@ -3217,11 +3218,10 @@ function hideAnyPostItemPreview() {
  * Show top collapse bar if necessary
  */
 function showTopCollapseBar(e) {
-  // Only need to show in list mode or if the setting is not set
+  if (settings.nav_showTopCollapseBarWhen != 'hover')
+    return;
   // NOTE: this must run even when folded; otherwise the top bar won't appear
   // if folded and then user unfolds.
-  if (displayMode != 'expanded' || settings.nav_alwaysShowCollapseBarInExpanded)
-    return;
 
   var $item = $(this);
   debug("showTopCollapseBar: item=" + $item.attr('id'));
@@ -3235,8 +3235,7 @@ function showTopCollapseBar(e) {
  * Hide top collapse bar
  */
 function hideTopCollapseBar(e) {
-  // Only hide in list mode or if the setting is not set
-  if (displayMode != 'expanded' || settings.nav_alwaysShowCollapseBarInExpanded)
+  if (settings.nav_showTopCollapseBarWhen != 'hover')
     return;
 
   var $item = $(this);
@@ -3255,8 +3254,7 @@ function hideTopCollapseBar(e) {
  * Show bottom collapse bar if necessary
  */
 function showBottomCollapseBar(e) {
-  // Only enable this in expanded mode
-  if (displayMode != 'expanded')
+  if (displayMode != 'expanded' || settings.nav_showTopCollapseBarWhen == 'never')
     return;
 
   var $item = $(this).parent();
@@ -3281,6 +3279,9 @@ function showBottomCollapseBar(e) {
 }
 
 function hideBottomCollapseBar(e) {
+  if (displayMode != 'expanded' || settings.nav_showTopCollapseBarWhen == 'never')
+    return;
+
   var $item = $(this).parent();
   debug("hideBottomCollapseBar: item=" + $item.attr('id'));
 

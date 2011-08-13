@@ -95,7 +95,7 @@
   height: 14px;
 }
 .gpme-title-folded {
-  padding: 2px 4px 0 4px; /* Must match gpme-comment-count-bg's right */
+  padding: 4px; /* Must match gpme-comment-count-bg's right */
   position: relative;
   border: 1px solid #f5f5f5; /* Overrides gpme-bar. transparent so that gpme-read doesn't shift */
   border-bottom: 1px solid #DCDCDC;
@@ -477,7 +477,7 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 .gpme-comments-title-folded {
   margin-top: -1px; /* To overwrite line above */
-  padding: 2px 4px 0 4px;
+  padding: 2px 4px;
   height: 24px;
   position: relative;
 }

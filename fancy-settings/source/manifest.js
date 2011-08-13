@@ -9,9 +9,14 @@ this.manifest = {
     {
       "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
       "group" : chrome.i18n.getMessage("options_nav_postStyle_label"),
-      "name"  : "nav_alwaysShowCollapseBarInExpanded",
-      "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_nav_alwaysShowCollapseBarInExpanded")
+      "name"  : "nav_showTopCollapseBarWhen",
+      "type"  : "popupButton",
+      "label" : chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen"),
+      "options": [
+        ["always", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_always")],
+        ["hover", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_hover")],
+        ["never", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_never")]
+      ]
     },
     // Collapse summary
     {

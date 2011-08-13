@@ -61,8 +61,20 @@
     "message": "Post Style",
     "description": "Name of the options group for how the post looks"
   },
-  "options_nav_alwaysShowCollapseBarInExpanded": {
-    "message": "Always display the collapse bar at the top of a post; otherwise, only when mouse hovers the post"
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "When to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "always",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "when the post is hovered by the mouse",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "never",
+    "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Post Summary",
