@@ -4,7 +4,7 @@
     "description": "Name of the extension"
   },
   "extensionDescription": {
-    "message": "Retrai as postagens feitas na página stream do Google+, mantendo as atualizações em tempo real: esconde comentários, retrai as postagens, etc.",
+    "message": "Retrai/recolhe as postagens feitas na página stream do Google+, mantendo as atualizações em tempo real: esconde comentários, retrai as postagens, etc.",
     "description": "Description of the extension, as shown in the Web Store"
   },
 
@@ -30,22 +30,61 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "Marque todas as postagens como lidas",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Expandir todas as postagens",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Retrair todas as postagens",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Marcar esta postagem como lida",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Ignorar esta postagem",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
   "options_nav_general_label": {
     "message": "Navegação",
     "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Estilo da postagem",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Quando mostrar a barra retraída"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "sempre",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "quando passar o mouse sobre a postagem",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "nunca",
+    "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Sumário das postagens",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
-  "options_nav_summaryLines": {
-    "message": "Number of lines in the summary of a collapsed post"
-  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "As miniaturas das fotos são visualizadas nas postagens retraídas"
   },
   "options_nav_summaryIncludeTime": {
-    "message": "As informações de data e hora são mostradas nas postagens retraídas"
+    "message": "As informações de data e hora são mostradas nas postagens recolhidas"
   },
 
   "options_nav_preview_label": {
@@ -64,7 +103,7 @@
     "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
-    "message": "Quando o ícone do G+me for clicado, o Google+ será aberto caso já não esteja aberto. Marcando esta opção fará com que nova janela seja aberta no lugar de reutlizar a janela atual."
+    "message": "Quando o ícone do G+me for clicado, o Google+ será aberto caso já não esteja aberto. Marcar esta opção fará com que uma nova janela seja aberta ao invés de reutlizar a janela atual."
   },
 
   "options_nav_pages_label": {
@@ -76,11 +115,11 @@
     "description": "Name of the options group that acts as defaults for all pages"
   },
   "options_nav_global_desc": {
-    "message": "Configure estas opções de página se você quiser configurar todos os tipos de página (stream, círculos, fora dos círculos, notificações, sparks, etc.) da mesma forma",
+    "message": "Configure estas opções se você quiser a mesma configuração todos os tipos de páginas (stream, círculos, fora dos círculos, notificações, sparks, etc.)",
     "description": "Instructions for the global group"
   },
   "options_nav_global_postsDefaultMode": {
-    "message": "Modo retraído para as postagens",
+    "message": "Modo retraído para as postagens:",
     "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
   },
   "options_nav_global_postsDefaultMode_expanded": {
@@ -92,7 +131,7 @@
     "description": "Text after one of the options for collapsed mode for posts."
   },
   "options_nav_global_commentsDefaultCollapsed": {
-    "message": "Retrai todos os comentários por padrão"
+    "message": "Retrai/recolhe todos os comentários por padrão"
   },
 
 
@@ -101,17 +140,17 @@
     "description": "Name of the tab in the options page"
   },
   "options_nav_compat_desc": {
-    "message": "Esta página está relacionada à compatibilidade com outras extensões que você pode ter instalado para Google+ <br /> Você pode ignorar estas opções",
+    "message": "Esta página está relacionada à compatibilidade com outras extensões que você pode ter instalado para o Google+.<br /> Você pode ignorar estas opções.",
     "description": "Introductory text for the Compatibility page"
   },
 
   "options_nav_compatSgp_label": {
-    "message": "SGPlus, a.k.a. Início G+",
+    "message": "SGPlus, conhecido como Start G+",
     "description": "Name of the options group for SGPlus"
   },
   "options_nav_compatSgp_desc": {
-    "message": "<b>ATENÇÃO:</b> Compatibilidade com o SGPlus encontra-se em fase Beta. Ainda persistem questões relacionadas à desempenho e instabilidade. Cada opção abaixo aumenta o processamento das frequentemente pesadas atualizações do SGPlus, possivelmente diminuindo o desempenho do seu navegador e causando pausas frequentes (causando atrasos quando você estiver digitando).<br />
-    Por favor reporte quaisquer problemas para a <a href=\"$URL$\" target=_blank>discussão sobre a compatibilidade do SGPlus no Google+</a>.",
+    "message": "<b>ATENÇÃO:</b> Compatibilidade com o SGPlus encontra-se em fase beta. Ainda persistem questões relacionadas à desempenho e instabilidade. Cada opção abaixo normalmente aumenta o processamento das pesadas atualizações do SGPlus, possivelmente diminuindo o desempenho do seu navegador e causando pausas frequentes (causando atrasos e irritação quando você estiver digitando).<br />
+    Por favor reporte quaisquer problemas na <a href=\"$URL$\" target=_blank>discussão sobre a compatibilidade do SGPlus no Google+</a>.",
     "description": "Text notifying user of current state of compatibility and warning of problems",
     "placeholders": {
       "URL": {
@@ -121,13 +160,13 @@
     }
   },
   "options_nav_compatSgp": {
-    "message": "Habilita compatibilidade com o SGPlus, i.e. torna as postagens possíveis de serem retraídas"
+    "message": "Habilita compatibilidade com o SGPlus, ou seja, torna as postagens possíveis de serem retraídas"
   },
   "options_nav_compatSgpComments": {
-    "message": "Torna os comentários possíveis de serem retraídos e identifica novos comentários <i>(a compatibilidade deve estar habilitada)</i>"
+    "message": "Torna os comentários possíveis de serem retraídos e mantém o controle de novos comentários <i>(a compatibilidade deve estar habilitada)</i>"
   },
   "options_nav_compatSgpCache": {
-    "message": "Permite aceleração de cache para impedir atualização intermitente <i>(compatibilidade deve estar habilitada)</i> -- Experimental",
+    "message": "Permite acelerar o cache para impedir atualização intermitente <i>(compatibilidade deve estar habilitada)</i> -- Experimental",
     "placeholders": {
       "BEGIN_RED": {
         "content": "<span style=\"color: red\">"
@@ -152,28 +191,28 @@
     "description": "Name of the options group for frequently asked questions"
   },
   "options_nav_faq_desc": {
-    "message": "<h3>o G+me protege a minha privacidade?</h3>
+    "message": "<h3>A extensão G+me protege a minha privacidade?</h3>
     <p>
-    Sim, você está seguro. Apesar da Web Store afirmar que a extensão <i>poderia</i> visualizar o \"histórico de utilização\", <i>não</i> o faz. Este é um projeto de código aberto cujo <a href=\"http://goo.gl/BM8CG\" target=_blank>código fonte</a> se encontra disponível para acesso. Você pode ler <a href=\"http://goo.gl/ld00X\" target=_blank>os meus comentários sobre privacidade</a> e as razões técnicas pelas quais a Web Store está enganada.</p>
+    Sim, você está seguro. Apesar da Web Store afirmar que a extensão <i>poderia</i> visualizar o \"histórico de navegação\", isto <i>não</i> é feito pela extensão. Este é um projeto de código aberto cujo <a href=\"http://goo.gl/BM8CG\" target=_blank>código fonte</a> se encontra disponível para acesso. Você pode ler <a href=\"http://goo.gl/ld00X\" target=_blank>os meus comentários sobre privacidade</a> e as razões técnicas pelas quais a Web Store está enganada.</p>
     <p>
-    Pode também instalar uma versão simplificada do <b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID Edition)</a>.
+Você também pode instalar uma versão simplificada do <b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (Edição PARANÓIA)</a>.
     </p>
 
     <h3>Esta extensão diminui o desempenho do Google+</h3>
     <p>Isto se deve, provavelmente, a problemas de compatibilidade com outras extensões. Experimente desabilitar todas as outras extensões do Google+. Por favor, informe-me sobre que outras extensões que aparentemente causam conflitos com o <b>G+me</b>, para que eu possa verificar.
     </p>
 
-    <h3>Esta extensão é incompatível com outra X</h3>
+    <h3>Esta extensão é incompatível com outra extensão X</h3>
     <p>
-    Em 2 e 3 de Agosto, o Google+ alterou o seu modelo, desabilitando quase todas as extensões.  Como resultado, todas as extensões tiveram de rever o seu código.  Irá demorar um tempo até que se possa restaurar a compatibilidade com todas as extensões. Por favor, seja paciente.
+    Em 2 e 3 de agosto/2011, o Google+ alterou o seu modelo, desabilitando quase todas as extensões.  Em função dessa alteração, todas as extensões tiveram de rever o seu código. Poderá demorar um tempo até que se possa restaurar a compatibilidade com todas as extensões. Por favor, seja paciente.
     <!--
-    Esta extensão é <i>incompatível</i> com <b>+Comment Toggle</b>.  Isto é <i>compatível</i> com <b>Start G+</b> (cuidado com possíveis problemas de desempenho), <b>Surplus</b>, <b>Respostas e mais</b> (você tem de desabilitar o atalho da tecla 'm' das suas opções), <b>Extended Share</b>, <b>G+ Ultimate</b> (exceto para \"vista lado-alado\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (exceto para notificações), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+Esta extensão é <i>incompatível</i> com <b>+Comment Toggle</b>.  É <i>compatível</i> com <b>Start G+</b> (cuidado com possíveis problemas de desempenho), <b>Surplus</b>, <b>Respostas e mais</b> (você tem de desabilitar o atalho da tecla 'm' em suas opções), <b>Extended Share</b>, <b>G+ Ultimate</b> (exceto para \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (exceto para notificações), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
     -->
     </p>
 
-    <h3>Isto será portado para o Firefox e outros navegadores?</h3>
+    <h3>A extensão será disponibilizada para o Firefox e outros navegadores?</h3>
     <p>
-    Uma vez implementadas outras opções, planejo portar para o Firefox.  Isto poderá demorar algumas semanas.  Outros navegadores não estão nos planos.
+    Após a implementação de outras opções, planejo disponibilizar a extensão para o Firefox.  Mas isto poderá demorar algumas semanas.  Outros navegadores não estão nos planos.
     </p>",
     "description": "Text of the Frequently Asked Questions"
   },
@@ -184,42 +223,47 @@
   "options_nav_problemsTroubleshoot": {
     "message": "Em caso de comportamento inesperado, experimente o seguinte:<br />
     <ul>
-    <li>Atualize a página (o problema poderá ser só do Google+)</li>
+    <li>Atualize a página (o problema poderá estar no próprio Google+)</li>
     <li>Reinicie o seu navegador (o navegador também tem problemas)</li>
-    <li>Certifique-se que tem a última versão do <b>G+me</b>. Para verificar, clique com o botão direito do mouse no ícone do G+me no navegador, vá a \"Gerenciar Extensões\" e compare com a última versão em <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Aqui está como <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forçar a atualização da extensão</a>.</li>
-    <li>Se já tem a última versão do <b>G+me</b>, pode tentar desinstalar e reinstalar a extensão.</li>
-    <li>Pode tentar restabelecer as definições origenais de todas as opções e histórico.  Ver abaixo.</li>
+    <li>Certifique-se que tem a última versão do <b>G+me</b>. Para verificar, clique com o botão direito do mouse no ícone do G+me no seu navegador, vá em \"Gerenciar Extensões\" e compare com a última versão em <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Veja aqui como <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forçar a atualização da extensão</a>.</li>
+    <li>Se já tem a última versão do <b>G+me</b>, experimente desinstalar e reinstalar a extensão.</li>
+    <li>Tente também retornar as configurações originais de todas as opções e histórico.  Ver abaixo.</li>
     </ul>",
     "description": "Explain some steps to troubleshoot"
   },
   "options_nav_problemsFeedback": {
-    "message": "Pode sempre colocar questões ou retorno de informação na <a href=\"http://huyz.us/gpme-release/\" target=_blank>current discussão sobre o G+me no Google+</a>",
+    "message": "Você sempre poderá esclarecer suas dúvidas ou dar feedback na <a href=\"http://huyz.us/gpme-release/\" target=_blank>discussão atual sobre o G+me no Google+</a>",
     "description": "Giving a link for feedback"
   },
 
   "options_nav_reset_label": {
-    "message": "Redefinindo",
+    "message": "Reconfigurando",
     "description": "Name of the options group for the resetting buttons"
   },
   "options_nav_resetSettings_label": {
-    "message": "Para redefinir todas as opções do <b>G+me</b> para os seus estados de origem por omissão:",
+    "message": "Para redefinir todas as opções do <b>G+me</b> de volta para os seus valores padrão:",
     "description": "Text before the button that resets the options."
   },
   "options_nav_resetSettings": {
-    "message": "Restabelece todas as opções do G+me de origem",
+    "message": "Retorna os valores originais para todas as opções do G+me",
     "description": "Text shown on the button"
   },
   "options_nav_resetAll_label": {
-    "message": "Caso encontre problemas, tente restabelecer todas as opções e histórico de origem",
+    "message": "Caso encontre problemas, tente retornar todas as opções e histórico para os seus valores padrão",
     "description": "Suggestion for what to do in case of problems; with clickable button at the right"
   },
   "options_nav_resetAll": {
-    "message": "Restabelece todas as opções e histórico de origem",
+    "message": "Retorna todas as opções e histórico originais",
     "description": "Text shown on the button"
   },
   "options_nav_reset_desc": {
-    "message": "NOTA: Estes botões não dizem respeito, de forma alguma, aos seus dados do Google+, que estão sempre a salvo desta extensão.",
+    "message": "OBSERVAÇÃO: Estes botões não se referem aos seus dados no Google+, os quais estão sempre a salvo desta extensão.",
     "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Informações",
+    "description": "Name of the tab in the options page for information links and credit"
   },
   "options_nav_links_label": {
     "message": "Links",
@@ -227,10 +271,17 @@
   },
   "options_nav_links_desc": {
     "message": "<p>Siga o autor Huy Z no <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> e <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
-    <p>Encontre instruções de uso e as últimas novidades na <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me web page</a>.</p>
+    <p>Encontre instruções de uso e as últimas novidades na <a href=\"http://huyz.us/google-plus-me/\" target=_blank>página do G+me na web</a>.</p>
     <p>Dê feedbacks sobre a utilização na <a href=\"http://huyz.us/gpme-release/\" target=_blank>discussão atual do Google+</a>.</p>
     <p>Avalie a extensão na <a href=\"http://goo.gl/m837O\" target=_blank>Loja do Chrome na Web</a>.</p>
-    <p>Para o código fonte, vá a <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    <p>Para o código fonte, clique <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Tradutores",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy sinceramente agradece aos tradutores por seus esforços e habilidades"
   }
 }

@@ -80,9 +80,6 @@
     "message": "Bejegyzések összegzése",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
-  "options_nav_summaryLines": {
-    "message": "Number of lines in the summary of a collapsed post"
-  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Az összecsukott bejegyzéseknél jelenjenek meg a képek előnézetei"
   },

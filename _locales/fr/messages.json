@@ -32,23 +32,23 @@
 
 
   "ui_posts_markAllReadButton": {
-    "message": "Marquer tous les messages comme lus",
+    "message": "Marquer tous les articles comme lus",
     "description": "Tooltip that shows up when hovering over button"
   },
   "ui_posts_expandAllButton": {
-    "message": "Étendre tous les messages",
+    "message": "Étendre tous les articles",
     "description": "Tooltip that shows up when hovering over button"
   },
   "ui_posts_collapseAllButton": {
-    "message": "Réduire tous les messages.",
+    "message": "Réduire tous les articles",
     "description": "Tooltip that shows up when hovering over button"
   },
   "ui_posts_markReadButton": {
-    "message": "Marquer ce message comme lu",
+    "message": "Marquer cet article comme lu",
     "description": "Tooltip that shows up when hovering over button"
   },
   "ui_posts_muteButton": {
-    "message": "Ignorer ce message",
+    "message": "Ignorer cet article",
     "description": "Tooltip that shows up when hovering over button"
   },
 
@@ -58,30 +58,27 @@
   },
 
   "options_nav_postStyle_label": {
-    "message": "Style du message",
+    "message": "Style de l'article",
     "description": "Name of the options group for how the post looks"
   },
   "options_nav_showTopCollapseBarWhen": {
     "message": "Afficher la barre de réduction"
   },
   "options_nav_showTopCollapseBarWhen_always": {
-    "message": "Toujours",
+    "message": "toujours",
     "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_showTopCollapseBarWhen_hover": {
-    "message": "Au passage de la souris",
+    "message": "au passage de la souris",
     "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_showTopCollapseBarWhen_never": {
-    "message": "Jamais",
+    "message": "jamais",
     "description": "One of the options for when to display the collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Résumé d'un article",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
-  },
-  "options_nav_summaryLines": {
-    "message": "Number of lines in the summary of a collapsed post"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Les articles raccourcis affichent les vignettes des photos du contenu"
@@ -286,6 +283,6 @@ Lorsque j'aurai mis en place toutes les fonctionnalités envisagées, je prévoi
     "description": "Name of the options group for translator credits"
   },
   "options_nav_translators_desc": {
-    "message": "Huy remercie sincèrement tous les traductuers pour leurs compétences et leurs efforts"
+    "message": "Huy remercie sincèrement tous les traducteurs pour leurs compétences et leurs efforts"
   }
 }

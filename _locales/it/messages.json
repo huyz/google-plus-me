@@ -38,9 +38,6 @@
     "message": "Riassunto di un articolo ",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
-  "options_nav_summaryLines": {
-    "message": "Number of lines in the summary of a collapsed post"
-  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Gli articoli in visualizzazione ridotta mostrano le miniature delle foto dal contenuto"
   }

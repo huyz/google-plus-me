@@ -81,7 +81,7 @@
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryLines": {
-    "message": "Number of lines in the summary of a collapsed post"
+    "message": "Aantal regels in een ingeklapte post"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Samengevoegde posts laten thumbnails van foto's uit de posts zien"
@@ -285,6 +285,6 @@
     "description": "Name of the options group for translator credits"
   },
   "options_nav_translators_desc": {
-    "message": "Huy bedankt alle vartalers voor hun inspanningen en bekwaamheid"
+    "message": "Huy bedankt alle vertalers voor hun inspanningen en bekwaamheid"
   }
 }
