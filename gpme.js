@@ -221,6 +221,7 @@ var _C_SGP_TEXT1                 = _C_CONTENT; // .Qy
 var _C_SGP_TEXT2                 = '.ea-S-R';
 var S_SGP_ORIGPOST_LINK          = 'span[style                                                                       ^= "font-size"]';
 var _C_SGP_COMMENT               = '.sgp_comments_wrapper';
+var _C_SGP_DATE                  = '.a-b-f-i-Ad-Ub';
 
 // Google+ Tweaks
 var _C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
@@ -2139,7 +2140,7 @@ function foldItem(options, $item, $post) {
               $sender.after($titleDateTpl.clone().text(dateText)).after($titleDashTpl.clone());
 
             } else {
-              $dateA = $itemGuts.find(isSgpPost ? _C_DATE : _C_DATE + ' > a');
+              $dateA = $itemGuts.find(isSgpPost ? _C_SGP_DATE : _C_DATE + ' > a');
 
               if ($dateA.length) {
                 // Try again later in a little bit
@@ -2619,7 +2620,7 @@ function foldComments(interactive, $item, $comments) {
 
     // Favor the share line first so there's no unnecessary motion
     var $shareLine = $item.find(_C_SHARE_LINE);
-    ($shareLine.length? $shareLine : $commentbar).scrollintoview({ duration: duration, direction: 'y' });
+    ($shareLine.length? $shareLine : $item.find('gpme-commentbar')).scrollintoview({ duration: duration, direction: 'y' });
 
   } else {
     // Visual changes
