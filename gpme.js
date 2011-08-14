@@ -98,11 +98,13 @@ var C_SPARKS_MARKER             = 'c1';
 var C_SINGLE_POST_MARKER        = 'a-Bh-fc-K';
 var C_STREAM                    = 'Wq';
 var _C_STREAM                   = '.Wq';
+var _C_GAMES_STREAM             = '.ZuC1te';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
 var _C_MORE_BUTTON              = '.Ml';
 
 var _C_CONTENT_PANE_HEADING     = '.kp';
 var _C_PROFILE_HEADING          = '.fn';
+var _C_GAMES_HEADING            = '.KlZYid.Wqnkg';
 
 // Item
 var C_SELECTED                  = 'Lj';
@@ -605,8 +607,11 @@ function foreachCommentContainer($subtree, callback) {
 function foreachItem(callback) {
   var $stream = $(_C_STREAM);
   if (! $stream.length) {
-    error("forEachItem: Can't find stream");
-    return;
+    $stream = $(_C_GAMES_STREAM);
+    if (! $stream.length) {
+      error("forEachItem: Can't find stream");
+      return;
+    }
   }
   
   $stream.find(_C_ITEM).each(function(i, item) {
@@ -768,7 +773,7 @@ jQuery.fn.outerScrollWidth = function(includeMargin) {
  * Responds to DOM updates from G+ to handle change in status of new notifications shown to the user
  */
 function onStatusUpdated(e) {
-  debug("onStatusUpdated");
+  //debug("onStatusUpdated");
   chrome.extension.sendRequest({action: 'gpmeStatusUpdate', count: parseInt(e.target.innerText, 10)});
 }
 
@@ -795,6 +800,12 @@ function onTabUpdated() {
   // that we know that window.location.href is correct
   if (displayMode == 'list')
     unfoldLastOpenInListMode();
+
+  // If switching between Streams to Games, we need to inject the content pane buttons.
+  // At this time, one of the content panes will be hidden -- we need to pick out the correct
+  // subtree
+  var $contentPaneDiv = $(_ID_CONTENT_PANE + ' > :not([style*="none"])');
+  updateContentPaneButtons($contentPaneDiv);
 }
 
 /**
@@ -821,8 +832,8 @@ function onItemInserted(e) {
   if (! isEnabledOnThisPage())
     return;
 
-  info("event: DOMNodeInserted of item into stream");
-  debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
+  //info("event: DOMNodeInserted of item into stream");
+  //debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
   updateItem($(e.target));
 
   // We call this manually because otherwise it only happens on interactive
@@ -970,7 +981,6 @@ function onCommentTitleClick() {
  * Responds to all keypresses
  */
 function onKeydown(e) {
-  debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
   // We're not interested in these
   if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
       e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA')
@@ -982,6 +992,8 @@ function onKeydown(e) {
   contentEditable = e.target.getAttribute('g_editable');
   if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
     return;
+
+  //debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
 
   /*
   // Start catching key sequences
@@ -1920,7 +1932,7 @@ function foldItem(options, $item, $post) {
   var id = $item.attr('id');
 
   // Persist for expanded mode
-  debug("foldItem: id=" + id);
+  //debug("foldItem: id=" + id);
   if (interactive && displayMode == 'expanded')
     lsSet(LS_FOLDED, id, 1);
   // Persist for both list/expanded mode
@@ -2215,7 +2227,7 @@ function unfoldItem(options, $item, $post) {
   }
 
   var id = $item.attr('id');
-  debug("unfoldItem: id=" + id);
+  //debug("unfoldItem: id=" + id);
 
   var canHaveComments = true;
   // If this is SGPlus post
@@ -2601,7 +2613,7 @@ function foldComments(interactive, $item, $comments) {
   }
 
   var id = $item.attr('id');
-  debug("foldComments: id=" + id);
+  //debug("foldComments: id=" + id);
   var commentCount = countComments($comments);
 
   // If result of user action
@@ -2667,7 +2679,7 @@ function unfoldComments(interactive, $item, $comments) {
   }
 
   var id = $item.attr('id');
-  debug("unfoldComments: id=" + id);
+  //debug("unfoldComments: id=" + id);
   var commentCount = countComments($comments);
 
   if (interactive) {
@@ -2755,7 +2767,7 @@ function updateCommentCount(id, $subtree, count) {
     if (seenCount !== null && ! seenCountChanged) {
       // But give G+ time to quickly move comments from one section to another
       lastCommentCountUpdateTimers[id] = setTimeout(function() {
-        debug("lastCommentCountUpdateTimers: setting id=" + id);
+        //debug("lastCommentCountUpdateTimers: setting id=" + id);
         lsSet(LS_COMMENTS_READ_COUNT_CHANGED, id, 1);
         delete lastCommentCountUpdateTimers[id];
       }, 200);
@@ -3183,7 +3195,7 @@ function enableBodyScrollbarY() {
  */
 function hidePreview(e) {
   var $item = $(this);
-  debug("hidePreview: this=" + $item.attr('class'));
+  //debug("hidePreview: this=" + $item.attr('class'));
   hidePostItemPreview($item);
 }
 
@@ -3191,7 +3203,7 @@ function hidePreview(e) {
  * Hides the preview of the specified item
  */
 function hidePostItemPreview($item) {
-  debug("hidePostItemPreview:");
+  //debug("hidePostItemPreview:");
   if (!$item || ! isItemFolded($item))
     return;
 
@@ -3228,7 +3240,7 @@ function hidePostItemPreview($item) {
  * Hides the last preview that was popped up
  */
 function hideAnyPostItemPreview() {
-  debug("hideAnyPostItemPreview");
+  //debug("hideAnyPostItemPreview");
   if ($lastPreviewedItem !== null)
     hidePostItemPreview($lastPreviewedItem);
 }
@@ -3247,7 +3259,7 @@ function showTopCollapseBar(e) {
   // if folded and then user unfolds.
 
   var $item = $(this);
-  debug("showTopCollapseBar: item=" + $item.attr('id'));
+  //debug("showTopCollapseBar: item=" + $item.attr('id'));
 
   var $topbar = $item.find('.gpme-title-unfolded');
   if ($topbar.length)
@@ -3262,7 +3274,7 @@ function hideTopCollapseBar(e) {
     return;
 
   var $item = $(this);
-  debug("hideTopCollapseBar: item=" + $item.attr('id'));
+  //debug("hideTopCollapseBar: item=" + $item.attr('id'));
 
   var $topbar = $item.find('.gpme-title-unfolded');
   if ($topbar.length)
@@ -3331,12 +3343,17 @@ function updateContentPaneButtons($subtree) {
   var $heading = typeof $subtree != 'undefined' ?
     $subtree.find(_C_CONTENT_PANE_HEADING) : $(_C_CONTENT_PANE_HEADING);
   // Try for profile
-  if (! $heading.length)
+  if (! $heading.length) {
     $heading = typeof $subtree != 'undefined' ?
       $subtree.find(_C_PROFILE_HEADING) : $(_C_PROFILE_HEADING);
+    // Try for games
+    if (! $heading.length)
+      $heading = typeof $subtree != 'undefined' ?
+        $subtree.find(_C_GAMES_HEADING) : $(_C_GAMES_HEADING);
+  }
 
   if (! $heading.length) {
-    debug("updateContentPaneButtons: Can't find content pane heading");
+    warn("updateContentPaneButtons: Can't find content pane heading");
     return;
   }
 
@@ -3400,7 +3417,7 @@ if (DEBUG) {
    * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
    */
   getMessage = function(name) {
-    debug('getMessage: from background: ' + name);
+    //debug('getMessage: from background: ' + name);
     return i18nMessages[name];
   };
 
