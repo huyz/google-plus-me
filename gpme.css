@@ -21,6 +21,16 @@
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 
+/* The little animated bar; needs to more selective than G+'s */
+.gpme-enh.Lj /* selected post */ {
+  /*border-left-color: red; /* #3d9400;*/
+  border-left-width: 2px;
+  margin-left: -1px;
+}
+div.Lj /* animated bar */ {
+  border-left-width: 2px;
+}
+
 /*
  * Common to titlebar and commentbar
  */
