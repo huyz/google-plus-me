@@ -242,6 +242,8 @@ this.manifest = {
 <td><a href=\"https://plus.google.com/117755969537089366397\" target=_blank>Cesar JB</a></td></tr>\
 <tr><td>Português (Portugal)</td>\
 <td><a href=\"https://plus.google.com/102936041566944563648\" target=_blank>Pedro Ricardo</a></td></tr>\
+<tr><td>Svenska (Swedish)</td>\
+<td><a href=\"https://plus.google.com/114288788001946097645\" target=_blank>Joakim Saettem</a></td></tr>\
 </table>\
         "
     }

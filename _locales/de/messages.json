@@ -118,7 +118,7 @@
     "description": "Name of the options group that acts as defaults for all pages"
   },
   "options_nav_global_desc": {
-    "message": "Konfigurieren Sie diese Optionen wenn Sie alle Bereiche (Stream, Kreise, Nicht in Kreisen, Benachrichtigungen, Sparks, etc) gleich behandeln möchten",
+    "message": "Konfigurieren Sie diese Optionen wenn Sie alle Bereiche (Stream, Kreise, Nicht in Kreisen, Benachrichtigungen, Sparks, etc) gleich behandeln möchten.",
     "description": "Instructions for the global group"
   },
   "options_nav_global_postsDefaultMode": {
@@ -130,7 +130,7 @@
     "description": "Text after one of the options for collapsed mode for posts."
   },
   "options_nav_global_postsDefaultMode_list": {
-    "message": "Liste -- Alle Beiträge bis auf eine werden eingeklappt angezeigt",
+    "message": "Liste -- Alle Beiträge bis auf einen werden eingeklappt angezeigt",
     "description": "Text after one of the options for collapsed mode for posts."
   },
   "options_nav_global_commentsDefaultCollapsed": {
@@ -152,7 +152,7 @@
     "description": "Name of the options group for SGPlus"
   },
   "options_nav_compatSgp_desc": {
-    "message": "<b>WARNUNG:</b> Kompatibilität mit SGPlus ist in Beta. Es gibt immer noch Leistungs und Stabilitäts Probleme. Jede der nachfolgende Optionen beeinflusst SGPlu's häufige Aktualisierungsrate mit möglichen Geschwindgkeitsverlusten oder pausieren Ihres Browsers (nervig wenn Sie gerade schreiben).<br />
+    "message": "<b>WARNUNG:</b> Kompatibilität mit SGPlus ist in Beta. Es gibt immer noch Leistungs und Stabilitäts Probleme. Jede der nachfolgenden Optionen beeinflusst SGPlu's häufige Aktualisierungsrate mit möglichen Geschwindgkeitsverlusten oder pausieren Ihres Browsers (nervig wenn Sie gerade schreiben).<br />
     Bitte posten Sie alle Probleme in der <a href=\"$URL$\" target=_blank>Diskussion über SGplus' Kompatibilität mit Google+</a>.",
     "description": "Text notifying user of current state of compatibility and warning of problems",
     "placeholders": {
@@ -254,7 +254,7 @@
     "description": "Suggestion for what to do in case of problems; with clickable button at the right"
   },
   "options_nav_resetAll": {
-    "message": "Alle G+me Optionen zurücksetzen",
+    "message": "Alle G+me Optionen und Verlauf zurücksetzen",
     "description": "Text shown on the button"
   },
   "options_nav_reset_desc": {

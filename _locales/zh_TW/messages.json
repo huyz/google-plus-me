@@ -106,7 +106,7 @@
     "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
-    "message": "如果Google+頁面尚未被開啟，點選G+me圖示將會開啟Google+頁面。勾選此單選框，將會使動作轉變為開啟新的分頁，取代直接在瀏覽中分頁開啟。"
+    "message": "如果Google+頁面尚未被開啟，點選G+me圖示將會開啟Google+頁面。勾選此單選框，將會使動作轉變為開啟新的分頁，而不直接在瀏覽中分頁開啟。"
   },
 
   "options_nav_pages_label": {
@@ -118,7 +118,7 @@
     "description": "Name of the options group that acts as defaults for all pages"
   },
   "options_nav_global_desc": {
-    "message": "設定此頁面的選項。如果你想使用同一設定所有頁面區塊。",
+    "message": "設定此頁面選項，將會影響到所有頁面及區塊。",
     "description": "Instructions for the global group"
   },
   "options_nav_global_postsDefaultMode": {
@@ -148,12 +148,12 @@
   },
 
   "options_nav_compatSgp_label": {
-    "message": "SGPlus，又名Start G+",
+    "message": "SGPlus (Start G+)",
     "description": "Name of the options group for SGPlus"
   },
   "options_nav_compatSgp_desc": {
-    "message": "<b>警告:</b> 與SGPlus的相容性設定仍在測試，持續會有一些效能和不穩定的問題存在。下列每一個選項將會增加對SGPlus頻繁重載問題的處理，可能會減慢您的瀏覽器並造成頻繁的頓挫 (會使您在輸入文字時感到很煩)。<br />
-    請回饋任何問題到<a href=\"$URL$\" target=_blank>Google+頁面關於SGPlus 相容性的討論串</a>.",
+    "message": "<b>警告:</b> 與SGPlus的相容性設定仍在測試，持續會有一些效能和不穩定的問題存在。下列每一個選項將會增加對SGPlus頻繁刷新問題的處理，可能會減慢您的瀏覽器並造成頻繁的頓挫 (會使您在輸入文字時感到很煩)。<br />
+    請回饋任何問題到<a href=\"$URL$\" target=_blank>SGPlus 相容性的討論串</a>。",
     "description": "Text notifying user of current state of compatibility and warning of problems",
     "placeholders": {
       "URL": {
@@ -166,7 +166,18 @@
     "message": "啟用SGPlus相容性設定，使訊息可收合"
   },
   "options_nav_compatSgpComments": {
-    "message": "使回覆可收合並追蹤回覆 (相容性設定必須啟用)"
+    "message": "使回覆可收合並追蹤回覆 (SGPlus相容性設定必須啟用)"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "啟用加速快取，避免刷新抖動 <i>(相容性設定必須啟用)</i> -- 實驗性選項",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
   },
   "options_nav_compatSgpUsage_desc": {
     "message": "<b>註：</b> Google+ 分頁會在改變任何選項後重新讀取。",
@@ -175,7 +186,7 @@
 
 
   "options_nav_questions_label": {
-    "message": "問與答",
+    "message": "問與答 (Q&A)",
     "description": "Name of the tab in the options page for questions and problems"
   },
   "options_nav_faq_label": {
@@ -183,20 +194,20 @@
     "description": "Name of the options group for frequently asked questions"
   },
   "options_nav_faq_desc": {
-    "message": "<h3>您會保障我的隱私資料嗎？</h3>
+    "message": "<h3>G+me會保障我的隱私資料嗎？</h3>
     <p>
-    當然，您是無虞的。儘管Google線上應用程式商店說 <i>會</i> 存取 \"瀏覽的歷史訊息\"，實際上是<i>不會</i>。這是一個開源計畫，<a href=\"http://goo.gl/BM8CG\" target=_blank>源始碼</a>是您可以獲得並檢驗的。 您可以閱覽<a href=\"http://goo.gl/ld00X\" target=_blank>我對於隱私問題的回覆</a> 和Google線上應用程式商店誤解的技術上理由</p>
+    當然，您的隱私資料是無虞的。儘管Google線上應用程式商店說 <b>會</b> 存取 \「瀏覽的歷史訊息\」，但實際上是<b>不會</b>。這是一個開源計畫，<a href=\"http://goo.gl/BM8CG\" target=_blank>源始碼</a>是您可以獲得並檢驗的。 您可以閱覽 <a href=\"http://goo.gl/ld00X\" target=_blank>我對於隱私問題的回覆</a> 內容包括Google線上應用程式商店誤解的技術理由。</p>
     <p>
-    您也可以安裝稍微特性簡化的版本<b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID 版本)</a>.
+    您也可以安裝功能稍微削減的版本<b>G+me</b>： <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (存取特別版)</a>。
     </p>
 
     <h3>這個擴充功能會減慢Google+頁面？</h3>
     <p>通常是因為和其他擴充功能的不相容。試著關閉其他關於Google+的擴充功能。如果可以，請您讓我知道是哪個擴充功能和G+me產生惡性的交互作用。
     </p>
 
-    <h3>這個擴充功能和其他擴充功能衝突 </h3>
+    <h3>這個擴充功能和其他擴充功能衝突。</h3>
     <p>
-    在8月2日及3日，Google+改變頁面配置，粉碎了大多數的Google+擴充功能。因此，所有的擴充功能都已經改變了他們的代碼。再給我一點時間，我會復原其他擴充功能的相容性設定。請耐心等候。
+    在8月2日及3日，Google+改變頁面配置，粉碎了大多數的Google+擴充功能；因此，所有的擴充功能都已經改變了他們的代碼。再給我一點時間，我會復原其他擴充功能的相容性設定，請耐心等候。
     <!--
     本套件 <i>不相容</i> 於 <b>+Comment Toggle</b>。 <i>相容</i>於<b>Start G+</b> (小心效能問題), <b>Surplus</b>, <b>Replies and more</b> (您必須在他的設定頁面中關閉 'm' 快捷鍵), <b>Extended Share</b>, <b>G+ Ultimate</b> (除了 \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (除了通知框), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
     -->
@@ -209,7 +220,7 @@
     "description": "Text of the Frequently Asked Questions"
   },
   "options_nav_problems_label": {
-    "message": "問題",
+    "message": "除錯",
     "description": "Name of the options group for problems"
   },
   "options_nav_problemsTroubleshoot": {
@@ -217,14 +228,14 @@
     <ul>
     <li>重新整理頁面 (可能只是Google+的問題)</li>
     <li>重新執行您的瀏覽器 (也可能是瀏覽器的BUG)</li>
-    <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 \"管理 擴充功能\" 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何<a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>.</li>
+    <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 \「管理擴充功能\」 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何 <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>。</li>
     <li>如果您已經擁有最新版本的<b>G+me</b>，您可以試著解除安裝後重新安裝本擴充功能</li>
     <li>試著重置所有您的選項和歷史紀錄；見下方。</li>
     </ul>",
     "description": "Explain some steps to troubleshoot"
   },
   "options_nav_problemsFeedback": {
-    "message": "您可以在<a href=\"http://huyz.us/gpme-release/\" target=_blank>G+me 在 Google+ 目前的討論串</a>詢問、回饋想法",
+    "message": "您可以至<a href=\"http://huyz.us/gpme-release/\" target=_blank>G+me 在 Google+ 目前的討論串</a>詢問、回饋想法",
     "description": "Giving a link for feedback"
   },
 
@@ -239,6 +250,10 @@
   "options_nav_resetSettings": {
     "message": "重置所有G+me的選項",
     "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "出現問題時，可以試著重置您所有的選項和歷史紀錄：",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
   },
   "options_nav_resetAll": {
     "message": "重置所有G+me的選項以及歷史紀錄",
@@ -258,10 +273,10 @@
     "description": "Name of the options group for URL links"
   },
   "options_nav_links_desc": {
-    "message": "<p>追隨作者 Huy Z 的 <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> 和 <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
-    <p>有用的教學和最新的資訊<a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me 網頁</a>.</p>
-    <p>給予回饋 <a href=\"http://huyz.us/gpme-release/\" target=_blank>Google+ 目前的討論串</a>.</p>
-    <p>評比此擴充功能 <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a> 評比此擴充功能.</p>
+    "message": "<p>作者 Huy Z 的 <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> 和 <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a></p>
+    <p>有用的教學和最新的資訊 <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me 網頁</a></p>
+    <p>給予回饋 <a href=\"http://huyz.us/gpme-release/\" target=_blank>G+me 在 Google+ 目前的討論串</a></p>
+    <p>評比此擴充功能 <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a></p>
     <p>源始碼，請往 <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
     "description": "Text with important links"
   },

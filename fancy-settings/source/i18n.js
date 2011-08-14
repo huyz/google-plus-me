@@ -10,6 +10,7 @@ this.i18n = {
         "nl": "Instellingen",
         "pt_BR": "Opções",
         "pt_PT": "Opções",
+        "sv": "Inställningar",
         "zh_TW": "選項"
     },
     "search": {
@@ -22,6 +23,7 @@ this.i18n = {
         "nl": "Zoeken",
         "pt_BR": "Procura",
         "pt_PT": "Procura",
+        "sv": "Sök",
         "zh_TW": "搜尋"
     },
     "nothing-found": {
@@ -35,6 +37,7 @@ this.i18n = {
         "nl": "Niets gevonden.",
         "pt_BR": "Nenhuma correspondência encontrada",
         "pt_PT": "Nenhuma correspondência encontrada",
+        "sv": "Inga träffar hittades.",
         "zh_TW": "沒有找到對應的結果。"
     },
     

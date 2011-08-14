@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "G+én a Google Plus™hoz",
+    "message": "G+me a Google Plus™hoz",
     "description": "Name of the extension"
   },
   "extensionDescription": {
@@ -80,6 +80,9 @@
     "message": "Bejegyzések összegzése",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
+  "options_nav_summaryLines": {
+    "message": "Hány soros legyen az összecsukott bejegyzés"
+  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Az összecsukott bejegyzéseknél jelenjenek meg a képek előnézetei"
   },
@@ -99,11 +102,11 @@
   },
 
   "options_nav_browserAction_label": {
-    "message": "G+én ikon",
+    "message": "G+me ikon",
     "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
-    "message": "A G+én ikonra kattintva megnyílik a Google+, ha még nincs nyitva. Ezt a lehetőséget bejelölve egy új tabban nyílik meg az aktuális helyett"
+    "message": "A G+me ikonra kattintva megnyílik a Google+, ha még nincs nyitva. Ezt a lehetőséget bejelölve egy új tabban nyílik meg az aktuális helyett"
   },
 
   "options_nav_pages_label": {
@@ -195,11 +198,11 @@
 Igen, biztonságban vagy. Annak ellenére, hogy a Web Store azt mondja, hogy ez a kiterjesztés megnéz<i>het</i>i az \"előzményeket\", <i>nem</i> teszi. Ez egy nyílt forrású projekt, aminek a <a href=\"http://goo.gl/BM8CG\" target=_blank>forráskódja</a> szabadon elérhető, hogy te magad ellenőrizhesd ezt. Elolvashatod a <a href=\"http://goo.gl/ld00X\" target=_blank>véleményem a témáról</a>, és a technikai okait annak, hogy a Web Store félrevezető.
 </p>
 <p>
-Emellett lehetőséged van egy kicsit kisebb tudású verzióját a <b>G+én</b>-nek: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+én (PARANOID Kiadás)</a>.
+Emellett lehetőséged van egy kicsit kisebb tudású verzióját a <b>G+me</b>-nek: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID Kiadás)</a>.
 </p>
 
 <h3>Ez a kiterjesztés lelassítja a Google+t</h3>
-<p>Ez leginkább más kiterjesztésekkel történő interferencia szokott lenni. Próbáld kikapcsolni az összes többi Google+os kiterjesztést. Légy szíves tudasd velem, hogy melyik másik kiterjesztés nem fér össze a <b>G+én</b>nel, és megnézem, hogy lehetne javítani a helyzeten.
+<p>Ez leginkább más kiterjesztésekkel történő interferencia szokott lenni. Próbáld kikapcsolni az összes többi Google+os kiterjesztést. Légy szíves tudasd velem, hogy melyik másik kiterjesztés nem fér össze a <b>G+me</b>nel, és megnézem, hogy lehetne javítani a helyzeten.
 </p>
 <h3>Ez a kiterjesztés egy másikkal inkompatibilis</h3>
 <p>
@@ -220,14 +223,14 @@ Amint elkészült az összes funkció, átírom az egészet Firefox alá is, de 
 <ul>
 <li>Az oldal újratöltése (lehet, hogy a probléma a Google+ban van)</li>
 <li>A böngésző újraindítása (a böngészőnek is vannak hibái)</li>
-<li>Bizonyosodj meg, hogy a <b>G+én</b> legfrissebb verzióját használod. Ehhez jobb klikkelj a G+én ikonra, kattints a \"Kiterjesztések kezelése\" menüre, és hasonlítsd össze a legfrissebb verzióval a <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>ban. Itt egy leírás arról, <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>hogyan kényszerítsük ki a kiegészítők frissítését</a>.</li>
-<li>Ha a legfrissebb <b>G+én</b> verziót használod, megpróbálhatod újratelepíteni.</li>
+<li>Bizonyosodj meg, hogy a <b>G+me</b> legfrissebb verzióját használod. Ehhez jobb klikkelj a G+me ikonra, kattints a \"Kiterjesztések kezelése\" menüre, és hasonlítsd össze a legfrissebb verzióval a <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>ban. Itt egy leírás arról, <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>hogyan kényszerítsük ki a kiegészítők frissítését</a>.</li>
+<li>Ha a legfrissebb <b>G+me</b> verziót használod, megpróbálhatod újratelepíteni.</li>
 <li>Megpróbálhatod az összes beállítást alaphelyzetbe állítani. Lásd lent</li>
 </ul>",
     "description": "Explain some steps to troubleshoot"
   },
   "options_nav_problemsFeedback": {
-    "message": "Bármikor szívesen vesszük kérdésedet, visszajelzésedet <a href=\"http://huyz.us/gpme-release/\" target=_blank>az aktuális G+én kibeszélőben Google+on</a>",
+    "message": "Bármikor szívesen vesszük kérdésedet, visszajelzésedet <a href=\"http://huyz.us/gpme-release/\" target=_blank>az aktuális G+me kibeszélőben Google+on</a>",
     "description": "Giving a link for feedback"
   },
 
@@ -236,11 +239,11 @@ Amint elkészült az összes funkció, átírom az egészet Firefox alá is, de 
     "description": "Name of the options group for the resetting buttons"
   },
   "options_nav_resetSettings_label": {
-    "message": "Ha az összes <b>G+én</b> beállítást alaphelyzetbe szeretnéd állítani:",
+    "message": "Ha az összes <b>G+me</b> beállítást alaphelyzetbe szeretnéd állítani:",
     "description": "Text before the button that resets the options."
   },
   "options_nav_resetSettings": {
-    "message": "Az összes G+én beállítás visszaállítása",
+    "message": "Az összes G+me beállítás visszaállítása",
     "description": "Text shown on the button"
   },
   "options_nav_resetAll_label": {
@@ -248,7 +251,7 @@ Amint elkészült az összes funkció, átírom az egészet Firefox alá is, de 
     "description": "Suggestion for what to do in case of problems; with clickable button at the right"
   },
   "options_nav_resetAll": {
-    "message": "Az összes G+én beállítás és feljegyzés kitörlése",
+    "message": "Az összes G+me beállítás és feljegyzés kitörlése",
     "description": "Text shown on the button"
   },
   "options_nav_reset_desc": {
@@ -266,7 +269,7 @@ Amint elkészült az összes funkció, átírom az egészet Firefox alá is, de 
   },
   "options_nav_links_desc": {
     "message": "<p>Kövesd a készítőt, Huy Z-t, <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+on</a> és <a href=\"http://twitter.com/huyplus\" target=_blank>Twitteren</a>.</p>
-<p>Használati utasítások és a legfrissebb hírek <a href=\"http://huyz.us/google-plus-me/\" target=_blank>a G+én weboldalon</a>.</p>
+<p>Használati utasítások és a legfrissebb hírek <a href=\"http://huyz.us/google-plus-me/\" target=_blank>a G+me weboldalon</a>.</p>
 <p>Küldj visszajelzést az <a href=\"http://huyz.us/gpme-release/\" target=_blank>aktuális Google+ beszélgetésben</a>.</p>
 <p>Értékeld a kiterjesztést a <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Storeban</a>.</p>
 <p>A forráskód a <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHubon</a> található.</p>  ",

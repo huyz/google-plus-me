@@ -5,24 +5,23 @@
 #
 # UPDATED: 2011-08-13
 # Overall Stats:
-#
+#          español AL: 53 36 19 
 #          español ES: 
-#          español AL: 38 14 
-#            français: 43 40 2 
-#        português BR: 3 
-#        português PT: 45 1 
-#            italiano: 7 
-#             Swedish: 
-#          Indonesian: 24 
-#              German: 45 
-#               Dutch: 
-#            Japanese: 38 
+#        português PT: 54 40 1 
+#        português BR: 54 53 
+#            français: 53 39 48 
+#              German: 54 53 
+#           Hungarian: 54 52 
+#            Japanese: 41 41 1 
+#          Indonesian: 40 40 
+#               Dutch: 54 54 
+# Traditional Chinese: 54 53 6 12 
+#             Swedish: 54 54 
+#            italiano: 5 
 #             Finnish: 
 #              Polish: 
 #  Simplified Chinese: 
-# Traditional Chinese: 
 #           Norwegian: 
-#           Hungarian: 39 
 
 use utf8;
 binmode STDOUT, ":utf8";

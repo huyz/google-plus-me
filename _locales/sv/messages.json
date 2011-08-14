@@ -1,7 +1,11 @@
 {
   "extensionName": {
-    "message": "G+me for Google Plus™",
+    "message": "G+me för Google Plus™",
     "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Fäller ihop Google+ flödet samtidigt som den visar uppdateringar live: döljer kommentarer, fäller ihop inlägg, etc.",
+    "description": "Description of the extension, as shown in the Web Store"
   },
 
 
@@ -24,5 +28,258 @@
   "gplus_permsLimited": {
     "message": "Begränsad",
     "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "Markera alla inlägg som lästa",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Utöka alla inlägg",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Fäll ihop alla poster",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Markera inlägget som läst",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Dämpa inlägget",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "Navigering",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "Inläggsstil",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "När ska hopfällningsfältet visas"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "alltid",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "när muspekaren befinner sig över inlägget",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "aldrig",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "Inläggssummering",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Antal rader i summeringen av ett ihopfällt inlägg"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "Ihopfällda inlägg visar miniatyrer av innehållets foton"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "Ihopfällda inlägg visar datum och tid"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Förhandsgranskning av inlägg",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "Aktivera i utökat läge"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "Aktivera i listläge"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "G+me ikon",
+    "description": "Name of the options group for the G+me icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "När du klickar på G+me ikonen så öppnas Google+, om det inte redan är öppet. Om du aktiverar denna ruta, så öppnas en ny flik istället för att återanvända den nuvarande"
+  },
+
+  "options_nav_pages_label": {
+    "message": "Sidor",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Globala",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "Ställ in dessa sidinställningar om du vill konfigurera alla typer av sidor (Flöde, Cirklar, Inkommande, Händelser, Sparks, etc.) på samma sätt",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Hopfällningsläge för inlägg:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Utökat — alla utökas som standard",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "Lista — komprimera alla förutom en",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Komprimera alla kommentarer som standard"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "Kompabilitet",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "Denna sida handlar om kompabilitet med andra tillägg som du kan ha installerat för Google+.<br />Du kan ignorera dessa inställningar",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, alias Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "<b>VARNING:</b> Kompatibilitet med SGPlus är i beta stadiet. Det finns fortfarande prestanda- och instabilitetsproblem. Varje val nedan ökar på SGPlus täta och tunga uppdateringar och kommer möjligen att sakta ner din webbläsare och ofta orsaka pauser (irriterande när du skriver).<br />
+Vänligen rapportera alla problem till <a href=\"$URL$\" target=_blank>diskussionen kring SGPlus kompatibilitet på Google+</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "Aktivera kompatibiliet med SGPlus, d.v.s. gör inlägg hopfällbara"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "Gör kommentarer hopfällbara och spåra kommentarer <i>(kompatibilitet måste vara aktiverat)</i>"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "Aktivera snabbcache för att förhindra uppdateringsflimmer <i>(kompatibilitet måste vara aktiverat)</i> -- Experimentell",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "<B>NOTERA:</b> Google+ flikar måste läsas in på nytt vid ändring av någon av dessa val",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Frågor",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Vanliga frågor",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>Skyddar ni min integritet?</h3>
+<p>
+Ja, du är säker. Även om Web Store säger att detta tillägg <i>kan</i> se din \"webbläsarhistorik\", så gör den <i>inte</i> det. Det här är ett open-source projekt vars <a href=\"http://goo.gl/BM8CG\" target=_blank>källkod</a> finns tillgänglig om du vill kontrollera. Du kan läsa <a href=\"http://goo.gl/ld00X\" target=_blank>mina kommentarer om integritet</a> och de tekniska orsakerna till varför Web Stores information är missvisande.</p>
+<p>
+Du kan även installera en version av <b>G+me</b> med färre funktioner: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOIDA Versionen)</a>.
+</p>
+<h3>Tillägget gör Google+ långsamt</h3>
+<p>Det beror troligtvis på en inkompatibilitet med andra tillägg. Testa med att stänga av alla andra tillägg till Google+. Om ni hör av er med vilka tillägg som verkar samarbeta dåligt med <b>G+me</b>, så kan jag ta en titt på det.
+</p>
+<h3>Tillägget orsakar konflikt med ett annat tillägg X</h3>
+<p>
+Den 2:a och 3:e augusti så ändrade Google+ sitt utseende och nästan alla tillägg slutade att fungera. Som ett resultat av detta så behövde alla tillägg ändra sin kod. Det kommer att ta lite tid innan jag kan återställa kompatibiliteten med andra tillägg. Ha tålamod.
+<!--
+Tillägget är <i>inkompatibelt</i> med <b>+Comment Toggle</b>. Det är <i>kompatibelt</i> med <b>Start G+</b> (se upp för prestandaproblem), <b>Surplus</b>, <b>Replies and more</b> (du måste stänga av 'm' knappens genväg från dess inställningar), <b>Extended Share</b>, <b>G+ Ultimate</b> (förutom för \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (förutom för händelser), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+-->
+</p>
+<h3>Kommer tillägget att portas till Firefox eller andra webbläsare?</h3>
+<p>Så fort som jag har implementerat andra funktioner så planerar jag att porta till Firefox. Men det kan ta några veckor. Andra webbläsare finns inte med i planerna.",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Problem",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "I fall av konstigt uppförande, testa följande:<br />
+<ul>
+<li>Läs in sidan på nytt (problemet kanske bara är Google+)</li>
+<li>Starta om webbläsaren (även webbläsaren har buggar)</li>
+<li>Se till så att du har den senaste versionen av <b>G+me</b>. Kontrollera detta genom att högerklicka på G+me ikonen i webbläsaren, gå till \"Hantera tillägg\" och jämför med senaste versionen på <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>. Här kan du finna hur du kan <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>tvinga ett tillägg att uppdateras</a>.</li>
+<li>Om du redan har installerat den senaste versionen av <b>G+me</b>, testa att avinstallera och ominstallera tillägget.</li>
+<li>Testa att återställa alla dina inställningar och historik. Se nedan.</li>
+</ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Du kan alltid ställa frågor och ge feedback på <a href=\"http://huyz.us/gpme-release/\" target=_blank>den aktuella diskussionen kring G+me på Google+</a>",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Återställning",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "För att återställa alla <b>G+me</b> inställningar till grundvärden:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Återställ alla G+me inställningar",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "Vid problem, testa med att återställa alla inställningar och historik",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Återställ alla G+me inställningar och historik",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "NOTERA: Knapparna har ingenting att göra med din Google+ data som alltid går säkert från detta tillägg",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Information",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "Länkar",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>Följ upphovsmannen Huy Z på <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> och <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+<p>Se användarinstruktioner och senaste nytt på <a href=\"http://huyz.us/google-plus-me/\" target=_blank>hemsidan för G+me </a>.</p>
+    <p>Ge feedback på <a href=\"http://huyz.us/gpme-release/\" target=_blank>den aktuella diskussionen på Google+</a>.</p>
+    <p>Betygsätt tillägget på <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
+    <p>För källkoden, gå till <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Översättare",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy tackar alla översättare för deras färdigheter och insats"
   }
 }
