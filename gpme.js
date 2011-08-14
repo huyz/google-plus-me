@@ -518,14 +518,18 @@ function resetHistory() {
  * For debugging
  */
 function info() {
-  var args = Array.prototype.slice.call(arguments);
-  args.unshift('g+me');
-  console.log.apply(console, args);
+  if (DEBUG) {
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift('g+me');
+    console.log.apply(console, args);
+  }
 }
 function debug() {
-  var args = Array.prototype.slice.call(arguments);
-  args.unshift('g+me');
-  console.debug.apply(console, args);
+  if (DEBUG) {
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift('g+me');
+    console.debug.apply(console, args);
+  }
 }
 function warn() {
   var args = Array.prototype.slice.call(arguments);
