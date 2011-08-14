@@ -1,0 +1,22 @@
+{
+  "gplus_dateEdited": {
+    "message": "zmiana",
+    "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
+  },
+  "gplus_dateLongPrefix": {
+    "message": "Wcz",
+    "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
+  },
+  "gplus_dateLongSuffix": {
+    "message": "oraj o",
+    "description": "Text that is dropped when abbreviating date text.  Use with gplus_dateLongPrefix and gplus_dateLongSuffixReplacement."
+  },
+  "gplus_dateLongSuffixReplacement": {
+    "message": ".",
+    "description": "Text that replaces the dropped part when abbreviating date text.  Used with gplus_dateLongPrefix and gplus_dateLongSuffix."
+  },
+  "gplus_permsLimited": {
+    "message": "Wybrane osoby",
+    "description": "Text displayed at the top of a post not for Public or Extended Circles"
+  }
+}
