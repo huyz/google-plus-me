@@ -206,6 +206,7 @@ var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
 
 // Usability Boost
 var _C_UBOOST_MUTELINK           = '.mute_link';
+var C_UBOOST_STAR                = 'post_star';
 
 // Circlestars
 var _C_CIRCLESTARS               = '.circlestars';
@@ -878,9 +879,10 @@ function onSgpItemInserted(e) {
 }
 
 /**
- * Responds to DOM updates from G+ to handle incoming menus
+ * Responds to DOM updates from G+ to handle incoming menus and other
+ * similar things that need to be put in the post wrapper
  */
-function onItemMenuInserted(e) {
+function onItemDivInserted(e) {
   if (! isEnabledOnThisPage())
     return;
 
@@ -888,7 +890,8 @@ function onItemMenuInserted(e) {
   // We want to make sure the menu is inserted in the right place,
   // not only so that the position is correct in the popup, but also
   // for Google+ Tweaks to insert its mute button in the right place
-  $(e.target).prev('.gpme-post-wrapper').append($(e.target));
+  var $target = $(e.target);
+  $target.parent().children('.gpme-post-wrapper').append($target);
 }
 
 /**
@@ -3465,13 +3468,14 @@ function main() {
       if (id && id.charAt(0) == ':')
         return;
 
-      // This happens when posts' menus get inserted
-      if (e.target.className == C_MENU)
-        onItemMenuInserted(e);
+      // This happens when posts' menus get inserted.
+      // Also Usability Boost's star
+      if (e.target.className == C_MENU || e.target.className == C_UBOOST_STAR)
+        onItemDivInserted(e);
       // This happens when a new post is added, either through "More"
       // or a new recent post.
       // Or it's a Start G+ post
-      if (id && (id.substring(0,7) == 'update-'))
+      else if (id && (id.substring(0,7) == 'update-'))
         onItemInserted(e);
       else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
         onSgpItemInserted(e);

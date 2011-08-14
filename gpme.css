@@ -619,6 +619,11 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
  * Compatibility with other extensions
  */
 
+/* Usability Boost */
+.gpme-folded:not(.vp) .post_star {
+  top: 3px;
+}
+
 /* G+ Tweaks */
 .gpme-enh .bcGTweaksMute {
   top: 18px;
