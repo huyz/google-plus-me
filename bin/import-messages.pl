@@ -209,6 +209,7 @@ for my $worksheet ( $workbook->worksheets() ) {
         # Check for 2 double quotes or unquoted double-quotes
         die "$cell" if $cell =~ /""/;
         die "$cell" if $cell =~ /(?<!\\)"/;
+        die "$cell" if $cell =~ /\\(?![\\"])"/;
 
         # Track which translation had an entry
         $entryCount{$sheetName}[$transIndex]++;

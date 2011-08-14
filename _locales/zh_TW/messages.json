@@ -196,7 +196,7 @@
   "options_nav_faq_desc": {
     "message": "<h3>G+me會保障我的隱私資料嗎？</h3>
     <p>
-    當然，您的隱私資料是無虞的。儘管Google線上應用程式商店說 <b>會</b> 存取 \「瀏覽的歷史訊息\」，但實際上是<b>不會</b>。這是一個開源計畫，<a href=\"http://goo.gl/BM8CG\" target=_blank>源始碼</a>是您可以獲得並檢驗的。 您可以閱覽 <a href=\"http://goo.gl/ld00X\" target=_blank>我對於隱私問題的回覆</a> 內容包括Google線上應用程式商店誤解的技術理由。</p>
+    當然，您的隱私資料是無虞的。儘管Google線上應用程式商店說 <b>會</b> 存取 「瀏覽的歷史訊息」，但實際上是<b>不會</b>。這是一個開源計畫，<a href=\"http://goo.gl/BM8CG\" target=_blank>源始碼</a>是您可以獲得並檢驗的。 您可以閱覽 <a href=\"http://goo.gl/ld00X\" target=_blank>我對於隱私問題的回覆</a> 內容包括Google線上應用程式商店誤解的技術理由。</p>
     <p>
     您也可以安裝功能稍微削減的版本<b>G+me</b>： <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (存取特別版)</a>。
     </p>
@@ -228,7 +228,7 @@
     <ul>
     <li>重新整理頁面 (可能只是Google+的問題)</li>
     <li>重新執行您的瀏覽器 (也可能是瀏覽器的BUG)</li>
-    <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 \「管理擴充功能\」 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何 <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>。</li>
+    <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 「管理擴充功能」 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何 <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>。</li>
     <li>如果您已經擁有最新版本的<b>G+me</b>，您可以試著解除安裝後重新安裝本擴充功能</li>
     <li>試著重置所有您的選項和歷史紀錄；見下方。</li>
     </ul>",
