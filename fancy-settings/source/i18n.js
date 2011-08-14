@@ -5,23 +5,37 @@ this.i18n = {
         "de": "Optionen",
         "es": "Opciones",
         "es_419": "Opciones",
+        "fr": "Options",
         "hu": "Beállítások",
         "nl": "Instellingen",
         "pt_BR": "Opções",
-        "pt_PT": "Opções"
+        "pt_PT": "Opções",
+        "zh_TW": "選項"
     },
     "search": {
         "en": "Search",
         "de": "Suche",
+        "es": "Búsqueda",
+        "es_419": "Búsqueda",
+        "fr": "Rechercher",
         "hu": "Keresés",
-        "nl": "Zoeken"
+        "nl": "Zoeken",
+        "pt_BR": "Procura",
+        "pt_PT": "Procura",
+        "zh_TW": "搜尋"
     },
     "nothing-found": {
         "en": "No matches were found.",
         //"de": "Keine Übereinstimmungen gefunden."
         "de": "Keine Ergebnisse gefunden.",
+        "es": "No se encontraron coincidencias.",
+        "es_419": "No se encontraron coincidencias.",
+        "fr": "Aucun résultat trouvé.",
         "hu": "Nincs találat.",
-        "nl": "Niets gevonden"
+        "nl": "Niets gevonden.",
+        "pt_BR": "Nenhuma correspondência encontrada",
+        "pt_PT": "Nenhuma correspondência encontrada",
+        "zh_TW": "沒有找到對應的結果。"
     },
     
     

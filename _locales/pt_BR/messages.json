@@ -80,6 +80,9 @@
     "message": "Sumário das postagens",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
+  "options_nav_summaryLines": {
+    "message": "Número de linhas no sumário  de entradas colapsadas"
+  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "As miniaturas das fotos são visualizadas nas postagens retraídas"
   },
@@ -115,7 +118,7 @@
     "description": "Name of the options group that acts as defaults for all pages"
   },
   "options_nav_global_desc": {
-    "message": "Configure estas opções se você quiser a mesma configuração todos os tipos de páginas (stream, círculos, fora dos círculos, notificações, sparks, etc.)",
+    "message": "Configure estas opções se você quiser a mesma configuração em todos os tipos de páginas (stream, círculos, fora dos círculos, notificações, sparks, etc.)",
     "description": "Instructions for the global group"
   },
   "options_nav_global_postsDefaultMode": {

@@ -80,6 +80,9 @@
     "message": "Beitrag Zusammenfassung",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
+  "options_nav_summaryLines": {
+    "message": "Anzahl der Zeilen in der Zusammenfassung"
+  },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Miniaturbild von Fotos des eingeklappten Beitrag anzeigen"
   },

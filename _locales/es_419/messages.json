@@ -56,6 +56,26 @@
     "message": "Navegación",
     "description": "Name of the tab in the options page"
   },
+
+  "options_nav_postStyle_label": {
+    "message": "Barra de Plegado del Mensaje",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Cuando mostrar la barra de plegado"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "siempre",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "al pasar por encima",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "nunca",
+    "description": "One of the options for when to display the collapse bar"
+  },
   "options_nav_summary_label": {
     "message": "Resumen",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
@@ -230,6 +250,11 @@ Esta extensión es <i>incompatible</i> con <b>+Comment Toggle</b>
     "message": "NOTA: estas funciones no modifican tus datos en Google+, los que siempre estarán a salvo de esta extensión.",
     "description": "Footnote for the reset buttons"
   },
+
+  "options_nav_info_label": {
+    "message": "Información",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
   "options_nav_links_label": {
     "message": "Enlaces",
     "description": "Name of the options group for URL links"
@@ -241,5 +266,12 @@ Esta extensión es <i>incompatible</i> con <b>+Comment Toggle</b>
     <p>Puntúa esta extensión en la <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>.</p>
     <p>Para el código fuente, ve a <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Traductores",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy agradece sinceramente a los traductores por  sus habilidades y el esfuerzo"
   }
 }

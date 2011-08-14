@@ -220,7 +220,9 @@ this.manifest = {
       "type"  : "description",
       "text"  : "\
 <table>\
-<tr><td style=\"width: 20%\">Deutsch</td>\
+<tr><td style=\"width: 20%\">Chinese &mdash; traditional</td>\
+<td><a href=\"https://plus.google.com/111120240496403650720\" target=_blank>陳彥廷</a></td></tr>\
+<tr><td>Deutsch</td>\
 <td><a href=\"https://plus.google.com/111611377225917333080\" target=_blank>Nick Rock</a></td></tr>\
 <tr><td>Dutch</td>\
 <td><a href=\"https://plus.google.com/105310358762146417461\" target=_blank>Peter Klein</a></td></tr>\

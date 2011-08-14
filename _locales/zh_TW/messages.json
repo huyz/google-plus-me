@@ -3,6 +3,10 @@
     "message": "G+me for Google Plus™",
     "description": "Name of the extension"
   },
+  "extensionDescription": {
+    "message": "收合Google+訊息串，並且持續保持更新：隱藏回覆、收合訊息...等。",
+    "description": "Description of the extension, as shown in the Web Store"
+  },
 
 
   "gplus_dateEdited": {
@@ -24,5 +28,248 @@
   "gplus_permsLimited": {
     "message": "限定開放",
     "description": "Text displayed at the top of a post for a non-public post"
+  },
+
+
+  "ui_posts_markAllReadButton": {
+    "message": "將所有訊息設為已閱",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "展開所有訊息",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "收合所有訊息",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "將此訊息設為已閱",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "忽略這則訊息",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
+  "options_nav_general_label": {
+    "message": "導覽",
+    "description": "Name of the tab in the options page"
+  },
+
+  "options_nav_postStyle_label": {
+    "message": "訊息風格",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "收合列顯示"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "永遠",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "當滑鼠劃過訊息",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "永不",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_summary_label": {
+    "message": "訊息小結",
+    "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "訊息小結的顯示行數"
+  },
+  "options_nav_summaryIncludeThumbnails": {
+    "message": "顯示已收合訊息中圖片的縮略圖"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "顯示以收何訊息發表的日期時間"
+  },
+
+  "options_nav_preview_label": {
+    "message": "訊息預覽",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "在展開模式中啟用"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "在清單模式中啟用"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "G+me 圖示",
+    "description": "Name of the options group for the G+me icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "如果Google+頁面尚未被開啟，點選G+me圖示將會開啟Google+頁面。勾選此單選框，將會使動作轉變為開啟新的分頁，取代直接在瀏覽中分頁開啟。"
+  },
+
+  "options_nav_pages_label": {
+    "message": "頁面",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "全局設定",
+    "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "設定此頁面的選項。如果你想使用同一設定所有頁面區塊。",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "訊息的收合模式：",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "展開 - 全部訊息預設展開",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "清單 - 全部訊息預設收合",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "預設收合全部回覆"
+  },
+
+
+  "options_nav_compat_label": {
+    "message": "相容性",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_compat_desc": {
+    "message": "此頁面設定其他用於Google+網站的Google Chrome擴充功能之相容性。<br />您可以略過此選項。",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus，又名Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "<b>警告:</b> 與SGPlus的相容性設定仍在測試，持續會有一些效能和不穩定的問題存在。下列每一個選項將會增加對SGPlus頻繁重載問題的處理，可能會減慢您的瀏覽器並造成頻繁的頓挫 (會使您在輸入文字時感到很煩)。<br />
+    請回饋任何問題到<a href=\"$URL$\" target=_blank>Google+頁面關於SGPlus 相容性的討論串</a>.",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "啟用SGPlus相容性設定，使訊息可收合"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "使回覆可收合並追蹤回覆 (相容性設定必須啟用)"
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "<b>註：</b> Google+ 分頁會在改變任何選項後重新讀取。",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "問與答",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "經常出現的問題",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_faq_desc": {
+    "message": "<h3>您會保障我的隱私資料嗎？</h3>
+    <p>
+    當然，您是無虞的。儘管Google線上應用程式商店說 <i>會</i> 存取 \"瀏覽的歷史訊息\"，實際上是<i>不會</i>。這是一個開源計畫，<a href=\"http://goo.gl/BM8CG\" target=_blank>源始碼</a>是您可以獲得並檢驗的。 您可以閱覽<a href=\"http://goo.gl/ld00X\" target=_blank>我對於隱私問題的回覆</a> 和Google線上應用程式商店誤解的技術上理由</p>
+    <p>
+    您也可以安裝稍微特性簡化的版本<b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank>G+me (PARANOID 版本)</a>.
+    </p>
+
+    <h3>這個擴充功能會減慢Google+頁面？</h3>
+    <p>通常是因為和其他擴充功能的不相容。試著關閉其他關於Google+的擴充功能。如果可以，請您讓我知道是哪個擴充功能和G+me產生惡性的交互作用。
+    </p>
+
+    <h3>這個擴充功能和其他擴充功能衝突 </h3>
+    <p>
+    在8月2日及3日，Google+改變頁面配置，粉碎了大多數的Google+擴充功能。因此，所有的擴充功能都已經改變了他們的代碼。再給我一點時間，我會復原其他擴充功能的相容性設定。請耐心等候。
+    <!--
+    本套件 <i>不相容</i> 於 <b>+Comment Toggle</b>。 <i>相容</i>於<b>Start G+</b> (小心效能問題), <b>Surplus</b>, <b>Replies and more</b> (您必須在他的設定頁面中關閉 'm' 快捷鍵), <b>Extended Share</b>, <b>G+ Ultimate</b> (除了 \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (除了通知框), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+    -->
+    </p>
+
+    <h3>此擴充功能會移植至Firefox或其他瀏覽器嗎？</h3>
+    <p>
+    我已經實踐其他功能，計畫移植到Firefox，但這可能需要數週。其他瀏覽器不在計畫之列。
+    </p>",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "問題",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "出現奇怪的情況，可以嘗試以下步驟：<br />
+    <ul>
+    <li>重新整理頁面 (可能只是Google+的問題)</li>
+    <li>重新執行您的瀏覽器 (也可能是瀏覽器的BUG)</li>
+    <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 \"管理 擴充功能\" 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何<a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>.</li>
+    <li>如果您已經擁有最新版本的<b>G+me</b>，您可以試著解除安裝後重新安裝本擴充功能</li>
+    <li>試著重置所有您的選項和歷史紀錄；見下方。</li>
+    </ul>",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "您可以在<a href=\"http://huyz.us/gpme-release/\" target=_blank>G+me 在 Google+ 目前的討論串</a>詢問、回饋想法",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "重新設定",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "恢復 <b>G+me</b> 所有選項回預設值：",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "重置所有G+me的選項",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll": {
+    "message": "重置所有G+me的選項以及歷史紀錄",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "註：此按鈕不會影響您Google+任何資料，是安全的。",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "資訊",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
+  "options_nav_links_label": {
+    "message": "連結",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "<p>追隨作者 Huy Z 的 <a href=\"http://goo.gl/UmSoR\" target=_blank>Google+</a> 和 <a href=\"http://twitter.com/huyplus\" target=_blank>Twitter</a>.</p>
+    <p>有用的教學和最新的資訊<a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me 網頁</a>.</p>
+    <p>給予回饋 <a href=\"http://huyz.us/gpme-release/\" target=_blank>Google+ 目前的討論串</a>.</p>
+    <p>評比此擴充功能 <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a> 評比此擴充功能.</p>
+    <p>源始碼，請往 <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "翻譯者",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy誠摯地感謝所有翻譯者們的技巧以及努力。"
   }
 }

@@ -30,13 +30,58 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "Marcar todas as entradas como lidas",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Expandir todas as entradas",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Colapsar todas as entradas",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Marcar esta entrada como lida",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Bloquear esta entrada",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
   "options_nav_general_label": {
     "message": "Navegação",
     "description": "Name of the tab in the options page"
   },
+
+  "options_nav_postStyle_label": {
+    "message": "Estilo da entrada",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Quando mostrar a barra de colapso"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "Sempre",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "Quando o rato se encontra sobre a entrada",
+    "description": "One of the options for when to display the collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "Nunca",
+    "description": "One of the options for when to display the collapse bar"
+  },
   "options_nav_summary_label": {
     "message": "Sumário das entradas",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Número de linhas no sumário  de entradas colapsadas"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Entradas colapsadas mostram pré-visualizações ou fotos do conteúdo"
@@ -219,6 +264,11 @@ Pode ignorar estas opções.",
     "message": "NOTA: Estes botões não dizem respeito, de forma alguma, aos seus dados do Google+, que estão sempre a salvo desta extensão.",
     "description": "Footnote for the reset buttons"
   },
+
+  "options_nav_info_label": {
+    "message": "Informação",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
   "options_nav_links_label": {
     "message": "Ligações",
     "description": "Name of the options group for URL links"
@@ -230,5 +280,12 @@ Pode ignorar estas opções.",
     <p>Avalie a extensão na <a href=\"http://goo.gl/m837O\" target=_blank>Loja do Chrome na web</a>.</p>
     <p>Para o código fonte, vá a <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Tradutores",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy agradece sinceramente a todos os tradutores pelos seus esforços"
   }
 }

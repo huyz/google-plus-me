@@ -88,7 +88,7 @@
   },
 
   "options_nav_browserAction_label": {
-    "message": "ブラウザアイコン",
+    "message": "私がG+meアイコンを変更した。",
     "description": "Name of the options group for the G+me icon"
   },
   "options_nav_browserActionOpensNewTab": {
