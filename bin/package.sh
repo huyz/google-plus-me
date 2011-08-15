@@ -2,11 +2,16 @@
 # huyz 2011-07-14
 # Package files for distribution as CRX and for Chrome Web Store
 
+#############################################################################
 ### Config
 
 SOURCES="gpme.js background.js fancy-settings/source/settings.js"
 
 ### End config
+#############################################################################
+### Config
+
+### Init dir
 
 [ -e package.sh ] && cd ..
 if [ ! -r manifest.json ]; then
@@ -14,10 +19,21 @@ if [ ! -r manifest.json ]; then
   exit 1
 fi
 
+### Checks
+
+for i in _locales/*; do
+  if [ -d "$i" -a ! -e "$i/messages.json" ]; then
+    echo "ERROR: Missing $i/messages.json" >&2
+    exit 1
+  fi
+done
+
+
 # Get version number from file
 version=$(sed -n 's/.*"version" *: *"\([0-9\.]*\)".*/\1/p' manifest.json)
 
 ### For sanity check, give a chance to cancel
+
 echo -n "G+me version $version.   Ok? "
 read input
 
