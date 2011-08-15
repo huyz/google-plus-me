@@ -57,6 +57,7 @@ my %DIRMAP = (
   "Traditional Chinese" => "zh_TW",
   "Hungarian" => "hu",
   "Norwegian" => "no",
+  "Czech" => "es",
 );
 my %TRANSLATION = (
 );
