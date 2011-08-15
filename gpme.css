@@ -475,7 +475,10 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
   float: left;
   margin-left: -12px;
   margin-top: -1px; /* To align with line above */
-  position: relative; /* So that gpme-comments-fold-icon-unfolded-bottom can find the bottom */
+  /* So that gpme-comments-fold-icon-unfolded-bottom can find the bottom
+   * Wow, for some reason 'relative' makes typing a comment really slow if
+   * under a long list of comments.  But 'absolute' is fine. Strange. */
+  position: absolute;
   width: 10px;
   height: 50px; /* Dynamically overridden */
   min-height: 24px; /* Constrain slideUp() */
