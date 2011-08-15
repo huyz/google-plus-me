@@ -12,7 +12,7 @@
  * The entire post item
  */
 
-.gpme-folded {
+.gpme-enh.gpme-folded { /* Added .gpme-enh for specificity to work in games stream */
   padding: 0;
 }
 
