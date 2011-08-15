@@ -981,6 +981,8 @@ function onCommentTitleClick() {
  * Responds to all keypresses
  */
 function onKeydown(e) {
+  //debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
+
   // We're not interested in these
   if (e.target.id && (e.target.id.charAt(0) == ':' || e.target.id == 'oz-search-box') ||
       e.target.tagName == 'INPUT' || e.target.tagName == 'TEXTAREA')
@@ -993,7 +995,6 @@ function onKeydown(e) {
   if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
     return;
 
-  //debug("onKeydown: which=" + e.which + " activeElement.id=" + document.activeElement.id);
 
   /*
   // Start catching key sequences
@@ -1689,6 +1690,7 @@ function updateItem($item, attempt) {
       // NOTE: when a truncated comment is expanded, we don't get a DOMAttrModified event
       // (or a non-zero e.attrChange) for some reason even though the class changes.
       $container.bind('DOMSubtreeModified', function(e) {
+        //debug("DOMSubtreeModified for comments id=" + e.target.id + " class=" + e.target.className);
         // We have to filter out junk before we call the throttle function; otherwise
         // the last callback call will have junk arguments.
         var id = e.target.id;
@@ -2737,6 +2739,7 @@ function unfoldComments(interactive, $item, $comments) {
  * Update the commentbar
  */
 function updateCommentbar(id, $item, commentCount) {
+  //debug("updateCommentbar");
   updateCommentCount(id, $item, commentCount);
   updateCommentsSnippet(id, $item);
   updateCommentbarHeight(id, $item, commentCount);
