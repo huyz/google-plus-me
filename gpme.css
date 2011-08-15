@@ -94,8 +94,7 @@ div.Lj {
 
 /* Muted post */
 .vp { /* Matches .gpme-folded.Lj */
-  border-bottom: none;
-  margin-bottom: 5px;
+  border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 .vp .gpme-titlebar {
   margin: 0;
