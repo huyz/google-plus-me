@@ -3,21 +3,37 @@ this.manifest = {
   "icon": "../../icons/icon48.png",
   "settings": [
     /*
-     * General
+     * Pages
      */
-    // Collapse bar
     {
-      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
-      "group" : chrome.i18n.getMessage("options_nav_postStyle_label"),
-      "name"  : "nav_showTopCollapseBarWhen",
-      "type"  : "popupButton",
-      "label" : chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen"),
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_desc",
+      "type"  : "description",
+      "text"  : chrome.i18n.getMessage("options_nav_global_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_postsDefaultMode",
+      "type"  : "radioButtons",
+      "label" : chrome.i18n.getMessage("options_nav_global_postsDefaultMode"),
       "options": [
-        ["always", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_always")],
-        ["hover", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_hover")],
-        ["never", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_never")]
+        ["expanded", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_expanded")],
+        ["list", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_list")]
       ]
     },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
+      "group" : chrome.i18n.getMessage("options_nav_global_label"),
+      "name"  : "nav_global_commentsDefaultCollapsed",
+      "type"  : "checkbox",
+      "label" : chrome.i18n.getMessage("options_nav_global_commentsDefaultCollapsed")
+    },
+
+    /*
+     * General
+     */
     // Collapse summary
     {
       "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
@@ -60,6 +76,31 @@ this.manifest = {
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_previewEnableInList")
     },
+    // Collapse bar
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_postStyle_label"),
+      "name"  : "nav_showTopCollapseBarWhen",
+      "type"  : "popupButton",
+      "label" : chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen"),
+      "options": [
+        ["always", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_always")],
+        ["hover", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_hover")],
+        ["never", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_never")]
+      ]
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
+      "group" : chrome.i18n.getMessage("options_nav_postStyle_label"),
+      "name"  : "nav_showBottomCollapseBarWhen",
+      "type"  : "popupButton",
+      "label" : chrome.i18n.getMessage("options_nav_showBottomCollapseBarWhen"),
+      "options": [
+        ["always", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_always")],
+        ["hover", chrome.i18n.getMessage("options_nav_showBottomCollapseBarWhen_hover")],
+        ["never", chrome.i18n.getMessage("options_nav_showTopCollapseBarWhen_never")]
+      ]
+    },
     // Browser action
     {
       "tab"   : chrome.i18n.getMessage("options_nav_general_label"),
@@ -67,35 +108,6 @@ this.manifest = {
       "name"  : "nav_browserActionOpensNewTab",
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_browserActionOpensNewTab")
-    },
-
-    /*
-     * Pages
-     */
-    {
-      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
-      "group" : chrome.i18n.getMessage("options_nav_global_label"),
-      "name"  : "nav_global_desc",
-      "type"  : "description",
-      "text"  : chrome.i18n.getMessage("options_nav_global_desc")
-    },
-    {
-      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
-      "group" : chrome.i18n.getMessage("options_nav_global_label"),
-      "name"  : "nav_global_postsDefaultMode",
-      "type"  : "radioButtons",
-      "label" : chrome.i18n.getMessage("options_nav_global_postsDefaultMode"),
-      "options": [
-        ["expanded", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_expanded")],
-        ["list", chrome.i18n.getMessage("options_nav_global_postsDefaultMode_list")]
-      ]
-    },
-    {
-      "tab"   : chrome.i18n.getMessage("options_nav_pages_label"),
-      "group" : chrome.i18n.getMessage("options_nav_global_label"),
-      "name"  : "nav_global_commentsDefaultCollapsed",
-      "type"  : "checkbox",
-      "label" : chrome.i18n.getMessage("options_nav_global_commentsDefaultCollapsed")
     },
 
     /*

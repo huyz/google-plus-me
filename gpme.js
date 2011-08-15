@@ -1606,14 +1606,6 @@ function updateItem($item, attempt) {
     });
   }
 
-  // Refresh opacity of titlebar
-  var $unfoldTitlebar = $item.find('.gpme-title-unfolded');
-  if (settings.nav_showTopCollapseBarWhen == 'always') {
-    $unfoldTitlebar.css('opacity', 1);
-  } else {
-    $unfoldTitlebar.css('opacity', 0);
-  }
-
   // Refresh fold of post
   var itemFolded = false;
   if (displayMode == 'list') {
@@ -1654,9 +1646,31 @@ function updateItem($item, attempt) {
   }
 
   // Expanded mode has a bottombar
+  var $bottombar = $item.children('.gpme-bottombar');
   if (displayMode == 'expanded') {
-    if (! $item.children('.gpme-bottombar').length)
-      $item.append($bottombarTpl.clone(true));
+    if (! $bottombar.length) {
+      $bottombar = $bottombarTpl.clone(true);
+      $item.append($bottombar);
+    }
+  }
+
+  // Refresh opacity of collapse bars
+  var $unfoldedTitlebar = $item.find('.gpme-titlebar > .gpme-title-unfolded');
+  if (settings.nav_showTopCollapseBarWhen == 'always') {
+    $unfoldedTitlebar.css('opacity', 1);
+  } else {
+    $unfoldedTitlebar.css('opacity', 0);
+  }
+  // If we have a bottombar.
+  // NOTE: there may still be a remnant of a bottombar if user switches from expanded mode to list mode
+  if ($bottombar.length) {
+    if (displayMode == 'expanded' && settings.nav_showBottomCollapseBarWhen == 'always') {
+      enableBottombar($bottombar);
+      $bottombar.css('opacity', 1);
+    } else {
+      disableBottombar($bottombar);
+      $bottombar.css('opacity', 0);
+    }
   }
 
   // Refresh fold of comments if visible
@@ -3147,7 +3161,7 @@ function getFocusInCommentEditable($itemGuts, attempt) {
  * Show the preview's scrollbars and hide the body's
  */
 function showPreviewScrollbar() {
-  $(this).closest(_C_ITEM).addClass('gpme-hover');
+  $(this).addClass('gpme-hover');
   disableBodyScrollbarY();
 }
 
@@ -3155,7 +3169,7 @@ function showPreviewScrollbar() {
  * Show the preview's scrollbars and hide the body's
  */
 function hidePreviewScrollbar() {
-  $(this).closest(_C_ITEM).removeClass('gpme-hover');
+  $(this).removeClass('gpme-hover');
   enableBodyScrollbarY();
 }
 
@@ -3261,7 +3275,7 @@ function showTopCollapseBar(e) {
   var $item = $(this);
   //debug("showTopCollapseBar: item=" + $item.attr('id'));
 
-  var $topbar = $item.find('.gpme-title-unfolded');
+  var $topbar = $item.find('.gpme-titlebar > .gpme-title-unfolded');
   if ($topbar.length)
     $topbar.animate({opacity: 1}, 100);
 }
@@ -3276,7 +3290,7 @@ function hideTopCollapseBar(e) {
   var $item = $(this);
   //debug("hideTopCollapseBar: item=" + $item.attr('id'));
 
-  var $topbar = $item.find('.gpme-title-unfolded');
+  var $topbar = $item.find('.gpme-titlebar > .gpme-title-unfolded');
   if ($topbar.length)
     $topbar.animate({opacity: 0}, 100);
 }
@@ -3289,7 +3303,7 @@ function hideTopCollapseBar(e) {
  * Show bottom collapse bar if necessary
  */
 function showBottomCollapseBar(e) {
-  if (displayMode != 'expanded' || settings.nav_showTopCollapseBarWhen == 'never')
+  if (displayMode != 'expanded' || settings.nav_showBottomCollapseBarWhen != 'hover')
     return;
 
   var $item = $(this).parent();
@@ -3309,22 +3323,42 @@ function showBottomCollapseBar(e) {
 
   var $bottombar = $item.children('.gpme-bottombar');
   // NOTE: We only bind click just now to avoid some inadvertent clicks
-  if ($bottombar.length)
-    $bottombar.addClass('gpme-hover').click(onTitleClick).animate({opacity: 1}, 100);
+  if ($bottombar.length) {
+    enableBottombar($bottombar);
+    $bottombar.animate({opacity: 1}, 100);
+  }
 }
 
+/**
+ * Hide bottom collapse bar if applicable
+ */
 function hideBottomCollapseBar(e) {
-  if (displayMode != 'expanded' || settings.nav_showTopCollapseBarWhen == 'never')
+  if (displayMode != 'expanded' || settings.nav_showBottomCollapseBarWhen != 'hover')
     return;
 
   var $item = $(this).parent();
   debug("hideBottomCollapseBar: item=" + $item.attr('id'));
 
   var $bottombar = $item.children('.gpme-bottombar');
-  if ($bottombar.length)
+  if ($bottombar.length) {
     $bottombar.animate({opacity: 0}, 100, function() {
-      $bottombar.removeClass('gpme-hover').unbind('click');
+      disableBottombar($bottombar);
     });
+  }
+}
+
+/**
+ * Enable bottombar
+ */
+function enableBottombar($bottombar) {
+  $bottombar.addClass('gpme-hover').click(onTitleClick);
+}
+
+/**
+ * Disable bottombar
+ */
+function disableBottombar($bottombar) {
+  $bottombar.removeClass('gpme-hover').unbind('click', onTitleClick);
 }
 
 /****************************************************************************

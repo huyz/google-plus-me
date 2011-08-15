@@ -10,14 +10,40 @@
 .bundle {
   clear: both;
 }
-#nav_previewEnableInList {
-  clear: none;
+
+
+/*
+#nav_global_postsDefaultMode::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-list-mode-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
+*/
+#nav_global_commentsDefaultCollapsed::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-collapsed-comments-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
 
 #nav_showTopCollapseBarWhen::before {
   float:right;
   margin: 5px 0;
   content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-top-collapse-bar-300.png');
+  outline: 1px solid #CCC;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+#nav_showBottomCollapseBarWhen::before {
+  float:right;
+  margin: 5px 0;
+  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-bottom-collapse-bar-300.png');
   outline: 1px solid #CCC;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -51,30 +77,13 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
+#nav_previewEnableInList { /* Image applies to all checkboxes */
+  clear: none;
+}
 #nav_browserActionOpensNewTab::before {
   float:right;
   margin: 5px 0;
   content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-browser-icon.png');
-  outline: 1px solid #CCC;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-
-/*
-#nav_global_postsDefaultMode::before {
-  float:right;
-  margin: 5px 0;
-  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-list-mode-300.png');
-  outline: 1px solid #CCC;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-*/
-
-#nav_global_commentsDefaultCollapsed::before {
-  float:right;
-  margin: 5px 0;
-  content: url('chrome-extension://__MSG_@@extension_id__/images/fancy-settings/screenshot-collapsed-comments-300.png');
   outline: 1px solid #CCC;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   -webkit-box-shadow: 0 4px 12px rgba(0,0,0,0.4);

@@ -24,5 +24,12 @@
   "gplus_permsLimited": {
     "message": "限定范围",
     "description": "Text displayed at the top of a post for a non-public post"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "In expanded mode, when to display the bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "when hovered by the mouse",
+    "description": "One of the options for when to display the bottom collapse bar"
   }
 }

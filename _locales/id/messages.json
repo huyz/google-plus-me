@@ -62,15 +62,22 @@
   },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "Selalu",
-    "description": "One of the options for when to display the collapse bar"
+    "description": "One of the options for when to display the top/bottom collapse bar"
   },
   "options_nav_showTopCollapseBarWhen_hover": {
     "message": "Ketika mouse diatas pos",
-    "description": "One of the options for when to display the collapse bar"
+    "description": "One of the options for when to display the top collapse bar"
   },
   "options_nav_showTopCollapseBarWhen_never": {
     "message": "Tidak Pernah",
-    "description": "One of the options for when to display the collapse bar"
+    "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "In expanded mode, when to display the bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "when hovered by the mouse",
+    "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Pos Ringkasan",

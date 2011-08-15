@@ -35,6 +35,7 @@ var defaultSettings = {
   'nav_previewEnableInList': true,
   'nav_browserActionOpensNewTab': false,
   'nav_showTopCollapseBarWhen': 'hover',
+  'nav_showBottomCollapseBarWhen': 'hover',
 
   /*
    * Pages

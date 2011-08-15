@@ -4,11 +4,11 @@
     "description": "Text in parentheses after the date for edited posts, e.g. '17:09 (modificado/a)'"
   },
   "gplus_dateLongPrefix": {
-    "message": "I går klokken",
+    "message": "I går",
     "description": "Text that needs to be preserved when abbreviating date text.  Use with gplus_dateLongSuffix and gplus_dateLongSuffixReplacement. .' is added after, e.g. 'Yesterday' becomes 'Yest.'"
   },
   "gplus_dateLongSuffix": {
-    "message": "",
+    "message": " klokken",
     "description": "Text that is dropped when abbreviating date text.  Use with gplus_dateLongPrefix and gplus_dateLongSuffixReplacement."
   },
   "gplus_dateLongSuffixReplacement": {
