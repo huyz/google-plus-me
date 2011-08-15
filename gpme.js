@@ -838,7 +838,7 @@ function onItemInserted(e) {
 
   // We call this manually because otherwise it only happens on interactive
   // folding/unfolding.
-  updateContentPaneButtons();
+  updateContentPaneButtonsThrottled();
 }
 
 /**
@@ -1962,7 +1962,7 @@ function foldItem(options, $item, $post) {
       if (interactive) {
         updateCachedSgpItem($item);
         if (! options.batch)
-          updateContentPaneButtons();
+          updateContentPaneButtonsThrottled();
       }
     });
   else {
@@ -1972,7 +1972,7 @@ function foldItem(options, $item, $post) {
     if (interactive) {
       updateCachedSgpItem($item);
       if (! options.batch)
-        updateContentPaneButtons();
+        updateContentPaneButtonsThrottled();
     }
   }
   //debug("foldItem: id=" + id + " folded=" + $item.hasClass('gpme-folded') + " post.class=" + $post.attr('class') + " should be folded!");
@@ -2272,7 +2272,7 @@ function unfoldItem(options, $item, $post) {
       updateCachedSgpItem($item);
   }
   if (interactive && ! options.batch)
-    updateContentPaneButtons();
+    updateContentPaneButtonsThrottled();
 
   if (canHaveComments) {
     // NOTE: this must be done after the CSS classes are updated
@@ -3412,6 +3412,13 @@ function updateContentPaneButtons($subtree) {
     $buttons.addClass('gpme-list-mode');
     $buttons.removeClass('gpme-expanded-mode');
   }
+}
+
+/**
+ * Throttle this function
+ */
+function updateContentPaneButtonsThrottled() {
+  $.throttle(500, 50, function() { updateContentPaneButtons(); });
 }
 
 /****************************************************************************
