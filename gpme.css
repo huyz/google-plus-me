@@ -16,20 +16,24 @@
   padding: 0;
 }
 
-/* Selected post; needs to be highly selective */
+/* Selected post, folded; needs to be highly selective */
 .gpme-folded.Lj {
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 
-/* The little animated bar; needs to more selective than G+'s */
-.gpme-enh.Lj /* selected post */ {
+/* Selected post, folded */
+/*.gpme-enh.Lj {   For Stb, only make it thick when folded */
+.gpme-folded.gpme-enh.Lj {
   /*border-left-color: red; /* #3d9400;*/
   border-left-width: 2px;
   margin-left: -1px;
 }
-div.Lj /* animated bar */ {
+/* The little animated bar; needs to more selective than G+'s */
+/* For Stb, only make it thick when folded
+div.Lj {
   border-left-width: 2px;
 }
+*/
 
 /*
  * Common to titlebar and commentbar
