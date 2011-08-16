@@ -190,7 +190,7 @@ var C_FAKEINPUT_COMMENT         = 'Uk';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var C_MENU                      = 'yp d-L';
+var C_MENU                      = 'yp'; // d-L comes later, I guess
 var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
 var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
@@ -294,9 +294,6 @@ var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick
 // - if commentCount comes before mutebutton, it takes precedence in clicking
 // - actually, we put commentCount later, now that we have the markread button
 var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
-  append($markReadButtonTpl).
-  append($commentCountContainerTpl);
-var $buttonAreaWithMuteTpl = $('<div class="gpme-button-area"></div>').
   append($markReadButtonTpl).
   append($muteButtonTpl).
   append($commentCountContainerTpl);
@@ -911,7 +908,12 @@ function onItemDivInserted(e) {
   // not only so that the position is correct in the popup, but also
   // for Google+ Tweaks to insert its mute button in the right place
   var $target = $(e.target);
-  $target.parent().children('.gpme-post-wrapper').append($target);
+  var $item = $target.parent();
+  $item.children('.gpme-post-wrapper').append($target);
+
+  // Update the buttons.
+  // Right now, only the mute button matters
+  updateButtonArea($item);
 }
 
 /**
@@ -2151,9 +2153,11 @@ function foldItem(options, $item, $post) {
         if (isSgpPost && interactive)
           updateCachedSgpItem($item, $clonedTitle);
 
-        // Add comment-count container
+        // Add buttons & comment-count container
         // NOTE: this must be done after injecting the title
-        $clonedTitle.before(newButtonArea($item));
+        var $buttonArea = newButtonArea($item);
+        $clonedTitle.before($buttonArea);
+        updateButtonArea($item, $buttonArea);
 
         // Stop propagation of click so that clicking the name won't do anything
         // NOTE: done here coz it can't be done on a detached node.
@@ -2568,15 +2572,32 @@ function openLinkInContent($item) {
   });
 }
 
+/****************************************************************************
+ * Post buttons
+ ***************************************************************************/
+
 /**
  * Returns button area, modified to fit the post type
  */
 function newButtonArea($item) {
+  var $buttonArea = $buttonAreaTpl.clone(true);
+  return $buttonArea;
+}
+
+/**
+ * Shows/hides buttons as needed
+ * @param $subtree: Optional
+ */
+function updateButtonArea($item, $subtree) {
+  if (typeof $subtree == 'undefined')
+    $subtree = $item;
+
+  var $muteButton = $subtree.find('.gpme-mute-button');
   var $muteMenu = $item.find(_C_MENU_MUTE);
   if ($muteMenu.length) {
-    return $buttonAreaWithMuteTpl.clone(true);
+    return $muteButton.show();
   } else {
-    return $buttonAreaTpl.clone(true);
+    return $muteButton.hide();
   }
 }
 
@@ -2690,7 +2711,9 @@ function foldComments(interactive, $item, $comments) {
     $title.attr('gpme-comments-has-content', 'true');
 
     // Add floating comment-count container
-    $title.prepend(newButtonArea($item));
+    var $buttonArea = newButtonArea($item);
+    $title.prepend($buttonArea);
+    updateButtonArea($item, $buttonArea);
 
     // Insert title/snippet after the fold icon
     $title.append($commentTitleTpl.clone(true));
@@ -3567,6 +3590,7 @@ function main() {
 
       // This happens when posts' menus get inserted.
       // Also Usability Boost's star
+      //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
       if (e.target.className == C_MENU || e.target.className == C_UBOOST_STAR)
         onItemDivInserted(e);
       // This happens when a new post is added, either through "More"
