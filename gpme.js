@@ -251,6 +251,7 @@ var ROOM_FOR_COMMENT_AREA                         = 70;
 var GAP_ABOVE_ITEM_AT_TOP                         = 2;
 var GAP_ABOVE_PREVIEW                             = 7;
 var SLACK_BELOW_PREVIEW                           = 77; // Needed to prevent G+ from jumping page when user adds comment
+var COMMENTS_TITLE_FOLDED_HEIGHT                  = 30;
 
 // Duration of clickwall.
 // NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
@@ -276,6 +277,9 @@ OLD_KEYS[LS_COMMENTS_UNFOLDED]      = 'gpme_comments_unfolded_';
 OLD_KEYS[LS_COMMENTS_READ_COUNT]    = 'gpme_post_seen_comment_count_';
 OLD_KEYS[LS_COMMENTS_READ_COUNT_CHANGED] = 'gpme_post_seen_comment_count_changed_';
 OLD_KEYS[LS_URL_LIST_LAST_UNFOLDED] = 'gpme_post_last_open_';
+
+// Anmiation
+var JQUERY_DURATION = 400;
 
 /****************************************************************************
  * Pre-created DOM elements
@@ -771,6 +775,26 @@ jQuery.fn.outerScrollWidth = function(includeMargin) {
 };
 */
 
+function slideUpFromTop($elem, duration, easing, callback) {
+  $elem.animate({height: 0, scrollTop: $elem.height()}, duration, easing, function() {
+    $elem.css('height', '').hide();
+    callback();
+  });
+}
+
+/* This is not symmetric with slideUpFromTop because we actually want to show users non-moving content asap
+ * so they can start reading while the animation is going on.
+ * Google+ animates the way they do because they want to show the last comment at all times.
+ */
+function slideDown($elem, duration, easing, callback) {
+  var height = $elem.actual('height');
+  $elem.height(0).css('display', ''); // Undo 'hide'
+  $elem.animate({height: height}, duration, easing, function() {
+    $elem.css('height', '');
+    callback();
+  });
+}
+
 /****************************************************************************
  * Event Handlers
  ***************************************************************************/
@@ -924,7 +948,7 @@ function onCommentsUpdated(e, $item) {
   var className = e.target.className;
 
   //trace("event: DOM insertion or deletion of comments");
-  debug("onCommentsUpdated: DOM insertion/deletion of comments for item id=" + id + " class='" + e.target.className + "'");
+  //debug("onCommentsUpdated: DOM insertion/deletion of comments for item id=" + id + " class='" + e.target.className + "'");
 
   // We may be getting events just from a jquery find for comments,
   // before things are set up.
@@ -1694,6 +1718,7 @@ function updateItem($item, attempt) {
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem && ! isSgpPost) {
     // We must have one throttle function per comment section within item.
+    // Test: 500 comments https://plus.google.com/112063946124358686266/posts/PiLy9zLpd3j
     var commentsUpdateHandler = $.throttle(200, 50, function(e) { onCommentsUpdated(e, $item); });
 
     //var commentsUpdateHandler = function(e) { onCommentsUpdated(e, $item) };
@@ -1931,7 +1956,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
     if (scrollDist > 0) {
       // XXX G+ seems to have an autoscroll that's acting faster than mine
       // and is shifting the page faster
-      $body.animate({scrollTop: $body.scrollTop() - scrollDist }, 'fast');
+      $body.animate({scrollTop: $body.scrollTop() - scrollDist }, JQUERY_DURATION);
     }
   } else {
     $item.find('.gpme-titlebar').scrollintoview({duration: 0, direction: 'y'});
@@ -2684,12 +2709,18 @@ function foldComments(interactive, $item, $comments) {
 
     // Visual changes
     var shownCommentCount = countShownComments($item);
-    var duration = shownCommentCount <= 4 ? 50 : shownCommentCount <= 10 ? 150 : 250;
+    var duration = shownCommentCount <= 4 ? JQUERY_DURATION / 2  : shownCommentCount <= 10 ? JQUERY_DURATION : JQUERY_DURATION * 1.5;
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
     $commentsTitleUnfolded.slideUp(duration);
-    $comments.css('min-height', '27px').slideUp(duration, function() {
+// No need for min-height if there's C_COMMENTS_BUTTON_CONTAINER there anyway
+//    $comments.css('min-height', '27px').slideUp(duration, function() {
+    var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
+    slideUpFromTop($shownOrOlderComments, duration, 'easeOutQuart', function() {
+      $comments.hide();
       $item.addClass('gpme-comments-folded');
       $item.removeClass('gpme-comments-unfolded');
+      var $commentsSnippet = $item.find('.gpme-comments-snippet');
+      $commentsSnippet.hide().fadeIn(JQUERY_DURATION);
       updateCommentbar(id, $item, commentCount);
       updateCachedSgpItem($item);
     });
@@ -2748,18 +2779,47 @@ function unfoldComments(interactive, $item, $comments) {
     lsRemove(LS_COMMENTS_FOLDED, id);
 
     // Interactive visual changes
+
+    // Variables depending on number of visible comments
     var shownCommentCount = countShownComments($item);
-    var duration = shownCommentCount <= 4 ? 50 : shownCommentCount <= 10 ? 150 : 250;
+    // No matter how many comments there are, we want a consistent speed for the initial part of the slide down.
+    var duration = JQUERY_DURATION * (
+        shownCommentCount < 10 ? 0.5 :
+        shownCommentCount < 50 ? 1 :
+        shownCommentCount > 150 ? 2 :
+          1 + (shownCommentCount - 50) / 100);
+    var easing = shownCommentCount > 50 ? 'easeInQuart' : 'easeInOutQuart';
+    /*
+    var commentsTitleUnfoldedIndependently = false;
+    if (duration > JQUERY_DURATION * 2) {
+      commentsTitleUnfoldedIndependently = true;
+      setTimeout(function() {
+        $commentsTitleUnfolded.height($comments.outerHeight()).fadeIn(JQUERY_DURATION);
+      }, JQUERY_DURATION * 2);
+    }
+    */
+
     var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
+    var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
+
     $commentsTitleFolded.hide(); // hide a bit early
-    $comments.slideDown(duration, function() {
+    $comments.show();
+
+    // Start loading any hidden comments.
+    var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
+    if ($commentsButton.length && $commentsButton.is(':visible'))
+      click($commentsButton);
+
+//    $comments.slideDown(duration, function() {
+    slideDown($shownOrOlderComments, duration, easing, function() {
       $item.removeClass('gpme-comments-folded');
       $item.addClass('gpme-comments-unfolded');
       $commentsTitleFolded.css('display', ''); // Undo the hide above
       // NOTE: updateCommentbar needs to be done after updating classes
       updateCommentbar(id, $item, commentCount);
-      $commentsTitleUnfolded.fadeIn('fast');
+      //if (! commentsTitleUnfoldedIndependently)
+      $commentsTitleUnfolded.fadeIn(Math.min(JQUERY_DURATION, duration));
       updateCachedSgpItem($item);
     });
 
@@ -2954,7 +3014,7 @@ function countComments($subtree) {
   var $comments = $subtree.find(_C_COMMENTS_OLD_COUNT);
 */
   if ($comments.length) {
-    commentCount += parseTextCount($comments.text());
+    commentCount += parseTextCount($comments.html().replace(/<.*/, ''));
   } else {
     commentCount += countShownComments($subtree);
     $comments = $subtree.find(_C_COMMENTS_OLDER_COUNT);
@@ -3198,7 +3258,7 @@ function startCommentInPreview($item, $origLink) {
   click($origLink);
   $itemGuts.show();
   // Scroll to bottom
-  $itemGuts.animate({ scrollTop: $itemGuts.outerScrollHeight()  }, 'fast');
+  $itemGuts.animate({ scrollTop: $itemGuts.outerScrollHeight()  }, JQUERY_DURATION);
 
   // Get focus into the box
   getFocusInCommentEditable($itemGuts);
@@ -3570,6 +3630,9 @@ function i18nInit() {
  * of callbacks return from the background page
  */
 function main() {
+  // Specify jQuery UI easing method
+  jQuery.easing.def = 'easeInOutQuad';
+
   // Listen for when there's a total AJAX refresh of the stream,
   // on a regular page
   var $contentPane = $(_ID_CONTENT_PANE);

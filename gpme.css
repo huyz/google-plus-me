@@ -9,6 +9,16 @@
 
 
 /*
+ * General utility classes
+ */
+
+/*
+.gpme-overflow-hidden {
+  overflow: hidden;
+}
+  */
+
+/*
  * The entire post item
  */
 
@@ -502,8 +512,8 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 .gpme-comments-title-folded {
   margin-top: -1px; /* To overwrite line above */
-  padding: 2px 4px;
-  height: 24px;
+  margin-bottom: 1px; /* So "Add a comment" doesn't overwrite our border */
+  padding: 6px 4px;
   position: relative;
 }
 .gpme-comments-title-folded > div {
@@ -550,6 +560,10 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
 }
 .gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-bottom {
   display: none;
+}
+
+.gpme-comments-snippet {
+  padding: 0 6px;
 }
 
 /*
