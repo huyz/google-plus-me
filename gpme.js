@@ -295,6 +295,9 @@ var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick
 // - actually, we put commentCount later, now that we have the markread button
 var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
   append($markReadButtonTpl).
+  append($commentCountContainerTpl);
+var $buttonAreaWithMuteTpl = $('<div class="gpme-button-area"></div>').
+  append($markReadButtonTpl).
   append($muteButtonTpl).
   append($commentCountContainerTpl);
 
@@ -2150,8 +2153,7 @@ function foldItem(options, $item, $post) {
 
         // Add comment-count container
         // NOTE: this must be done after injecting the title
-        if (canHaveComments)
-          $clonedTitle.before($buttonAreaTpl.clone(true));
+        $clonedTitle.before(newButtonArea($item));
 
         // Stop propagation of click so that clicking the name won't do anything
         // NOTE: done here coz it can't be done on a detached node.
@@ -2566,6 +2568,18 @@ function openLinkInContent($item) {
   });
 }
 
+/**
+ * Returns button area, modified to fit the post type
+ */
+function newButtonArea($item) {
+  var $muteMenu = $item.find(_C_MENU_MUTE);
+  if ($muteMenu.length) {
+    return $buttonAreaWithMuteTpl.clone(true);
+  } else {
+    return $buttonAreaTpl.clone(true);
+  }
+}
+
 /****************************************************************************
  * Comment folding/unfolding logic
  ***************************************************************************/
@@ -2676,7 +2690,7 @@ function foldComments(interactive, $item, $comments) {
     $title.attr('gpme-comments-has-content', 'true');
 
     // Add floating comment-count container
-    $title.prepend($buttonAreaTpl.clone(true));
+    $title.prepend(newButtonArea($item));
 
     // Insert title/snippet after the fold icon
     $title.append($commentTitleTpl.clone(true));
