@@ -157,23 +157,36 @@ var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also incl
 var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
+var _C_EXPAND_COMMENT           = '.sp + .Wk'; // For truncated long comments
 var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
 var C_COMMENTS_ALL_CONTAINER    = 'Ol';
+/* 2011-08-16 G+ has new comment-toggling scheme
 var C_COMMENTS_OLD_CONTAINER    = 'al';
 var _C_COMMENTS_OLD_CONTAINER   = '.al';
 var _C_COMMENTS_OLD_COUNT       = '.Dk';
 var _C_COMMENTS_OLD_NAMES       = '.al .er';
+*/
 var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
 var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
 var _C_COMMENTS_SHOWN           = '.Tk';
 var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
 var C_COMMENTS_SHOWN_CONTENT    = 'tp'; // The div below the first <a> within the comment, for when the comment is expanded (.tp.sp becomes .tp): https://plus.google.com/105190043964183708400/posts/f6gDun2334n b
 var C_COMMENTS_EDITOR           = 'Ah';
+/* 2011-08-16 G+ has new comment-toggling scheme
 var C_COMMENTS_MORE_CONTAINER   = 'Zk';
 var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
 var _C_COMMENTS_MORE_COUNT      = '.Ck';
 var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
-var _C_EXPAND_COMMENT           = '.sp + .Wk';
+*/
+// 2011-08-16 Google+'s new comment hiding scheme
+var C_COMMENTS_BUTTON_CONTAINER = 'tvogXd';
+var _C_COMMENTS_BUTTON_CONTAINER = '.tvogXd';
+var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .aISsjb';
+var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.vUcJZb) > :first-child'; // :not grayed out
+var C_COMMENTS_OLDER_CONTAINER  = 'epoPNd';
+var _C_COMMENTS_OLDER_CONTAINER = '.epoPNd';
+var _C_COMMENTS_OLDER_COUNT     = _C_COMMENTS_OLDER_CONTAINER + ' > .cgRpz:visible';
+var _C_COMMENTS_OLDER_BUTTON    = _C_COMMENTS_OLDER_CONTAINER + ' > [role="button"]';
 
 var _C_SHARE_LINE               = '.Jn';
 var _C_LINK_COMMENT             = '.wf';
@@ -188,12 +201,17 @@ var C_MENU                      = 'yp d-L';
 var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
 var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
+//var _C_COMMENT_CONTAINERS =
+//  [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
 var _C_COMMENT_CONTAINERS =
-  [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
+  [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_OLDER_CONTAINER ];
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
+/* 2011-08-16 G+ has new comment-toggling scheme
 var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
+*/
+var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_OLDER_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
 var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
@@ -222,7 +240,7 @@ var _C_SGP_TITLE                 = _C_TITLE; // Same as G+ now
 var _C_SGP_CONTENT               = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
 var _C_SGP_TEXT1                 = _C_CONTENT; // .Qy
 var _C_SGP_TEXT2                 = '.ea-S-R';
-var S_SGP_ORIGPOST_LINK          = 'span[style                                                                       ^= "font-size"]';
+//var S_SGP_ORIGPOST_LINK          = 'span[style^="font-size"]';
 var _C_SGP_COMMENT               = '.sgp_comments_wrapper';
 var _C_SGP_DATE                  = '.a-b-f-i-Ad-Ub';
 
@@ -2521,11 +2539,11 @@ function expandComments($item) {
     return;
   }
 
-  var $commentsButton = $item.find(_C_COMMENTS_MORE_CONTAINER);
+  var $commentsButton = $item.find(_C_COMMENTS_OLDER_BUTTON);
   if ($commentsButton.length && $commentsButton.is(':visible')) {
     click($commentsButton);
   } else {
-    $commentsButton = $item.find(_C_COMMENTS_OLD_CONTAINER);
+    $commentsButton = $item.find(_C_COMMENTS_BUTTON);
     if ($commentsButton.length && $commentsButton.is(':visible')) {
       click($commentsButton);
     }
@@ -2741,7 +2759,7 @@ function unfoldComments(interactive, $item, $comments) {
 function updateCommentbar(id, $item, commentCount) {
   //debug("updateCommentbar");
   updateCommentCount(id, $item, commentCount);
-  updateCommentsSnippet(id, $item);
+  updateCommentsSnippet(id, $item, commentCount);
   updateCommentbarHeight(id, $item, commentCount);
 }
 
@@ -2805,8 +2823,9 @@ function updateCommentCount(id, $subtree, count) {
  * Update the summary of comments with names of commenters.
  * NOTE: due to the way Google orders the names (oldest to most recent)
  * and cuts off past a number of names, we have to stick to that order.
+ * @param {integer} commentCount: says how many comments there are in total
  */
-function updateCommentsSnippet(id, $item) {
+function updateCommentsSnippet(id, $item, commentCount) {
   // Skip if the comments are unfolded
   if (! areItemCommentsFolded($item))
     return;
@@ -2835,13 +2854,15 @@ function updateCommentsSnippet(id, $item) {
 
   var $shownNames = $commentWrapper.find(_C_COMMENTS_SHOWN_NAMES);
   $shownNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
+/* 2011-08-16 G+ has new comment-toggling scheme
   // Pad with some more recent names
   if (names.length < 15) {
     var $moreNames = $commentWrapper.find(_C_COMMENTS_MORE_NAMES);
     $moreNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
   }
+*/
   text = names.join(', ');
-
+/* 2011-08-16 G+ has new comment-toggling scheme
   var $oldNames = $commentWrapper.find(_C_COMMENTS_OLD_NAMES);
   if ($oldNames.length) {
     // If nothing, then just get the old names.
@@ -2850,6 +2871,9 @@ function updateCommentsSnippet(id, $item) {
     else
       text = '…, ' + text;
   }
+*/
+  if ($shownNames.length < commentCount)
+    text = '…, ' + text;
   $snippet.text(text);
 }
 
@@ -2900,13 +2924,23 @@ function countComments($subtree) {
     return 0;
 
   var commentCount = 0, text;
+  var $comments = $subtree.find(_C_COMMENTS_BUTTON_COUNT);
+/*
   var $comments = $subtree.find(_C_COMMENTS_OLD_COUNT);
-  if ($comments.length)
+*/
+  if ($comments.length) {
     commentCount += parseTextCount($comments.text());
-  commentCount += countShownComments($subtree);
+  } else {
+    commentCount += countShownComments($subtree);
+    $comments = $subtree.find(_C_COMMENTS_OLDER_COUNT);
+    if ($comments.length)
+      commentCount += parseTextCount($comments.text());
+  }
+/*
   $comments = $subtree.find(_C_COMMENTS_MORE_COUNT);
   if ($comments.length)
     commentCount += parseTextCount($comments.text());
+*/
 
   //debug("countComments: " + commentCount);
   return commentCount;

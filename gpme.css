@@ -499,6 +499,9 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.gpme-comments-title-clickarea {
+  height: 100%
+}
 
 .gpme-comments-folded .gpme-comments-title-unfolded {
   display:none
