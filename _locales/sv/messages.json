@@ -61,9 +61,6 @@
     "message": "Inläggsstil",
     "description": "Name of the options group for how the post looks"
   },
-  "options_nav_showTopCollapseBarWhen": {
-    "message": "När ska hopfällningsfältet visas"
-  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "alltid",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -75,13 +72,6 @@
   "options_nav_showTopCollapseBarWhen_never": {
     "message": "aldrig",
     "description": "One of the options for when to display the top/bottom collapse bar"
-  },
-  "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
-  },
-  "options_nav_showBottomCollapseBarWhen_hover": {
-    "message": "when hovered by the mouse",
-    "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Inläggssummering",

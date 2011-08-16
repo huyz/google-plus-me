@@ -61,9 +61,6 @@
     "message": "Barra de Plegado del Mensaje",
     "description": "Name of the options group for how the post looks"
   },
-  "options_nav_showTopCollapseBarWhen": {
-    "message": "Cuando mostrar la barra de plegado"
-  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "siempre",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -76,16 +73,12 @@
     "message": "nunca",
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
-  "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
-  },
-  "options_nav_showBottomCollapseBarWhen_hover": {
-    "message": "when hovered by the mouse",
-    "description": "One of the options for when to display the bottom collapse bar"
-  },
   "options_nav_summary_label": {
     "message": "Resumen",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Cantidad de líneas mostradas en el mensaje plegado"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Mostrar miniaturas de las fotos del mensaje"

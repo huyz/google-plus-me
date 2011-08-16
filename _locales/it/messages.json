@@ -34,18 +34,42 @@
     "message": "Navigazione",
     "description": "Name of the tab in the options page"
   },
-  "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
-  },
-  "options_nav_showBottomCollapseBarWhen_hover": {
-    "message": "when hovered by the mouse",
-    "description": "One of the options for when to display the bottom collapse bar"
-  },
   "options_nav_summary_label": {
     "message": "Riassunto di un articolo ",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Gli articoli in visualizzazione ridotta mostrano le miniature delle foto dal contenuto"
+  },
+  "options_nav_summaryIncludeTime": {
+    "message": "Gli articoli in visualizzazione ridotta mostrano data e ora"
+  },
+
+  "options_nav_preview_label": {
+    "message": "Anteprima articolo",
+    "description": "Name of the options group for mouse-over instant preview"
+  },
+  "options_nav_previewEnableInExpanded": {
+    "message": "Abilita in modalità espansa"
+  },
+  "options_nav_previewEnableInList": {
+    "message": "Abilita in modalità lista"
+  },
+
+  "options_nav_browserAction_label": {
+    "message": "Icona G+me",
+    "description": "Name of the options group for the G+me icon"
+  },
+  "options_nav_browserActionOpensNewTab": {
+    "message": "Selezionando l'icona G+me, verrà aperto Google+ se non è già aperto. Selezionando questo checkbox verrà aperta una nuova scheda invece di riusare la scheda corrente"
+  },
+
+  "options_nav_pages_label": {
+    "message": "Pagine",
+    "description": "Name of the tab in the options page"
+  },
+  "options_nav_global_label": {
+    "message": "Globale",
+    "description": "Name of the options group that acts as defaults for all pages"
   }
 }

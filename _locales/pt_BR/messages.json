@@ -61,9 +61,6 @@
     "message": "Estilo da postagem",
     "description": "Name of the options group for how the post looks"
   },
-  "options_nav_showTopCollapseBarWhen": {
-    "message": "Quando mostrar a barra retraída"
-  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "sempre",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -76,19 +73,12 @@
     "message": "nunca",
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
-  "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
-  },
-  "options_nav_showBottomCollapseBarWhen_hover": {
-    "message": "when hovered by the mouse",
-    "description": "One of the options for when to display the bottom collapse bar"
-  },
   "options_nav_summary_label": {
     "message": "Sumário das postagens",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryLines": {
-    "message": "Número de linhas no sumário  de entradas colapsadas"
+    "message": "Quantidade de linhas a serem visualizadas nas postagens retraídas"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "As miniaturas das fotos são visualizadas nas postagens retraídas"

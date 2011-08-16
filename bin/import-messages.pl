@@ -5,22 +5,22 @@
 #
 # UPDATED: 2011-08-13
 # Overall Stats:
-#          español LA: 53 36 19 
+#          español LA: 53 36 20 
 #          español ES: 
 #        português PT: 54 40 1 
-#        português BR: 54 53 
+#        português BR: 54 54 1 
 #            français: 53 39 48 
 #              German: 54 53 
 #           Hungarian: 54 52 
 #            Japanese: 41 41 1 
 #          Indonesian: 40 40 
 #               Dutch: 54 54 
-# Traditional Chinese: 54 53 6 12 
+# Traditional Chinese: 56 52 6 12 5 
 #             Swedish: 54 54 
-#            italiano: 5 
+#            italiano: 13 
 #             Finnish: 
-#              Polish: 
 #  Simplified Chinese: 
+#              Polish: 
 #           Norwegian: 
 
 use utf8;

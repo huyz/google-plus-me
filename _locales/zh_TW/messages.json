@@ -62,7 +62,7 @@
     "description": "Name of the options group for how the post looks"
   },
   "options_nav_showTopCollapseBarWhen": {
-    "message": "收合列顯示"
+    "message": "當訊息頂端收合列顯示"
   },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "永遠",
@@ -77,10 +77,10 @@
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
   "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
+    "message": "展開模式下，訊息底端的收合列"
   },
   "options_nav_showBottomCollapseBarWhen_hover": {
-    "message": "when hovered by the mouse",
+    "message": "當滑鼠劃過訊息",
     "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
@@ -94,7 +94,7 @@
     "message": "顯示已收合訊息中圖片的縮略圖"
   },
   "options_nav_summaryIncludeTime": {
-    "message": "顯示以收何訊息發表的日期時間"
+    "message": "顯示已收合訊息發表的日期時間"
   },
 
   "options_nav_preview_label": {
@@ -214,7 +214,7 @@
 
     <h3>這個擴充功能和其他擴充功能衝突。</h3>
     <p>
-    在8月2日及3日，Google+改變頁面配置，粉碎了大多數的Google+擴充功能；因此，所有的擴充功能都已經改變了他們的代碼。再給我一點時間，我會復原其他擴充功能的相容性設定，請耐心等候。
+    在8月2日及3日，Google+改變頁面配置，粉碎了大多數的Google+擴充功能；因此，所有的擴充功能都已經改變了他們的代碼。請再給我一點時間；我會復原其他擴充功能的相容性設定，請耐心等候。
     <!--
     本套件 <i>不相容</i> 於 <b>+Comment Toggle</b>。 <i>相容</i>於<b>Start G+</b> (小心效能問題), <b>Surplus</b>, <b>Replies and more</b> (您必須在他的設定頁面中關閉 'm' 快捷鍵), <b>Extended Share</b>, <b>G+ Ultimate</b> (除了 \"side-by-side view\" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (除了通知框), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
     -->
@@ -235,6 +235,7 @@
     <ul>
     <li>重新整理頁面 (可能只是Google+的問題)</li>
     <li>重新執行您的瀏覽器 (也可能是瀏覽器的BUG)</li>
+    <li>關閉其他和Google+相關的擴充功能 (可能是相容性問題)</li>
     <li>確保您是使用最新版本的<b>G+me</b>。對G+me圖示點選右鍵後選擇 「管理擴充功能」 接著比對在 <a href=\"http://goo.gl/m837O\" target=_blank>Google線上應用程式商店</a>中最新的版本號。這裡教您如何 <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>強制擴充功能更新</a>。</li>
     <li>如果您已經擁有最新版本的<b>G+me</b>，您可以試著解除安裝後重新安裝本擴充功能</li>
     <li>試著重置所有您的選項和歷史紀錄；見下方。</li>
@@ -284,7 +285,7 @@
     <p>有用的教學和最新的資訊 <a href=\"http://huyz.us/google-plus-me/\" target=_blank>G+me 網頁</a></p>
     <p>給予回饋 <a href=\"http://huyz.us/gpme-release/\" target=_blank>G+me 在 Google+ 目前的討論串</a></p>
     <p>評比此擴充功能 <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a></p>
-    <p>源始碼，請往 <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a>.</p>",
+    <p>源始碼，請往 <a href=\"http://goo.gl/BM8CG\" target=_blank>GitHub</a></p>",
     "description": "Text with important links"
   },
   "options_nav_translators_label": {
