@@ -158,6 +158,7 @@ var _C_MAP_IMG                  = 'img.LZkmfe';
 
 // Comments
 var _C_EXPAND_COMMENT           = '.sp + .Wk'; // For truncated long comments
+var C_COMMENTS_EDITOR           = 'Ah';
 var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
 var C_COMMENTS_ALL_CONTAINER    = 'Ol';
 /* 2011-08-16 G+ has new comment-toggling scheme
@@ -166,27 +167,19 @@ var _C_COMMENTS_OLD_CONTAINER   = '.al';
 var _C_COMMENTS_OLD_COUNT       = '.Dk';
 var _C_COMMENTS_OLD_NAMES       = '.al .er';
 */
+var C_COMMENTS_BUTTON_CONTAINER = 'tvogXd';
+var _C_COMMENTS_BUTTON_CONTAINER = '.tvogXd';
+var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .aISsjb';
+var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.vUcJZb) > :first-child'; // :not grayed out
+var C_COMMENTS_CONTAINER        = 'epoPNd';
+var _C_COMMENTS_CONTAINER       = '.epoPNd';
+var _C_COMMENTS_OLDER_COUNT     = '.cgRpz:not([style*="none"])';
+var _C_COMMENTS_OLDER_BUTTON    = '.cgRpz';
 var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
 var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
 var _C_COMMENTS_SHOWN           = '.Tk';
 var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
 var C_COMMENTS_SHOWN_CONTENT    = 'tp'; // The div below the first <a> within the comment, for when the comment is expanded (.tp.sp becomes .tp): https://plus.google.com/105190043964183708400/posts/f6gDun2334n b
-var C_COMMENTS_EDITOR           = 'Ah';
-/* 2011-08-16 G+ has new comment-toggling scheme
-var C_COMMENTS_MORE_CONTAINER   = 'Zk';
-var _C_COMMENTS_MORE_CONTAINER  = '.Zk';
-var _C_COMMENTS_MORE_COUNT      = '.Ck';
-var _C_COMMENTS_MORE_NAMES      = '.Zk .er';
-*/
-// 2011-08-16 Google+'s new comment hiding scheme
-var C_COMMENTS_BUTTON_CONTAINER = 'tvogXd';
-var _C_COMMENTS_BUTTON_CONTAINER = '.tvogXd';
-var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .aISsjb';
-var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.vUcJZb) > :first-child'; // :not grayed out
-var C_COMMENTS_OLDER_CONTAINER  = 'epoPNd';
-var _C_COMMENTS_OLDER_CONTAINER = '.epoPNd';
-var _C_COMMENTS_OLDER_COUNT     = _C_COMMENTS_OLDER_CONTAINER + ' > .cgRpz:visible';
-var _C_COMMENTS_OLDER_BUTTON    = _C_COMMENTS_OLDER_CONTAINER + ' > [role="button"]';
 
 var _C_SHARE_LINE               = '.Jn';
 var _C_LINK_COMMENT             = '.wf';
@@ -201,17 +194,12 @@ var C_MENU                      = 'yp d-L';
 var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
 var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
 
-//var _C_COMMENT_CONTAINERS =
-//  [ _C_COMMENTS_OLD_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_MORE_CONTAINER ];
 var _C_COMMENT_CONTAINERS =
-  [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER, _C_COMMENTS_OLDER_CONTAINER ];
+  [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
-/* 2011-08-16 G+ has new comment-toggling scheme
-var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_OLD_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_MORE_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
-*/
-var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_OLDER_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
+var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
 var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
@@ -1596,8 +1584,8 @@ function updateItem($item, attempt) {
         // Insert wrapper for comments container so that we can hide it without
         // triggering DOMSubtreeModified events on the container
         $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
-        foreachCommentContainer($allCommentContainer, function($container) {
-          $wrapper.append($container);
+        [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER ].forEach(function(item) {
+          $wrapper.append($allCommentContainer.find(item));
         });
       }
 
