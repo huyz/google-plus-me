@@ -5,7 +5,7 @@
 #
 # UPDATED: 2011-08-13
 # Overall Stats:
-#          español AL: 53 36 19 
+#          español LA: 53 36 19 
 #          español ES: 
 #        português PT: 54 40 1 
 #        português BR: 54 53 
@@ -41,7 +41,7 @@ $Term::ANSIColor::AUTORESET = 1;
 
 my %DIRMAP = (
   "español ES" => "es",
-  "español AL" => "es_419",
+  "español LA" => "es_419",
   "français" => "fr",
   "português BR" => "pt_BR",
   "português PT" => "pt_PT",
