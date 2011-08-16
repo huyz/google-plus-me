@@ -357,6 +357,12 @@ div.gpme-comment-count-container > .gpme-comment-count-fg {
   line-height: 21px;
 }
 
+/* So that we can animate transition */
+div.gpme-enh .gpme-comment-count-fg {
+  display: inline-block;
+  overflow: hidden;
+}
+
 /* Handle clicks on the highlighted icon */
 .gpme-button-area:hover > .gpme-comment-count-container:not(.gpme-comment-count-nohilite) {
   cursor: pointer;

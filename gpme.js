@@ -161,12 +161,6 @@ var _C_EXPAND_COMMENT           = '.sp + .Wk'; // For truncated long comments
 var C_COMMENTS_EDITOR           = 'Ah';
 var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
 var C_COMMENTS_ALL_CONTAINER    = 'Ol';
-/* 2011-08-16 G+ has new comment-toggling scheme
-var C_COMMENTS_OLD_CONTAINER    = 'al';
-var _C_COMMENTS_OLD_CONTAINER   = '.al';
-var _C_COMMENTS_OLD_COUNT       = '.Dk';
-var _C_COMMENTS_OLD_NAMES       = '.al .er';
-*/
 var C_COMMENTS_BUTTON_CONTAINER = 'tvogXd';
 var _C_COMMENTS_BUTTON_CONTAINER = '.tvogXd';
 var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .aISsjb';
@@ -251,7 +245,7 @@ var ROOM_FOR_COMMENT_AREA                         = 70;
 var GAP_ABOVE_ITEM_AT_TOP                         = 2;
 var GAP_ABOVE_PREVIEW                             = 7;
 var SLACK_BELOW_PREVIEW                           = 77; // Needed to prevent G+ from jumping page when user adds comment
-var COMMENTS_TITLE_FOLDED_HEIGHT                  = 30;
+var COMMENTS_TITLE_FOLDED_OUTERHEIGHT             = 36;
 
 // Duration of clickwall.
 // NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
@@ -775,8 +769,8 @@ jQuery.fn.outerScrollWidth = function(includeMargin) {
 };
 */
 
-function slideUpFromTop($elem, duration, easing, callback) {
-  $elem.animate({height: 0, scrollTop: $elem.height()}, duration, easing, function() {
+function slideUpFromTop($elem, minHeight, duration, easing, callback) {
+  $elem.animate({height: minHeight, scrollTop: $elem.height() - minHeight}, duration, easing, function() {
     $elem.css('height', '').hide();
     callback();
   });
@@ -786,9 +780,9 @@ function slideUpFromTop($elem, duration, easing, callback) {
  * so they can start reading while the animation is going on.
  * Google+ animates the way they do because they want to show the last comment at all times.
  */
-function slideDown($elem, duration, easing, callback) {
+function slideDown($elem, minHeight, duration, easing, callback) {
   var height = $elem.actual('height');
-  $elem.height(0).css('display', ''); // Undo 'hide'
+  $elem.height(minHeight).css('display', ''); // Undo 'hide'
   $elem.animate({height: height}, duration, easing, function() {
     $elem.css('height', '');
     callback();
@@ -2255,8 +2249,8 @@ function foldItem(options, $item, $post) {
       $comments.show();
     }
 
-    // Updated the count in the subtree
-    updateCommentCount(id, $subtree, commentCount);
+    // Updated the counts
+    updateCommentCount(id, $item, commentCount);
   }
 }
 
@@ -2708,14 +2702,23 @@ function foldComments(interactive, $item, $comments) {
     saveSeenCommentCount(id, commentCount);
 
     // Visual changes
+
+    // If there's a G+ comment button, then we're set; otherwise, we have keep a minimum height
+    // to smoothly transition to gpme-comments-title-folded
+    var minHeight = 0;
+    var $commentsButton = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
+    if (! $commentsButton.length || ! $commentsButton.is(':visible'))
+      minHeight = COMMENTS_TITLE_FOLDED_OUTERHEIGHT;
+
     var shownCommentCount = countShownComments($item);
     var duration = shownCommentCount <= 4 ? JQUERY_DURATION / 2  : shownCommentCount <= 10 ? JQUERY_DURATION : JQUERY_DURATION * 1.5;
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
-    $commentsTitleUnfolded.slideUp(duration);
+    $commentsTitleUnfolded.css('min-height', COMMENTS_TITLE_FOLDED_OUTERHEIGHT).
+      slideUp(duration, 'easeOutQuart', function() { $commentsTitleUnfolded.css('min-height', '') } );
 // No need for min-height if there's C_COMMENTS_BUTTON_CONTAINER there anyway
 //    $comments.css('min-height', '27px').slideUp(duration, function() {
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
-    slideUpFromTop($shownOrOlderComments, duration, 'easeOutQuart', function() {
+    slideUpFromTop($shownOrOlderComments, minHeight, duration, 'easeOutQuart', function() {
       $comments.hide();
       $item.addClass('gpme-comments-folded');
       $item.removeClass('gpme-comments-unfolded');
@@ -2799,6 +2802,13 @@ function unfoldComments(interactive, $item, $comments) {
     }
     */
 
+    // If there's a G+ comment button, then we're set; otherwise, we have start from a minimum height
+    // to smoothly transition from gpme-comments-title-folded
+    var minHeight = 0;
+    var $commentsButton = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
+    if (! $commentsButton.length || ! $commentsButton.is(':visible'))
+      minHeight = COMMENTS_TITLE_FOLDED_OUTERHEIGHT;
+
     var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
@@ -2812,7 +2822,7 @@ function unfoldComments(interactive, $item, $comments) {
       click($commentsButton);
 
 //    $comments.slideDown(duration, function() {
-    slideDown($shownOrOlderComments, duration, easing, function() {
+    slideDown($shownOrOlderComments, minHeight, duration, easing, function() {
       $item.removeClass('gpme-comments-folded');
       $item.addClass('gpme-comments-unfolded');
       $commentsTitleFolded.css('display', ''); // Undo the hide above
@@ -2859,7 +2869,7 @@ function updateCommentCount(id, $subtree, count) {
 
   var $container = $subtree.find(".gpme-comment-count-container");
   var $buttonArea = $container.parent();
-  //var $countBg = $container.children(".gpme-comment-count-bg");
+  var $countBg = $container.children(".gpme-comment-count-bg");
   var $countFg = $container.children(".gpme-comment-count-fg");
 
   // Clear any old timers we may have
@@ -2867,6 +2877,12 @@ function updateCommentCount(id, $subtree, count) {
     clearTimeout(lastCommentCountUpdateTimers[id]);
     delete lastCommentCountUpdateTimers[id];
   }
+
+  // NOTE: we have 2 comment counts
+  var oldCount = $countFg.first().html();
+  if (typeof oldCount != 'undefined' && oldCount !== null && oldCount !== '')
+    oldCount = oldCount.replace(/.*>/s, ''); // In case of middle of another animation
+  var oldNoHilite = $countBg.first().hasClass(C_GPME_COMMENTCOUNT_NOHILITE);
 
   // Change background of count
   var seenCount = lsGet(LS_COMMENTS_READ_COUNT, id);
@@ -2877,10 +2893,12 @@ function updateCommentCount(id, $subtree, count) {
   //    different before, which means e.g. a comment was deleted and another inserted
   if ((seenCount === null && count > 0 ) || (seenCount !== null && count != seenCount) ||
       (seenCountChanged = lsGet(LS_COMMENTS_READ_COUNT_CHANGED, id))) {
-    $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
-    $countFg.text(count - (seenCount !== null ? seenCount : 0));
-    $container.removeClass('gpme-hide');
-    $buttonArea.addClass('gpme-new-comments');
+    var newCount = count - (seenCount !== null ? seenCount : 0);
+    animateCount($countFg, oldCount, newCount, function() {
+      $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
+      $container.removeClass('gpme-hide');
+      $buttonArea.addClass('gpme-new-comments');
+    });
 
     // Keep track of comment count changes, so that "0" stays red (when
     // someone deletes a comment)
@@ -2896,11 +2914,36 @@ function updateCommentCount(id, $subtree, count) {
     $container.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
     $buttonArea.removeClass('gpme-new-comments');
     if (count) {
-      $countFg.text(count);
-      $container.removeClass('gpme-hide');
+      // If we used to be hilite, then wee don't animate -- the user just marked as read.
+      if (! oldNoHilite)
+        $countFg.text(count)
+      else 
+        animateCount($countFg, oldCount, count, function() {
+          $container.removeClass('gpme-hide');
+        });
     } else { // If 0, no need to show
       $container.addClass('gpme-hide');
     }
+  }
+}
+
+/**
+ * Copy Google+'s animation.
+ * XXX This doesn't animate when going from gray 1 to red 1
+ */
+function animateCount($countFg, oldCount, newCount, callback) {
+  // We should always try to set the count, even if it supposedly hasn't changed
+  // because it's possible that the 2nd comment count didn't exist at one point
+  // but now needs to be set for the first time.
+  if (oldCount === null || oldCount === '' || '' + newCount === oldCount) { 
+    $countFg.text(newCount);
+    callback();
+  } else {
+    $countFg.html('' + oldCount + '<br />' + newCount);
+    $countFg.animate({scrollTop : $countFg.height()}, 400, function() {
+      $countFg.text(newCount);
+      callback();
+    });
   }
 }
 
@@ -3010,9 +3053,6 @@ function countComments($subtree) {
 
   var commentCount = 0, text;
   var $comments = $subtree.find(_C_COMMENTS_BUTTON_COUNT);
-/*
-  var $comments = $subtree.find(_C_COMMENTS_OLD_COUNT);
-*/
   if ($comments.length) {
     commentCount += parseTextCount($comments.html().replace(/<.*/, ''));
   } else {
@@ -3021,11 +3061,6 @@ function countComments($subtree) {
     if ($comments.length)
       commentCount += parseTextCount($comments.text());
   }
-/*
-  $comments = $subtree.find(_C_COMMENTS_MORE_COUNT);
-  if ($comments.length)
-    commentCount += parseTextCount($comments.text());
-*/
 
   //debug("countComments: " + commentCount);
   return commentCount;
