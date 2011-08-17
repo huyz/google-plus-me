@@ -344,7 +344,6 @@ clickWall.style.zIndex = '12'; // higher than .gpme-folded .a-f-i-Ia-D
 clickWall.style.display = 'none';
 var previewTriangleSpan = document.createElement('span');
 previewTriangleSpan.className = 'gpme-preview-triangle';
-previewTriangleSpan.style.backgroundImage = 'url(' + chrome.extension.getURL('/images/preview-triangle.png') + ')';
 postWrapperTpl.appendChild(clickWall);
 postWrapperTpl.appendChild(previewTriangleSpan);
 var $postWrapperTpl = $(postWrapperTpl);
@@ -2719,7 +2718,8 @@ function foldComments(interactive, $item, $comments) {
 //    $comments.css('min-height', '27px').slideUp(duration, function() {
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
     slideUpFromTop($shownOrOlderComments, minHeight, duration, 'easeOutQuart', function() {
-      $comments.hide();
+      // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
+      $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
       $item.addClass('gpme-comments-folded');
       $item.removeClass('gpme-comments-unfolded');
       var $commentsSnippet = $item.find('.gpme-comments-snippet');
@@ -2734,7 +2734,10 @@ function foldComments(interactive, $item, $comments) {
 
   } else {
     // Visual changes
-    $comments.hide();
+
+    // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
+    $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
+
     $item.addClass('gpme-comments-folded');
     $item.removeClass('gpme-comments-unfolded');
   }
@@ -2814,7 +2817,7 @@ function unfoldComments(interactive, $item, $comments) {
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
 
     $commentsTitleFolded.hide(); // hide a bit early
-    $comments.show();
+    $comments.css({height: '', overflow: ''}); //$comments.show();
 
     // Start loading any hidden comments.
     var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
@@ -2836,7 +2839,7 @@ function unfoldComments(interactive, $item, $comments) {
     deleteSeenCommentCount(id);
   } else {
     // Automated visual changes
-    $comments.show();
+    $comments.css({height: '', overflow: ''}); //$comments.show();
     $item.removeClass('gpme-comments-folded');
     $item.addClass('gpme-comments-unfolded');
     // NOTE: updateCommentbar needs to be done after updating classes

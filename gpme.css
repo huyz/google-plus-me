@@ -393,6 +393,7 @@ div.gpme-enh .gpme-comment-count-fg {
   top: 20px; /* -top of wrapper */
   height: 30px;
   width: 17px;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/preview-triangle.png') no-repeat;
 }
 
 .gpme-folded:not(.vp) .Oi { /* Context menu button */
