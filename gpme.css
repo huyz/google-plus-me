@@ -2,9 +2,9 @@
  * Filename:         gpme.css
  * More info, see:   gpme.js
  *
- * Web:              http://huyz.zh/google-plus-me/
+ * Web:              http://huyz.Ag/google-plus-me/
  * Source:           https://github.com/huyz/google-plus-me
- * Author:           Huy Z  http://huyz.zh/
+ * Author:           Huy Z  http://huyz.Ag/
  */
 
 
@@ -27,20 +27,20 @@
 }
 
 /* Selected post, folded; needs to be highly selective */
-.gpme-folded.Lj {
+.gpme-folded.ij {
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
 
 /* Selected post, folded */
-/*.gpme-enh.Lj {   For Stb, only make it thick when folded */
-.gpme-folded.gpme-enh.Lj {
+/*.gpme-enh.ij {   For Stb, only make it thick when folded */
+.gpme-folded.gpme-enh.ij {
   /*border-left-color: red; /* #3d9400;*/
   border-left-width: 2px;
   margin-left: -1px;
 }
 /* The little animated bar; needs to more selective than G+'s */
 /* For Stb, only make it thick when folded
-div.Lj {
+div.ij {
   border-left-width: 2px;
 }
 */
@@ -103,10 +103,10 @@ div.Lj {
 }
 
 /* Muted post */
-.vp { /* Matches .gpme-folded.Lj */
+.Vj { /* Matches .gpme-folded.ij */
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
 }
-.vp .gpme-titlebar {
+.Vj .gpme-titlebar {
   margin: 0;
   display: none;
 }
@@ -379,14 +379,14 @@ div.gpme-enh .gpme-comment-count-fg {
 
 /*
  * Preview
- * :not(.vp) means not muted
+ * :not(.Vj) means not muted
  */
 
 .gpme-preview-triangle {
   display: none;
 }
 
-.gpme-folded:not(.vp) .gpme-preview-triangle {
+.gpme-folded:not(.Vj) .gpme-preview-triangle {
   display: inline;
   position: absolute;
   left: -16px;
@@ -396,7 +396,7 @@ div.gpme-enh .gpme-comment-count-fg {
   background: url('chrome-extension://__MSG_@@extension_id__/images/preview-triangle.png') no-repeat;
 }
 
-.gpme-folded:not(.vp) .Oi { /* Context menu button */
+.gpme-folded:not(.Vj) .Qh { /* Context menu button */
   position: absolute;
   margin: 0;
   right: 2px;
@@ -405,11 +405,11 @@ div.gpme-enh .gpme-comment-count-fg {
   background-color: white;
 /*  margin-right: -13px; /* Gained 44-13=31 px */
 }
-.gpme-folded:not(.vp) .yp { /* context menu */
+.gpme-folded:not(.Vj) .eo { /* context menu */
   z-index: 11;
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper {
+.gpme-folded:not(.Vj) .gpme-post-wrapper {
   position: absolute;
   left: 435px; /* (31+60+26) + 137 shrinking + 195 width of sidebar - 20 slack; overridden dynamically */
   top: -20px; /* overridden dynamically */
@@ -422,7 +422,7 @@ div.gpme-enh .gpme-comment-count-fg {
   -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper > .zh { /* Post content */
+.gpme-folded:not(.Vj) .gpme-post-wrapper > .Ag /* _C_ITEM_GUTS */ {
   margin-left: 0; /* Gained 60px */
   margin-right: 0; /* OUTDATED: Gained 44-13=31 px */
   padding-right: 8px;
@@ -431,65 +431,62 @@ div.gpme-enh .gpme-comment-count-fg {
 }
 
 /* From Google News */
-.gpme-folded:not(.vp) .gpme-post-wrapper > .zh::-webkit-scrollbar {
+.gpme-folded:not(.Vj) .gpme-post-wrapper > .Ag::-webkit-scrollbar {
   width: 8px;
   background: transparent;
   overflow: visible;
 }
-.gpme-folded:not(.vp) .gpme-post-wrapper > .zh::-webkit-scrollbar-thumb {
+.gpme-folded:not(.Vj) .gpme-post-wrapper > .Ag::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
-.gpme-folded:not(.vp) .gpme-post-wrapper.gpme-hover > .zh::-webkit-scrollbar-thumb {
+.gpme-folded:not(.Vj) .gpme-post-wrapper.gpme-hover > .Ag::-webkit-scrollbar-thumb {
   background-color: #CCC;
 }
-.gpme-folded:not(.vp) .zh::-webkit-scrollbar-button {
+.gpme-folded:not(.Vj) .Ag::-webkit-scrollbar-button {
   height: 7px;
   display: block;
   background-color: transparent;
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper .Uy /* Title */{
+.gpme-folded:not(.Vj) .gpme-post-wrapper .lx /* Title */{
   margin-right: 5px;
 }
 
-.gpme-folded:not(.vp) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
+.gpme-folded:not(.Vj) .gpme-post-wrapper .gpr_tools { /* Google Plus Reply+ */
   display: none;
 }
 
 /* Shrink images to fit preview */
-/* Album photo (O-F-Nf-la)
- * https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+/* Pick less specific selector than:
+ * Album photo (O-F-Nf-la)
+ *   https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
  * or Youtube image preview (O-F-Ja)
  */ 
-.gpme-folded:not(.vp) .gpme-post-wrapper div.O-F-X {
+.gpme-folded:not(.Vj) .gpme-post-wrapper div.J-B-ma {
   height: auto !important; /* Overrides inline height */
 }
-.gpme-folded:not(.vp) .gpme-post-wrapper img {
+.gpme-folded:not(.Vj) .gpme-post-wrapper img {
   max-width: 100%; /* Resizes image */
 }
 
 .gpme-link-comment {
   display: none
 }
-.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment:not(.Uk) /* not fake input */ { /* Link */
+/* .rp is _C_FAKEINPUT_COMMENT */
+.gpme-folded:not(.Vj) .gpme-post-wrapper .gpme-link-comment:not(.rp) /* not fake input */ { /* Link */
   display: inline
 }
-.gpme-preview-enh .gpme-post-wrapper .Uk.gpme-link-comment { /* Fake input -- my copy */
+.gpme-preview-enh .gpme-post-wrapper .rp.gpme-link-comment { /* Fake input -- my copy */
   display: block
 }
-.gpme-preview-enh .gpme-post-wrapper .Uk:not(.gpme-link-comment) { /* Fake input -- original */
+.gpme-preview-enh .gpme-post-wrapper .rp:not(.gpme-link-comment) { /* Fake input -- original */
   display: none
 }
 /* NOTE: Replies and More incorrectly duplicates the non-style wf class -- should have only copied d-k,
  * but this makes it easier for us anyway */
-.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment + .wf /* Comment -> Reply to Author */,
-.gpme-folded:not(.vp) .gpme-post-wrapper .gpme-link-comment + .Uk /* Add a comment... */ {
+.gpme-folded:not(.Vj) .gpme-post-wrapper .gpme-link-comment + .te /* Comment -> Reply to Author */,
+.gpme-folded:not(.Vj) .gpme-post-wrapper .gpme-link-comment + .rp /* Add a comment... */ {
   display: none
-}
-
-.gpme-folded:not(.vp) .a-f-i-Jf-Om { /* FIXME: what's this? */
-  margin-left: 0;
-  margin-right: -13px;
 }
 
 /*
@@ -497,7 +494,7 @@ div.gpme-enh .gpme-comment-count-fg {
  */
 
 /* Hide in preview */
-.gpme-folded:not(.vp) .gpme-commentbar {
+.gpme-folded:not(.Vj) .gpme-commentbar {
   display: none;
 }
 
@@ -562,10 +559,10 @@ div.gpme-enh .gpme-comment-count-fg {
  * Inside folded comment bar
  */
 
-.gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-top {
+.gpme-comments-folded:not(.Vj) .gpme-comments-fold-icon-unfolded-top {
   display: none;
 }
-.gpme-comments-folded:not(.vp) .gpme-comments-fold-icon-unfolded-bottom {
+.gpme-comments-folded:not(.Vj) .gpme-comments-fold-icon-unfolded-bottom {
   display: none;
 }
 
@@ -584,7 +581,7 @@ div.gpme-bottombar { /* div for higher specificity */
 div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
   cursor: pointer;
 }
-.gpme-folded:not(.vp) div.gpme-bottombar {
+.gpme-folded:not(.Vj) div.gpme-bottombar {
   display: none;
 }
 
@@ -670,7 +667,7 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
  */
 
 /* Usability Boost */
-.gpme-folded:not(.vp) .post_star {
+.gpme-folded:not(.Vj) .post_star {
   top: 3px;
 }
 
@@ -695,6 +692,6 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 
 /* Adhik */
-.gpme-folded:not(.vp) .ea-S-A /* FIXME */ {
+.gpme-folded:not(.Vj) .ea-S-A /* FIXME */ {
   margin-right: 0; /* Overrides 20px */
 }

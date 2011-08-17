@@ -71,129 +71,131 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-c-aa-S';
+var _C_HEADER                   = '.a-e-fa-O';
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-c-Sa-S';
-var _C_FEEDBACK_LINK            = '.a-Wj-Lh';
-var C_FEEDBACK                  = 'j-e-Pa';
+var _C_COPYRIGHT                = '.a-e-db-O';
+var _C_FEEDBACK_LINK            = '.a-uj-ch';
+var C_FEEDBACK                  = 'g-d-Ba';
 
 // Icons
-var _C_HANGOUT_LIVE_ICON        = '.x5MY5e'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
-var C_HANGOUT_LIVE_ICON         = 'x5MY5e'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var _C_HANGOUT_LIVE_ICON        = '.QF'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
+var C_HANGOUT_LIVE_ICON         = 'QF'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 // C_CAMERA_ICON*
-var C_POST_CONTENT_ICON_CONTAINER = 'h-na-xe-Ua-N'; // Use the last one; don't use the first one 'h-Ac' otherwise hovers works
-var C_CAMERA_ICON               = 'h-na-o-z';
-var C_VIDEO_ICON                = 'h-na-o-Ja';
-var C_LINK_ICON                 = 'h-na-o-k';
-var C_CHECKIN_ICON              = 'h-na-o-Jf-N';
-var C_GAME_ICON                 = 'pm';
+var C_POST_CONTENT_ICON_CONTAINER = 'h-ga-Td-Na-E'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
+var C_CAMERA_ICON               = 'h-ga-n-w';
+var C_VIDEO_ICON                = 'h-ga-n-Oa"';
+var C_LINK_ICON                 = 'h-ga-n-j';
+var C_CHECKIN_ICON              = 'h-ga-n-ff-E'; // Unlike the other ones, this has a single class for non-hover
+var C_GAME_ICON                 = 'Pl';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 't6';
-var _C_NOTIFICATION_STREAM      = '.a-c-A-ve-jo';
-var C_SPARKS_MARKER             = 'c1';
-var C_SINGLE_POST_MARKER        = 'a-Bh-fc-K';
-var C_STREAM                    = 'Wq';
-var _C_STREAM                   = '.Wq';
-var _C_GAMES_STREAM             = '.ZuC1te';
+var C_NOTIFICATIONS_MARKER      = 'uB';
+var _C_NOTIFICATION_STREAM      = '.cga'; // cga O7
+var C_SPARKS_MARKER             = 'Jba';
+var C_SINGLE_POST_MARKER        = 'a-Wh-Yb-I';
+var C_STREAM                    = 'pr';
+var _C_STREAM                   = '.pr';
+var _C_GAMES_STREAM             = '.hs';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.Ml';
+var _C_MORE_BUTTON              = '.el';
 
 var _C_CONTENT_PANE_HEADING     = '.kp';
-var _C_PROFILE_HEADING          = '.fn';
-var _C_GAMES_HEADING            = '.KlZYid.Wqnkg';
+var _C_PROFILE_HEADING          = '.np';
+var _C_GAMES_HEADING            = '.it';
 
 // Item
-var C_SELECTED                  = 'Lj';
-var _C_SELECTED                 = '.Lj';
-var _C_ITEM                     = '.tf';
-var _C_ITEM_GUTS                = '.zh';
-var _C_ITEM_GUTS_PLACEHOLDER    = '.my'; // For hangout and photo albums
-var C_IS_MUTED                  = 'vp'; // Style is: nk
-var _C_LINK_UNMUTE              = '.Pi';
-var C_TITLE_COLOR               = 'Mn';
+var C_SELECTED                  = 'ij';
+var _C_SELECTED                 = '.ij';
+var _C_ITEM                     = '.Be';
+var _C_ITEM_GUTS                = '.Ag';
+var _C_ITEM_GUTS_PLACEHOLDER    = '.ww'; // For hangout and photo albums
+var C_IS_MUTED                  = 'Vj'; // Style is: nk
+var _C_LINK_UNMUTE              = '.ci';
+var C_TITLE_COLOR               = 'pl';
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                    = '.Uy';
+var _C_TITLE                    = '.lx'; // Meaning, excluding the avatar and menu icon
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-var C_TITLE                     = 'Uy';
-var S_PHOTO                     = '.Bu > a.xp';
-var _C_NAME                     = '.IE';
+var C_TITLE                     = 'lx';
+var S_PHOTO                     = '.ju > a.an';
+var _C_NAME                     = '.yh';
 // S_SOURCE:
 // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 // - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 // - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
-var S_SOURCE                    = '.tz.d-q-p';
-var _C_CONTENT                  = '.Qy';
-var _C_PERMS                    = '.gl'; // Candidates: gl rr Cp
+var S_SOURCE                    = '.Ex'; // Ex b-o-l
+var _C_CONTENT                  = '.ix'; // Right inside _C_ITEM_GUTS
+var _C_PERMS                    = '.gj'; // b- gj Tp Lm
 var _C_MUTED                    = '.Zq'; // "- Muted" text in profile page
-var C_DATE                      = 'fl'; // Candidates: fl Br
-var _C_DATE                     = '.fl';
-var _C_EXPAND_POST              = '.Kq';
+var C_DATE                      = 'fj'; // Candidates: fj fo
+var _C_DATE                     = '.fj';
+var _C_EXPAND_POST              = '.b-j.vp.jx';
 //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 // Parts of content relevant for the summary
-var _C_QUOTE_IMG                = '.ea-S-qg'; // This is an image of a blown quote: ``
+var _C_QUOTE_IMG                = '.ea-S-qg'; // FIXME: This is an image of a blown-up quote: ``
 // _C_QUOTED_PHOTO:
 // - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
-var _C_QUOTED_PHOTO             = '.sz > img';
+var _C_QUOTED_PHOTO             = '.Dx > img';
 // Various images:
 // - Web page image: O-F-Th-la
-// - Posted image: https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-// - Posted album: O-F-Bj-la  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
-// - Main image in album: O-F-Nf-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-// - Smaller image thumbnails in album: O-F-nd-la https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_IMG               = '.O-F-Dl-la > img, .O-F-Bj-la > img, .O-F-Nf-la > img, .O-F-nd-la > img';
-var _C_CONTENT_VIDEO            = '.O-F-Ja-vl';
-var _C_CONTENT_LINK             = '.O-F-Q-k';
+// - Posted image: J-B-Wk-ha https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+// - Posted album: J-B-Si-ha  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
+// - Main image in album: J-B-mf-ha https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+// - Smaller image thumbnails in album: J-B-Tc-ha https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+var S_CONTENT_IMG               = '.J-B-Wk-ha > img, .J-B-Si-ha > img, .J-B-mf-ha > img, .J-B-Tc-ha > img';
+// _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
+var _C_CONTENT_VIDEO            = '.J-B-Oa-Pk';
+var _C_CONTENT_LINK             = '.J-B-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
 var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
-var _C_MAP_IMG                  = 'img.LZkmfe';
+var _C_MAP_IMG                  = 'img.wu'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 
 // Comments
-var _C_EXPAND_COMMENT           = '.sp + .Wk'; // For truncated long comments
-var C_COMMENTS_EDITOR           = 'Ah';
-var _C_COMMENTS_ALL_CONTAINER   = '.Ol';
-var C_COMMENTS_ALL_CONTAINER    = 'Ol';
-var C_COMMENTS_BUTTON_CONTAINER = 'tvogXd';
-var _C_COMMENTS_BUTTON_CONTAINER = '.tvogXd';
-var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .aISsjb';
-var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.vUcJZb) > :first-child'; // :not grayed out
-var C_COMMENTS_CONTAINER        = 'epoPNd';
-var _C_COMMENTS_CONTAINER       = '.epoPNd';
-var _C_COMMENTS_OLDER_COUNT     = '.cgRpz:not([style*="none"])';
-var _C_COMMENTS_OLDER_BUTTON    = '.cgRpz';
-var C_COMMENTS_SHOWN_CONTAINER  = 'Gq';
-var _C_COMMENTS_SHOWN_CONTAINER = '.Gq';
-var _C_COMMENTS_SHOWN           = '.Tk';
-var _C_COMMENTS_SHOWN_NAMES     = '.Tk a.yq'; // Candidate: yq Ky
-var C_COMMENTS_SHOWN_CONTENT    = 'tp'; // The div below the first <a> within the comment, for when the comment is expanded (.tp.sp becomes .tp): https://plus.google.com/105190043964183708400/posts/f6gDun2334n b
+var C_COMMENTS_EDITOR           = 'Bm'; // id=:1tt.editor
+var _C_COMMENTS_ALL_CONTAINER   = '.ph';
+var C_COMMENTS_ALL_CONTAINER    = 'ph';
+var C_COMMENTS_BUTTON_CONTAINER = 'Wu';
+var _C_COMMENTS_BUTTON_CONTAINER = '.Wu';
+var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .ym';
+var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.Cq) > :first-child'; // :not grayed out
+var C_COMMENTS_CONTAINER        = 'vw';
+var _C_COMMENTS_CONTAINER       = '.vw';
+var _C_COMMENTS_OLDER_BUTTON    = '.Vu';
+var _C_COMMENTS_OLDER_COUNT     = _C_COMMENTS_OLDER_COUNT + ':not([style*="none"])';
+var C_COMMENTS_SHOWN_CONTAINER  = 'Mi';
+var _C_COMMENTS_SHOWN_CONTAINER = '.Mi';
+var _C_COMMENTS_SHOWN           = '.Ii';
+var _C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a.Fo'; // Candidate: Fo Yw
+var C_COMMENTS_SHOWN_LONG       = 'Dm'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('Dm Cm' becomes 'Dm'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
+var C_COMMENTS_SHOWN_LONG_EXPANDED = 'Cm';
+var S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_EXPANDED + '+ .Ki'; // For truncated long comments. Careful, without sibling this would also collapse
 
-var _C_SHARE_LINE               = '.Jn';
-var _C_LINK_COMMENT             = '.wf';
-var C_LINK_COMMENT              = 'wf';
-var _C_FAKEINPUT_COMMENT        = '.Uk'; // Fake box that says "Add a comment...
-var C_FAKEINPUT_COMMENT         = 'Uk';
+var _C_SHARE_LINE               = '.ll';
+var _C_LINK_COMMENT             = '.te';
+var C_LINK_COMMENT              = 'te';
+var _C_FAKEINPUT_COMMENT        = '.rp'; // Fake box that says "Add a comment...
+var C_FAKEINPUT_COMMENT         = 'rp';
 //var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var C_MENU                      = 'yp'; // d-L comes later, I guess
-var _C_MENU_MUTE                = '.Sl'; // Candidates: Sl Ki
-var _C_MENU_UNMUTE              = '.or'; // Candidates: or Ki; Displayed on user's posts page
+var C_MENU                      = 'eo'; // b-M comes later, I guess
+var _C_MENU_MUTE                = '.nk'; // Candidates: nk Ng
+var _C_MENU_UNMUTE              = '.Sp'; // Candidates: Sp Ng; Displayed on user's posts page
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
 
 // XXX We assume there is no substring match problem because
 // it doesn't look like any class names would be a superstring of these
-var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTENT + '|' + C_COMMENTS_EDITOR + ')\\b');
+var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_LONG + '|' + C_COMMENTS_EDITOR + ')\\b');
 var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
 var DISABLED_PAGES_CLASSES = [
   C_NOTIFICATIONS_MARKER,
@@ -2120,24 +2122,34 @@ function foldItem(options, $item, $post) {
 
         // Insert a little dash
         $clonedTitle.append($titleDashTpl.clone());
+
+// poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+var _C_CONTENT_POSTER_TEXT = '.ej';
+// poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
+// or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+// (and for one's own post, just "Edit")
+var _C_CONTENT_POSTER_TEXT2 = '.ai';
+var _C_CONTENT_EDIT = '.yp'; // Look for edit in content of any of your posts
+var S_CONTENT_HANGOUT_TEXT = '.YB > .ui'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
+// photo album caption OR title of shared link
+var S_CONTENT_PHOTO_ALBUM_CAPTION = '.J-B-Y > a'; // https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+var S_CONTENT_PHOTO_CAPTION = '.Rba > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var _C_CONTENT_LINK_TITLE = '.J-B-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
+var _C_CONTENT_CHECKIN_LOCATION = '.Qm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
         
         // Put in snippet, trying differing things
         var classes = isSgpPost ? [
           _C_SGP_TEXT1,
           _C_SGP_TEXT2
         ] : [
-          // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-          '.el',
-          // poster text that is resharing https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
-          // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-          // (and for one's own post, just "Edit")
-          '.uj', // Goes together with next line
-          _C_CONTENT_LINK, // poster link (must come after the above, which sometimes it's just "Edit")
-          '.cz > .Ar', // hangout text
-          '.O-F-Q > a', // photo album caption, title of shared link
-          '.r2 > a', // photo caption
-          '.P-I-ri-ic', // text of shared link
-          '.tgGRJd' // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
+          _C_CONTENT_POSTER_TEXT,
+          _C_CONTENT_POSTER_TEXT2, // Goes together with next line
+          _C_CONTENT_LINK, // poster link (must come after the above)
+          S_CONTENT_HANGOUT_TEXT,
+          S_CONTENT_PHOTO_ALBUM_CAPTION,
+          S_CONTENT_PHOTO_CAPTION,
+          _C_CONTENT_LINK_TITLE,
+          _C_CONTENT_CHECKIN_LOCATION
         ];
         for (var c in classes) {
           $snippet = $post.find(classes[c]);
@@ -2146,13 +2158,13 @@ function foldItem(options, $item, $post) {
 
           // We want to ignore link shares that only have the text Edit -- this is one's own posts
           // <span class="a-da-k ez Xq">Edit</span>
-          if (classes[c] == '.el' || classes[c] == '.uj') {
+          if (classes[c] == _C_CONTENT_POSTER_TEXT || classes[c] == _C_CONTENT_POSTER_TEXT2) {
             $snippet = $snippet.clone();
-            $snippet.find('.Pq').remove();
+            $snippet.find(_C_CONTENT_EDIT).remove();
           }
           var text = $snippet.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '');
           if (text.match(/[^\s\u2022]/)) {
-            if (classes[c] == '.cz > .Ar') {
+            if (classes[c] == S_CONTENT_HANGOUT_TEXT) {
               // TODO: test in multiple languages (English, Spanish, Chinese ok)
               text = text.replace(/.*?(\d+)/, '$1');
             }
@@ -2545,9 +2557,11 @@ function clickMoreButton() {
  */
 function expandComments($item) {
   // Regardless of round, we expand whatever long coments are visible
-  var $expandLink = $item.find(_C_EXPAND_COMMENT);
+  var $expandLink = $item.find(S_EXPAND_COMMENT);
   if ($expandLink.length) {
-    click($expandLink);
+    $expandLink.each(function(i, item) {
+      click(item);
+    });
     return;
   }
 
