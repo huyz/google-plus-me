@@ -186,7 +186,8 @@ var C_FAKEINPUT_COMMENT         = 'rp';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var C_MENU                      = 'eo'; // b-M comes later, I guess
+var C_MENU                      = 'eo'; // For posts on regular load and when clicking "More"
+var CF_MENU                     = 'eo b-M'; // For incoming posts
 var _C_MENU_MUTE                = '.nk'; // Candidates: nk Ng
 var _C_MENU_UNMUTE              = '.Sp'; // Candidates: Sp Ng; Displayed on user's posts page
 
@@ -3705,8 +3706,8 @@ function main() {
 
       // This happens when posts' menus get inserted.
       // Also Usability Boost's star
-      //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-      if (e.target.className == C_MENU || e.target.className == C_UBOOST_STAR)
+      debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
+      if (e.target.className == C_MENU || e.target.className == CF_MENU || e.target.className == C_UBOOST_STAR)
         onItemDivInserted(e);
       // This happens when a new post is added, either through "More"
       // or a new recent post.
