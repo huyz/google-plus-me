@@ -379,7 +379,6 @@ var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
 // Inside item's comments guts
 //
 
-var $commentsWrapperContentsTpl = $('<div/>');
 var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
 
 //
@@ -952,6 +951,10 @@ function onCommentsUpdated(e, $item) {
   // We may be getting events just from a jquery find for comments,
   // before things are set up.
   if (! $item.hasClass('gpme-enh'))
+    return;
+
+  // We ignore all the events when the item is folded, i.e. if comments change in the preview
+  if ($item.hasClass('gpme-folded'))
     return;
 
   /*
@@ -1617,9 +1620,8 @@ function updateItem($item, attempt) {
         // Insert wrapper for comments container so that we can hide it without
         // triggering DOMSubtreeModified events on the container
         $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
-        var $wrapperContents = $commentsWrapperContentsTpl.clone().appendTo($wrapper);
         [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER ].forEach(function(item) {
-          $wrapperContents.append($allCommentContainer.find(item));
+          $wrapper.append($allCommentContainer.find(item));
         });
       }
 
