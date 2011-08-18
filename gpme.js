@@ -65,6 +65,7 @@ RegExp.quote = function(str) {
 // NOTE: For more class constants, see foldItem() in classes array
 
 var _ID_GBAR                    = '#gb';
+var C_GBAR                      = 'a-rg-M a-e-rg-M'; // Only for checking
 var _ID_GBAR_TOP                = '#gbw';
 var _ID_STATUS                  = '#gbg1';
 var _ID_STATUS_BG               = '#gbi1a';
@@ -1463,15 +1464,17 @@ function injectCSS() {
 /**
  * Injects code to make the Feedback button work
  */
+/*
 function injectNewFeedbackLink() {
-  //var $link = $('.a-eo-eg');
-  //alert($link.attr('onclick'));
-  //$link.attr('onclick', 'alert("shit");');
-  //$link.click(function(event) { alert("yes"); if (confirm("sheeet")) return appfeedback.startFeedback(event); else return false; });
-  //$link.click(function(event) { alert("yes") });
-  //$link.attr('onclick', 'alert("yes");');
-  //alert($link.attr('onclick'));
+  var $link = $('.a-eo-eg');
+  alert($link.attr('onclick'));
+  $link.attr('onclick', 'alert("crap");');
+  $link.click(function(event) { alert("yes"); if (confirm("sheeet")) return appfeedback.startFeedback(event); else return false; });
+  $link.click(function(event) { alert("yes") });
+  $link.attr('onclick', 'alert("yes");');
+  alert($link.attr('onclick'));
 }
+*/
 
 /****************************************************************************
  * Post DOM enhancements
@@ -2847,8 +2850,8 @@ function unfoldComments(interactive, $item, $comments) {
     // If there's a G+ comment button, then we're set; otherwise, we have start from a minimum height
     // to smoothly transition from gpme-comments-title-folded
     var minHeight = 0;
-    var $commentsButton = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
-    if (! $commentsButton.length || ! $commentsButton.is(':visible'))
+    var $commentsButtonContainer = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
+    if (! $commentsButtonContainer.length || ! $commentsButtonContainer.is(':visible'))
       minHeight = COMMENTS_TITLE_FOLDED_OUTERHEIGHT;
 
     var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
@@ -2928,7 +2931,7 @@ function updateCommentCount(id, $subtree, count) {
   // NOTE: we have 2 comment counts
   var oldCount = $countFg.first().html();
   if (typeof oldCount != 'undefined' && oldCount !== null && oldCount !== '')
-    oldCount = oldCount.replace(/.*>/s, ''); // In case of middle of another animation
+    oldCount = oldCount.replace(/.*>/, ''); // In case of middle of another animation
   var oldNoHilite = $countBg.first().hasClass(C_GPME_COMMENTCOUNT_NOHILITE);
 
   // Change background of count
@@ -2963,7 +2966,7 @@ function updateCommentCount(id, $subtree, count) {
     if (count) {
       // If we used to be hilite, then wee don't animate -- the user just marked as read.
       if (! oldNoHilite)
-        $countFg.text(count)
+        $countFg.text(count);
       else 
         animateCount($countFg, oldCount, count, function() {
           $container.removeClass('gpme-hide');
@@ -3706,6 +3709,60 @@ function i18nInit() {
   //$muteButtonTpl.attr('title', getMessage('ui_posts_muteButton'));
 }
 
+/**
+ * Injects an icon with news into the gbar
+ */
+function injectNews(mappingKey) {
+  var $listItems = $('#gbg > ol > li');
+  if ($listItems.length) {
+    var $newsIcon = $('<li id="gpme-announcement-li" class="gbt"><img id="gpme-announcement-icon" src="' + chrome.extension.getURL('icons/actions/1.png') + '"/></li>');
+    var $separator = $('<li class="gbt gbtb"><span class="gbts"></span></li>');
+    $separator.insertBefore($listItems.first());
+    $newsIcon.insertBefore($separator);
+
+    var $newsAnnouncement = $('<div id="gpme-announcement" class="gbm">\
+      <p>\
+      Hi pumpkin!<br />\
+      </p><p>\
+      <a href="https://plus.google.com/111775942615006547057">Huy Zing</a> here, author of <b>G+me</b>.<br />\
+      </p><p>\
+      It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
+      Please go to the <a href="http://huyz.us/gpme-release/">latest G+me discussion</a> to report the problem, if no one else has.  I will fix it as soon as notified.<br />\
+      </p><p>\
+      Below are the latest news.  The <b>G+me</b> icon above will change color to let you know when there\'s an update.<br />\
+      </div>');
+    var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
+    $newsAnnouncement.append($newsFrame);
+    $newsAnnouncement.append('<p>P.S.: I\'m working on a long-term fix that will help all Google+ extensions so that you don\'t have to deal with these recurring problems anymore.  I just ask for a little patience, and I will give you the world ;)</p>');
+    $newsIcon.append($newsAnnouncement);
+
+    // Refresh now and every few minutes
+    (function refreshNewsFrame() {
+      //$newsFrame.attr('src', $newsFrame.attr('src'));
+      $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?k=' + mappingKey;
+      $newsIcon.get(0).style.backgroundImage = 'url(http://huyz.us/gpme-news/status.gif?' + new Date().getTime() + ')';
+      setTimeout(function() { refreshNewsFrame(); }, 5 * 60000);
+    })();
+
+    $newsIcon.hoverIntent({
+      handlerIn: function() {
+        $newsIcon.addClass('gbto');
+        var $newsAnnt = $('#gpme-announcement');
+        if ($newsAnnt.length) {
+          $newsAnnt.css('visibility', 'visible');
+        }
+      },
+      delayIn: 0,
+      handlerOut: function() {
+        $newsIcon.removeClass('gbto');
+        var $newsAnnt = $('#gpme-announcement');
+        if ($newsAnnt.length)
+          $newsAnnt.css('visibility', 'hidden');
+      },
+      delayOut: 300
+    });
+  }
+}
 
 /**
  * Main function that's called after the document is ready and a number
@@ -3714,6 +3771,17 @@ function i18nInit() {
 function main() {
   // Specify jQuery UI easing method
   jQuery.easing.def = 'easeInOutQuad';
+
+  // Google+ DOM check
+  var $gbar = $(_ID_GBAR);
+  var mappingKey = '';
+  if ($gbar.length)
+    mappingKey = $gbar.parent().attr('class');
+  if (! $gbar.length || mappingKey != C_GBAR) {
+    error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
+    injectNews(mappingKey);
+    return;
+  }
 
   // Listen for when there's a total AJAX refresh of the stream,
   // on a regular page
@@ -3784,7 +3852,7 @@ function main() {
   // Listen for scrolling events
   //$(window).scroll($.throttle(500, 50, function(e) { onScroll(e); }));
 
-  injectNewFeedbackLink();
+  //injectNewFeedbackLink();
 
   // The initial update
   if (isEnabledOnThisPage()) {

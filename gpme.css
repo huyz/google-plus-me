@@ -19,6 +19,36 @@
   */
 
 /*
+ * Announcements & news, when Google+ changes its DOM and breaks G+me
+ */
+
+/* Only shown when Google+ has changed its DOM */
+#gpme-announcement-li {
+  padding: 5px;
+  margin: auto 7px;
+  height: 20px;
+}
+
+#gpme-announcement { /* Overrides .gbm */
+  top: 32px;
+  right: -230px !important; /* Overrides #gbg .gbm */
+  left: auto;
+  visibility: hidden;
+  padding: 13px 20px;
+  width: 800px;
+  white-space: normal;
+  line-height: 20px;
+  background-color: #FAFAFA;
+  border-width: 2px;
+}
+
+#gpme-news {
+  width: 100%;
+  height: 250px;
+  border: 1px solid #CCC;
+}
+
+/*
  * The entire post item
  */
 
