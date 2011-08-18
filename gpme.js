@@ -45,7 +45,6 @@
 
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var DEBUG = true;
-var DEBUGGER = true;
 // If true, won't need the 'tabs' permission
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var PARANOID = false;
@@ -112,7 +111,7 @@ var C_SELECTED                  = 'aj';
 var _C_SELECTED                 = '.' + C_SELECTED;
 var _C_ITEM                     = '.ze';
 var _C_ITEM_GUTS                = '.tg';
-var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums
+//var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums
 var C_IS_MUTED                  = 'Up'; // Up Qj
 var _C_LINK_UNMUTE              = '.Xh';
 var C_TITLE_COLOR               = 'sl';
@@ -1563,25 +1562,30 @@ function updateItem($item, attempt) {
 
   if (enhanceItem) {
     // Add titlebar
-    // For Tweak, we also need the menu in there, not just the guts
+
     //var $itemGuts = $item.children(_C_ITEM_GUTS);
-    var $itemGuts = $item.children('div:not(' + _C_ITEM_GUTS_PLACEHOLDER + ')');
-    if (! isSgpPost && ! $itemGuts.length) {
-      // The content comes a bit later
-      if ($item.find(_C_ITEM_GUTS_PLACEHOLDER).length) {
-        if (typeof attempt === 'undefined')
-          attempt = 0;
-        if (attempt < 29) {
-          setTimeout(function() { updateItem($item, attempt + 1); }, 100 );
-        } else {
-          error("updateItem: Can't get any content within 3 seconds. Giving up");
-        }
+    var $itemGuts = $item.children();
+    var isPostEmpty = false;
+    if (! $itemGuts.length) {
+      isPostEmpty = true;
+      error("updateItem: Can't find any content of item " + id);
+      console.error($item.get(0));
+      return;
+    } else if ($itemGuts.is(':empty')) { // Placeholder, for hangouts and photo albums
+      isPostEmpty = true;
+    }
+    if (! isSgpPost && isPostEmpty) {
+      // The content may come a bit later
+      if (typeof attempt == 'undefined')
+        attempt = 0;
+      if (attempt < 29) {
+        setTimeout(function() { updateItem($item, attempt + 1); }, 100 );
       } else {
-        error("updateItem: Can't find content of item " + id + " hits=" + $itemGuts.length);
-        console.error($item.get(0));
+        error("updateItem: Can't get any content within 3 seconds. Giving up");
       }
       return;
     }
+
     // NOTE: we have to change the class before inserting or we'll get more
     // events and infinite recursion if we listen to DOMSubtreeModified.
     //debug("updateItem: enhancing");
@@ -2041,11 +2045,9 @@ function foldItem(options, $item, $post) {
     // NOTE: don't just take the first div inside post content title because
     // sometimes the hangout 'Live' icons is there
     var $srcTitle = $item.find(_C_ITEM_GUTS + " " + (isSgpPost ? _C_SGP_TITLE : _C_TITLE));
-    if ($srcTitle.length !== 1) {
+    if ($srcTitle.length != 1) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
-      if (DEBUGGER)
-        debugger;
     } else {
       // Check if the permissions are limited
       // Other possibilities: Public, Extended circles
