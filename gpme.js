@@ -2265,7 +2265,7 @@ var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google
     // Show possibly-hidden comments so that they appear in the preview (but don't persist)
     var $comments = $item.find('.gpme-comments-wrapper');
     if ($comments.length) {
-      $comments.show();
+      $comments.css('height', '');
     }
 
     // Updated the counts
