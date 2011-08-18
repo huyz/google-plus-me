@@ -396,7 +396,7 @@ div.gpme-enh .gpme-comment-count-fg {
   background: url('chrome-extension://__MSG_@@extension_id__/images/preview-triangle.png') no-repeat;
 }
 
-.gpme-folded:not(.Up) .Qh { /* Context menu button */
+.gpme-folded:not(.Up) .Fh { /* Context menu button */
   position: absolute;
   margin: 0;
   right: 2px;
@@ -405,7 +405,7 @@ div.gpme-enh .gpme-comment-count-fg {
   background-color: white;
 /*  margin-right: -13px; /* Gained 44-13=31 px */
 }
-.gpme-folded:not(.Up) .eo { /* context menu */
+.gpme-folded:not(.Up) .fo { /* C_MENU */
   z-index: 11;
 }
 
