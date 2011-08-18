@@ -15,6 +15,9 @@
 # Usage:
 #   See http://huyz.us/google-plus-me/
 #
+# TODO:
+#   This file is in bad need of refactoring for OO abstraction.#   It has long outgrown its initial planned lifetime.
+#
 # Thanks:
 #   This extension originally took some ideas from
 #   https://github.com/mohamedmansour/google-plus-extension/
@@ -952,10 +955,6 @@ function onCommentsUpdated(e, $item) {
   // We may be getting events just from a jquery find for comments,
   // before things are set up.
   if (! $item.hasClass('gpme-enh'))
-    return;
-
-  // We ignore all the events when the item is folded, i.e. if comments change in the preview
-  if ($item.hasClass('gpme-folded'))
     return;
 
   /*
@@ -2777,8 +2776,14 @@ function foldComments(interactive, $item, $comments) {
   } else {
     // Visual changes
 
-    // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
-    $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
+    // Hide the comments, but only if the item is not folded.
+    // Otherwise, when comments come in, DOMSubtreeModified will be triggered which
+    // calls this function and then re-hides the comments; the comments will disappear
+    // from the preview.
+    if (! $item.hasClass('gpme-folded')) {
+      // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
+      $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
+    }
 
     $item.addClass('gpme-comments-folded');
     $item.removeClass('gpme-comments-unfolded');
