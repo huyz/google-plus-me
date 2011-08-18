@@ -45,6 +45,7 @@
 
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var DEBUG = true;
+var DEBUGGER = true;
 // If true, won't need the 'tabs' permission
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var PARANOID = false;
@@ -71,125 +72,125 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-e-fa-O';
+var _C_HEADER                   = '.a-e-fa-M';
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
 var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-e-db-O';
-var _C_FEEDBACK_LINK            = '.a-uj-ch';
-var C_FEEDBACK                  = 'g-d-Ba';
+var _C_COPYRIGHT                = '.a-e-eb-M';
+var _C_FEEDBACK_LINK            = '.a-lj-ah';
+//var C_FEEDBACK                  = 'g-d-Ba'; // The class with gray style
 
 // Icons
-var _C_HANGOUT_LIVE_ICON        = '.QF'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
-var C_HANGOUT_LIVE_ICON         = 'QF'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var C_HANGOUT_LIVE_ICON         = 'rG'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var _C_HANGOUT_LIVE_ICON        = '.' + C_HANGOUT_LIVE_ICON; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 // C_CAMERA_ICON*
-var C_POST_CONTENT_ICON_CONTAINER = 'h-ga-Td-Na-E'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
-var C_CAMERA_ICON               = 'h-ga-n-w';
-var C_VIDEO_ICON                = 'h-ga-n-Oa"';
-var C_LINK_ICON                 = 'h-ga-n-j';
-var C_CHECKIN_ICON              = 'h-ga-n-ff-E'; // Unlike the other ones, this has a single class for non-hover
-var C_GAME_ICON                 = 'Pl';
+var C_POST_CONTENT_ICON_CONTAINER = 'h-ga-Pd-Ma-C'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
+var C_CAMERA_ICON               = 'h-ga-o-v';
+var C_VIDEO_ICON                = 'h-ga-o-Oa';
+var C_LINK_ICON                 = 'h-ga-o-j';
+var C_CHECKIN_ICON              = 'h-ga-o-ef-C'; // Unlike the other ones, this has a single class for non-hover
+var C_GAME_ICON                 = 'Xl';
 
 // Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'uB';
-var _C_NOTIFICATION_STREAM      = '.cga'; // cga O7
-var C_SPARKS_MARKER             = 'Jba';
-var C_SINGLE_POST_MARKER        = 'a-Wh-Yb-I';
-var C_STREAM                    = 'pr';
-var _C_STREAM                   = '.pr';
-var _C_GAMES_STREAM             = '.hs';
+var C_NOTIFICATIONS_MARKER      = 'Xja'; // Look for the notifications stream
+var _C_NOTIFICATION_STREAM      = '.' + C_NOTIFICATIONS_MARKER; // Xja Q8
+var C_SPARKS_MARKER             = 'Hba'; // Look for 3rd div in blank one, ancestor of stream
+var C_SINGLE_POST_MARKER        = 'a-Nh-Sb-E';
+var C_STREAM                    = 'or';
+var _C_STREAM                   = '.' + C_STREAM;
+var _C_GAMES_STREAM             = '.es';
 var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.el';
+var _C_MORE_BUTTON              = '.hl';
 
-var _C_CONTENT_PANE_HEADING     = '.kp';
-var _C_PROFILE_HEADING          = '.np';
-var _C_GAMES_HEADING            = '.it';
+var _C_CONTENT_PANE_HEADING     = '.fp';
+var _C_PROFILE_HEADING          = '.fn';
+var _C_GAMES_HEADING            = '.qt';
 
 // Item
-var C_SELECTED                  = 'ij';
-var _C_SELECTED                 = '.ij';
-var _C_ITEM                     = '.Be';
-var _C_ITEM_GUTS                = '.Ag';
-var _C_ITEM_GUTS_PLACEHOLDER    = '.ww'; // For hangout and photo albums
-var C_IS_MUTED                  = 'Vj'; // Style is: nk
-var _C_LINK_UNMUTE              = '.ci';
-var C_TITLE_COLOR               = 'pl';
+var C_SELECTED                  = 'aj';
+var _C_SELECTED                 = '.' + C_SELECTED;
+var _C_ITEM                     = '.ze';
+var _C_ITEM_GUTS                = '.tg';
+var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums
+var C_IS_MUTED                  = 'Up'; // Up Qj
+var _C_LINK_UNMUTE              = '.Xh';
+var C_TITLE_COLOR               = 'sl';
 // _C_TITLE:
 // Watch out for these divs:
 // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
 // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
 // - Google Plus Reply+
 //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var _C_TITLE                    = '.lx'; // Meaning, excluding the avatar and menu icon
+var C_TITLE                     = 'Ex'; // Meaning, excluding the avatar and menu icon
+var _C_TITLE                    = '.' + C_TITLE;
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-var C_TITLE                     = 'lx';
-var S_PHOTO                     = '.ju > a.an';
-var _C_NAME                     = '.yh';
+var _C_CONTENT                  = '.xu'; // Right inside _C_ITEM_GUTS
+var S_PHOTO                     = _C_CONTENT + ' > a.hn';
+var _C_NAME                     = '.kh';
 // S_SOURCE:
 // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 // - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 // - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
-var S_SOURCE                    = '.Ex'; // Ex b-o-l
-var _C_CONTENT                  = '.ix'; // Right inside _C_ITEM_GUTS
-var _C_PERMS                    = '.gj'; // b- gj Tp Lm
-var _C_MUTED                    = '.Zq'; // "- Muted" text in profile page
-var C_DATE                      = 'fj'; // Candidates: fj fo
-var _C_DATE                     = '.fj';
-var _C_EXPAND_POST              = '.b-j.vp.jx';
+var S_SOURCE                    = '.Bw'; // Bw c-m-l
+var _C_PERMS                    = '.Yi'; // c-j Yi Lp Nm
+var _C_MUTED                    = '.yp'; // "- Muted" text in profile page
+var C_DATE                      = 'Xi'; // Xi go
+var _C_DATE                     = '.' + C_DATE;
+var _C_EXPAND_POST              = '.c-j.np.Cx'; // https://plus.google.com/111775942615006547057/posts/RaZvqBMadoH
 //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
 // Parts of content relevant for the summary
 var _C_QUOTE_IMG                = '.ea-S-qg'; // FIXME: This is an image of a blown-up quote: ``
 // _C_QUOTED_PHOTO:
 // - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
-var _C_QUOTED_PHOTO             = '.Dx > img';
+var _C_QUOTED_PHOTO             = '.Wx > img';
 // Various images:
 // - Web page image: O-F-Th-la
 // - Posted image: J-B-Wk-ha https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
 // - Posted album: J-B-Si-ha  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
 // - Main image in album: J-B-mf-ha https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 // - Smaller image thumbnails in album: J-B-Tc-ha https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_IMG               = '.J-B-Wk-ha > img, .J-B-Si-ha > img, .J-B-mf-ha > img, .J-B-Tc-ha > img';
+var S_CONTENT_IMG               = '.H-y-Sk-ea > img, .H-y-Ii-ea > img, .H-y-pe-ea > img, .H-y-Rc-ea > img';
 // _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
-var _C_CONTENT_VIDEO            = '.J-B-Oa-Pk';
-var _C_CONTENT_LINK             = '.J-B-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
+var _C_CONTENT_VIDEO            = '.H-y-Oa-Lk'; // Take the 4-part one that looks like S_CONTENT_IMG
+var _C_CONTENT_LINK             = '.H-y-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
 var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
-var _C_MAP_IMG                  = 'img.wu'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
+var _C_MAP_IMG                  = 'img.Ou'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 
 // Comments
-var C_COMMENTS_EDITOR           = 'Bm'; // id=:1tt.editor
-var _C_COMMENTS_ALL_CONTAINER   = '.ph';
-var C_COMMENTS_ALL_CONTAINER    = 'ph';
-var C_COMMENTS_BUTTON_CONTAINER = 'Wu';
-var _C_COMMENTS_BUTTON_CONTAINER = '.Wu';
-var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .ym';
-var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.Cq) > :first-child'; // :not grayed out
-var C_COMMENTS_CONTAINER        = 'vw';
-var _C_COMMENTS_CONTAINER       = '.vw';
-var _C_COMMENTS_OLDER_BUTTON    = '.Vu';
+var C_COMMENTS_EDITOR           = 'Gm'; // id=:1tt.editor
+var C_COMMENTS_ALL_CONTAINER    = 'Vg';
+var _C_COMMENTS_ALL_CONTAINER   = '.' + C_COMMENTS_ALL_CONTAINER;
+var C_COMMENTS_BUTTON_CONTAINER = 'ns';
+var _C_COMMENTS_BUTTON_CONTAINER = '.' + C_COMMENTS_BUTTON_CONTAINER;
+var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .Jl';
+var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.Eo) > :first-child'; // :not grayed out
+var C_COMMENTS_CONTAINER        = 'mw';
+var _C_COMMENTS_CONTAINER       = '.' + C_COMMENTS_CONTAINER;
+var _C_COMMENTS_OLDER_BUTTON    = '.ms';
 var _C_COMMENTS_OLDER_COUNT     = _C_COMMENTS_OLDER_COUNT + ':not([style*="none"])';
-var C_COMMENTS_SHOWN_CONTAINER  = 'Mi';
-var _C_COMMENTS_SHOWN_CONTAINER = '.Mi';
-var _C_COMMENTS_SHOWN           = '.Ii';
-var _C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a.Fo'; // Candidate: Fo Yw
-var C_COMMENTS_SHOWN_LONG       = 'Dm'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('Dm Cm' becomes 'Dm'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
-var C_COMMENTS_SHOWN_LONG_EXPANDED = 'Cm';
-var S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_EXPANDED + '+ .Ki'; // For truncated long comments. Careful, without sibling this would also collapse
+var C_COMMENTS_SHOWN_CONTAINER  = 'li';
+var _C_COMMENTS_SHOWN_CONTAINER = '.' + C_COMMENTS_SHOWN_CONTAINER;
+var _C_COMMENTS_SHOWN           = '.Rh';
+var _C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a.Ao'; // Ao kh rx
+var C_COMMENTS_SHOWN_LONG       = 'Ul'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('Ul Tl' becomes 'Ul'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
+var C_COMMENTS_SHOWN_LONG_TRUNCATED = 'Tl';
+var S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_TRUNCATED + '+ .Th'; // For truncated long comments. Careful, without sibling this would also collapse
 
-var _C_SHARE_LINE               = '.ll';
-var _C_LINK_COMMENT             = '.te';
-var C_LINK_COMMENT              = 'te';
-var _C_FAKEINPUT_COMMENT        = '.rp'; // Fake box that says "Add a comment...
-var C_FAKEINPUT_COMMENT         = 'rp';
+var _C_ACTIONBAR                = '.ol';
+var C_LINK_COMMENT              = 'qe';
+var _C_LINK_COMMENT             = '.' + C_LINK_COMMENT;
+var C_FAKEINPUT_COMMENT         = 'jp';
+var _C_FAKEINPUT_COMMENT        = '.' + C_FAKEINPUT_COMMENT; // Fake box that says "Add a comment...
 //var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
 //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
 // Menu
-var C_MENU                      = 'eo'; // For posts on regular load and when clicking "More"
-var CF_MENU                     = 'eo b-M'; // For incoming posts
-var _C_MENU_MUTE                = '.nk'; // Candidates: nk Ng
-var _C_MENU_UNMUTE              = '.Sp'; // Candidates: Sp Ng; Displayed on user's posts page
+var C_MENU                      = 'fo'; // For posts on regular load and when clicking "More"
+var CF_MENU                     = 'fo c-K'; // For incoming posts
+var _C_MENU_MUTE                = '.ik'; // Look what's diff from other menuitems. Candidates: ik Eg
+var _C_MENU_UNMUTE              = '.Kp'; // Candidates: Kp Eg; Displayed on user's posts page
 
 var _C_COMMENT_CONTAINERS =
   [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
@@ -2043,6 +2044,8 @@ function foldItem(options, $item, $post) {
     if ($srcTitle.length !== 1) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
+      if (DEBUGGER)
+        debugger;
     } else {
       // Check if the permissions are limited
       // Other possibilities: Public, Extended circles
@@ -2125,18 +2128,19 @@ function foldItem(options, $item, $post) {
         $clonedTitle.append($titleDashTpl.clone());
 
 // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_POSTER_TEXT = '.ej';
+var _C_CONTENT_POSTER_TEXT = '.Wi';
 // poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
 // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
 // (and for one's own post, just "Edit")
-var _C_CONTENT_POSTER_TEXT2 = '.ai';
-var _C_CONTENT_EDIT = '.yp'; // Look for edit in content of any of your posts
-var S_CONTENT_HANGOUT_TEXT = '.YB > .ui'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
+var _C_CONTENT_POSTER_TEXT2 = '.Vh';
+var _C_CONTENT_EDIT = '.qp'; // Look for edit in content of any of your posts
+var S_CONTENT_HANGOUT_TEXT = '.tC > .Gf'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
 // photo album caption OR title of shared link
-var S_CONTENT_PHOTO_ALBUM_CAPTION = '.J-B-Y > a'; // https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_PHOTO_CAPTION = '.Rba > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var _C_CONTENT_LINK_TITLE = '.J-B-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
-var _C_CONTENT_CHECKIN_LOCATION = '.Qm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
+var S_CONTENT_PHOTO_ALBUM_CAPTION = '.H-y-Y > a'; // https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+var S_CONTENT_PHOTO_COMMENT = '.H-y-ea-pa'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var S_CONTENT_PHOTO_CAPTION = '.c3 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var _C_CONTENT_LINK_TITLE = '.H-y-Y'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
+var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
         
         // Put in snippet, trying differing things
         var classes = isSgpPost ? [
@@ -2148,6 +2152,7 @@ var _C_CONTENT_CHECKIN_LOCATION = '.Qm'; // Checkin location https://plus.google
           _C_CONTENT_LINK, // poster link (must come after the above)
           S_CONTENT_HANGOUT_TEXT,
           S_CONTENT_PHOTO_ALBUM_CAPTION,
+          S_CONTENT_PHOTO_COMMENT,
           S_CONTENT_PHOTO_CAPTION,
           _C_CONTENT_LINK_TITLE,
           _C_CONTENT_CHECKIN_LOCATION
@@ -2744,7 +2749,7 @@ function foldComments(interactive, $item, $comments) {
     });
 
     // Favor the share line first so there's no unnecessary motion
-    var $shareLine = $item.find(_C_SHARE_LINE);
+    var $shareLine = $item.find(_C_ACTIONBAR);
     ($shareLine.length? $shareLine : $item.find('gpme-commentbar')).scrollintoview({ duration: duration, direction: 'y' });
 
   } else {
@@ -3706,7 +3711,7 @@ function main() {
 
       // This happens when posts' menus get inserted.
       // Also Usability Boost's star
-      debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
+      //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
       if (e.target.className == C_MENU || e.target.className == CF_MENU || e.target.className == C_UBOOST_STAR)
         onItemDivInserted(e);
       // This happens when a new post is added, either through "More"
