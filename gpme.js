@@ -379,6 +379,7 @@ var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
 // Inside item's comments guts
 //
 
+var $commentsWrapperContentsTpl = $('<div/>');
 var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
 
 //
@@ -773,7 +774,7 @@ jQuery.fn.outerScrollWidth = function(includeMargin) {
 
 function slideUpFromTop($elem, minHeight, duration, easing, callback) {
   $elem.animate({height: minHeight, scrollTop: $elem.height() - minHeight}, duration, easing, function() {
-    $elem.css('height', '').hide();
+    $elem.css('height', '');
     callback();
   });
 }
@@ -783,8 +784,10 @@ function slideUpFromTop($elem, minHeight, duration, easing, callback) {
  * Google+ animates the way they do because they want to show the last comment at all times.
  */
 function slideDown($elem, minHeight, duration, easing, callback) {
-  var height = $elem.actual('height');
-  $elem.height(minHeight).css('display', ''); // Undo 'hide'
+  // NOTE: actual() only works properly when element is hidden
+  var height = $elem.hide().actual('height');
+  $elem.css('display', '');
+  $elem.height(minHeight);
   $elem.animate({height: height}, duration, easing, function() {
     $elem.css('height', '');
     callback();
@@ -1614,8 +1617,9 @@ function updateItem($item, attempt) {
         // Insert wrapper for comments container so that we can hide it without
         // triggering DOMSubtreeModified events on the container
         $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
+        var $wrapperContents = $commentsWrapperContentsTpl.clone().appendTo($wrapper);
         [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER ].forEach(function(item) {
-          $wrapper.append($allCommentContainer.find(item));
+          $wrapperContents.append($allCommentContainer.find(item));
         });
       }
 
@@ -2265,7 +2269,7 @@ var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google
     // Show possibly-hidden comments so that they appear in the preview (but don't persist)
     var $comments = $item.find('.gpme-comments-wrapper');
     if ($comments.length) {
-      $comments.css('height', '');
+      $comments.css({'height': '', 'overflow': ''});
     }
 
     // Updated the counts
@@ -2837,6 +2841,11 @@ function unfoldComments(interactive, $item, $comments) {
     var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
+    if (! $shownOrOlderComments.length) {
+      error("unfoldComments: can't find shownOrOldeComments container");
+      error($item);
+      return;
+    }
 
     $commentsTitleFolded.hide(); // hide a bit early
     $comments.css({height: '', overflow: ''}); //$comments.show();
