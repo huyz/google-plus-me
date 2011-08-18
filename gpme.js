@@ -2739,13 +2739,18 @@ function foldComments(interactive, $item, $comments) {
 
     var shownCommentCount = countShownComments($item);
     var duration = shownCommentCount <= 4 ? JQUERY_DURATION / 2  : shownCommentCount <= 10 ? JQUERY_DURATION : JQUERY_DURATION * 1.5;
+    var easing = 'easeOutQuart';
+
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
     $commentsTitleUnfolded.css('min-height', COMMENTS_TITLE_FOLDED_OUTERHEIGHT).
-      slideUp(duration, 'easeOutQuart', function() { $commentsTitleUnfolded.css('min-height', '') } );
+      animate({height: 0, opacity: 0}, duration, easing, function() {
+        $commentsTitleUnfolded.css({'min-height': '', 'height': '', 'opacity': ''});
+      });
+
 // No need for min-height if there's C_COMMENTS_BUTTON_CONTAINER there anyway
 //    $comments.css('min-height', '27px').slideUp(duration, function() {
     var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
-    slideUpFromTop($shownOrOlderComments, minHeight, duration, 'easeOutQuart', function() {
+    slideUpFromTop($shownOrOlderComments, minHeight, duration, easing, function() {
       // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
       $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
       $item.addClass('gpme-comments-folded');
@@ -2756,9 +2761,15 @@ function foldComments(interactive, $item, $comments) {
       updateCachedSgpItem($item);
     });
 
+    // Scroll the page properly in parallel
+    /* Doesn't work well since G+'s comment toggling and our new easing.
     // Favor the share line first so there's no unnecessary motion
-    var $shareLine = $item.find(_C_ACTIONBAR);
-    ($shareLine.length? $shareLine : $item.find('gpme-commentbar')).scrollintoview({ duration: duration, direction: 'y' });
+    var $ = $item.find(_C_ACTIONBAR);
+    ($shareLine.length? $shareLine : $item.find('gpme-commentbar')).scrollintoview({ duration: duration, easing: 'linear', direction: 'y' });
+    */
+    var commentsTop = $comments.offset().top;
+    if (commentsTop < $('body').scrollTop())
+      $('body, html').animate({scrollTop: commentsTop - 100}, duration, easing);
 
   } else {
     // Visual changes
