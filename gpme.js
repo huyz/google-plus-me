@@ -600,7 +600,7 @@ function isEnabledOnThisPage($subtree) {
  * FIXME: English-specific
  */
 function abbreviateDate(text) {
-  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, getMessage('gplus_dateLongSuffixReplacement')).replace(/ PM/, 'p').replace(/ AM/, 'a').replace(yearRegexp, '');
+  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, getMessage('gplus_dateLongSuffixReplacement')).replace(/ PM/, 'pm').replace(/ AM/, 'am').replace(yearRegexp, '');
 }
 
 /**
