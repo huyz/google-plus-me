@@ -77,7 +77,7 @@
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
   "options_nav_showBottomCollapseBarWhen": {
-    "message": "En mode étendu, afficher la barre de réduction (barre du bas)"
+    "message": "Afficher la barre de réduction (barre du bas)"
   },
   "options_nav_showBottomCollapseBarWhen_hover": {
     "message": "Au passage de la souris",
