@@ -77,7 +77,7 @@
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
   "options_nav_showBottomCollapseBarWhen": {
-    "message": "展開模式下，訊息底端的收合列"
+    "message": "訊息底端的收合列"
   },
   "options_nav_showBottomCollapseBarWhen_hover": {
     "message": "當滑鼠劃過訊息",

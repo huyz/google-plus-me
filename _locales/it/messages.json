@@ -4,7 +4,7 @@
     "description": "Name of the extension"
   },
   "extensionDescription": {
-    "message": "Riduce la visualizzazione del flusso di Google+ mantenendo gli aggiornamenti correnti: nasconde i commenti, condensa gli articoli, etc.",
+    "message": "Comprime il flusso di Google+ mantenendo gli aggiornamenti correnti: nasconde i commenti, condensa gli articoli, etc.",
     "description": "Description of the extension, as shown in the Web Store"
   },
 
@@ -39,10 +39,10 @@
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryIncludeThumbnails": {
-    "message": "Gli articoli in visualizzazione ridotta mostrano le miniature delle foto dal contenuto"
+    "message": "Gli articoli compressi mostrano le miniature delle foto dal contenuto"
   },
   "options_nav_summaryIncludeTime": {
-    "message": "Gli articoli in visualizzazione ridotta mostrano data e ora"
+    "message": "Gli articoli compressi mostrano data e ora"
   },
 
   "options_nav_preview_label": {
@@ -71,5 +71,87 @@
   "options_nav_global_label": {
     "message": "Globale",
     "description": "Name of the options group that acts as defaults for all pages"
+  },
+  "options_nav_global_desc": {
+    "message": "Configura queste opzioni di pagina se vuoi configurare tutti i tipi di pagine (Stream, Cerchie, In arrivo, Notifiche, Spunti, etc.) allo stesso modo",
+    "description": "Instructions for the global group"
+  },
+  "options_nav_global_postsDefaultMode": {
+    "message": "Modo compresso per gli articoli:",
+    "description": "Text before the radio buttons.  Don't remove the colon ':' at the end."
+  },
+  "options_nav_global_postsDefaultMode_expanded": {
+    "message": "Espanso -- tutto ha come default espanso",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_postsDefaultMode_list": {
+    "message": "Lista -- comprime tutti eccetto uno",
+    "description": "Text after one of the options for collapsed mode for posts."
+  },
+  "options_nav_global_commentsDefaultCollapsed": {
+    "message": "Comprime tutti i commenti per default"
+  },
+  "options_nav_compat_desc": {
+    "message": "Questa pagina si riferisce alla compatibilità con altre estensioni che puoi avere installat per Google+. Puoi ignorare queste opzioni",
+    "description": "Introductory text for the Compatibility page"
+  },
+
+  "options_nav_compatSgp_label": {
+    "message": "SGPlus, nota anche come Start G+",
+    "description": "Name of the options group for SGPlus"
+  },
+  "options_nav_compatSgp_desc": {
+    "message": "ATTENZIONE: La compatibilità con SGPlus è in beta. Ci sono ancora problemi di performance e instabilità. Ogni opzione sottostante aggiunge più elaborazione agli aggiornamenti pesanti e frequenti, che possono rallentare il tuo browser e causare pause frequent (noiose quando stai scrivendo).
+Ti prego di riportare ogni problema alla discussione riguardo la compatibilità con SGPlus su Google+",
+    "description": "Text notifying user of current state of compatibility and warning of problems",
+    "placeholders": {
+      "URL": {
+        "content": "$1",
+        "example": "http://huyz.us/"
+      }
+    }
+  },
+  "options_nav_compatSgp": {
+    "message": "Abilita la compatibilità con SGPlus, cioè rende gli articoli comprimibili"
+  },
+  "options_nav_compatSgpComments": {
+    "message": "Rende i commenti comprimibili e traccia i commenti (la compatibilità deve essere abilitata)"
+  },
+  "options_nav_compatSgpCache": {
+    "message": "Abilita la cache veloce per prevenire uno sfarfallamento durante l'aggiornamento (la compatibilità deve essere abilitata)",
+    "placeholders": {
+      "BEGIN_RED": {
+        "content": "<span style=\"color: red\">"
+      },
+      "END_RED": {
+        "content": "</span>"
+      }
+    }
+  },
+  "options_nav_compatSgpUsage_desc": {
+    "message": "NOTA: la scheda di Google+ deve essere ricaricata dopo il cambiamento di una qualsiasi di queste opzioni.",
+    "description": "Text giving users instructions for above options"
+  },
+
+
+  "options_nav_questions_label": {
+    "message": "Domande",
+    "description": "Name of the tab in the options page for questions and problems"
+  },
+  "options_nav_faq_label": {
+    "message": "Frequently Asked Questions",
+    "description": "Name of the options group for frequently asked questions"
+  },
+  "options_nav_links_label": {
+    "message": "Collegamenti",
+    "description": "Name of the options group for URL links"
+  },
+  "options_nav_links_desc": {
+    "message": "Segui l'autore Huy Z su Google+ e Twitter.
+Leggi le istruzioni d'uso e le ultime novità alla pagina web di G+me.
+Fornisci un feedback nella discussione corrente su Google+.
+Valuta l'estensione al Chrome Web Store.
+Per il codice sorgente, vai a GitHub.",
+    "description": "Text with important links"
   }
 }

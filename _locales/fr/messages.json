@@ -61,6 +61,9 @@
     "message": "Style de l'article",
     "description": "Name of the options group for how the post looks"
   },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Afficher la barre de réduction (barre du haut)"
+  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "toujours",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -73,9 +76,19 @@
     "message": "jamais",
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "En mode étendu, afficher la barre de réduction (barre du bas)"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "Au passage de la souris",
+    "description": "One of the options for when to display the bottom collapse bar"
+  },
   "options_nav_summary_label": {
     "message": "Résumé d'un article",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Nombre de lignes affichées en mode réduit"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Les articles raccourcis affichent les vignettes des photos du contenu"

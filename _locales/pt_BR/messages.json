@@ -61,6 +61,9 @@
     "message": "Estilo da postagem",
     "description": "Name of the options group for how the post looks"
   },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Mostra a barra do G+me em cima"
+  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "sempre",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -72,6 +75,13 @@
   "options_nav_showTopCollapseBarWhen_never": {
     "message": "nunca",
     "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "Mostra a barra do G+me embaixo"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "passando o mouse sobre ela",
+    "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Sumário das postagens",

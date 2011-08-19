@@ -77,7 +77,7 @@
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
   "options_nav_showBottomCollapseBarWhen": {
-    "message": "In expanded mode, when to display the bottom collapse bar"
+    "message": "When to display the bottom collapse bar"
   },
   "options_nav_showBottomCollapseBarWhen_hover": {
     "message": "when hovered by the mouse",

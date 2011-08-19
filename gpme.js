@@ -1708,13 +1708,14 @@ function updateItem($item, attempt) {
     }
   }
 
-  // Expanded mode has a bottombar
+  // Bottom bar for all modes
   var $bottombar = $item.children('.gpme-bottombar');
-  if (displayMode == 'expanded') {
-    if (! $bottombar.length) {
-      $bottombar = $bottombarTpl.clone(true);
-      $item.append($bottombar);
-    }
+  if (! $bottombar.length) {
+    $bottombar = $bottombarTpl.clone(true);
+    $item.append($bottombar);
+
+    // We used to only have the bottombar enabled at times; now users want it all the time
+    enableBottombar($bottombar);
   }
 
   // Refresh opacity of collapse bars
@@ -1727,11 +1728,11 @@ function updateItem($item, attempt) {
   // If we have a bottombar.
   // NOTE: there may still be a remnant of a bottombar if user switches from expanded mode to list mode
   if ($bottombar.length) {
-    if (displayMode == 'expanded' && settings.nav_showBottomCollapseBarWhen == 'always') {
-      enableBottombar($bottombar);
+    if (settings.nav_showBottomCollapseBarWhen == 'always') {
+//      enableBottombar($bottombar);
       $bottombar.css('opacity', 1);
     } else {
-      disableBottombar($bottombar);
+//      disableBottombar($bottombar);
       $bottombar.css('opacity', 0);
     }
   }
@@ -3531,7 +3532,7 @@ function hideTopCollapseBar(e) {
  * Show bottom collapse bar if necessary
  */
 function showBottomCollapseBar(e) {
-  if (displayMode != 'expanded' || settings.nav_showBottomCollapseBarWhen != 'hover')
+  if (settings.nav_showBottomCollapseBarWhen != 'hover')
     return;
 
   var $item = $(this).parent();
@@ -3552,7 +3553,7 @@ function showBottomCollapseBar(e) {
   var $bottombar = $item.children('.gpme-bottombar');
   // NOTE: We only bind click just now to avoid some inadvertent clicks
   if ($bottombar.length) {
-    enableBottombar($bottombar);
+//    enableBottombar($bottombar);
     $bottombar.animate({opacity: 1}, 100);
   }
 }
@@ -3561,7 +3562,7 @@ function showBottomCollapseBar(e) {
  * Hide bottom collapse bar if applicable
  */
 function hideBottomCollapseBar(e) {
-  if (displayMode != 'expanded' || settings.nav_showBottomCollapseBarWhen != 'hover')
+  if (settings.nav_showBottomCollapseBarWhen != 'hover')
     return;
 
   var $item = $(this).parent();
@@ -3570,7 +3571,7 @@ function hideBottomCollapseBar(e) {
   var $bottombar = $item.children('.gpme-bottombar');
   if ($bottombar.length) {
     $bottombar.animate({opacity: 0}, 100, function() {
-      disableBottombar($bottombar);
+//      disableBottombar($bottombar);
     });
   }
 }
