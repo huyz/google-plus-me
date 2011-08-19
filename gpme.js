@@ -241,6 +241,8 @@ var _C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
 
 // CSS values shared with our CSS file
 var TRIANGLE_HEIGHT                               = 30;
+var TRIANGLE_WIDTH                                = 17;
+var RIGHT_BUTTON_AREA_OFFSET_LEFT                 = 20 + 4;
 var POST_WRAPPER_PADDING_TOP                      = 6;
 var POST_WRAPPER_PADDING_BOTTOM                   = 6;
 var ITEM_LINE_HEIGHT                              = 22;
@@ -3289,8 +3291,7 @@ function showPreview(e) {
       }
     }
 
-    var fixedHeight = fixedBarsHeight();
-    var overlappingHeight = overlappingBarsHeight();
+    // Position horizontally
 
     // Move to the right edge and as far up as possible
 /* Disabled: we now move based on right-edge instead of left-edge
@@ -3302,11 +3303,38 @@ function showPreview(e) {
     // We give slack of 10 coz otherwise you get the horizontal bar flashing on Chrome OSX.
     // The width of the popup is reduced by 8 in CSS to leave a bit of a gap between posts and the popup so
     // that the popup triangle can nicely overlay a big commentcount.
-    $post.css('right', '' +
-      -Math.min($post.outerWidth() + 8,
-        ($(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10)) +
-      'px');
-    $post.css('left', 'auto');
+    //var spaceToRight = $(document).width() - $(window).scrollLeft() - $item.get(0).getBoundingClientRect().right - 10;
+    var spaceToRight = $(document).width() - $item.offset().left - $item.width() - 10;
+    var widthNeeded = $post.outerWidth() + 8;
+
+    // Place to the right if there's room
+    if (spaceToRight >= widthNeeded) {
+      $post.css('right', '' + -Math.min(widthNeeded, spaceToRight) + 'px');
+      $post.css('left', 'auto');
+      $post.removeClass('gpme-preview-right');
+    } else {
+      var spaceToLeft = $item.offset().left;
+      debug(e);
+      debug("e.offsetX=" + e.offsetX + " boundary=" + ($item.width() - RIGHT_BUTTON_AREA_OFFSET_LEFT - 2));
+      // Place over the posts to the left of the right button area if there's no room on the left
+      // or if the mouse is over to the right, near the button area.
+      if (spaceToLeft < widthNeeded ||
+          e.pageX >= spaceToLeft + $item.width() - RIGHT_BUTTON_AREA_OFFSET_LEFT) {
+        $post.css('right', '' + (RIGHT_BUTTON_AREA_OFFSET_LEFT + TRIANGLE_WIDTH - 3) + 'px');
+        $post.css('left', 'auto');
+      } else {
+        // Place to the left
+        $post.css('left', '' + -Math.min(widthNeeded, spaceToLeft) + 'px');
+        $post.css('right', 'auto');
+      }
+      $post.addClass('gpme-preview-right');
+    }
+
+    // Position vertically
+
+    var fixedHeight = fixedBarsHeight();
+    var overlappingHeight = overlappingBarsHeight();
+
     var offsetY = Math.max(POST_WRAPPER_PADDING_TOP,
       Math.min($post.outerHeight() - TRIANGLE_HEIGHT - POST_WRAPPER_PADDING_BOTTOM,
         $item.offset().top -

@@ -441,6 +441,11 @@ div.gpme-enh .gpme-comment-count-fg {
   width: 17px;
   background: url('chrome-extension://__MSG_@@extension_id__/images/preview-triangle.png') no-repeat;
 }
+.gpme-folded:not(.Up) .gpme-preview-right > .gpme-preview-triangle {
+  right: -16px;
+  left: auto;
+  background: url('chrome-extension://__MSG_@@extension_id__/images/preview-triangle-right.png') no-repeat;
+}
 
 .gpme-folded:not(.Up) .Fh { /* Context menu button */
   position: absolute;

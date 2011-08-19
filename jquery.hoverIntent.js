@@ -52,9 +52,11 @@
 		// cX, cY = current X and Y position of mouse, updated by mousemove event
 		// pX, pY = previous X and Y position of mouse, set by mouseover and polling interval
 		var cX, cY, pX, pY;
+        var currentEvent;
 
 		// A private function for getting mouse position
 		var track = function(ev) {
+            currentEvent = ev;
 			cX = ev.pageX;
 			cY = ev.pageY;
 		};
@@ -65,7 +67,11 @@
 			// compare mouse positions to see if they've crossed the threshold
 			if ( ( Math.abs(pX-cX) + Math.abs(pY-cY) ) < cfg.sensitivity ) {
 				$(ob).unbind("mousemove",track);
-				ob.hoverIntent_t = setTimeout( function(){delayOver(ev, ob);} , cfg.delayIn );
+
+                // huyz 2011-08-20
+                // We want the current mouse position, not the entry point.
+                // Not sure what other things in the event are different, but we don't care for G+me
+				ob.hoverIntent_t = setTimeout( function(){delayOver(/*ev*/ currentEvent, ob);} , cfg.delayIn );
 
                 // huyz 2011-08-13
                 // Call any immediateHandlerIn if applicable
