@@ -248,7 +248,7 @@ var FOLDED_ITEM_OUTER_HEIGHT_EXTRAS               = 2 * (4 + 1);
 var MUTED_ITEM_HEIGHT                             = 45;
 // Other CSS values
 var GBAR_HEIGHT                                   = 30;
-var HEADER_BAR_HEIGHT                             = 60; // This changes to 45 depending on Google+ Ultimate's options
+var GPLUSBAR_HEIGHT                               = 60; // This changes to 45 depending on Google+ Ultimate's options
 var MAX_DIST_FROM_COPYRIGHT_TO_BOTTOM_OF_VIEWPORT = 30; // about the same as height as feedback button
 var ROOM_FOR_COMMENT_AREA                         = 70;
 // Independent CSS values that affect on this file
@@ -658,16 +658,16 @@ function getExtensionIdFromBackground(callback) {
  * This is for compatibility with other extensions.
  */
 function fixedBarsHeight() {
-  return isGbarFixed() ? GBAR_HEIGHT + (isHeaderBarFixed() ? getHeaderBarHeight() : 0) : 0;
+  return isGbarFixed() ? GBAR_HEIGHT + (isGplusBarFixed() ? getGplusBarHeight() : 0) : 0;
 }
 
 /**
- * Returns the header bar height, which changes according to Google+ Ultimate settings
+ * Returns the Gplus bar height, which changes according to Google+ Ultimate settings
  * (Compatc or Ultra Compact navigation)
  */
-function getHeaderBarHeight() {
-  var $header = $(_C_GPLUSBAR);
-  return $header.length ? $header.height() : HEADER_BAR_HEIGHT;
+function getGplusBarHeight() {
+  var $gplusbar = $(_C_GPLUSBAR);
+  return $gplusbar.length ? $gplusbar.height() : GPLUSBAR_HEIGHT;
 }
 
 /**
@@ -690,12 +690,12 @@ function isGbarFixed() {
 }
 
 /**
- * Returns true if header bar (the part below Gbar) is fixed in place
+ * Returns true if gplus bar (the part below Gbar) is fixed in place
  */
-function isHeaderBarFixed() {
+function isGplusBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
-  var $header = $(_C_GPLUSBAR);
-  return $header.length && $header.css('position') == 'fixed';
+  var $gplusbar = $(_C_GPLUSBAR);
+  return $gplusbar.length && $gplusbar.css('position') == 'fixed';
 }
 
 /**
@@ -712,7 +712,7 @@ function overlappingBarsHeight() {
   if ($content.length) {
     var styles = window.getComputedStyle($content.get(0));
     if (styles.overflowX == 'hidden')
-      result += getHeaderBarHeight();
+      result += getGplusBarHeight();
   }
 
   return result;
@@ -3416,8 +3416,6 @@ function disableBodyScrollbarY() {
   // Relative position is for the absolute-positioned #gbg to stay put
   $(_ID_GBAR_TOP).css({'max-width': '' + width + 'px', 'position': 'relative'});
   $(_C_GPLUSBAR).css({'max-width': '' + width + 'px'});
-  // XXX Can't get the header stretched out
-  //$(_C_GPLUSBAR).css('padding-right', '' + (newWidth - width) + 'px');
   $(_ID_CONTENT).css('max-width', '' + width + 'px');
   $(_C_FEEDBACK_LINK).css('right', '' + (newWidth - width - 1) + 'px');
 }
@@ -3431,8 +3429,6 @@ function enableBodyScrollbarY() {
   var $gbar = $(_ID_GBAR);
   $(_ID_GBAR_TOP).css({'max-width': '', 'position': ''});
   $(_C_GPLUSBAR).css({'max-width': ''});
-  // XXX Can't get the header stretched out
-  //$(_C_GPLUSBAR).css('padding-right', '');
   $(_C_FEEDBACK_LINK).css('right', '');
 }
 
