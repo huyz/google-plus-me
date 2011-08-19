@@ -16,7 +16,9 @@
 #   See http://huyz.us/google-plus-me/
 #
 # TODO:
-#   This file is in bad need of refactoring for OO abstraction.#   It has long outgrown its initial planned lifetime.
+#   This file is in bad need of refactoring for OO abstraction.
+#   It has long outgrown its initial planned lifetime.
+#   It's also my first JavaScript app -- parden the cruft.
 #
 # Thanks:
 #   This extension originally took some ideas from
@@ -3634,6 +3636,70 @@ function updateContentPaneButtonsThrottled() {
 }
 
 /****************************************************************************
+ * Announcements
+ ***************************************************************************/
+
+var lastNewsCheck = null;
+
+/**
+ * Injects an icon with news into the gbar
+ */
+function injectNews(mappingKey) {
+  // NOTE: Some other extensions mess with the CSS class names
+  mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed)/).replace(/\s+/g, '_');
+
+  var $listItems = $('#gbg > ol > li');
+  if ($listItems.length) {
+    var $newsIcon = $('<li id="gpme-announcement-li" class="gbt"><img id="gpme-announcement-icon" src="' + chrome.extension.getURL('icons/actions/1.png') + '"/></li>');
+    var $separator = $('<li class="gbt gbtb"><span class="gbts"></span></li>');
+    $separator.insertBefore($listItems.first());
+    $newsIcon.insertBefore($separator);
+
+    var $newsAnnouncement = $('<div id="gpme-announcement" class="gbm">\
+      <p>\
+      Hi pumpkin!<br />\
+      </p><p>\
+      <a href="https://plus.google.com/111775942615006547057">Huy Zing</a> here, author of <b>G+me</b>.<br />\
+      </p><p>\
+      It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
+      Please go to the <a href="http://huyz.us/gpme-release/">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
+      </p><p>\
+      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color automatically to let you know when there\'s an update.)<br />\
+      </div>');
+    var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
+    $newsAnnouncement.append($newsFrame);
+    $newsAnnouncement.append('<p>P.S.: I\'m working on a long-term fix that will help all Google+ extensions so that you don\'t have to deal with these recurring problems anymore.  I just ask for a little patience, and I will give you the world ;)</p>');
+    $newsIcon.append($newsAnnouncement);
+
+    // Refresh now and every few minutes
+    (function refreshNewsStatus() {
+      //$newsFrame.attr('src', $newsFrame.attr('src'));
+      $newsIcon.get(0).style.backgroundImage = 'url(http://dl.dropbox.com/u/8758558/gpme/status.gif?' + new Date().getTime() + ')';
+      setTimeout(function() { refreshNewsStatus(); }, 15 * 60000);
+    })();
+
+    $newsIcon.hoverIntent({
+      handlerIn: function() {
+        $newsIcon.addClass('gbto');
+        $newsAnnouncement.css('visibility', 'visible');
+        var now = new Date().getTime();
+        if (lastNewsCheck == null || now - lastNewsCheck > 5 * 60000) {
+          lastNewsCheck = now;
+          $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?k=' + mappingKey;
+        }
+      },
+      delayIn: 0,
+      handlerOut: function() {
+        $newsIcon.removeClass('gbto');
+        var $newsAnnt = $('#gpme-announcement');
+        $newsAnnouncement.css('visibility', 'hidden');
+      },
+      delayOut: 300
+    });
+  }
+}
+
+/****************************************************************************
  * Main
  ***************************************************************************/
 
@@ -3712,61 +3778,6 @@ function i18nInit() {
   // Disabled because the stupid tooltips overlay the popups.
   //$markReadButtonTpl.attr('title', getMessage('ui_posts_markReadButton'));
   //$muteButtonTpl.attr('title', getMessage('ui_posts_muteButton'));
-}
-
-/**
- * Injects an icon with news into the gbar
- */
-function injectNews(mappingKey) {
-  var $listItems = $('#gbg > ol > li');
-  if ($listItems.length) {
-    var $newsIcon = $('<li id="gpme-announcement-li" class="gbt"><img id="gpme-announcement-icon" src="' + chrome.extension.getURL('icons/actions/1.png') + '"/></li>');
-    var $separator = $('<li class="gbt gbtb"><span class="gbts"></span></li>');
-    $separator.insertBefore($listItems.first());
-    $newsIcon.insertBefore($separator);
-
-    var $newsAnnouncement = $('<div id="gpme-announcement" class="gbm">\
-      <p>\
-      Hi pumpkin!<br />\
-      </p><p>\
-      <a href="https://plus.google.com/111775942615006547057">Huy Zing</a> here, author of <b>G+me</b>.<br />\
-      </p><p>\
-      It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
-      Please go to the <a href="http://huyz.us/gpme-release/">latest G+me discussion</a> to report the problem, if no one else has.  I will fix it as soon as notified.<br />\
-      </p><p>\
-      Below are the latest news.  The <b>G+me</b> icon above will change color to let you know when there\'s an update.<br />\
-      </div>');
-    var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
-    $newsAnnouncement.append($newsFrame);
-    $newsAnnouncement.append('<p>P.S.: I\'m working on a long-term fix that will help all Google+ extensions so that you don\'t have to deal with these recurring problems anymore.  I just ask for a little patience, and I will give you the world ;)</p>');
-    $newsIcon.append($newsAnnouncement);
-
-    // Refresh now and every few minutes
-    (function refreshNewsFrame() {
-      //$newsFrame.attr('src', $newsFrame.attr('src'));
-      $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?k=' + mappingKey;
-      $newsIcon.get(0).style.backgroundImage = 'url(http://huyz.us/gpme-news/status.gif?' + new Date().getTime() + ')';
-      setTimeout(function() { refreshNewsFrame(); }, 5 * 60000);
-    })();
-
-    $newsIcon.hoverIntent({
-      handlerIn: function() {
-        $newsIcon.addClass('gbto');
-        var $newsAnnt = $('#gpme-announcement');
-        if ($newsAnnt.length) {
-          $newsAnnt.css('visibility', 'visible');
-        }
-      },
-      delayIn: 0,
-      handlerOut: function() {
-        $newsIcon.removeClass('gbto');
-        var $newsAnnt = $('#gpme-announcement');
-        if ($newsAnnt.length)
-          $newsAnnt.css('visibility', 'hidden');
-      },
-      delayOut: 300
-    });
-  }
 }
 
 /**

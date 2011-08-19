@@ -43,6 +43,7 @@
 }
 
 #gpme-news {
+  background: url('chrome-extension://__MSG_@@extension_id__/images/loading.gif') no-repeat center center;
   width: 100%;
   height: 250px;
   border: 1px solid #CCC;
