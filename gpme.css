@@ -332,6 +332,10 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
  * Comment counter
  */
 
+.gpme-comment-count-container {
+  line-height: 18px; /* Makes the -fg line up properly on Windows/Mac */
+}
+
 .gpme-comment-count-container.gpme-hide {
   display: none; /* hide if no comments and no highlight */
 }
