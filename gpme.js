@@ -1573,7 +1573,6 @@ function updateItem($item, attempt) {
   if (enhanceItem) {
     // Add titlebar
 
-    //var $itemGuts = $item.children(_C_ITEM_GUTS);
     var $itemGuts = $item.children();
     var isPostEmpty = false;
     if (! $itemGuts.length) {
@@ -1593,6 +1592,13 @@ function updateItem($item, attempt) {
       } else {
         error("updateItem: Can't get any content within 3 seconds. Giving up");
       }
+      return;
+    }
+
+    // NOTE: Check for _C_ITEM_GUTS because we want to make sure that our CSS class names are correct
+    if (! $itemGuts.filter(_C_ITEM_GUTS).length) {
+      error("updateItem: Can't find the right content inside item " + id + "; has Google+ changed its CSS class names?");
+      console.error($item.get(0));
       return;
     }
 
@@ -3591,16 +3597,16 @@ function updateContentPaneButtons($subtree) {
   var $heading = typeof $subtree != 'undefined' ?
     $subtree.find(_C_CONTENT_PANE_HEADING) : $(_C_CONTENT_PANE_HEADING);
   // Try for profile
-  if (! $heading.length) {
+  if ($heading.length != 1) {
     $heading = typeof $subtree != 'undefined' ?
       $subtree.find(_C_PROFILE_HEADING) : $(_C_PROFILE_HEADING);
     // Try for games
-    if (! $heading.length)
+    if ($heading.length != 1)
       $heading = typeof $subtree != 'undefined' ?
         $subtree.find(_C_GAMES_HEADING) : $(_C_GAMES_HEADING);
   }
 
-  if (! $heading.length) {
+  if ($heading.length != 1) {
     warn("updateContentPaneButtons: Can't find content pane heading");
     return;
   }
@@ -3796,7 +3802,6 @@ function main() {
   if (! $gbar.length || mappingKey.indexOf(C_GBAR) < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     injectNews(mappingKey);
-    return;
   }
 
   // Listen for when there's a total AJAX refresh of the stream,
