@@ -3670,7 +3670,7 @@ function injectNews(mappingKey) {
       It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
       Please go to the <a href="https://plus.google.com/111775942615006547057/posts/XvSSNeJoa87">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
       </p><p>\
-      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color automatically to let you know when there\'s an update.)<br />\
+      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color to green or red to let you know when there\'s a news update.)<br />\
       </div>');
     var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
     $newsAnnouncement.append($newsFrame);
