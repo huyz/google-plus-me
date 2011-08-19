@@ -132,7 +132,7 @@ var C_TITLE                     = 'Ex'; // Meaning, excluding the avatar and men
 var _C_TITLE                    = '.' + C_TITLE;
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
 var _C_CONTENT                  = '.Bx'; // 2nd child of _C_ITEM_GUTS
-var S_PHOTO                     = _C_CONTENT + ' > a.hn';
+var S_PHOTO                     = '.xu > a.hn'; // 1st child of C_ITEM_GUTS
 var _C_NAME                     = '.kh';
 // S_SOURCE:
 // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
@@ -603,7 +603,7 @@ function isEnabledOnThisPage($subtree) {
  * FIXME: English-specific
  */
 function abbreviateDate(text) {
-  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, getMessage('gplus_dateLongSuffixReplacement')).replace(/ PM/, 'pm').replace(/ AM/, 'am').replace(yearRegexp, '');
+  return text.replace(DATE_JUNK_REGEXP, '').replace(DATE_LONG_REGEXP, getMessage('gplus_dateLongSuffixReplacement')).replace(/ PM/, ' pm').replace(/ AM/, ' am').replace(yearRegexp, '');
 }
 
 /**
