@@ -1989,7 +1989,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
     if (scrollDist > 0) {
       // XXX G+ seems to have an autoscroll that's acting faster than mine
       // and is shifting the page faster
-      $body.animate({scrollTop: $body.scrollTop() - scrollDist }, JQUERY_DURATION);
+      $body.animate({scrollTop: $body.scrollTop() - scrollDist }, 'fast', 'jswing');
     }
   } else {
     $item.find('.gpme-titlebar').scrollintoview({duration: 0, direction: 'y'});
@@ -2027,7 +2027,7 @@ function foldItem(options, $item, $post) {
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
   if (animated)
-    $post.slideUp('fast', function() {
+    $post.slideUp('fast', 'jswing', function() {
       $item.addClass('gpme-folded');
       $item.removeClass('gpme-unfolded');
       if (interactive) {
@@ -2346,7 +2346,7 @@ function unfoldItem(options, $item, $post) {
   $item.removeClass('gpme-folded');
   $item.addClass('gpme-unfolded');
   if (animated) {
-    $post.slideDown('fast', function() {
+    $post.slideDown('fast', 'jswing', function() {
       if (interactive)
         updateCachedSgpItem($item);
     });
