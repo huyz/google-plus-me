@@ -3662,7 +3662,7 @@ function injectNews(mappingKey) {
       <a href="https://plus.google.com/111775942615006547057">Huy Zing</a> here, author of <b>G+me</b>.<br />\
       </p><p>\
       It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
-      Please go to the <a href="http://huyz.us/gpme-release/">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
+      Please go to the <a href="https://plus.google.com/111775942615006547057/posts/XvSSNeJoa87">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
       </p><p>\
       Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color automatically to let you know when there\'s an update.)<br />\
       </div>');
@@ -3793,7 +3793,7 @@ function main() {
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (! $gbar.length || mappingKey != C_GBAR) {
+  if (DEBUG || ! $gbar.length || mappingKey != C_GBAR) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     injectNews(mappingKey);
     return;
