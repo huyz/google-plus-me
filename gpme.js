@@ -131,7 +131,7 @@ var C_TITLE_COLOR               = 'sl';
 var C_TITLE                     = 'Ex'; // Meaning, excluding the avatar and menu icon
 var _C_TITLE                    = '.' + C_TITLE;
 //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-var _C_CONTENT                  = '.xu'; // Right inside _C_ITEM_GUTS
+var _C_CONTENT                  = '.Bx'; // 2nd child of _C_ITEM_GUTS
 var S_PHOTO                     = _C_CONTENT + ' > a.hn';
 var _C_NAME                     = '.kh';
 // S_SOURCE:
