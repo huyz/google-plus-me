@@ -70,7 +70,7 @@ RegExp.quote = function(str) {
 // NOTE: For more class constants, see foldItem() in classes array
 
 var _ID_GBAR                    = '#gb';
-var C_GBAR                      = 'a-rg-M a-e-rg-M'; // Only for checking
+var C_GBAR                      = 'a-rg-M a-e-rg-M'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
 var _ID_GBAR_TOP                = '#gbw';
 var _ID_STATUS                  = '#gbg1';
 var _ID_STATUS_BG               = '#gbi1a';
@@ -3793,7 +3793,7 @@ function main() {
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (DEBUG || ! $gbar.length || mappingKey != C_GBAR) {
+  if (! $gbar.length || mappingKey.indexOf(C_GBAR) < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     injectNews(mappingKey);
     return;
