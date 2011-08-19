@@ -128,8 +128,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     case 'gpmeGetModeOption':
       sendResponse(settingStore.get('nav_global_postsDefaultMode'));
       break;
-    case 'gpmeGetExtensionId':
-      sendResponse(chrome.app.getDetails().id);
+    case 'gpmeGetAppDetails':
+      sendResponse(chrome.app.getDetails());
       break;
     case 'gpmeGetSettings':
       sendResponse(settingStore.toObject());

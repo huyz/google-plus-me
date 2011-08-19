@@ -429,6 +429,9 @@ var settings;
 if (DEBUG)
   var i18nMessages;
 
+// chrome.app.getDetails() as returned from the background
+var appDetails;
+
 // list or expanded mode (like on GReader)
 var displayMode;
 
@@ -646,9 +649,9 @@ function getOptionsFromBackground(callback) {
 /**
  * Queries background page for extension ID
  */
-function getExtensionIdFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetExtensionId'}, function(id) {
-    callback(id);
+function getAppDetailsFromBackground(callback) {
+  chrome.extension.sendRequest({action: 'gpmeGetAppDetails'}, function(appDetails) {
+    callback(appDetails);
   });
 }
 
@@ -3679,7 +3682,7 @@ function injectNews(mappingKey) {
       It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
       Please go to the <a href="https://plus.google.com/111775942615006547057/posts/XvSSNeJoa87">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
       </p><p>\
-      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color to green (or red) to let you know when there\'s important news.)<br />\
+      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color to green or red to let you know when there\'s important news.)<br />\
       </div>');
     var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
     $newsAnnouncement.append($newsFrame);
@@ -3693,25 +3696,23 @@ function injectNews(mappingKey) {
       setTimeout(function() { refreshNewsStatus(); }, 15 * 60000);
     })();
 
-    getExtensionIdFromBackground(function(id) {
-      $newsIcon.hoverIntent({
-        handlerIn: function() {
-          $newsIcon.addClass('gbto');
-          $newsAnnouncement.css('visibility', 'visible');
-          var now = new Date().getTime();
-          if (lastNewsCheck == null || now - lastNewsCheck > 5 * 60000) {
-            lastNewsCheck = now;
-            $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?id=' + id + '&k=' + mappingKey;
-          }
-        },
-        delayIn: 0,
-        handlerOut: function() {
-          $newsIcon.removeClass('gbto');
-          var $newsAnnt = $('#gpme-announcement');
-          $newsAnnouncement.css('visibility', 'hidden');
-        },
-        delayOut: 300
-      });
+    $newsIcon.hoverIntent({
+      handlerIn: function() {
+        $newsIcon.addClass('gbto');
+        $newsAnnouncement.css('visibility', 'visible');
+        var now = new Date().getTime();
+        if (lastNewsCheck === null || now - lastNewsCheck > 5 * 60000) {
+          lastNewsCheck = now;
+          $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?id=' + appDetails.id + '&v=' + appDetails.version + '&k=' + mappingKey;
+        }
+      },
+      delayIn: 0,
+      handlerOut: function() {
+        $newsIcon.removeClass('gbto');
+        var $newsAnnt = $('#gpme-announcement');
+        $newsAnnouncement.css('visibility', 'hidden');
+      },
+      delayOut: 300
     });
   }
 }
@@ -3812,7 +3813,10 @@ function main() {
     mappingKey = $gbar.parent().attr('class');
   if (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
-    injectNews(mappingKey);
+    getAppDetailsFromBackground(function(theAppDetails) {
+      appDetails = theAppDetails;
+      injectNews(mappingKey);
+    });
   }
 
   // Listen for when there's a total AJAX refresh of the stream,
