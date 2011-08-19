@@ -1,7 +1,7 @@
 {
   "default_locale": "en",
   "name": "__MSG_extensionName__",
-  "version": "5.28",
+  "version": "5.29",
   "minimum_chrome_version": "12",
 
   "description": "__MSG_extensionDescription__",
