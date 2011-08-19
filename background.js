@@ -73,6 +73,8 @@ if (displayMode !== null) {
 
 // Check installed version
 var oldVersion = localStorage.getItem('version');
+  console.log(chrome.app.getDetails());
+
 var version = chrome.app.getDetails().version;
 if (version != oldVersion) {
   // NOTE: we don't use the prefix 'gpme_' so that it doesn't get wiped out by a reset
@@ -125,6 +127,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       break;
     case 'gpmeGetModeOption':
       sendResponse(settingStore.get('nav_global_postsDefaultMode'));
+      break;
+    case 'gpmeGetExtensionId':
+      sendResponse(chrome.app.getDetails().id);
       break;
     case 'gpmeGetSettings':
       sendResponse(settingStore.toObject());

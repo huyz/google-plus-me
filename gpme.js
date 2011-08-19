@@ -77,7 +77,8 @@ var _ID_STATUS_BG               = '#gbi1a';
 var _ID_STATUS_FG               = '#gbi1';
 var C_STATUS_BG_OFF             = 'gbid';
 var C_STATUS_FG_OFF             = 'gbids';
-var _C_HEADER                   = '.a-e-fa-M';
+var C_GPLUSBAR                  = 'a-e-fa-M';
+var _C_GPLUSBAR                 = '.' + C_GPLUSBAR;
 var _ID_CONTENT                 = '#content';
 // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
 // clicking link to the *current* page will refresh the contentPane
@@ -643,6 +644,15 @@ function getOptionsFromBackground(callback) {
 }
 
 /**
+ * Queries background page for extension ID
+ */
+function getExtensionIdFromBackground(callback) {
+  chrome.extension.sendRequest({action: 'gpmeGetExtensionId'}, function(id) {
+    callback(id);
+  });
+}
+
+/**
  * Returns the height of any fixed bars at the top, if
  * applicable.
  * This is for compatibility with other extensions.
@@ -656,7 +666,7 @@ function fixedBarsHeight() {
  * (Compatc or Ultra Compact navigation)
  */
 function getHeaderBarHeight() {
-  var $header = $(_C_HEADER);
+  var $header = $(_C_GPLUSBAR);
   return $header.length ? $header.height() : HEADER_BAR_HEIGHT;
 }
 
@@ -684,7 +694,7 @@ function isGbarFixed() {
  */
 function isHeaderBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
-  var $header = $(_C_HEADER);
+  var $header = $(_C_GPLUSBAR);
   return $header.length && $header.css('position') == 'fixed';
 }
 
@@ -3405,10 +3415,11 @@ function disableBodyScrollbarY() {
   $body.css({'overflow-y': 'hidden', 'max-width': '' + width + 'px' });
   // Relative position is for the absolute-positioned #gbg to stay put
   $(_ID_GBAR_TOP).css({'max-width': '' + width + 'px', 'position': 'relative'});
+  $(_C_GPLUSBAR).css({'max-width': '' + width + 'px'});
   // XXX Can't get the header stretched out
-  //$(_C_HEADER).css('padding-right', '' + (newWidth - width) + 'px');
+  //$(_C_GPLUSBAR).css('padding-right', '' + (newWidth - width) + 'px');
   $(_ID_CONTENT).css('max-width', '' + width + 'px');
-  $(_C_FEEDBACK_LINK).css('right', '' + (newWidth - width) + 'px');
+  $(_C_FEEDBACK_LINK).css('right', '' + (newWidth - width - 1) + 'px');
 }
 
 /**
@@ -3419,8 +3430,9 @@ function enableBodyScrollbarY() {
   $body.css({'overflow-y': '', 'max-width': ''});
   var $gbar = $(_ID_GBAR);
   $(_ID_GBAR_TOP).css({'max-width': '', 'position': ''});
+  $(_C_GPLUSBAR).css({'max-width': ''});
   // XXX Can't get the header stretched out
-  //$(_C_HEADER).css('padding-right', '');
+  //$(_C_GPLUSBAR).css('padding-right', '');
   $(_C_FEEDBACK_LINK).css('right', '');
 }
 
@@ -3670,7 +3682,7 @@ function injectNews(mappingKey) {
       It looks like Google+ changed its layout again.  (For geeks: more specifically, all the CSS class names changed again.)<br />\
       Please go to the <a href="https://plus.google.com/111775942615006547057/posts/XvSSNeJoa87">latest G+me discussion</a> to report the problem.  Please mention "<b>code ' + mappingKey + '</b>" if no one else has yet, and I will fix it as soon as possible.<br />\
       </p><p>\
-      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color to green or red to let you know when there\'s a news update.)<br />\
+      Below are the latest news; check back once in a while.  (The <b>G+me</b> icon above should change color to green (or red) to let you know when there\'s important news.)<br />\
       </div>');
     var $newsFrame = $('<iframe id="gpme-news" frameborder=0 scrollable="true"/>');
     $newsAnnouncement.append($newsFrame);
@@ -3684,23 +3696,25 @@ function injectNews(mappingKey) {
       setTimeout(function() { refreshNewsStatus(); }, 15 * 60000);
     })();
 
-    $newsIcon.hoverIntent({
-      handlerIn: function() {
-        $newsIcon.addClass('gbto');
-        $newsAnnouncement.css('visibility', 'visible');
-        var now = new Date().getTime();
-        if (lastNewsCheck == null || now - lastNewsCheck > 5 * 60000) {
-          lastNewsCheck = now;
-          $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?k=' + mappingKey;
-        }
-      },
-      delayIn: 0,
-      handlerOut: function() {
-        $newsIcon.removeClass('gbto');
-        var $newsAnnt = $('#gpme-announcement');
-        $newsAnnouncement.css('visibility', 'hidden');
-      },
-      delayOut: 300
+    getExtensionIdFromBackground(function(id) {
+      $newsIcon.hoverIntent({
+        handlerIn: function() {
+          $newsIcon.addClass('gbto');
+          $newsAnnouncement.css('visibility', 'visible');
+          var now = new Date().getTime();
+          if (lastNewsCheck == null || now - lastNewsCheck > 5 * 60000) {
+            lastNewsCheck = now;
+            $newsFrame.get(0).src = 'http://huyz.us/gpme-news/?id=' + id + '&k=' + mappingKey;
+          }
+        },
+        delayIn: 0,
+        handlerOut: function() {
+          $newsIcon.removeClass('gbto');
+          var $newsAnnt = $('#gpme-announcement');
+          $newsAnnouncement.css('visibility', 'hidden');
+        },
+        delayOut: 300
+      });
     });
   }
 }
@@ -3799,7 +3813,7 @@ function main() {
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (! $gbar.length || mappingKey.indexOf(C_GBAR) < 0) {
+  if (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     injectNews(mappingKey);
   }

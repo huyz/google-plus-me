@@ -418,6 +418,12 @@ div.gpme-enh .gpme-comment-count-fg {
  * :not(.Up) means not muted
  */
 
+/* Incoming posts */
+.gpme-folded:not(.Up) .Ov {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .gpme-preview-triangle {
   display: none;
 }
