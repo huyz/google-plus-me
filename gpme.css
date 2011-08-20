@@ -359,6 +359,7 @@ div.gpme-title-folded .gpme-title-icons { /* "span" coz need to be more specific
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-bg {
   position: static; /* Override the absolute */
+  visibility: visible; /* Override the hidden when G+ notifications are slow on load */
 
   /* Float so that fg can overlap */
   float: right;
@@ -393,6 +394,8 @@ div.gpme-comment-count-nohilite > .gpme-comment-count-bg {
 }
 /* Overrides injectCss(); add div just for higher specificity. */
 div.gpme-comment-count-container > .gpme-comment-count-fg {
+  visibility: visible; /* Override the hidden when G+ notifications are slow on load */
+
   height: 21px;
   line-height: 21px;
 }
