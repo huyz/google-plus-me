@@ -125,6 +125,7 @@ for my $worksheet ( $workbook->worksheets() ) {
   # Use English as a template
 #  if (! -e "messages.json") {
   # XXX Temporary until someone provides an es-ES translation
+  # NOTE: this depends on "espanol LA" being processed before "espanol ES"
   if ($sheetName eq "español ES") {
     system("cp -f ../es_419/messages.json messages.json");
   } else {

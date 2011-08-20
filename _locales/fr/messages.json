@@ -236,6 +236,7 @@ Lorsque j'aurai mis en place toutes les fonctionnalités envisagées, je prévoi
 <ul>
 <li>Rafraichir la page (le problème pourrait provenir de Google+)</li>
 <li>Redémarrer votre navigateur (les navigateurs peuvent aussi contenir des erreurs)</li>
+<li>Désactiver les autres extensions Google+ (le problème peut venir d'une incompatibilité avec une autre extension)</li>
 <li>Vous assurer que vous avez la dernière version de <b>G+me</b>. Pour le vérifier, effectuez un clic droit sur l'icône de l'extension et sélectionnez \"Gérer les extensions\", puis comparez votre version avec celle disponible dans le <a href=\"http://goo.gl/m837O\" target=_blank>Chrome Web Store</a>. Pour forcer la mise à jour de vos extensions suivez <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>ces instructions</a>.</li> 
 <li>Si vous avez déjà la dernière version de <b>G+me</b>, vous pouvez encore essayer de dés-installer, puis de réinstaller l'extension.</li>
 <li>Ré-initialiser toutes les options et l'historique de <b>G+me</b>, comme indiqué ci-dessous.</li>

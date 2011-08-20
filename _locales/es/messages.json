@@ -61,6 +61,9 @@
     "message": "Barra de Plegado del Mensaje",
     "description": "Name of the options group for how the post looks"
   },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Cuando mostrar la barra superior de plegado"
+  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "siempre",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -73,12 +76,19 @@
     "message": "nunca",
     "description": "One of the options for when to display the top/bottom collapse bar"
   },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "Cuando mostrar la barra inferior de plegado"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "al pasar por encima",
+    "description": "One of the options for when to display the bottom collapse bar"
+  },
   "options_nav_summary_label": {
     "message": "Resumen",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
   },
   "options_nav_summaryLines": {
-    "message": "Cantidad de líneas mostradas en el mensaje plegado"
+    "message": "Cantidad de líneas a mostrar (plegado)"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Mostrar miniaturas de las fotos del mensaje"
@@ -213,8 +223,9 @@ Esta extensión es <i>incompatible</i> con <b>+Comment Toggle</b>
   "options_nav_problemsTroubleshoot": {
     "message": "En el caso de experimentar algún comportamiento extraño, intente lo siguiente:<br/>
 <ul>
-<li>Actualizar la página (el problema podría ser Google+)</li>
+<li>Actualiza la página (el problema podría ser Google+)</li>
 <li>Reinicia el navegador (el navegador también tiene errores)</li>
+<li>Deshabilita otras extensiones de Google+ (el problema puede deberse a incopatibilidades)</li>
 <li>Asegúrate de tener la última versión de <b>G+me</b>. Para comprobarlo, haz clic derecho en el icono G+me, ir a \"Administrar extensiones...\" y luego compara con la versión más reciente en la<a href =\"http://goo.gl/m837O\" target=_blank>Web Store</a>. He aquí cómo <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forzar la actualización de extensiones</a> <i>(en inglés)</i>.</li>
 <li>Si ya tienes la versión más reciente de <b>G+me</b>, intenta desinstalando y volviendo a instalar la extensión.</li>
 <li>Puedes intentar restablecer todas las opciones e historial. Ver más abajo.</li>

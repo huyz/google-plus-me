@@ -61,6 +61,9 @@
     "message": "Post Stijl",
     "description": "Name of the options group for how the post looks"
   },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Wanneer moet de bovenste uitklapbalk zichtbaar zijn"
+  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "altijd",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -72,6 +75,13 @@
   "options_nav_showTopCollapseBarWhen_never": {
     "message": "nooit",
     "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "Wanneer moet de onderste uitklapbalk zichtbaar zijn"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "Als de muis over de post heen gaat",
+    "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Post Overzicht",
@@ -225,6 +235,7 @@
     <ul>
     <li>Herlaad de pagina  (het probleem kan in Google+ zelf zitten)</li>
     <li>Herstart je browser (ook deze is niet foutloos)</li>
+    <li>Schakel andere Google+ extensies uit (kan een incompatibiliteit probleem zijn)</li>
     <li>Controleer of je de laatste versie van <b>G+me</b> hebt. Controleer d.m.v. een klik met de rechter muis knop op het G+me browser icoon, ga naar  \"Extensies beheren\" en vergelijk deze met de laatste versie in de <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Hier staat (in het engels) hoe je <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>extensies geforceerd kan bijwerken</a>.</li>
     <li>Als je de laatste versie van <b>G+me</b> al hebt, maak dan de installatie ongedaan en herinstalleer de extensie.</li>
     <li>Je kan ook alle instellingen en geschiedenis verwijderen. Zie hieronder.</li>

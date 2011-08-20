@@ -235,6 +235,7 @@ Esta extensão é <i>incompatível</i> com <b>+Comment Toggle</b>.  É <i>compat
     <ul>
     <li>Atualize a página (o problema poderá estar no próprio Google+)</li>
     <li>Reinicie o seu navegador (o navegador também tem problemas)</li>
+    <li>Desative outras extensões do Google+ (o problema pode ser de incompatibilidade)</li>
     <li>Certifique-se que tem a última versão do <b>G+me</b>. Para verificar, clique com o botão direito do mouse no ícone do G+me no seu navegador, vá em \"Gerenciar Extensões\" e compare com a última versão em <a href=\"http://goo.gl/m837O\" target=_blank>Web Store</a>.  Veja aqui como <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forçar a atualização da extensão</a>.</li>
     <li>Se já tem a última versão do <b>G+me</b>, experimente desinstalar e reinstalar a extensão.</li>
     <li>Tente também retornar as configurações originais de todas as opções e histórico.  Ver abaixo.</li>
