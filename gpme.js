@@ -160,9 +160,26 @@ var _C_QUOTED_PHOTO             = '.Wx > img';
 var S_CONTENT_IMG               = '.H-y-Sk-ea > img, .H-y-Ii-ea > img, .H-y-pe-ea > img, .H-y-Rc-ea > img';
 // _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
 var _C_CONTENT_VIDEO            = '.H-y-Oa-Lk'; // Take the 4-part one that looks like S_CONTENT_IMG
-var _C_CONTENT_LINK             = '.H-y-Y-j'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
 var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
 var _C_MAP_IMG                  = 'img.Ou'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
+
+// poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+var _C_CONTENT_POSTER_TEXT = '.Wi';
+// poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
+var _C_CONTENT_POSTER_TEXT2 = '.Vh';
+// or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+var _C_CONTENT_QUOTED_TEXT = '.Vx .Vh'; // Look for gray border-left, and then the text
+var _C_CONTENT_EDIT = '.qp'; // Look for edit in content of any of your posts
+var S_CONTENT_HANGOUT_TEXT = '.tC > .Gf'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
+var S_CONTENT_PHOTO_COMMENT = '.H-y-ea-pa'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var S_CONTENT_PHOTO_CAPTION = '.c3 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var S_CONTENT_VIDEO_CAPTION = '.H-y-Oa-pa'; // https://plus.google.com/115404182941170857382/posts/dnKJeydFiw5
+// _C_CONTENT_LINK_TITLE:
+// - photo album caption https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+// - title of shared link https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
+var _C_CONTENT_LINK_TITLE = '.H-y-Y > a';
+var _C_CONTENT_LINK_TEXT = '.H-y-Be-Jb';
+var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
 
 // Comments
 var C_COMMENTS_EDITOR           = 'Gm'; // id=:1tt.editor
@@ -246,6 +263,7 @@ var RIGHT_BUTTON_AREA_OFFSET_LEFT                 = 20 + 4;
 var POST_WRAPPER_PADDING_TOP                      = 6;
 var POST_WRAPPER_PADDING_BOTTOM                   = 6;
 var ITEM_LINE_HEIGHT                              = 22;
+var ITEM_FONT_HEIGHT                              = 15; // Font size is 13, but height is 15
 var FOLDED_ITEM_OUTER_HEIGHT_EXTRAS               = 2 * (4 + 1);
 var MUTED_ITEM_HEIGHT                             = 45;
 // Other CSS values
@@ -572,6 +590,14 @@ function error() {
  */
 function htmlDecode(str) {
   return $("<div/>").html(str).text();
+}
+
+/**
+ * Escapes HTML entities
+ * http://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery/374176#374176
+ **/
+function htmlEncode(str) {
+  return $("<div/>").text(str).html();
 }
 
 /**
@@ -2067,7 +2093,6 @@ function foldItem(options, $item, $post) {
       saveSeenCommentCount(id, commentCount);
   }
 
-  var $snippet;
   // Attached or pending title summary
   var $subtree;
 
@@ -2154,7 +2179,7 @@ function foldItem(options, $item, $post) {
         
         if (! $srcPhoto.length && ! $video.length) { // Don't show link if we already have video
           // Link in content?
-          var $link = $content.find(_C_CONTENT_LINK);
+          var $link = $content.find(_C_CONTENT_LINK_TITLE);
           if ($link.length) {
             $clonedTitle.append($linkIconTpl.clone().css('float', 'right'));
           }
@@ -2163,67 +2188,72 @@ function foldItem(options, $item, $post) {
         // Insert a little dash
         $clonedTitle.append($titleDashTpl.clone());
 
-// poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_POSTER_TEXT = '.Wi';
-// poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
-// or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-// (and for one's own post, just "Edit")
-var _C_CONTENT_POSTER_TEXT2 = '.Vh';
-var _C_CONTENT_EDIT = '.qp'; // Look for edit in content of any of your posts
-var S_CONTENT_HANGOUT_TEXT = '.tC > .Gf'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
-// photo album caption OR title of shared link
-var S_CONTENT_PHOTO_ALBUM_CAPTION = '.H-y-Y > a'; // https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_PHOTO_COMMENT = '.H-y-ea-pa'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var S_CONTENT_PHOTO_CAPTION = '.c3 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var _C_CONTENT_LINK_TITLE = '.H-y-Y'; // https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
-var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
-        
+        // Inject the summary title
+        $title.append($clonedTitle);
+        if (isSgpPost && interactive)
+          updateCachedSgpItem($item, $clonedTitle);
+
         // Put in snippet, trying differing things
+        // NOTE: this must be done after injecting the title so that we can get the height of the snippet
+        var $snippet = $titleSnippetTpl.clone(), snippetHtml = '';
+        $clonedTitle.append($snippet);
         var classes = isSgpPost ? [
           _C_SGP_TEXT1,
           _C_SGP_TEXT2
         ] : [
           _C_CONTENT_POSTER_TEXT,
+          _C_CONTENT_QUOTED_TEXT, // This must come before _C_CONTENT_POSTER_TEXT2 to differentiate
           _C_CONTENT_POSTER_TEXT2, // Goes together with next line
-          _C_CONTENT_LINK, // poster link (must come after the above)
+          _C_CONTENT_LINK_TITLE, // Link (must come after _C_CONTENT_POSTER_TEXT2
+          _C_CONTENT_LINK_TEXT,
           S_CONTENT_HANGOUT_TEXT,
-          S_CONTENT_PHOTO_ALBUM_CAPTION,
           S_CONTENT_PHOTO_COMMENT,
           S_CONTENT_PHOTO_CAPTION,
-          _C_CONTENT_LINK_TITLE,
+          S_CONTENT_VIDEO_CAPTION,
           _C_CONTENT_CHECKIN_LOCATION
         ];
         for (var c in classes) {
-          $snippet = $post.find(classes[c]);
-          if (! $snippet.length)
+          var $candidate = $post.find(classes[c]);
+          if (! $candidate.length)
             continue;
 
           // We want to ignore link shares that only have the text Edit -- this is one's own posts
           // <span class="a-da-k ez Xq">Edit</span>
           if (classes[c] == _C_CONTENT_POSTER_TEXT || classes[c] == _C_CONTENT_POSTER_TEXT2) {
-            $snippet = $snippet.clone();
-            $snippet.find(_C_CONTENT_EDIT).remove();
+            $candidate = $candidate.clone();
+            $candidate.find(_C_CONTENT_EDIT).remove();
           }
-          var text = $snippet.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '');
+          var text = $candidate.html().replace(/(<(br|p)\s*\/?>\s*)+/gi, ' \u2022 ').replace(/<\/?[^>]+?>/g, '').replace(/ \u2022\s*$/, '');
           if (text.match(/[^\s\u2022]/)) {
             if (classes[c] == S_CONTENT_HANGOUT_TEXT) {
               // TODO: test in multiple languages (English, Spanish, Chinese ok)
               text = text.replace(/.*?(\d+)/, '$1');
             }
-            $snippet = $titleSnippetTpl.clone();
-            $snippet.text(htmlDecode(text.substring(0, 500))); // We have to call() to avoid XSS
-            $clonedTitle.append($snippet);
-            break;
+            if (snippetHtml !== '') {
+              snippetHtml += ' \u2022 ';
+              // Skip _C_CONTENT_POSTER_TEXT2 if _C_CONTENT_QUOTED_TEXT already gave us text
+              // because we don't want to duplicates and the two class names are hard to differentiate
+              if (classes[c] == _C_CONTENT_POSTER_TEXT2)
+                continue;
+            }
+            text = htmlDecode(text).substring(0, 500); // We have to call() to avoid XSS
+            if (classes[c] == _C_CONTENT_CHECKIN_LOCATION)
+              snippetHtml += '<i>@&nbsp;' + htmlEncode(text) + '</i> ';
+            else if (classes[c] == _C_CONTENT_POSTER_TEXT || classes[c] == _C_CONTENT_POSTER_TEXT2)
+              snippetHtml += htmlEncode(text) + ' ';
+            else 
+              snippetHtml += '<i>' + htmlEncode(text) + '</i> ';
+            $snippet.html(snippetHtml);
+            debug("snippet height = " + $snippet.height());
+
+            // If we have enough content break
+            if (($snippet.height() - ITEM_FONT_HEIGHT) / ITEM_LINE_HEIGHT + 1 > settings.nav_summaryLines)
+              break;
           }
         }
 
         // If any, move "- Muted" to right after date and before the " - "
         $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
-
-        // Inject the summary title
-        $title.append($clonedTitle);
-        if (isSgpPost && interactive)
-          updateCachedSgpItem($item, $clonedTitle);
 
         // Add buttons & comment-count container
         // NOTE: this must be done after injecting the title
