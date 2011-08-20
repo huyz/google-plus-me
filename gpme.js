@@ -189,6 +189,7 @@ var C_COMMENTS_BUTTON_CONTAINER = 'ns';
 var _C_COMMENTS_BUTTON_CONTAINER = '.' + C_COMMENTS_BUTTON_CONTAINER;
 var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .Jl';
 var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.Eo) > :first-child'; // :not grayed out
+var _C_COMMENTS_BUTTON_NAMES    = _C_COMMENTS_BUTTON_CONTAINER + ' .Dp';
 var C_COMMENTS_CONTAINER        = 'mw';
 var _C_COMMENTS_CONTAINER       = '.' + C_COMMENTS_CONTAINER;
 var _C_COMMENTS_OLDER_BUTTON    = '.ms';
@@ -3091,28 +3092,17 @@ function updateCommentsSnippet(id, $item, commentCount) {
     return;
   }
 
-  var $shownNames = $commentWrapper.find(_C_COMMENTS_SHOWN_NAMES);
+  var $shownNames = $commentWrapper.find(_C_COMMENTS_SHOWN_NAMES).reverse();
   $shownNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
-/* 2011-08-16 G+ has new comment-toggling scheme
-  // Pad with some more recent names
+  // Pad with some older names
   if (names.length < 15) {
-    var $moreNames = $commentWrapper.find(_C_COMMENTS_MORE_NAMES);
-    $moreNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
+    // FIXME: only handles English "hand"
+    $commentWrapper.find(_C_COMMENTS_BUTTON_NAMES).text().split(/,\s*| and /).forEach(function(item) {
+      if (addNameUnique(item) > 15) return false;
+    });
   }
-*/
+
   text = names.join(', ');
-/* 2011-08-16 G+ has new comment-toggling scheme
-  var $oldNames = $commentWrapper.find(_C_COMMENTS_OLD_NAMES);
-  if ($oldNames.length) {
-    // If nothing, then just get the old names.
-    if (! text.match(/\S/))
-      text = $oldNames.text();
-    else
-      text = '…, ' + text;
-  }
-*/
-  if ($shownNames.length < commentCount)
-    text = '…, ' + text;
   $snippet.text(text);
 }
 
