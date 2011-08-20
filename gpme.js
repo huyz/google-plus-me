@@ -822,8 +822,10 @@ function slideDown($elem, minHeight, duration, easing, callback) {
  * Responds to DOM updates from G+ to handle change in status of new notifications shown to the user
  */
 function onStatusUpdated(e) {
-  //debug("onStatusUpdated");
-  chrome.extension.sendRequest({action: 'gpmeStatusUpdate', count: parseInt(e.target.innerText, 10)});
+  debug("onStatusUpdated");
+  // Since G+ animated the status count, for some reason innerHTML is set correctly whey innerText lags.
+  var statusCount = parseInt( e.target.innerHTML.replace(/<[^>]*?>/g, ''), 10 );
+  chrome.extension.sendRequest({action: 'gpmeStatusUpdate', count: statusCount});
 }
 
 /**
