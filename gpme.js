@@ -295,13 +295,14 @@ var LS_COMMENTS_READ_COUNT         = LS_COMMENTS_ + 'rc_';
 var LS_COMMENTS_READ_COUNT_CHANGED = LS_COMMENTS_ + 'rcc_';
 var LS_URL_LIST_LAST_UNFOLDED      = LS_HISTORY_ + 'ullu_'; // Applies in list mode
 // DEPRECATED: old localStorage keys
-var OLD_KEYS = {};
-OLD_KEYS[LS_FOLDED]                 = 'gpme_post_folded_';
-OLD_KEYS[LS_COMMENTS_FOLDED]        = 'gpme_comments_folded_';
-OLD_KEYS[LS_COMMENTS_UNFOLDED]      = 'gpme_comments_unfolded_';
-OLD_KEYS[LS_COMMENTS_READ_COUNT]    = 'gpme_post_seen_comment_count_';
-OLD_KEYS[LS_COMMENTS_READ_COUNT_CHANGED] = 'gpme_post_seen_comment_count_changed_';
-OLD_KEYS[LS_URL_LIST_LAST_UNFOLDED] = 'gpme_post_last_open_';
+var OLD_KEYS = {
+  LS_FOLDED                      : 'gpme_post_folded_',
+  LS_COMMENTS_FOLDED             : 'gpme_comments_folded_',
+  LS_COMMENTS_UNFOLDED           : 'gpme_comments_unfolded_',
+  LS_COMMENTS_READ_COUNT         : 'gpme_post_seen_comment_count_',
+  LS_COMMENTS_READ_COUNT_CHANGED : 'gpme_post_seen_comment_count_changed_',
+  LS_URL_LIST_LAST_UNFOLDED      : 'gpme_post_last_open_'
+};
 
 // Anmiation
 var JQUERY_DURATION = 400;
@@ -479,11 +480,21 @@ var $sgpCachedItems = new Object();
  * Persistence
  ***************************************************************************/
 
+// Memory cache of items shown by profiling to slow things down
+var memcache = {
+  LS_COMMENTS_READ_COUNT: {},
+  LS_COMMENTS_READ_COUNT_CHANGED: {},
+};
+
 /**
  * Gets the specified key from lscache.
  * This helps in the transition period from the old scheme to the new scheme
  */
 function lsGet(type, key) {
+  // NOTE: for efficiency, we don't strip the key in memory
+  if (memcache[type] && typeof memcache[type][key] != 'undefined')
+    return memcache[type][key];
+
   var result = lscache.get(type + stripKey(type, key));
 
   // Fallback to old data
@@ -497,6 +508,10 @@ function lsGet(type, key) {
  * Sets the specified key into lscache
  */
 function lsSet(type, key, value) {
+  // NOTE: for efficiency, we don't strip the key in memory
+  if (memcache[type])
+    memcache[type][key] = value;
+
   lscache.set(type + stripKey(type, key), value);
   //localStorage.setItem(OLD_KEYS[type] + key, value);
 }
@@ -505,6 +520,10 @@ function lsSet(type, key, value) {
  * Removs the specified key from lscache
  */
 function lsRemove(type, key) {
+  // NOTE: for efficiency, we don't strip the key in memory
+  if (memcache[type] && typeof memcache[type][key] != 'undefined')
+    delete memcache[type][key];
+
   lscache.remove(type + stripKey(type, key));
   localStorage.removeItem(OLD_KEYS[type] + key);
 }
