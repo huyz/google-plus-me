@@ -118,7 +118,7 @@ var C_SELECTED                  = 'aj';
 var _C_SELECTED                 = '.' + C_SELECTED;
 var _C_ITEM                     = '.ze';
 var _C_ITEM_GUTS                = '.tg';
-//var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums
+//var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV
 var C_IS_MUTED                  = 'Up'; // Up Qj
 var _C_LINK_UNMUTE              = '.Xh';
 var C_TITLE_COLOR               = 'sl';
@@ -180,6 +180,7 @@ var S_CONTENT_VIDEO_CAPTION = '.H-y-Oa-pa'; // https://plus.google.com/115404182
 var _C_CONTENT_LINK_TITLE = '.H-y-Y > a';
 var _C_CONTENT_LINK_TEXT = '.H-y-Be-Jb';
 var _C_CONTENT_CHECKIN_LOCATION = '.Tm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
+var S_CONTENT_PHOTO_TAGGED = '.RS > .Dp'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV
 
 // Comments
 var C_COMMENTS_EDITOR           = 'Gm'; // id=:1tt.editor
@@ -3464,7 +3465,17 @@ function getFocusInCommentEditable($itemGuts, attempt) {
  * Show the preview's scrollbars and hide the body's
  */
 function showPreviewScrollbar() {
-  $(this).addClass('gpme-hover');
+  var $post = $(this);
+  $post.addClass('gpme-hover');
+
+  // Don't disable the scrollbar if this is a post that gets completely rewritten,
+  // a hangout or a photo album with tags.
+  // The reason, is if the preview is up, and the post disappears, then page's scrollbars
+  // wont' come back.
+  var $item = $post.closest(_C_ITEM);
+  if ($item.length && $item.find(S_CONTENT_PHOTO_TAGGED + ',' + _C_HANGOUT_LIVE_ICON).length)
+    return;
+
   disableBodyScrollbarY();
 }
 
