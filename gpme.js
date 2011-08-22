@@ -305,8 +305,11 @@ var OLD_KEYS = {
   LS_URL_LIST_LAST_UNFOLDED      : 'gpme_post_last_open_'
 };
 
-// Anmiation
+// Animation
 var JQUERY_DURATION = 400;
+
+// How long does it take for an item to become read when looking at preview
+var MARK_ITEM_AS_READ_DELAY = 1500;
 
 /****************************************************************************
  * Pre-created DOM elements
@@ -467,6 +470,9 @@ var $lastPreviewedItem = null;
 
 // Timers to handle G+'s dynamic comment list reconstruction
 var lastCommentCountUpdateTimers = {};
+
+// Timer for setting an item as read within the popup preview
+var markItemAsReadTimer = null;
 
 // Cache the year
 var yearRegexp = new RegExp('(,? *|[/-]?| de )' + new Date().getFullYear() + '[/-]?');
@@ -3418,7 +3424,7 @@ function showPreview(e) {
     }
 
     // Only show the scrollbar when the mouse is inside
-    $post.hover(showPreviewScrollbar, hidePreviewScrollbar);
+    $post.hover(onPreviewMouseEnter, onPreviewMouseOut);
 
     updateCachedSgpItem($item);
   } else {
@@ -3461,30 +3467,61 @@ function getFocusInCommentEditable($itemGuts, attempt) {
   }
 }
 
-/**
- * Show the preview's scrollbars and hide the body's
- */
-function showPreviewScrollbar() {
-  var $post = $(this);
-  $post.addClass('gpme-hover');
 
+/**
+ * Responds to mouse enter events
+ */
+function onPreviewMouseEnter() {
+  var $post = $(this);
+  var $item = $post.closest(_C_ITEM);
+
+  // Start a timer for marking the item as read
+  if (markItemAsReadTimer) {
+    clearTimeout(markItemAsReadTimer);
+    markItemAsReadTimer = null;
+  }
+  markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_DELAY);
+
+  // Show the scrollbars
+  showPreviewScrollbar($post);
+
+  // Disable the page's scrollbars
   // Don't disable the scrollbar if this is a post that gets completely rewritten,
   // a hangout or a photo album with tags.
   // The reason, is if the preview is up, and the post disappears, then page's scrollbars
   // wont' come back.
-  var $item = $post.closest(_C_ITEM);
-  if ($item.length && $item.find(S_CONTENT_PHOTO_TAGGED + ',' + _C_HANGOUT_LIVE_ICON).length)
-    return;
-
-  disableBodyScrollbarY();
+  if (! $item.length || ! $item.find(S_CONTENT_PHOTO_TAGGED + ',' + _C_HANGOUT_LIVE_ICON).length)
+    disableBodyScrollbarY();
 }
 
 /**
- * Show the preview's scrollbars and hide the body's
+ * Responds to mouse out events
  */
-function hidePreviewScrollbar() {
-  $(this).removeClass('gpme-hover');
+function onPreviewMouseOut() {
+  var $item = $(this).closest(_C_ITEM);
+
+  // Delete any existing timer
+  if (markItemAsReadTimer) {
+    clearTimeout(markItemAsReadTimer);
+    markItemAsReadTimer = null;
+  }
+
+  // Re-eable the page's scrollbars
   enableBodyScrollbarY();
+}
+
+/**
+ * Show the preview's scrollbars
+ */
+function showPreviewScrollbar($post) {
+  $post.addClass('gpme-hover');
+}
+
+/**
+ * Show the preview's scrollbars
+ */
+function hidePreviewScrollbar($post) {
+  $post.removeClass('gpme-hover');
 }
 
 
