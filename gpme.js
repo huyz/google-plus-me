@@ -309,7 +309,8 @@ var OLD_KEYS = {
 var JQUERY_DURATION = 400;
 
 // How long does it take for an item to become read when looking at preview
-var MARK_ITEM_AS_READ_DELAY = 1500;
+var MARK_ITEM_AS_READ_WHEN_PREVIEW_SHOWN_DELAY = 3000;
+var MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY = 1000;
 
 /****************************************************************************
  * Pre-created DOM elements
@@ -3303,6 +3304,15 @@ function showPreview(e) {
   if (isItemMuted($item))
     return;
 
+/*
+  // Start a timer for marking the item as read
+  if (markItemAsReadTimer) {
+    clearTimeout(markItemAsReadTimer);
+    markItemAsReadTimer = null;
+  }
+  markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_WHEN_PREVIEW_SHOWN_DELAY);
+*/
+
   var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Block clicks temporarily
@@ -3480,7 +3490,7 @@ function onPreviewMouseEnter() {
     clearTimeout(markItemAsReadTimer);
     markItemAsReadTimer = null;
   }
-  markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_DELAY);
+  markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY);
 
   // Show the scrollbars
   showPreviewScrollbar($post);
@@ -3499,12 +3509,6 @@ function onPreviewMouseEnter() {
  */
 function onPreviewMouseOut() {
   var $item = $(this).closest(_C_ITEM);
-
-  // Delete any existing timer
-  if (markItemAsReadTimer) {
-    clearTimeout(markItemAsReadTimer);
-    markItemAsReadTimer = null;
-  }
 
   // Re-eable the page's scrollbars
   enableBodyScrollbarY();
@@ -3574,6 +3578,12 @@ function hidePostItemPreview($item) {
   if (isItemMuted($item))
     return;
 
+  // Delete any existing timer
+  if (markItemAsReadTimer) {
+    clearTimeout(markItemAsReadTimer);
+    markItemAsReadTimer = null;
+  }
+
   var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Change the max-height of the post content
@@ -3589,7 +3599,7 @@ function hidePostItemPreview($item) {
     }
 
     // Unbind to restore scrollbars
-    $post.hide().unbind('mouseenter', showPreviewScrollbar).unbind('mouseleave', hidePreviewScrollbar);
+    $post.hide().unbind('mouseenter', onPreviewMouseEnter).unbind('mouseleave', onPreviewMouseOut);
     updateCachedSgpItem($item);
   } else {
     error("showPreview: Can't find post wrapper");
