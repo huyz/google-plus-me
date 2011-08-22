@@ -2272,7 +2272,7 @@ function foldItem(options, $item, $post) {
             else 
               snippetHtml += '<i>' + htmlEncode(text) + '</i> ';
             $snippet.html(snippetHtml);
-            debug("snippet height = " + $snippet.height());
+            //debug("snippet height = " + $snippet.height());
 
             // If we have enough content break
             if (($snippet.height() - ITEM_FONT_HEIGHT) / ITEM_LINE_HEIGHT + 1 > settings.nav_summaryLines)
