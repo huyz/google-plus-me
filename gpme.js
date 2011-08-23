@@ -1108,6 +1108,9 @@ function onKeydown(e) {
   if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
     return;
 
+  // We may be getting events on disabled pages, e.g. notifications, sparks
+  if (! isEnabledOnThisPage())
+    return;
 
   /*
   // Start catching key sequences
@@ -3859,20 +3862,14 @@ function injectNews(mappingKey) {
 $(document).ready(function() {
   info("event: initial page load.");
 
+  // We inject our stylesheet early because there are styles that we need
+  // for our news notification
   injectCSS();
   
-  // Get options and then modify the page
-  getOptionsFromBackground(function() {
-    // Set the height of a folded bar
-    $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
-    if ( settings.nav_summaryLines > 1)
-      $titlebarFolded.css('white-space', 'inherit');
-
-    if (DEBUG)
-      getMessagesFromBackground(main);
-    else // Get i18n messages
-      main();
-  });
+  if (DEBUG)
+    getMessagesFromBackground(main);
+  else // Get i18n messages
+    main();
 });
 
 /*
@@ -3933,9 +3930,6 @@ function i18nInit() {
  * of callbacks return from the background page
  */
 function main() {
-  // Specify jQuery UI easing method
-  jQuery.easing.def = 'easeInOutQuad';
-
   // Google+ DOM check
   var $gbar = $(_ID_GBAR);
   var mappingKey = '';
@@ -3947,89 +3941,101 @@ function main() {
       appDetails = theAppDetails;
       injectNews(mappingKey);
     });
+
+    // We continue because the extension may still work even though the mapping key doesn't
   }
 
-  // Listen for when there's a total AJAX refresh of the stream,
-  // on a regular page
-  var $contentPane = $(_ID_CONTENT_PANE);
-  if ($contentPane.length) {
-    var contentPane = $contentPane.get(0);
-    $contentPane.bind('DOMNodeInserted', function(e) {
-      // This happens when a new stream is selected
-      if (e.relatedNode.parentNode == contentPane) {
-        // We're only interested in the insertion of entire content pane
-        onContentPaneUpdated(e);
-        return;
-      }
+  // Specify jQuery UI easing method
+  jQuery.easing.def = 'easeInOutQuad';
 
-      var id = e.target.id;
-      // ':' is weak optimization attempt for comment editing
-      if (id && id.charAt(0) == ':')
-        return;
+  // Get settings
+  getOptionsFromBackground(function() {
+    // Based on settings, set the height of a folded bar
+    $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
+    if ( settings.nav_summaryLines > 1)
+      $titlebarFolded.css('white-space', 'inherit');
 
-      // This happens when posts' menus get inserted.
-      // Also Usability Boost's star
-      //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-      if (e.target.className == C_MENU || e.target.className == CF_MENU || e.target.className == C_UBOOST_STAR)
-        onItemDivInserted(e);
-      // This happens when a new post is added, either through "More"
-      // or a new recent post.
-      // Or it's a Start G+ post
-      else if (id && (id.substring(0,7) == 'update-'))
-        onItemInserted(e);
-      else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
-        onSgpItemInserted(e);
-      // This happens when switching from About page to Posts page
-      // on profile
-      else if (e.relatedNode.id.indexOf('-posts-page') > 0)
-        onContentPaneUpdated(e);
-    });
-  } else  {
-    // This can happen if we're in the settings page for example
-    warn("main: Can't find content pane");
-  }
+    // Listen for when there's a total AJAX refresh of the stream,
+    // on a regular page
+    var $contentPane = $(_ID_CONTENT_PANE);
+    if ($contentPane.length) {
+      var contentPane = $contentPane.get(0);
+      $contentPane.bind('DOMNodeInserted', function(e) {
+        // This happens when a new stream is selected
+        if (e.relatedNode.parentNode == contentPane) {
+          // We're only interested in the insertion of entire content pane
+          onContentPaneUpdated(e);
+          return;
+        }
 
-  // Listen when status change
-  // WARNING: DOMSubtreeModified is deprecated and degrades performance:
-  //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-  var $status = $(_ID_STATUS_FG);
-  if ($status.length)
-    $status.bind('DOMSubtreeModified', onStatusUpdated);
-  else
-    // Sometimes this happens with G+ for some reason.  Happened at times when I was
-    // reloading a profile page.
-    debug("main: Can't find status node; badges won't work.");
+        var id = e.target.id;
+        // ':' is weak optimization attempt for comment editing
+        if (id && id.charAt(0) == ':')
+          return;
 
-  // Listen to incoming messages from background page
-  chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-    if (request.action == "gpmeTabUpdateComplete") {
-      // Handle G+'s history state pushing when user clicks on different streams (and back)
-      onTabUpdated();
-    } else if (request.action == "gpmeModeOptionUpdated") {
-      // Handle options changes
-      onModeOptionUpdated(request.mode);
-    } else if (request.action == "gpmeResetAll") {
-      onResetAll();
-    } else if (request.action == "gpmeBrowserActionClick") {
-      onBrowserActionClick();
+        // This happens when posts' menus get inserted.
+        // Also Usability Boost's star
+        //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
+        if (e.target.className == C_MENU || e.target.className == CF_MENU || e.target.className == C_UBOOST_STAR)
+          onItemDivInserted(e);
+        // This happens when a new post is added, either through "More"
+        // or a new recent post.
+        // Or it's a Start G+ post
+        else if (id && (id.substring(0,7) == 'update-'))
+          onItemInserted(e);
+        else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
+          onSgpItemInserted(e);
+        // This happens when switching from About page to Posts page
+        // on profile
+        else if (e.relatedNode.id.indexOf('-posts-page') > 0)
+          onContentPaneUpdated(e);
+      });
+    } else  {
+      // This can happen if we're in the settings page for example
+      warn("main: Can't find content pane");
     }
-  });
 
-  // Listen for scrolling events
-  //$(window).scroll($.throttle(500, 50, function(e) { onScroll(e); }));
+    // Listen when status change
+    // WARNING: DOMSubtreeModified is deprecated and degrades performance:
+    //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
+    var $status = $(_ID_STATUS_FG);
+    if ($status.length)
+      $status.bind('DOMSubtreeModified', onStatusUpdated);
+    else
+      // Sometimes this happens with G+ for some reason.  Happened at times when I was
+      // reloading a profile page.
+      debug("main: Can't find status node; badges won't work.");
 
-  //injectNewFeedbackLink();
-
-  // The initial update
-  if (isEnabledOnThisPage()) {
-    updateAllItems();
+    // Listen to incoming messages from background page
+    chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+      if (request.action == "gpmeTabUpdateComplete") {
+        // Handle G+'s history state pushing when user clicks on different streams (and back)
+        onTabUpdated();
+      } else if (request.action == "gpmeModeOptionUpdated") {
+        // Handle options changes
+        onModeOptionUpdated(request.mode);
+      } else if (request.action == "gpmeResetAll") {
+        onResetAll();
+      } else if (request.action == "gpmeBrowserActionClick") {
+        onBrowserActionClick();
+      }
+    });
 
     // Listen to keyboard shortcuts
     $(window).keydown(onKeydown);
 
+    //injectNewFeedbackLink();
+
+    // The initial update, if enabled on this page.
+    // NOTE: we don't put anything else within this guard because all our event handlers
+    // need to work when the user switches to a page where G+me is enabled.
+    if (isEnabledOnThisPage()) {
+      updateAllItems();
+    }
+
     // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
     setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
-  }
+  });
 }
 
 // vim:set iskeyword+=-,36:
