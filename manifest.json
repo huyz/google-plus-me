@@ -1,7 +1,7 @@
 {
   "default_locale": "en",
   "name": "__MSG_extensionName__",
-  "version": "5.44",
+  "version": "6.0.0",
   "minimum_chrome_version": "12",
 
   "description": "__MSG_extensionDescription__",
@@ -21,7 +21,9 @@
     {
       "matches" : ["http://plus.google.com/*", "https://plus.google.com/*"],
       "js": [
-	"jquery.js",
+        "gplusx/webxdk/jquery-1.6.2.js",
+        "gplusx/webxdk/webx.js",
+        "gplusx/gplusx.js",
 	"jquery.easing.js",
 	"jquery.ba-throttle-debounce.js",
 	"jquery.hoverIntent.js",

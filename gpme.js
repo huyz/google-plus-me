@@ -448,6 +448,9 @@ var $contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
  * Init
  ***************************************************************************/
 
+// GPlusX SDK
+var gpx = new GPlusX();
+
 // Settings, according to fancy-settings
 var settings;
 
