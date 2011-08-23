@@ -88,7 +88,7 @@ var _C_FEEDBACK_LINK            = '.a-Vi-Eg';
 //var C_FEEDBACK                  = 'g-d-Ba'; // The class with gray style
 
 // Icons
-var C_HANGOUT_LIVE_ICON         = 'rG'; // FIXME: https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+var C_HANGOUT_LIVE_ICON         = 'kC'; // FIXME: https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
 var _C_HANGOUT_LIVE_ICON        = '.' + C_HANGOUT_LIVE_ICON; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
 // C_CAMERA_ICON*
 var C_POST_CONTENT_ICON_CONTAINER = 'i-wa-be-pb-D'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
