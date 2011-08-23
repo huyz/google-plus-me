@@ -1105,6 +1105,9 @@ function onKeydown(e) {
   if (typeof contentEditable !== 'undefined' && contentEditable !== null && contentEditable !== '')
     return;
 
+  // We may be getting events on disabled pages, e.g. notifications, sparks
+  if (! isEnabledOnThisPage())
+    return;
 
   /*
   // Start catching key sequences
@@ -4017,16 +4020,16 @@ function main() {
 
   //injectNewFeedbackLink();
 
+  // Listen to keyboard shortcuts
+  $(window).keydown(onKeydown);
+
   // The initial update
   if (isEnabledOnThisPage()) {
     updateAllItems();
-
-    // Listen to keyboard shortcuts
-    $(window).keydown(onKeydown);
-
-    // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
-    setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
   }
+
+  // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
+  setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
 }
 
 // vim:set iskeyword+=-,36:
