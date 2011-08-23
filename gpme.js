@@ -164,23 +164,23 @@ var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also incl
 var _C_MAP_IMG                  = 'img.zu'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 
 // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_POSTER_TEXT = '.Gi';
+var _C_CONTENT_POSTER_TEXT      = '.Gi';
 // poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
-var _C_CONTENT_POSTER_TEXT2 = '.Dh';
+var _C_CONTENT_POSTER_TEXT2     = '.Dh';
 // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_QUOTED_TEXT = '.fx .Vh'; // Look for gray border-left, and then the text
-var _C_CONTENT_EDIT = '.qp'; // Look for edit in content of any of your posts
-var S_CONTENT_HANGOUT_TEXT = '.fC > .ff'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
-var S_CONTENT_PHOTO_COMMENT = '.F-y-ea-la'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var S_CONTENT_PHOTO_CAPTION = '.N0 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var S_CONTENT_VIDEO_CAPTION = '.F-y-Ha-la'; // https://plus.google.com/115404182941170857382/posts/dnKJeydFiw5
+var _C_CONTENT_QUOTED_TEXT      = '.fx .Vh'; // Look for gray border-left, and then the text
+var _C_CONTENT_EDIT             = '.Go'; // Look for edit in content of any of your posts
+var S_CONTENT_HANGOUT_TEXT      = '.fC > .ff'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
+var S_CONTENT_PHOTO_COMMENT     = '.F-y-ea-la'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var S_CONTENT_PHOTO_CAPTION     = '.N0 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+var S_CONTENT_VIDEO_CAPTION     = '.F-y-Ha-la'; // https://plus.google.com/115404182941170857382/posts/dnKJeydFiw5
 // _C_CONTENT_LINK_TITLE:
 // - photo album caption https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
 // - title of shared link https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
-var _C_CONTENT_LINK_TITLE = '.F-y-ba > a';
-var _C_CONTENT_LINK_TEXT = '.F-y-me-Ib'; // Same post as _C_CONTENT_LINK_TITLE
+var _C_CONTENT_LINK_TITLE       = '.F-y-ba > a';
+var _C_CONTENT_LINK_TEXT        = '.F-y-me-Ib'; // Same post as _C_CONTENT_LINK_TITLE
 var _C_CONTENT_CHECKIN_LOCATION = '.Am'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
-var S_CONTENT_PHOTO_TAGGED = '.To > a.Qn'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV  XXX Do we need '> a' ?
+var S_CONTENT_PHOTO_TAGGED      = '.To > a.Qn'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV  XXX Do we need '> a' ?
 
 // Comments
 var C_COMMENTS_EDITOR           = 'Cl'; // id=:1tt.editor
