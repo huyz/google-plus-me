@@ -1,0 +1,3 @@
+[submodule "gplusx"]
+	path = gplusx
+	url = ./gplusx
