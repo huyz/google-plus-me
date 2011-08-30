@@ -48,6 +48,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+'use strict';
+
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var DEBUG = true;
 // If true, won't need the 'tabs' permission
@@ -67,196 +69,199 @@ RegExp.quote = function(str) {
  * Constants
  ***************************************************************************/
 
-// NOTE: For more class constants, see foldItem() in classes array
+// FIXME: these will go away
+var _ID_GB                      = '#gb';
+var C_GBAR                      = 'c-Yd-V c-i-Yd-V c-Yd-V-Fi'; // 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
 
-var _ID_GBAR                    = '#gb';
-var C_GBAR                      = 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
-var _ID_GBAR_TOP                = '#gbw';
-var _ID_STATUS                  = '#gbg1';
-var _ID_STATUS_BG               = '#gbi1a';
-var _ID_STATUS_FG               = '#gbi1';
-var C_STATUS_BG_OFF             = 'gbid';
-var C_STATUS_FG_OFF             = 'gbids';
-var C_GPLUSBAR                  = 'a-f-ha-R';
-var _C_GPLUSBAR                 = '.' + C_GPLUSBAR;
-var _ID_CONTENT                 = '#content';
-// For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
-// clicking link to the *current* page will refresh the contentPane
-var _ID_CONTENT_PANE            = '#contentPane';
-var _C_COPYRIGHT                = '.a-f-kb-R';
-var _C_FEEDBACK_LINK            = '.a-Vi-Eg';
-//var C_FEEDBACK                  = 'g-d-Ba'; // The class with gray style
+function defineDomConstants(ns) {
+  ns._ID_GBAR                    = '%gbar'; // '#gb';
+  ns._ID_GBAR_TOP                = '%gbarTop'; // '#gbw';
+  ns._ID_STATUS                  = '%gbarToolsNotificationA'; // '#gbg1';
+  ns._ID_STATUS_BG               = '%gbarToolsNotificationUnitBg'; // '#gbi1a';
+  ns._ID_STATUS_FG               = '%gbarToolsNotificationUnitFg'; // '#gbi1';
+  ns.C_STATUS_BG_OFF             = 'gbid';
+  ns.C_STATUS_FG_OFF             = 'gbids';
+  ns._C_GPLUSBAR                 = '%gplusBar'; // '.' + C_GPLUSBAR;
+  ns._ID_CONTENT                 = '%content'; // '#content';
+  // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
+  // clicking link to the *current* page will refresh the contentPane
+  ns._ID_CONTENT_PANE            = '%contentPane'; // '#contentPane';
+  ns._C_COPYRIGHT                = '%copyrightRow'; // '.a-f-kb-R';
+  ns._C_FEEDBACK_LINK            = '%feedbackLink'; // '.a-Vi-Eg';
+  //var C_FEEDBACK                  = 'g-d-Ba'; // The class with gray style
 
-// Icons
-var C_HANGOUT_LIVE_ICON         = 'kC'; // FIXME: https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
-var _C_HANGOUT_LIVE_ICON        = '.' + C_HANGOUT_LIVE_ICON; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
-// C_CAMERA_ICON*
-var C_POST_CONTENT_ICON_CONTAINER = 'i-wa-be-pb-D'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
-var C_CAMERA_ICON               = 'i-wa-m-v';
-var C_VIDEO_ICON                = 'i-wa-m-Ha';
-var C_LINK_ICON                 = 'i-wa-m-j';
-var C_CHECKIN_ICON              = 'i-wa-m-Te-D'; // Unlike the other ones, this has a single class for non-hover
-var C_GAME_ICON                 = 'Il';
+  // Icons
+  ns.C_HANGOUT_LIVE_ICON         = X.cn('hangoutLiveIcon'); // 'kC'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+  ns._C_HANGOUT_LIVE_ICON        = '%hangoutLiveIcon'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
+  // C_CAMERA_ICON*
+  ns.C_POST_CONTENT_ICON_CONTAINER = 'f-oa-Bd-Xa-v'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
+  ns.C_CAMERA_ICON               = X.cn('shareIconsPhoto'); // 'i-wa-m-v';
+  ns.C_VIDEO_ICON                = X.cn('shareIconsVideo'); // 'i-wa-m-Ha';
+  ns.C_LINK_ICON                 = X.cn('shareIconsLink'); // 'i-wa-m-j';
+  ns.C_CHECKIN_ICON              = X.cn('shareIconsLocation'); // 'i-wa-m-Te-D'; // Unlike the other ones, this has a single class for non-hover
+  ns.C_GAME_ICON                 = X.cn('gplusBarNavGamesIcon_c'); // 'Il';
 
-// Pages and streams
-var C_NOTIFICATIONS_MARKER      = 'Cja'; // Look for the notifications stream
-var _C_NOTIFICATION_STREAM      = '.' + C_NOTIFICATIONS_MARKER; // Cja I5
-var C_SPARKS_MARKER             = 'u9'; // Look for 3rd div in blank one, ancestor of stream
-var C_SINGLE_POST_MARKER        = 'a-th-Pb-I'; // grandchild of #contentPane
-var C_STREAM                    = 'br';
-var _C_STREAM                   = '.' + C_STREAM;
-var _C_GAMES_STREAM             = '.vr';
-var S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-var _C_MORE_BUTTON              = '.Uk';
+  // Pages and streams
+  ns.C_NOTIFICATIONS_MARKER      = 'gwa'; // Look for the notifications stream
+  ns._C_NOTIFICATION_STREAM      = '.' + C_NOTIFICATIONS_MARKER; // gwa yfa
+  ns.C_SPARKS_MARKER             = 'wja'; // Look for 3rd div in blank one, ancestor of stream
+  ns.C_SINGLE_POST_MARKER        = 'c-ng-L1-P'; // grandchild of #contentPane
+  ns.C_STREAM                    = X.cn('postsStream'); // br';
+  ns._C_STREAM                   = '%postsStream'; // '.' + C_STREAM;
+  ns._C_GAMES_STREAM             = '.BI';
+  ns.S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
+  ns._C_MORE_BUTTON              = '%postsStreamMoreButton'; // '.Uk';
 
-var _C_GAMES_HEADING            = '.Ss';
-var _C_CONTENT_PANE_HEADING     = '.vo';
-var _C_PROFILE_HEADING          = '.fn';
+  ns._C_GAMES_HEADING            = '.Gt';
+  ns._C_CONTENT_PANE_HEADING     = '%postStreamContentPaneHeadingText'; // '.vo';
+  ns._C_PROFILE_HEADING          = '.fn';
 
-// Item
-var C_SELECTED                  = 'ki';
-var _C_SELECTED                 = '.' + C_SELECTED;
-var _C_ITEM                     = '.ke';
-var _C_ITEM_GUTS                = '.Tf';
-//var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV
-var C_IS_MUTED                  = 'Un'; // Up Qj
-var _C_LINK_UNMUTE              = '.Fh'; // Undo link after muting in stream
-var C_TITLE_COLOR               = 'Jj';
-// _C_TITLE:
-// Watch out for these divs:
-// - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
-// - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
-// - Google Plus Reply+
-//var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-var C_TITLE                     = 'Nw'; // Meaning, excluding the avatar and menu icon
-var _C_TITLE                    = '.' + C_TITLE;
-//var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-var _C_CONTENT                  = '.Kw'; // 2nd child of _C_ITEM_GUTS
-var S_PHOTO                     = '.kr > a.Km'; // 1st child of C_ITEM_GUTS
-var _C_NAME                     = '.nC'; // span that contains the <a>
-// S_SOURCE:
-// - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
-// - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
-// - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
-var S_SOURCE                    = '.kv'; // kv b-n-l
-var _C_PERMS                    = '.Ii'; // b-j Ii cp Gl
-var _C_MUTED                    = '.Oo'; // "- Muted" text in profile page
-var C_DATE                      = 'Hi'; // Hi vn. Span that contains the <a>
-var _C_DATE                     = '.' + C_DATE;
-var _C_EXPAND_POST              = '.Do'; // https://plus.google.com/111775942615006547057/posts/RaZvqBMadoH
-//var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
+  // Item
+  ns.C_SELECTED                  = X.cn('postIsSelected'); // 'ki';
+  ns._C_SELECTED                 = '%postIsSelected'; // '.' + C_SELECTED;
+  ns._C_ITEM                     = '%post'; // '.ke';
+  ns._C_ITEM_GUTS                = '%postContainer_c'; // '.Tf';
+  //var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV
+  ns.C_IS_MUTED                  = 'En';
+  ns._C_IS_MUTED                 = '.' + ns.C_IS_MUTED;
+  ns._C_LINK_UNMUTE              = ns._C_IS_MUTED + ' [role="button"]'; // '.Fh'; // Undo link after muting in stream
+  ns.C_TITLE_COLOR               = X.cn('postHeadInfo_c'); // 'Jj';
+  // _C_TITLE:
+  // Watch out for these divs:
+  // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
+  // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
+  // - Google Plus Reply+
+  //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
+  ns.C_TITLE                     = X.cn('postHead_c'); // 'Nw'; // Meaning, excluding the avatar and menu icon
+  ns._C_TITLE                    = '%postHead_c'; // '.' + C_TITLE;
+  //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
+  ns._C_CONTENT                  = '%postBody_c'; // '.Kw'; // 2nd child of _C_ITEM_GUTS
+  ns.S_PHOTO                     = '%postUserAvatarA_c'; // '.kr > a.Km'; // 1st child of C_ITEM_GUTS
+  ns._C_NAME                     = '%postUserName_c'; // '.nC'; // span that contains the <a>
+  // S_SOURCE:
+  // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
+  // - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
+  // - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
+  ns.S_SOURCE                    = '.Uv'; // '%postCategory_c'; // '.kv'; // kv b-n-l
+  ns._C_PERMS                    = '%postPermissions_c'; // '.Ii'; // b-j Ii cp Gl
+  ns._C_MUTED                    = '.Ox'; // FIXME: '%postHeadInfoMuted'; // '.Oo'; // "- Muted" text in profile page
+  ns.C_DATE                      = X.cn('postTime_c'); // 'Hi'; // Hi vn. Span that contains the <a>
+  ns._C_DATE                     = '%postTime_c'; // '.' + C_DATE;
+  ns._C_EXPAND_POST              = '.ho'; // https://plus.google.com/111775942615006547057/posts/RaZvqBMadoH
+  //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
-// Parts of content relevant for the summary
-var _C_QUOTE_IMG                = '.ea-S-qg'; // FIXME: This is an image of a blown-up quote: ``
-// _C_QUOTED_PHOTO:
-// - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
-var _C_QUOTED_PHOTO             = '.gx > img';
-// Various images:
-// - [NO NEED] Web page image: O-F-Th-la
-// - Posted image: F-y-Fk-ea https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-// - Posted album: F-y-pi-ea  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
-// - Main image in album: F-y-ce-ea https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-// - Smaller image thumbnails in album: F-y-Mc-ea https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-var S_CONTENT_IMG               = '.F-y-Fk-ea > img, .F-y-pi-ea > img, .F-y-ce-ea > img, .F-y-Mc-ea > img';
-// _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
-var _C_CONTENT_VIDEO            = '.F-y-Ha-yk'; // Take the 4-part one that looks like S_CONTENT_IMG
-var _C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
-var _C_MAP_IMG                  = 'img.zu'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
+  // Parts of content relevant for the summary
+  ns._C_QUOTE_IMG                = '.ea-S-qg'; // FIXME: This is an image of a blown-up quote: ``
+  // _C_QUOTED_PHOTO:
+  // - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
+  ns._C_QUOTED_PHOTO             = '.Ux > img';
+  // Various images:
+  // - [NO NEED] Web page image: O-F-Th-la
+  // - Posted image: B-u-zt-ja https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+  // - Posted album: B-u-xh-ja  https://plus.google.com/100410400068186344529/posts/L4JRFFK2e87 [limited]
+  // - Main image in album: B-u-Nd-ja https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+  // - Smaller image thumbnails in album: F-y-Mc-ea https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+  ns.S_CONTENT_IMG               = '.B-u-zt-ja > img, .B-u-xh-ja > img, .B-u-Nd-ja > img, .B-u-fc-ja > img';
+  // _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
+  ns._C_CONTENT_VIDEO            = '.B-u-wa-Uj'; // Take the 4-part parent that looks like S_CONTENT_IMG
+  ns._C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
+  ns._C_MAP_IMG                  = 'img.pv'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 
-// poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_POSTER_TEXT = '.Gi';
-// poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
-var _C_CONTENT_POSTER_TEXT2 = '.Dh';
-// or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
-var _C_CONTENT_QUOTED_TEXT = '.fx .Vh'; // Look for gray border-left, and then the text
-var _C_CONTENT_EDIT = '.qp'; // Look for edit in content of any of your posts
-var S_CONTENT_HANGOUT_TEXT = '.fC > .ff'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
-var S_CONTENT_PHOTO_COMMENT = '.F-y-ea-la'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var S_CONTENT_PHOTO_CAPTION = '.N0 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
-var S_CONTENT_VIDEO_CAPTION = '.F-y-Ha-la'; // https://plus.google.com/115404182941170857382/posts/dnKJeydFiw5
-// _C_CONTENT_LINK_TITLE:
-// - photo album caption https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
-// - title of shared link https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
-var _C_CONTENT_LINK_TITLE = '.F-y-ba > a';
-var _C_CONTENT_LINK_TEXT = '.F-y-me-Ib'; // Same post as _C_CONTENT_LINK_TITLE
-var _C_CONTENT_CHECKIN_LOCATION = '.Am'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
-var S_CONTENT_PHOTO_TAGGED = '.To > a.Qn'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV  XXX Do we need '> a' ?
+  // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+  ns._C_CONTENT_POSTER_TEXT      = '.Ph';
+  // poster text #2 https://plus.google.com/110901814225194449440/posts/Nr651PmEM8d
+  ns._C_CONTENT_POSTER_TEXT2     = '.vg';
+  // or original poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
+  ns._C_CONTENT_QUOTED_TEXT      = '.Tx .vg'; // Look for gray border-left for 1st part, and then the text for 2nd
+  ns._C_CONTENT_EDIT             = '.ko'; // Look for edit in content of any of your posts
+  ns.S_CONTENT_HANGOUT_TEXT      = '.XD > .fe'; // https://plus.google.com/118328436599489401972/posts/d6pQ162zHZJ
+  ns.S_CONTENT_PHOTO_COMMENT     = '.B-u-ja-ea'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+  ns.S_CONTENT_PHOTO_CAPTION     = '.N8 > a'; // https://plus.google.com/107590607834908463472/posts/VfD8zwSq5yv
+  ns.S_CONTENT_VIDEO_CAPTION     = '.B-u-wa-ea'; // https://plus.google.com/115404182941170857382/posts/dnKJeydFiw5
+  // _C_CONTENT_LINK_TITLE:
+  // - photo album caption https://plus.google.com/103450266544747516806/posts/f8RKcEssKwL [limited]
+  // - title of shared link https://plus.google.com/103981247311324870509/posts/U1iNjkiKYrX
+  ns._C_CONTENT_LINK_TITLE       = '.B-u-Y > a';
+  ns._C_CONTENT_LINK_TEXT        = '.B-u-Y-j'; // Same post as _C_CONTENT_LINK_TITLE
+  ns._C_CONTENT_CHECKIN_LOCATION = '.Gm'; // Checkin location https://plus.google.com/111667704476323287430/posts/MBBwSZiy4nb
+  ns.S_CONTENT_PHOTO_TAGGED      = '.xo > a.yn'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV  XXX Do we need '> a' ?
 
-// Comments
-var C_COMMENTS_EDITOR           = 'Cl'; // id=:1tt.editor
-var C_COMMENTS_ALL_CONTAINER    = 'Ag';
-var _C_COMMENTS_ALL_CONTAINER   = '.' + C_COMMENTS_ALL_CONTAINER;
-var C_COMMENTS_BUTTON_CONTAINER = 'Lr';
-var _C_COMMENTS_BUTTON_CONTAINER = '.' + C_COMMENTS_BUTTON_CONTAINER;
-var _C_COMMENTS_BUTTON_COUNT    = _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .Nv';
-var _C_COMMENTS_BUTTON          = _C_COMMENTS_BUTTON_CONTAINER + ':not(.Zk) > :first-child'; // :not grayed out
-var _C_COMMENTS_BUTTON_NAMES    = _C_COMMENTS_BUTTON_CONTAINER + ' .To';
-var C_COMMENTS_CONTAINER        = 'Ov'; // Everything but button
-var _C_COMMENTS_CONTAINER       = '.' + C_COMMENTS_CONTAINER;
-var _C_COMMENTS_OLDER_BUTTON    = '.Kr';
-var _C_COMMENTS_OLDER_COUNT     = _C_COMMENTS_OLDER_COUNT + ':not([style*="none"])';
-var C_COMMENTS_SHOWN_CONTAINER  = 'Xh';
-var _C_COMMENTS_SHOWN_CONTAINER = '.' + C_COMMENTS_SHOWN_CONTAINER;
-var _C_COMMENTS_SHOWN           = '.zh'; // Each comment item
-var _C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a.Qn'; // Qn xw
-var C_COMMENTS_SHOWN_LONG       = 'Yk'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('Yk Xk' becomes 'Yk'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
-var C_COMMENTS_SHOWN_LONG_TRUNCATED = 'Xk';
-var S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_TRUNCATED + '+ .Bh'; // For truncated long comments. Careful, without sibling this would also collapse
+  // Comments
+  ns.C_COMMENTS_EDITOR           = 'el'; // id=:1tt.editor
+  ns.C_COMMENTS_ALL_CONTAINER    = X.cn('postComments_c'); // 'zf';
+  ns._C_COMMENTS_ALL_CONTAINER   = '%postComments_c'; // '.' + C_COMMENTS_ALL_CONTAINER;
+  ns.C_COMMENTS_BUTTON_CONTAINER = X.cn('postCommentsToggler_c'); // 'Vr';
+  ns._C_COMMENTS_BUTTON_CONTAINER = '%postCommentsToggler_c'; // '.' + C_COMMENTS_BUTTON_CONTAINER;
+  ns._C_COMMENTS_BUTTON_COUNT    = ns._C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) ' + '%postCommentsButtonTextLinkCount_c'; // _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .Fw';
+  ns._C_COMMENTS_BUTTON          = ns._C_COMMENTS_BUTTON_CONTAINER + ':not(.pk) > :first-child'; // :not grayed out
+  ns._C_COMMENTS_BUTTON_NAMES    = ns._C_COMMENTS_BUTTON_CONTAINER + ' .xo';
+  ns.C_COMMENTS_CONTAINER        = X.cn('postCommentsList_c'); // 'Gw'; // Everything but button
+  ns._C_COMMENTS_CONTAINER       = '%postCommentsList_c'; // '.' + C_COMMENTS_CONTAINER;
+  ns._C_COMMENTS_OLDER_BUTTON    = '%postCommentsOlderButton_c'; // '.Kr';
+  ns._C_COMMENTS_OLDER_COUNT     = ns._C_COMMENTS_OLDER_BUTTON + ':not([style*="none"])';
+  ns.C_COMMENTS_SHOWN_CONTAINER  = X.cn('postCommentsStream_c'); // 'Xh';
+  ns._C_COMMENTS_SHOWN_CONTAINER = '%postCommentsStream_c'; // '.' + C_COMMENTS_SHOWN_CONTAINER;
+  ns._C_COMMENTS_SHOWN           = ns._C_COMMENTS_SHOWN_CONTAINER + '> div[id]'; // '.zh'; // Each comment item
+  ns._C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a[rel]'; // _C_COMMENTS_SHOWN + ' a.Qn'; // Qn xw
+  ns.C_COMMENTS_SHOWN_LONG       = 'ok'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('ok nk' becomes 'nk'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
+  ns.C_COMMENTS_SHOWN_LONG_TRUNCATED = 'nk';
+  ns.S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_TRUNCATED + '+ [role="button"]';
 
-var _C_ACTIONBAR                = '.Bl';
-var C_LINK_COMMENT              = 'de';
-var _C_LINK_COMMENT             = '.' + C_LINK_COMMENT;
-var C_FAKEINPUT_COMMENT         = 'zo';
-var _C_FAKEINPUT_COMMENT        = '.' + C_FAKEINPUT_COMMENT; // Fake box that says "Add a comment...
-//var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
-//var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
+  ns._C_ACTIONBAR                = '%postActionBar_c'; // '.Bl';
+  ns.C_LINK_COMMENT              = X.cn('postCommentLink_c'); // 'de';
+  ns._C_LINK_COMMENT             = '%postCommentLink_c'; // '.' + C_LINK_COMMENT;
+  ns.C_FAKEINPUT_COMMENT         = X.cn('postCommentAddButton_c'); // 'zo';
+  ns._C_FAKEINPUT_COMMENT        = '%postCommentAddButton_c'; // '.' + C_FAKEINPUT_COMMENT; // Fake box that says "Add a comment...
+  //var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
+  //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
 
-// Menu
-var C_MENU                      = 'Lm'; // For posts on regular load and when clicking "More"
-var CF_MENU                     = C_MENU + ' b-G'; // For incoming posts
-var _C_MENU_MUTE                = '.Fj'; // Fj cg. Look what's diff from other menuitems.
-var _C_MENU_UNMUTE              = '.bp'; // Candidates: bp cg; don't take inner div. Displayed on user's posts page.
+  // Menu
+  //ns.C_MENU                      = 'Lm'; // For posts on regular load and when clicking "More"
+  //ns.CF_MENU                     = C_MENU + ' b-G'; // For incoming posts
+  ns._C_MENU_MUTE                = '.Zi'; // Zi cf. Look what's diff from other menuitems.
+  ns._C_MENU_UNMUTE              = '.Eo'; // Candidates: Eo cf; don't take inner div. Displayed on user's posts page.
 
-var _C_COMMENT_CONTAINERS =
-  [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
+  ns._C_COMMENT_CONTAINERS =
+    [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
 
-// XXX We assume there is no substring match problem because
-// it doesn't look like any class names would be a superstring of these
-var COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_LONG + '|' + C_COMMENTS_EDITOR + ')\\b');
-var DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
-var DISABLED_PAGES_CLASSES = [
-  C_NOTIFICATIONS_MARKER,
-  C_SPARKS_MARKER,
-  C_SINGLE_POST_MARKER
-];
+  // XXX We assume there is no substring match problem because
+  // it doesn't look like any class names would be a superstring of these
+  ns.COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_LONG + '|' + C_COMMENTS_EDITOR + ')\\b');
+  ns.DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
+  ns.DISABLED_PAGES_CLASSES = [
+    C_NOTIFICATIONS_MARKER,
+    C_SPARKS_MARKER,
+    C_SINGLE_POST_MARKER
+  ];
+
+  // G+me
+  ns.C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
+
+  // Usability Boost
+  ns._C_UBOOST_MUTELINK           = '.mute_link';
+  ns.C_UBOOST_STAR                = 'post_star';
+
+  // Circlestars
+  ns._C_CIRCLESTARS               = '.circlestars';
+
+  // Start G+, a.k.a. SGPlus
+  ns.ID_SGP_POST_PREFIX           = 'sgp-post-';
+  ns.C_SGP_UPDATE                 = 'sgp_update';
+  ns.C_SGP_UPDATE_FB              = 'sgp_update_facebook';
+  ns.C_SGP_UPDATE_TWITTER         = 'sgp_update_twitter';
+  ns._C_SGP_TITLE                 = _C_TITLE; // Same as G+ now
+  ns._C_SGP_CONTENT               = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
+  ns._C_SGP_TEXT1                 = _C_CONTENT; // .Qy
+  ns._C_SGP_TEXT2                 = '.ea-S-R';
+  //var S_SGP_ORIGPOST_LINK          = 'span[style^="font-size"]';
+  ns._C_SGP_COMMENT               = '.sgp_comments_wrapper';
+  ns._C_SGP_DATE                  = '.a-b-f-i-Ad-Ub';
+
+  // Google+ Tweaks
+  ns._C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
+}
 
 var DATE_JUNK_REGEXP, DATE_LONG_REGEXP; // Due to Chrome bug, defined later, after response from background
-
-// G+me
-var C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
-
-// Usability Boost
-var _C_UBOOST_MUTELINK           = '.mute_link';
-var C_UBOOST_STAR                = 'post_star';
-
-// Circlestars
-var _C_CIRCLESTARS               = '.circlestars';
-
-// Start G+, a.k.a. SGPlus
-var ID_SGP_POST_PREFIX           = 'sgp-post-';
-var C_SGP_UPDATE                 = 'sgp_update';
-var C_SGP_UPDATE_FB              = 'sgp_update_facebook';
-var C_SGP_UPDATE_TWITTER         = 'sgp_update_twitter';
-var _C_SGP_TITLE                 = _C_TITLE; // Same as G+ now
-var _C_SGP_CONTENT               = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
-var _C_SGP_TEXT1                 = _C_CONTENT; // .Qy
-var _C_SGP_TEXT2                 = '.ea-S-R';
-//var S_SGP_ORIGPOST_LINK          = 'span[style^="font-size"]';
-var _C_SGP_COMMENT               = '.sgp_comments_wrapper';
-var _C_SGP_DATE                  = '.a-b-f-i-Ad-Ub';
-
-// Google+ Tweaks
-var _C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
 
 // CSS values shared with our CSS file
 var TRIANGLE_HEIGHT                               = 30;
@@ -313,143 +318,11 @@ var MARK_ITEM_AS_READ_WHEN_PREVIEW_SHOWN_DELAY = 3000;
 var MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY = 1000;
 
 /****************************************************************************
- * Pre-created DOM elements
- ***************************************************************************/
-
-//
-// Inside both post and comment title
-//
-
-var $commentCountBgTpl = $('<span class="gpme-comment-count-bg"></span>');
-var $commentCountFgTpl = $('<span class="gpme-comment-count-fg"></span>');
-var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></div>').append($commentCountBgTpl).append($commentCountFgTpl).click(onCommentCountClick);
-var $markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
-var $muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
-// NOTE: order matters.
-// - if commentCount comes before mutebutton, it takes precedence in clicking
-// - actually, we put commentCount later, now that we have the markread button
-var $buttonAreaTpl = $('<div class="gpme-button-area"></div>').
-  append($markReadButtonTpl).
-  append($muteButtonTpl).
-  append($commentCountContainerTpl);
-
-//
-// Inside item title
-//
-
-// C_TITLE is no longer necessary now that copied styles over from C_TITLE for SGPlus
-//var $titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
-var $titleTpl = $('<div class="gpme-title-clickarea"></div>').click(onTitleClick);
-var $titleSenderTpl = $('<span class="gpme-title-sender"></span>');
-var $titleDashTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  -  </span>');
-var $titleQuoteTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  +  </span>');
-var $hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>');
-var $hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
-// $cameraIconTpl: need container so it doesn't have the green of hover
-var $cameraIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
-var $videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_VIDEO_ICON + '" style="margin: 0 4px"></span></span>');
-var $linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
-var $checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
-var $mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
-var $gameIconTpl = $('<span class="gpme-title-icons ' + C_GAME_ICON + '" style="margin-left: 2px; margin-right: -3px; background-size: 80%; background-position: 0 -221px; height: 14px"></span>');
-var $titleDateTpl = $('<span class="gpme-title-date"></span>');
-var $titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
-var $titleSnippetTpl = $('<span class="gpme-snippet"></span');
-
-//  ('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
-var $titlebarFolded = $('<div class="gpme-title-folded gpme-bar"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
-var $titlebarTpl = $('<div class="gpme-titlebar"></div>').append(
-    $('<div class="gpme-title-unfolded gpme-bar" style="opacity: 0">\
-      <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
-      <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
-    </div>').click(onTitleClick)).append($titlebarFolded);
-
-//
-// Inside item's guts
-//
-
-// NOTE: started using regular DOM, then switched to using jQuery; no grand master plan
-// behind the dual usage.
-var postWrapperTpl = document.createElement('div');
-postWrapperTpl.className = 'gpme-post-wrapper';
-var clickWall = document.createElement('div');
-clickWall.className = 'gpme-disable-clicks';
-clickWall.style.position = 'absolute';
-clickWall.style.height = '100%';
-clickWall.style.width = '100%';
-clickWall.style.zIndex = '12'; // higher than .gpme-folded .a-f-i-Ia-D
-clickWall.style.display = 'none';
-var previewTriangleSpan = document.createElement('span');
-previewTriangleSpan.className = 'gpme-preview-triangle';
-postWrapperTpl.appendChild(clickWall);
-postWrapperTpl.appendChild(previewTriangleSpan);
-var $postWrapperTpl = $(postWrapperTpl);
-/*
-.hoverIntent({
-  handlerIn: showTopCollapseBar, // function = onMouseOver callback (REQUIRED)    
-  delayIn: 0, // number = milliseconds delay before onMouseOver
-  handlerOut: hideTopCollapseBar, // function = onMouseOut callback (REQUIRED)    
-  delayOut: 0 // number = milliseconds delay before onMouseOut    
-});
-*/
-
-
-//
-// Inside item's comments title
-//
-
-var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
-var $commentTitleTpl = $('<div class="gpme-comments-title-clickarea"></div>').click(onCommentTitleClick).append($commentSnippetTpl);
-
-var $commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
-    $('<div class="gpme-comments-title-unfolded gpme-bar">\
-      <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
-      <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
-    </div>').click(onCommentTitleClick)).
-  append('<div class="gpme-comments-title-folded gpme-bar"></div>');
-//  append('<div class="gpme-comments-title-folded gpme-bar"><div class="gpme-fold-icon" style="visibility: hidden">\u25b6</div></div>');
-
-//
-// Inside item's comments guts
-//
-
-var $commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
-
-//
-// Inside item bottombar
-//
-
-var $bottombarTpl = $('<div class="gpme-bottombar gpme-bar" style="opacity:0"></div>').append(
-    $('<div class="gpme-title-unfolded">\
-      <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25b2</div>\
-      <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25b2</div>\
-    </div>')).hoverIntent({
-      handlerIn: showBottomCollapseBar,
-      delayIn: 0,
-      handlerOut: hideBottomCollapseBar,
-      delayOut: 0
-});
-
-//
-// Content Pane butotns
-//
-
-var $collapseAllButtonTpl = $('<span class="gpme-button-collapse-all gpme-content-button"></span>').click(foldAllItems);
-var $expandAllButtonTpl = $('<span class="gpme-button-expand-all gpme-content-button"></span>').click(unfoldAllItems);
-var $markAllReadButtonTpl = $('<span class="gpme-button-mark-all-read gpme-content-button"></span>').click(markAllItemsAsRead);
-var $contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
-  append($markAllReadButtonTpl).
-  append($('<div class="gpme-button-expand-or-collapse-all"></div>').
-    append($collapseAllButtonTpl).
-    append($expandAllButtonTpl));
-
-
-/****************************************************************************
  * Init
  ***************************************************************************/
 
 // GPlusX SDK
-var gpx = new GPlusX();
+var gpx;
 
 // Settings, according to fancy-settings
 var settings;
@@ -485,6 +358,141 @@ var yearRegexp = new RegExp('(,? *|[/-]?| de )' + new Date().getFullYear() + '[/
 var sgpUpdateTimer = null;
 // SGPlus cached DOM
 var $sgpCachedItems = new Object();
+
+
+/****************************************************************************
+ * Pre-created DOM elements
+ ***************************************************************************/
+
+function precreateElements(ns) {
+  //
+  // Inside both post and comment title
+  //
+
+  var $commentCountBgTpl = $('<span class="gpme-comment-count-bg"></span>');
+  var $commentCountFgTpl = $('<span class="gpme-comment-count-fg"></span>');
+  var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></div>').append($commentCountBgTpl).append($commentCountFgTpl).click(onCommentCountClick);
+  ns.$markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
+  ns.$muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
+  // NOTE: order matters.
+  // - if commentCount comes before mutebutton, it takes precedence in clicking
+  // - actually, we put commentCount later, now that we have the markread button
+  ns.$buttonAreaTpl = $('<div class="gpme-button-area"></div>').
+    append($markReadButtonTpl).
+    append($muteButtonTpl).
+    append($commentCountContainerTpl);
+
+  //
+  // Inside item title
+  //
+
+  // C_TITLE is no longer necessary now that copied styles over from C_TITLE for SGPlus
+  //ns.$titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
+  ns.$titleTpl = $('<div class="gpme-title-clickarea"></div>').click(onTitleClick);
+  ns.$titleSenderTpl = $('<span class="gpme-title-sender"></span>');
+  ns.$titleDashTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  -  </span>');
+  ns.$titleQuoteTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  +  </span>');
+  ns.$hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>'); // 
+  ns.$hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
+  // $cameraIconTpl: need container so it doesn't have the green of hover
+  ns.$cameraIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
+  ns.$videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_VIDEO_ICON + '" style="margin: 0 4px"></span></span>');
+  ns.$linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
+  ns.$checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
+  ns.$mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
+  ns.$gameIconTpl = $('<span class="gpme-title-icons ' + C_GAME_ICON + '" style="margin-left: 2px; margin-right: -3px; background-size: 80%; background-position: 0 -221px; height: 14px"></span>');
+  ns.$titleDateTpl = $('<span class="gpme-title-date"></span>');
+  ns.$titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
+  ns.$titleSnippetTpl = $('<span class="gpme-snippet"></span');
+
+  //  ('<div class="gpme-title-folded"><div class="gpme-fold-icon">\u25cf</div></div>');
+  ns.$titlebarFolded = $('<div class="gpme-title-folded gpme-bar"><div class="gpme-button-area-left"><div class="gpme-circle-icon"></div></div></div>');
+  ns.$titlebarTpl = $('<div class="gpme-titlebar"></div>').append(
+      $('<div class="gpme-title-unfolded gpme-bar" style="opacity: 0">\
+        <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25bc</div>\
+        <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25bc</div>\
+      </div>').click(onTitleClick)).append($titlebarFolded);
+
+  //
+  // Inside item's guts
+  //
+
+  // NOTE: started using regular DOM, then switched to using jQuery; no grand master plan
+  // behind the dual usage.
+  var postWrapperTpl = document.createElement('div');
+  postWrapperTpl.className = 'gpme-post-wrapper';
+  var clickWall = document.createElement('div');
+  clickWall.className = 'gpme-disable-clicks';
+  clickWall.style.position = 'absolute';
+  clickWall.style.height = '100%';
+  clickWall.style.width = '100%';
+  clickWall.style.zIndex = '12'; // higher than .gpme-folded .a-f-i-Ia-D
+  clickWall.style.display = 'none';
+  var previewTriangleSpan = document.createElement('span');
+  previewTriangleSpan.className = 'gpme-preview-triangle';
+  postWrapperTpl.appendChild(clickWall);
+  postWrapperTpl.appendChild(previewTriangleSpan);
+  ns.$postWrapperTpl = $(postWrapperTpl);
+  /*
+  .hoverIntent({
+    handlerIn: showTopCollapseBar, // function = onMouseOver callback (REQUIRED)    
+    delayIn: 0, // number = milliseconds delay before onMouseOver
+    handlerOut: hideTopCollapseBar, // function = onMouseOut callback (REQUIRED)    
+    delayOut: 0 // number = milliseconds delay before onMouseOut    
+  });
+  */
+
+
+  //
+  // Inside item's comments title
+  //
+
+  var $commentSnippetTpl = $('<span class="gpme-comments-snippet"></span>');
+  ns.$commentTitleTpl = $('<div class="gpme-comments-title-clickarea"></div>').click(onCommentTitleClick).append($commentSnippetTpl);
+
+  ns.$commentbarTpl = $('<div class="gpme-commentbar"></div>').append(
+      $('<div class="gpme-comments-title-unfolded gpme-bar">\
+        <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-top">\u25bc</div>\
+        <div class="gpme-fold-icon gpme-comments-fold-icon-unfolded gpme-comments-fold-icon-unfolded-bottom">\u25bc</div>\
+      </div>').click(onCommentTitleClick)).
+    append('<div class="gpme-comments-title-folded gpme-bar"></div>');
+  //  append('<div class="gpme-comments-title-folded gpme-bar"><div class="gpme-fold-icon" style="visibility: hidden">\u25b6</div></div>');
+
+  //
+  // Inside item's comments guts
+  //
+
+  ns.$commentsWrapperTpl = $('<div class="gpme-comments-wrapper"></div>');
+
+  //
+  // Inside item bottombar
+  //
+
+  ns.$bottombarTpl = $('<div class="gpme-bottombar gpme-bar" style="opacity:0"></div>').append(
+      $('<div class="gpme-title-unfolded">\
+        <div class="gpme-fold-icon gpme-fold-icon-unfolded-left">\u25b2</div>\
+        <div class="gpme-fold-icon gpme-fold-icon-unfolded-right">\u25b2</div>\
+      </div>')).hoverIntent({
+        handlerIn: showBottomCollapseBar,
+        delayIn: 0,
+        handlerOut: hideBottomCollapseBar,
+        delayOut: 0
+  });
+
+  //
+  // Content Pane butotns
+  //
+
+  ns.$collapseAllButtonTpl = $('<span class="gpme-button-collapse-all gpme-content-button"></span>').click(foldAllItems);
+  ns.$expandAllButtonTpl = $('<span class="gpme-button-expand-all gpme-content-button"></span>').click(unfoldAllItems);
+  ns.$markAllReadButtonTpl = $('<span class="gpme-button-mark-all-read gpme-content-button"></span>').click(markAllItemsAsRead);
+  ns.$contentPaneButtonsTpl = $('<div class="gpme-content-buttons"></div>').
+    append($markAllReadButtonTpl).
+    append($('<div class="gpme-button-expand-or-collapse-all"></div>').
+      append($collapseAllButtonTpl).
+      append($expandAllButtonTpl));
+}
+
 
 
 /****************************************************************************
@@ -740,7 +748,9 @@ function isGbarFixed() {
   // Detect fixed gbar for compatibility (with "Replies and more for Google+",
   // Usability Boost, and Google+ Ultimate)
   var $gbar = $(_ID_GBAR);
-  if ($gbar.length && $gbar.parent().css('position') == 'fixed') {
+  var $gbarParent = $gbar.parent();
+  // Google+ now fixes the gbar using a CSS class
+  if ($gbarParent.length && ($gbarParent.is('%gbarParentIsFixed') || $gbarParent.css('position') == 'fixed')) {
     result = true;
   } else {
     // Detect for Google+ Tweaks
@@ -757,7 +767,7 @@ function isGbarFixed() {
 function isGplusBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
   var $gplusbar = $(_C_GPLUSBAR);
-  return $gplusbar.length && $gplusbar.css('position') == 'fixed';
+  return $gplusbar.length && ($gplusbar.is('%gplusBarIsFixed') || $gplusbar.css('position') == 'fixed');
 }
 
 /**
@@ -928,6 +938,10 @@ function onContentPaneUpdated(e) {
   var $subtree = $(e.target);
   if (! isEnabledOnThisPage($subtree))
     return;
+
+  gpx.automapPage();
+  if (DEBUG)
+    gpx.writeMapToFile('gplusx-map.json');
 
   updateAllItems($subtree);
 }
@@ -1459,15 +1473,21 @@ function onScroll(e) {
  ***************************************************************************/
 
 /**
- * Injects styles in current document
+ * Injects styles in current document.
+ * This should be run early.
  */
-function injectCSS() {
+function injectStylesheet() {
   var linkNode  = document.createElement('link');
   linkNode.rel = 'stylesheet';
   linkNode.type = 'text/css';
   linkNode.href = chrome.extension.getURL('gpme.css') + '?' + new Date().getTime();
   document.getElementsByTagName('head')[0].appendChild(linkNode);
+}
 
+/**
+ * Injects individual styles into current document
+ */
+function injectSomeStyles() {
   // Apparently, the background-position is incorrect for a user.
   // Maybe the notification status displays something differently for him
   // early in the loading of the page.
@@ -1494,7 +1514,7 @@ function injectCSS() {
   // XXX There must be an easier way than to getComputedStyle()
   var styleNode = document.createElement('style');
   styleNode.setAttribute('type', 'text/css');
-  var statusNode, statusOff, cssText;
+  var $statusNode, statusOff, cssText;
   $statusNode = $(_ID_STATUS_BG);
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbid' (turns bg to
@@ -1512,11 +1532,11 @@ function injectCSS() {
   } else {
     // Sometimes this happens with G+ for some reason.  Happened at times when I was
     // reloading a profile page.
-    error("injectCSS: Can't find status bg node.");
+    error("injectSomeStyles: Can't find status bg node.");
   }
 
   // Copy G+ notification status fg style because original is by ID
-  $statusNode = $(_ID_STATUS_FG);
+  $statusNode = $('%gbarToolsNotificationUnitFg'); // $(_ID_STATUS_FG);
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbids' (turns bg to
     // gray), which seems to be there by default.
@@ -1533,7 +1553,7 @@ function injectCSS() {
   } else {
     // Sometimes this happens with G+ for some reason.  Happened at times when I was
     // reloading a profile page.
-    error("injectCSS: Can't find status fg node.");
+    error("injectSomeStyles: Can't find status fg node.");
   }
 
   document.getElementsByTagName('head')[0].appendChild(styleNode);
@@ -2021,7 +2041,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
   if (animated) {
     // Calc the new item offset once the last item is folded (without yet
     // taking account the bottom of the document)
-    predictedItemOffset = $item.offset().top;
+    var predictedItemOffset = $item.offset().top;
     // If we folded an item above the selected item, then we need to shift
     // the predicted offset
     if (lastItemOffset != -1 && lastItemOffset < predictedItemOffset)
@@ -2029,7 +2049,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
 
     // Calc the body height once the last item is folded and the selected
     // item is unfolded
-    predictedBodyHeight = $body.height() - lastItemHeightLoss + (predictedItemHeight - foldedItemHeight());
+    var predictedBodyHeight = $body.height() - lastItemHeightLoss + (predictedItemHeight - foldedItemHeight());
 
     // There are two forces that make the page scroll up:
     // 1) getting the top of the selected item within view
@@ -3378,7 +3398,7 @@ function showPreview(e) {
       $post.removeClass('gpme-preview-right');
     } else {
       var spaceToLeft = $item.offset().left;
-      debug(e);
+      //debug(e);
       debug("e.offsetX=" + e.offsetX + " boundary=" + ($item.width() - RIGHT_BUTTON_AREA_OFFSET_LEFT - 2));
       // Place over the posts to the left of the right button area if there's no room on the left
       // or if the mouse is over to the right, near the button area.
@@ -3855,7 +3875,7 @@ function injectNews(mappingKey) {
  ***************************************************************************/
 
 
-/**
+/*
  * Initial code run when document is ready.
  * Gets data from background page and then calls main()
  */
@@ -3864,13 +3884,39 @@ $(document).ready(function() {
 
   // We inject our stylesheet early because there are styles that we need
   // for our news notification
-  injectCSS();
+  injectStylesheet();
   
   if (DEBUG)
     getMessagesFromBackground(main);
   else // Get i18n messages
     main();
 });
+
+/*
+ * When the page has all the stylesheets, we do a survey of the
+ * page to get the selectors for the latest rules that we're writing
+ */
+//if (DEBUG) {
+//  $(window).load(function() {
+//    // TODO: we gotta find the event that tells us the stylesheets are ready.
+//    setTimeout(function() {
+//      gpx.surveyRules();
+//      gpx.wxMap.writeToLocalStorage();
+//    }, 5000);
+//  });
+//}
+
+/**
+ * Ask the background for all the messages
+ * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
+ */
+function getMessagesFromBackground(callback) {
+  chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
+    i18nMessages = response;
+
+    callback();
+  });
+}
 
 /*
  * Initializations that may depend on the background page
@@ -3884,31 +3930,16 @@ if (DEBUG) {
     //debug('getMessage: from background: ' + name);
     return i18nMessages[name];
   };
-
-  /**
-   * Ask the background for all the messages
-   * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-   */
-  function getMessagesFromBackground(callback) {
-    chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
-      i18nMessages = response;
-
-      i18nInit();
-
-      callback();
-    });
-  }
 } else {
   getMessage = function(name) {
-    debug('getMessage: direct: ' + name);
+    //debug('getMessage: direct: ' + name);
     return chrome.i18n.getMessage(name);
   };
-
-  i18nInit();
 }
 
 /**
  * Initializes constants that depend on i18n messages.
+ * This must be called after we've precreated DOM elements.
  */
 function i18nInit() {
   // Sets the date regexps, based on the user's locale
@@ -3934,11 +3965,12 @@ function main() {
   jQuery.easing.def = 'easeInOutQuad';
 
   // Google+ DOM check
-  var $gbar = $(_ID_GBAR);
+  // FIXME: Change Gplusx to do this for us so we dont' have to reference _ID_GBAR
+  var $gbar = $(_ID_GB);
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
+  if (DEBUG || ! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     getAppDetailsFromBackground(function(theAppDetails) {
       appDetails = theAppDetails;
@@ -3948,8 +3980,50 @@ function main() {
     // We continue because the extension may still work even though the mapping key doesn't
   }
 
-  // Initialize GPlusX
-  gpx.init(function() {
+  // Initialize Gplusx
+  gpx = new Gplusx({
+    extendJQuerySelectors: true,
+    extendJQueryPseudoClasses: true,
+    extendQuerySelectors: true,
+    aliasAPI: true,
+    strict: DEBUG
+  }, function() {
+    // Overwrite what's in local storage
+    if (DEBUG)
+      gpx.newMap();
+
+    // Remap based on what's on page
+    gpx.automapPage();
+    if (DEBUG)
+      gpx.writeMapToFile('gplusx-map.json');
+
+    if (DEBUG) {
+      gpx.dumpToConsole("After automapping page:");
+
+//    debug('Testing jQuery extension', $('%post'));
+//    debug('Testing jQuery extension', $('%post[aria-live]:eq(0)'));
+//    debug('Testing querySelector extension', document.querySelectorAll('%post'));
+//    debug('Testing querySelector extension', document.querySelector('.ke%post'));
+    //debug('Testing alias', $X('%post'));
+    //debug('Testing alias', X.cn('%post'));
+
+      // Testing strit mode
+//      gpx.config.strict = false;
+//      console.dir($('.ke%crap'));
+//      console.dir(document.querySelector('.ke%crap'));
+//      gpx.config.strict = true;
+//      console.dir(document.querySelector('.ke%crap'));
+    }
+
+
+    // Pre-create DOM elements
+    defineDomConstants(window); // Does most of the referencing to Gplusx
+    precreateElements(window);
+    // Set up items including DOM elements based on internationalization settings
+    i18nInit();
+
+    // Inject some styles
+    injectSomeStyles();
 
     // Get settings
     getOptionsFromBackground(function() {
@@ -3960,7 +4034,7 @@ function main() {
 
       // Listen for when there's a total AJAX refresh of the stream,
       // on a regular page
-      var $contentPane = gpx.find$('contentPane'); // $(_ID_CONTENT_PANE);
+      var $contentPane = $('%contentPane'); // $(_ID_CONTENT_PANE);
       if ($contentPane.length) {
         var contentPane = $contentPane.get(0);
         $contentPane.bind('DOMNodeInserted', function(e) {
@@ -3976,15 +4050,10 @@ function main() {
           if (id && id.charAt(0) == ':')
             return;
 
-          // This happens when posts' menus get inserted.
-          // Also Usability Boost's star
-          //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-          if (e.target.className == C_MENU || e.target.className == CF_MENU || e.target.className == C_UBOOST_STAR)
-            onItemDivInserted(e);
           // This happens when a new post is added, either through "More"
           // or a new recent post.
           // Or it's a Start G+ post
-          else if (id && (id.substring(0,7) == 'update-'))
+          if (id && (id.substring(0,7) == 'update-'))
             onItemInserted(e);
           else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
             onSgpItemInserted(e);
@@ -3992,6 +4061,11 @@ function main() {
           // on profile
           else if (e.relatedNode.id.indexOf('-posts-page') > 0)
             onContentPaneUpdated(e);
+          // This happens when posts' menus get inserted.
+          // Also Usability Boost's star
+          //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
+          else if (e.target.getAttribute('role') == "menu" || e.target.className == C_UBOOST_STAR)
+            onItemDivInserted(e);
         });
       } else  {
         // This can happen if we're in the settings page for example
@@ -4001,7 +4075,7 @@ function main() {
       // Listen when status change
       // WARNING: DOMSubtreeModified is deprecated and degrades performance:
       //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-      var $status = $(_ID_STATUS_FG);
+      var $status = $('%gbarToolsNotificationUnitFg'); // $(_ID_STATUS_FG);
       if ($status.length)
         $status.bind('DOMSubtreeModified', onStatusUpdated);
       else

@@ -47,7 +47,8 @@ rm -rf google-plus-me
 mkdir google-plus-me || exit 1
 cd google-plus-me || exit 1
 
-cp -a ../../{*.{html,js,css,json},icons,images,_locales,fancy-settings} .
+# Pick out the files we need
+cp -a ../../{*.{html,js,css,json},icons,images,_locales,fancy-settings,gplusx/{gplusx.js,gen/gplusx-map.json,webx/{jquery-*.js,webx.js}}}~../../jquery.js .
 
 version=$(sed -n 's/.*"version" *: *"\([0-9\.][0-9\.]*\)".*/\1/p' manifest.json)
 [ -n "$version" ] || exit 2
