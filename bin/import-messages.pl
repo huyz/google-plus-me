@@ -3,25 +3,25 @@
 # Reads in translations from an Excel file exported from Google Spreadsheet
 # and inserts them into the proper messages.json
 #
-# UPDATED: 2011-08-13
+# UPDATED: 2011-08-30
 # Overall Stats:
-#          español LA: 53 36 20 
-#          español ES: 
-#        português PT: 57 40 1 
-#        português BR: 57 54 4 
-#            français: 53 39 52 
-#              German: 54 53 
-#           Hungarian: 54 52 
-#            Japanese: 41 41 
-#          Indonesian: 40 40 
-#               Dutch: 54 54 
-# Traditional Chinese: 56 52 6 12 5 
-#             Swedish: 54 54 
-#            italiano: 29 
-#             Finnish: 
-#  Simplified Chinese: 
-#              Polish: 
-#           Norwegian: 
+#           español LA: 57 36 20 5 
+#           español ES: 57 56 
+#         português PT: 57 40 1 
+#         português BR: 57 54 4 
+#             français: 57 39 52 1 
+#                Dutch: 57 54 1 
+#               German: 54 53 
+#            Hungarian: 57 52 
+#             Japanese: 41 41 
+#           Indonesian: 40 40 
+#  Traditional Chinese: 56 52 6 12 5 
+#              Swedish: 54 54 
+#             italiano: 55 55 
+#   Simplified Chinese: 
+#               Polish: 
+#            Norwegian: 
+#              Finnish: 
 
 use utf8;
 binmode STDOUT, ":utf8";

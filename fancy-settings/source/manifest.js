@@ -240,6 +240,8 @@ this.manifest = {
 <td><a href=\"https://plus.google.com/104214201726373605313\" target=_blank>Teddy Yuliustanto</a></td></tr>\
 <tr><td>Deutsch - German</td>\
 <td><a href=\"https://plus.google.com/111611377225917333080\" target=_blank>Nick Rock</a></td></tr>\
+<tr><td>Español (España) - Spanish</td>\
+<td><a href=\"https://plus.google.com/117214944861012231268\" target=_blank>Pablo Molina</a></td></tr>\
 <tr><td>Español (Latinoamérica) - Spanish</td>\
 <td><a href=\"https://plus.google.com/103470335401117697610\" target=_blank>Andrés D Bevilacqua (aka PaiSand)</a></td></tr>\
 <tr><td>Français - French</td>\
