@@ -4030,7 +4030,7 @@ function main() {
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (DEBUG || ! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
+  if (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
     error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     getAppDetailsFromBackground(function(theAppDetails) {
       appDetails = theAppDetails;
@@ -4121,7 +4121,7 @@ function main() {
             onSgpItemInserted(e);
           // This happens when switching from About page to Posts page
           // on profile
-          else if (e.relatedNode.id.indexOf('-posts-page') > 0)
+          else if (e.relatedNode && e.relatedNode.id && e.relatedNode.id.indexOf('-posts-page') > 0)
             onContentPaneUpdated(e);
           // This happens when posts' menus get inserted.  If they're inserted on a page load,
           // then they have [role=menu], otherwise all they have is a simple classname, e.g. 'Om', not even
