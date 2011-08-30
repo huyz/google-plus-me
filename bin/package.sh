@@ -5,7 +5,7 @@
 #############################################################################
 ### Config
 
-SOURCES="gpme.js background.js fancy-settings/source/settings.js"
+SOURCES="gpme.js background.js fancy-settings/source/settings.js gplusx/gplusx.js gplusx/webxdk/webx.js"
 
 ### End config
 #############################################################################
@@ -75,7 +75,7 @@ if [ $mode = regular ]; then
   rm -rf _locales
   cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
-      s/G\\+me\\b/G+me v$version (PARANOID Edition)/;
+      s/G\\+me\\b[^\"]*/G+me v$version (PARANOID Edition)/;
       s/^,\\s*\"tabs\"//;
     " manifest.json
   perl -pi -e "s/(\"message\": \"G\\+me for Google Plus™)\"/\$1 (PARANOID Edition)\"/g" _locales/*/messages.json
@@ -88,9 +88,12 @@ if [ $mode = regular ]; then
   echo -e "\n== Web Store =="
   perl -pi -e 's/^(var DEBUG =).*/$1 false;/' $SOURCES
   perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
+  rm -rf _locales
+  cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
-      s/G\\+me\\b/G+me v$version/;
+      s/G\\+me\\b[^\"]*/G+me v$version/;
     " manifest.json
+  perl -pi -e "s/(\"message\": \"G\\+me for Google Plus™) [^\"]*\"/\$1\"/g" _locales/*/messages.json
   rm -f ../google-plus-me-$version.zip
   zip -r ../google-plus-me-$version.zip *
 fi
@@ -105,9 +108,9 @@ if [ $mode = beta ]; then
   rm -rf _locales
   cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
-      s/G\\+me\\b/G+me v$version (BETA)/;
+      s/G\\+me\\b[^\"]*/G+me v$version (BETA)/;
     " manifest.json
-  perl -pi -e "s/(\"message\": \"G\\+me for Google Plus™)\"/\$1 v$version (BETA)\"/g" _locales/*/messages.json
+  perl -pi -e "s/(\"message\": \"G\\+me for Google Plus™)[^\"]*\"/\$1 v$version (BETA)\"/g" _locales/*/messages.json
   rm -f ../google-plus-me-$version-beta.zip
   zip -r ../google-plus-me-$version-beta.zip *
 fi
