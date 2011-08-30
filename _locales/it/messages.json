@@ -4,7 +4,7 @@
     "description": "Name of the extension"
   },
   "extensionDescription": {
-    "message": "Comprime il flusso di Google+ mantenendo gli aggiornamenti correnti: nasconde i commenti, condensa gli articoli, etc.",
+    "message": "Comprime il flusso di Google+ mantenendo gli aggiornamenti correnti: nasconde i commenti, comprime gli articoli, etc.",
     "description": "Description of the extension, as shown in the Web Store"
   },
 
@@ -30,13 +30,65 @@
     "description": "Text displayed at the top of a post for a non-public post"
   },
 
+
+  "ui_posts_markAllReadButton": {
+    "message": "Segna tutti gli articoli come letti",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_expandAllButton": {
+    "message": "Espandi tutti gli articoli",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_collapseAllButton": {
+    "message": "Comprimi tutti gli articoli",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_markReadButton": {
+    "message": "Segna quest'articolo come letto",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+  "ui_posts_muteButton": {
+    "message": "Silenzia questo articolo",
+    "description": "Tooltip that shows up when hovering over button"
+  },
+
   "options_nav_general_label": {
     "message": "Navigazione",
     "description": "Name of the tab in the options page"
   },
+
+  "options_nav_postStyle_label": {
+    "message": "Stile dell'articolo",
+    "description": "Name of the options group for how the post looks"
+  },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Quando visualizzare la barra di compressione in alto"
+  },
+  "options_nav_showTopCollapseBarWhen_always": {
+    "message": "sempre",
+    "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_hover": {
+    "message": "quando l'articolo è evidenziato dal passaggio del mouse",
+    "description": "One of the options for when to display the top collapse bar"
+  },
+  "options_nav_showTopCollapseBarWhen_never": {
+    "message": "mai",
+    "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "Quando visualizzare la barra di compressione in basso"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "quando evidenziato dal passaggio del mouse",
+    "description": "One of the options for when to display the bottom collapse bar"
+  },
   "options_nav_summary_label": {
     "message": "Riassunto di un articolo ",
     "description": "Name of the options group for the text inside the bar when a post is collapsed"
+  },
+  "options_nav_summaryLines": {
+    "message": "Numero di linee nel sommario di un articolo compresso"
   },
   "options_nav_summaryIncludeThumbnails": {
     "message": "Gli articoli compressi mostrano le miniature delle foto dal contenuto"
@@ -142,6 +194,68 @@ Ti prego di riportare ogni problema alla discussione riguardo la compatibilità 
     "message": "Frequently Asked Questions",
     "description": "Name of the options group for frequently asked questions"
   },
+  "options_nav_faq_desc": {
+    "message": "Proteggi la mia privacy?
+Si, sei al sicuro. Anche se il Web Store dice che questa estensione potrebbe vedere la tua storia di navigazione, non lo fa. Questo è un progetto open-source il cui codice sorgente è disponibile per te per controllarlo. Puoi leggere i miei commenti riguardo la privacy e le motivazioni tecniche per cui il Web Store trae in inganno.
+Puoi anche installare una versione leggermente meno ricca di feature di G+me: G+me (edizione PARANOIA).
+Questa estensione rallenta Google+
+Ciò avviene molto probabilmente a causa di incompatibilità con altre estensioni. Prova a disabilitare tutte le altre estensioni Google+. Ti prego di informarmi su quali estensioni sembrano interagire male con G+me, e gli darò uno sguardo.
+Questa estensione va in conflitto con l'estensione X
+Il 2 e il 3 di agosto Google+ ha cambiato il suo layout, compromettendo il funzionamento di quasi tutte le estensioni. Come risultato, ogni estensione ha dovuto cambiare il proprio codice. Ci vorrà del tempo prima che possa ripristinare la compatibilità con altre estesioni. Ti prego di essere paziente.
+Questa estensione è imcompatibile con +Comment Toggle. è compatibile con Start G+ (attenzione con problemi di performance), Surplus, Replies and more (dovrai disabilitare l'abbreviazione di tastiera 'm' dalle sue opzioni), Extended Share, G+ Ultimate (eccetto per \"side-by-side view\" & \"status scrollbars\"), Usability Boost, G+ Tweeaks, Share+ Social Buttons, Helper (eccetto per le notifiche), Google Plus Reply+, Plus Minus, Adhik, Fav+, Circlestars.
+Porterai questo su Firefox o su altri browser?
+Quando avrò implementato altre features, ho in programma di portarle su Firefox. Ma questo potrebbe richiedere un paio di settimane. Altri browser non sono in programma.",
+    "description": "Text of the Frequently Asked Questions"
+  },
+  "options_nav_problems_label": {
+    "message": "Problemi",
+    "description": "Name of the options group for problems"
+  },
+  "options_nav_problemsTroubleshoot": {
+    "message": "In caso di comportamenti strani, prova quanto segue:
+Ricarica la pagina (il problema potrebbe semplicemente essere Google+)
+Riavvia il browser (anche il browser ha dei bachi)
+Disabilita altre estensioni Google+ (il problema potrebbe essere l'incompatibilità)
+Assicurati di avere l'ultima versione di G+me. Per verificare, fai un click col pulsante destro sull'icona del browser di G+me, vai su \"Gestisci Estensioni\" e quindi paragona con l'ultima versione a: http://goo.gl/m837O.
+Ecco come forzare l'aggiornamento delle estensioni.
+Se hai già l'ultima versione di G+me, puoi provare a disinstallare e reinstallare l'estensione.
+Puoi provare a resettare tutte le opzioni e la storia. Vedi di seguito.",
+    "description": "Explain some steps to troubleshoot"
+  },
+  "options_nav_problemsFeedback": {
+    "message": "Puoi sempre porre domande e dare feedback sulla <a ...> discussione corrente riguardo G+me su Google+ </a>",
+    "description": "Giving a link for feedback"
+  },
+
+  "options_nav_reset_label": {
+    "message": "Ripristinare",
+    "description": "Name of the options group for the resetting buttons"
+  },
+  "options_nav_resetSettings_label": {
+    "message": "Per riportare tutte le opzioni di G+me indietro al loro default:",
+    "description": "Text before the button that resets the options."
+  },
+  "options_nav_resetSettings": {
+    "message": "Ripristina tutte le opzioni di G+me",
+    "description": "Text shown on the button"
+  },
+  "options_nav_resetAll_label": {
+    "message": "In caso di problemi, prova a ripristinare tutte le tue opzioni e la storia",
+    "description": "Suggestion for what to do in case of problems; with clickable button at the right"
+  },
+  "options_nav_resetAll": {
+    "message": "Ripristina tutte le opzioni di G+me e la storia",
+    "description": "Text shown on the button"
+  },
+  "options_nav_reset_desc": {
+    "message": "NOTA: Questi pulsanti non hanno niente a che fare con i tuoi dati Google+, che sono sempre al sicuro da questa estensione.",
+    "description": "Footnote for the reset buttons"
+  },
+
+  "options_nav_info_label": {
+    "message": "Informazioni",
+    "description": "Name of the tab in the options page for information links and credit"
+  },
   "options_nav_links_label": {
     "message": "Collegamenti",
     "description": "Name of the options group for URL links"
@@ -153,5 +267,12 @@ Fornisci un feedback nella discussione corrente su Google+.
 Valuta l'estensione al Chrome Web Store.
 Per il codice sorgente, vai a GitHub.",
     "description": "Text with important links"
+  },
+  "options_nav_translators_label": {
+    "message": "Traduzioni",
+    "description": "Name of the options group for translator credits"
+  },
+  "options_nav_translators_desc": {
+    "message": "Huy ringrazia sinceramente tutti i traduttori per le loro qualità e il loro impegno"
   }
 }

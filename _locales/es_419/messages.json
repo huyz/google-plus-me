@@ -200,15 +200,15 @@
     "description": "Name of the options group for frequently asked questions"
   },
   "options_nav_faq_desc": {
-    "message": "<h3>¿Protegen mi privacidad?</ h3>
-<p>Sí, estás a salvo. A pesar de que en la Web Store dice que esta extensión <i>podría</i> ver tu \"historial de navegación\", <i>no lo hace</ i>. Se trata de un proyecto de código abierto, cuyo <a href=\"http://goo.gl/BM8CG\" target=_blank>código</a> está disponible para que lo veas. Puedes leer <a href=\"http://goo.gl/ld00X\" target=_blank>mis comentarios acerca de la privacidad</a> <i>(en inglés)</i> y las razones técnicas del porque la Web Store indica esto.</p>
-<p>También puedes instalar una versión con menos características de <b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank> G+me (Edición PARANOICA)</ a>.</p>
+    "message": "<h3>¿Protegen mi privacidad?</h3>
+<p>Sí, estás a salvo. A pesar de que en la Web Store dice que esta extensión <i>podría</i> ver tu \"historial de navegación\", <i>no lo hace</i>. Se trata de un proyecto de código abierto, cuyo <a href=\"http://goo.gl/BM8CG\" target=_blank>código</a> está disponible para que lo veas. Puedes leer <a href=\"http://goo.gl/ld00X\" target=_blank>mis comentarios sobre la privacidad</a> <i>(en inglés)</i> y las razones técnicas del porque la Web Store indica esto.</p>
+<p>También puedes instalar una versión con menos características de <b>G+me</b>: <a href=\"http://goo.gl/QCCAJ\" target=_blank> G+me (Edición PARANOICA)</a>.</p>
 <h3>Esta extensión ralentiza Google+</h3>
 <p>De suceder esto, es más probable que sea debido a una incompatibilidad con otras extensiones. Prueba a desactivar las demás extensiones de Google+. Por favor, hazme saber que extensiones parecen interactuar mal con <b>G+me</b>, y le echaré un vistazo.</p>
 <h3>Esta extensión tiene conflictos con otra extensión X</h3>
 <p>Entre el 2 y 3 de agosto Google+ cambió su diseño, inutilizando casi todas las extensiones. Como resultado, cada desarrollador tuvo que cambiar el código. Tomará algún tiempo antes de que pueda restaurar la compatibilidad con otras extensiones. Por favor, se paciente.
 <!--
-Esta extensión es <i>compatible</i> con <b>Start G+</ b> (cuidado con los problemas de rendimiento), <b>Surplus</b>, <b>Replies and more</b> (tienes que deshabilitar el acceso directo de la tecla 'm' en sus opciones), <b>Extended Share</b>, <b>G+ Ultimate</b> (a excepción de \"side-by-side view \" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (a excepción de las notificaciones), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
+Esta extensión es <i>compatible</i> con <b>Start G+</b> (cuidado con los problemas de rendimiento), <b>Surplus</b>, <b>Replies and more</b> (tienes que deshabilitar el acceso directo de la tecla 'm' en sus opciones), <b>Extended Share</b>, <b>G+ Ultimate</b> (a excepción de \"side-by-side view \" &amp; \"status scrollbars\"), <b>Usability Boost</b>, <b>G+ Tweaks</b>, <b>Share+ Social Buttons</b>, <b>Helper</b> (a excepción de las notificaciones), <b>Google Plus Reply+</b>, <b>Plus Minus</b>, <b>Adhik</b>, <b>Fav+</b>, <b>Circlestars</b>.<br />
 Esta extensión es <i>incompatible</i> con <b>+Comment Toggle</b>
 -->
 </p> 
@@ -221,12 +221,12 @@ Esta extensión es <i>incompatible</i> con <b>+Comment Toggle</b>
     "description": "Name of the options group for problems"
   },
   "options_nav_problemsTroubleshoot": {
-    "message": "En el caso de experimentar algún comportamiento extraño, intente lo siguiente:<br/>
+    "message": "En el caso de experimentar algún comportamiento extraño, intente lo siguiente:<br />
 <ul>
-<li>Actualiza la página (el problema podría ser Google+)</li>
+<li>Recargar la página (F5, el problema podría ser Google+)</li>
 <li>Reinicia el navegador (el navegador también tiene errores)</li>
-<li>Deshabilita otras extensiones de Google+ (el problema puede deberse a incopatibilidades)</li>
-<li>Asegúrate de tener la última versión de <b>G+me</b>. Para comprobarlo, haz clic derecho en el icono G+me, ir a \"Administrar extensiones...\" y luego compara con la versión más reciente en la<a href =\"http://goo.gl/m837O\" target=_blank>Web Store</a>. He aquí cómo <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forzar la actualización de extensiones</a> <i>(en inglés)</i>.</li>
+<li>Deshabilitar otras extensiones de Google+ (el problema puede deberse a incopatibilidades)</li>
+<li>Asegúrate de tener la última versión de <b>G+me</b>. Para comprobarlo, haz clic derecho en el icono G+me, ir a \"Administrar extensiones...\" y luego compara con la versión más reciente en la <a href =\"http://goo.gl/m837O\" target=_blank>Web Store</a>. He aquí cómo <a href=\"http://www.howtogeek.com/64525/how-to-manually-force-google-chrome-to-update-extensions/\" target=_blank>forzar la actualización de extensiones</a> <i>(en inglés)</i>.</li>
 <li>Si ya tienes la versión más reciente de <b>G+me</b>, intenta desinstalando y volviendo a instalar la extensión.</li>
 <li>Puedes intentar restablecer todas las opciones e historial. Ver más abajo.</li>
 </ul> ",

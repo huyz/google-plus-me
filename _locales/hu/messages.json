@@ -61,6 +61,9 @@
     "message": "Bejegyzés stílusa",
     "description": "Name of the options group for how the post looks"
   },
+  "options_nav_showTopCollapseBarWhen": {
+    "message": "Mikor jelenjen meg a felső összecsukó gomb"
+  },
   "options_nav_showTopCollapseBarWhen_always": {
     "message": "mindig",
     "description": "One of the options for when to display the top/bottom collapse bar"
@@ -72,6 +75,13 @@
   "options_nav_showTopCollapseBarWhen_never": {
     "message": "soha",
     "description": "One of the options for when to display the top/bottom collapse bar"
+  },
+  "options_nav_showBottomCollapseBarWhen": {
+    "message": "Mikor jelenjen meg az alsó összecsukó gomb"
+  },
+  "options_nav_showBottomCollapseBarWhen_hover": {
+    "message": "az egér alatt",
+    "description": "One of the options for when to display the bottom collapse bar"
   },
   "options_nav_summary_label": {
     "message": "Bejegyzések összegzése",
