@@ -125,7 +125,7 @@ function defineDomConstants(ns) {
   ns.C_IS_MUTED                  = 'En';
   ns._C_IS_MUTED                 = '.' + ns.C_IS_MUTED;
   ns._C_LINK_UNMUTE              = ns._C_IS_MUTED + ' [role="button"]'; // '.Fh'; // Undo link after muting in stream
-  ns.C_TITLE_COLOR               = X.cn('postHeadInfo_c'); // 'Jj';
+  ns.C_TITLE_COLOR               = X.scn('postHeadInfo_c'); // 'Jj';
   // _C_TITLE:
   // Watch out for these divs:
   // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
@@ -224,9 +224,15 @@ function defineDomConstants(ns) {
   ns._C_COMMENT_CONTAINERS =
     [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
 
-  // XXX We assume there is no substring match problem because
   // it doesn't look like any class names would be a superstring of these
-  ns.COMMENT_MODIFIED_REGEXP = new RegExp('\\b(?:' + C_COMMENTS_BUTTON_CONTAINER + '|' + C_COMMENTS_CONTAINER + '|' + C_COMMENTS_SHOWN_CONTAINER + '|' + C_COMMENTS_SHOWN_LONG + '|' + C_COMMENTS_EDITOR + ')\\b');
+  var regexpString = '';
+  [C_COMMENTS_BUTTON_CONTAINER, C_COMMENTS_CONTAINER, C_COMMENTS_SHOWN_CONTAINER, C_COMMENTS_SHOWN_LONG, C_COMMENTS_EDITOR].forEach(function(c) {
+    if (regexpString !== '')
+      regexpString += '|';
+    regexpString += c.split(/\s+/).join('|');
+  });
+  ns.COMMENT_MODIFIED_REGEXP = new RegExp('(?:^|\\s)(?:' + regexpString + ')(?:\\s|$)');
+  debug(ns.COMMENT_MODIFIED_REGEXP);
   ns.DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
   ns.DISABLED_PAGES_CLASSES = [
     C_NOTIFICATIONS_MARKER,
@@ -502,7 +508,7 @@ function precreateElements(ns) {
 // Memory cache of items shown by profiling to slow things down
 var memcache = {
   LS_COMMENTS_READ_COUNT: {},
-  LS_COMMENTS_READ_COUNT_CHANGED: {},
+  LS_COMMENTS_READ_COUNT_CHANGED: {}
 };
 
 /**
@@ -1234,7 +1240,9 @@ function onKeydown(e) {
       $sibling = getPrevItem($selectedItem);
       if ($sibling.length) {
         click($sibling);
-        // NOTE: G+ already scrolls everything for us
+        // NOTE: G+ no longer scrolls for us
+        if ($sibling.offset().top < $('body').scrollTop() + fixedBarsHeight())
+          scrollToTop($sibling);
       }
       break;
     case 78: // 'n', like Greader
@@ -1242,7 +1250,7 @@ function onKeydown(e) {
       $sibling = getNextItem($selectedItem);
       if ($sibling.length) {
         click($sibling);
-        // NOTE: G+ already scrolls everything for us
+        // NOTE: G+ no longer scrolls for us
       } else {
         // If we're at the bottom, trigger the more button
         clickMoreButton();
@@ -1255,11 +1263,15 @@ function onKeydown(e) {
       if (key != 38 || itemHasFocus) {
         $sibling = getPrevItem($selectedItem);
         if ($sibling.length) {
+          /*
           if (e.shiftKey)
+          */
             navigateUnfolding($sibling, $selectedItem);
+            /*
           else
             // We want to navigate after the browser has responded to up/down
             setTimeout(function() { navigateUnfolding($sibling, $selectedItem); }, 0);
+            */
         }
       }
       break;
@@ -1270,11 +1282,15 @@ function onKeydown(e) {
       if (key != 40 || itemHasFocus) {
         $sibling = getNextItem($selectedItem);
         if ($sibling.length) {
+          /*
           if (e.shiftKey)
+          */
             navigateUnfolding($sibling, $selectedItem);
+          /*
           else
             // We want to navigate after the browser has responded to up/down
             setTimeout(function() { navigateUnfolding($sibling, $selectedItem); }, 0);
+            */
         } else {
           // If we're at the bottom, trigger the more button
           clickMoreButton();
@@ -1845,7 +1861,6 @@ function updateItem($item, attempt) {
       // NOTE: when a truncated comment is expanded, we don't get a DOMAttrModified event
       // (or a non-zero e.attrChange) for some reason even though the class changes.
       $container.bind('DOMSubtreeModified', function(e) {
-        //debug("DOMSubtreeModified for comments id=" + e.target.id + " class=" + e.target.className);
         // We have to filter out junk before we call the throttle function; otherwise
         // the last callback call will have junk arguments.
         var id = e.target.id;
@@ -1855,11 +1870,15 @@ function updateItem($item, attempt) {
         if (id && id.charAt(0) == ':' && id.indexOf('.editor') < 0 || ! isEnabledOnThisPage())
           return;
 
+        //debug("DOMSubtreeModified for comments id=" + e.target.id + " class=" + e.target.className);
+
         // Process when target has an id (it's probably a comment),
         // or the class is one of the divs we want
         var className = e.target.className;
-        if (! id && ! COMMENT_MODIFIED_REGEXP.test(className))
+        if (! COMMENT_MODIFIED_REGEXP.test(className))
           return;
+
+        //debug("DOMSubtreeModified PASSED for comments id=" + id + " class=" + className);
 
         // Finally call our throttled callback
         commentsUpdateHandler(e);
@@ -1872,11 +1891,23 @@ function updateItem($item, attempt) {
  * Updates the display of comments
  */
 function updateItemComments($item) {
+  var id = $item.attr('id');
+
+  var $comments = $item.find('.gpme-comments-wrapper');
+  // Photo-tagging posts don't have comments
+  if ($comments.length != 1) {
+    return;
+  }
+
+  var commentCount = countComments($comments);
+  updateCommentbar(id, $item, commentCount);
+  /*
   if ($item.hasClass('gpme-comments-folded')) {
     foldComments(false, $item);
   } else {
     unfoldComments(false, $item);
   }
+  */
 }
 
 /****************************************************************************
@@ -2112,8 +2143,10 @@ function foldItem(options, $item, $post) {
 
   // Visual changes
   //$post.fadeOut().hide(); // This causes race-condition when double-toggling quickly.
-  if (animated)
+  if (animated) {
+    $item.css('min-height', '' + foldedItemHeight() + 'px');
     $post.slideUp('fast', 'jswing', function() {
+      $item.css('min-height', '');
       $item.addClass('gpme-folded');
       $item.removeClass('gpme-unfolded');
       if (interactive) {
@@ -2122,7 +2155,7 @@ function foldItem(options, $item, $post) {
           updateContentPaneButtonsThrottled();
       }
     });
-  else {
+  } else {
     $post.hide();
     $item.addClass('gpme-folded');
     $item.removeClass('gpme-unfolded');
@@ -2185,22 +2218,36 @@ function foldItem(options, $item, $post) {
       // Insert "mobile"/"check-ins" icons
       var $source = $srcTitle.find(S_SOURCE);
       if ($source.length) {
+        var sourceText = $source.text();
         // Maybe FIXME: English-only, but so far Google uses only English
-        if ($source.text() == 'Google Check-ins')
+        switch (sourceText) {
+        case 'Google Check-ins':
           $sender.append($checkinIconTpl.clone());
-        else if ($source.text() == 'Mobile')
+          break;
+        case 'Mobile':
           $sender.append($mobileIconTpl.clone());
-        else if ($source.text() == 'Hangout')
+          break;
+        case 'Hangout':
           // FIXME: haven't checked what happens when hangout ends
           $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
-        else if ($source.text() == 'Photos')
+          break;
+        case 'Photos':
           /* We already picked out photos.  Move code into here?  */ true;
-        else if ($source.text() == 'Game Update')
+          break;
+        case 'Game Update':
           $sender.append($gameIconTpl.clone());
-        else // For non-English
-          $clonedTitle.append($source.text());
+          break;
+        default:
+          if (sourceText.indexOf('+1') >= 0) {
+            $sender.append('+1');
+          } else { // For non-English or new unrecognized things
+            $clonedTitle.append($titleDashTpl.clone());
+            $clonedTitle.append($source.text());
+          }
+          break;
+        }
       }
 
       var $itemGuts = $post.children(_C_ITEM_GUTS);
@@ -2435,6 +2482,16 @@ function unfoldItem(options, $item, $post) {
   // NOTE: changing of classes must be done after hidePostItemPreview()
   $item.removeClass('gpme-folded');
   $item.addClass('gpme-unfolded');
+
+  if (canHaveComments) {
+    // NOTE: this must be done after the CSS classes are updated, but
+    // before animation (otherwise the height is wrong)
+    refreshCommentsFold(id, $item);
+
+    if (interactive && ! areItemCommentsFolded($item))
+      deleteSeenCommentCount(id);
+  }
+
   if (animated) {
     $post.slideDown('fast', 'jswing', function() {
       if (interactive)
@@ -2447,14 +2504,6 @@ function unfoldItem(options, $item, $post) {
   }
   if (interactive && ! options.batch)
     updateContentPaneButtonsThrottled();
-
-  if (canHaveComments) {
-    // NOTE: this must be done after the CSS classes are updated
-    refreshCommentsFold(id, $item);
-
-    if (interactive && ! areItemCommentsFolded($item))
-      deleteSeenCommentCount(id);
-  }
 
   return true;
 }
@@ -2628,8 +2677,8 @@ function toggleItemMuted($item, navigate) {
       // If the item is folded, we need to set a max-height so that G+'s muting
       // scrolling animation doesn't start from so low
       if (isItemFolded($item)) {
-        $item.css('max-height', MUTED_ITEM_HEIGHT);
-        setTimeout(function() { $item.css('max-height', ''); }, 500);
+        $item.css('max-height', '' + MUTED_ITEM_HEIGHT + 'px');
+        setTimeout(function() { $item.css('max-height', ''); }, 2000);
       }
 
       click($muteMenu);
@@ -2647,6 +2696,7 @@ function toggleItemMuted($item, navigate) {
       // Now automatically go to the next message, just like in gmail
       // This code is just like for shift-down
       if (navigate == 'up' || navigate == 'down') {
+        var $sibling;
         if (navigate == 'up')
           $sibling = getPrevItem($item);
         else
@@ -2674,7 +2724,7 @@ function isItemMuted($item) {
   */
 function clickMoreButton() {
   // Scroll it into view
-  $moreButton = $(_C_MORE_BUTTON);
+  var $moreButton = $(_C_MORE_BUTTON);
   if ($moreButton.length) {
     $moreButton.scrollintoview();
     click($moreButton);
@@ -2985,11 +3035,6 @@ function unfoldComments(interactive, $item, $comments) {
     $commentsTitleFolded.hide(); // hide a bit early
     $comments.css({height: '', overflow: ''}); //$comments.show();
 
-    // Start loading any hidden comments.
-    var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
-    if ($commentsButton.length && $commentsButton.is(':visible'))
-      click($commentsButton);
-
 //    $comments.slideDown(duration, function() {
     slideDown($shownOrOlderComments, minHeight, duration, easing, function() {
       $item.removeClass('gpme-comments-folded');
@@ -3000,6 +3045,11 @@ function unfoldComments(interactive, $item, $comments) {
       //if (! commentsTitleUnfoldedIndependently)
       $commentsTitleUnfolded.fadeIn(Math.min(JQUERY_DURATION, duration));
       updateCachedSgpItem($item);
+
+      // Start loading any hidden comments.
+      var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
+      if ($commentsButton.length && $commentsButton.is(':visible'))
+        click($commentsButton);
     });
 
     deleteSeenCommentCount(id);
@@ -3010,6 +3060,11 @@ function unfoldComments(interactive, $item, $comments) {
     $item.addClass('gpme-comments-unfolded');
     // NOTE: updateCommentbar needs to be done after updating classes
     updateCommentbar(id, $item, commentCount);
+
+    // Start loading any hidden comments.
+    var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
+    if ($commentsButton.length && $commentsButton.is(':visible'))
+      click($commentsButton);
   }
 }
 
@@ -3520,7 +3575,8 @@ function onPreviewMouseEnter() {
     clearTimeout(markItemAsReadTimer);
     markItemAsReadTimer = null;
   }
-  markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY);
+  // FIXME: until we get it right
+  //markItemAsReadTimer = setTimeout(function() { markItemAsRead($item); }, MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY);
 
   // Show the scrollbars
   showPreviewScrollbar($post);
@@ -4054,6 +4110,8 @@ function main() {
           if (id && id.charAt(0) == ':')
             return;
 
+          var target = e.target;
+
           // This happens when a new post is added, either through "More"
           // or a new recent post.
           // Or it's a Start G+ post
@@ -4065,10 +4123,17 @@ function main() {
           // on profile
           else if (e.relatedNode.id.indexOf('-posts-page') > 0)
             onContentPaneUpdated(e);
-          // This happens when posts' menus get inserted.
-          // Also Usability Boost's star
+          // This happens when posts' menus get inserted.  If they're inserted on a page load,
+          // then they have [role=menu], otherwise all they have is a simple classname, e.g. 'Om', not even
+          // the 'a-z' class which comes later.  The problem is that we can't automap the 'Om' early enough.
+          // We do know that the children come in as [role=button]s which later become [role=menuitem]
+          // Also, check for Usability Boost's star
           //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-          else if (e.target.getAttribute('role') == "menu" || e.target.className == C_UBOOST_STAR)
+          else if (target.getAttribute('role') == "menu" ||
+                   target.childElementCount && target.childNodes[0] &&
+                   target.childNodes[0].nodeType == Node.ELEMENT_NODE &&
+                   target.childNodes[0].getAttribute('role') == 'button' ||
+              target.className == C_UBOOST_STAR)
             onItemDivInserted(e);
         });
       } else  {

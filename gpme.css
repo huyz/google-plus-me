@@ -152,13 +152,16 @@ div.rh {
 }
 
 /* Muted post: _C_IS_MUTED */
-.En { /* Matches .gpme-folded.rh */
+.gpme-enh.En { /* Matches .gpme-folded.rh */
   border-bottom: 1px solid transparent; /* Don't mess with margin-bottom or padding-bottom, as that's incompatible with Usability Boost */
+  height: 38px; /* FIXME: Don't know why it's so small and the correct way to fix that */
 }
-.En .gpme-titlebar {
+.gpme-enh.En .gpme-titlebar,
+.gpme-enh.En .gpme-bottombar {
   margin: 0;
   display: none;
 }
+
 
 .gpme-title-unfolded {
   height: 14px;
