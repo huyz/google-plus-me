@@ -750,7 +750,9 @@ function isGbarFixed() {
   var $gbar = $(_ID_GBAR);
   var $gbarParent = $gbar.parent();
   // Google+ now fixes the gbar using a CSS class
-  if ($gbarParent.length && ($gbarParent.is('%gbarParentIsFixed') || $gbarParent.css('position') == 'fixed')) {
+  // XXX Temporary until Webx supports media queries
+  //if ($gbarParent.length && ($gbarParent.is('%gbarParentIsFixed') || $gbarParent.css('position') == 'fixed')) {
+  if ($gbarParent.length && (window.innerHeight >= 528 || $gbarParent.css('position') == 'fixed')) {
     result = true;
   } else {
     // Detect for Google+ Tweaks
@@ -767,7 +769,9 @@ function isGbarFixed() {
 function isGplusBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
   var $gplusbar = $(_C_GPLUSBAR);
-  return $gplusbar.length && ($gplusbar.is('%gplusBarIsFixed') || $gplusbar.css('position') == 'fixed');
+  // XXX Temporary until Webx supports media queries
+  //return $gplusbar.length && ($gplusbar.is('%gplusBarIsFixed') || $gplusbar.css('position') == 'fixed');
+  return $gplusbar.length && (window.innerHeight >= 800 || $gplusbar.css('position') == 'fixed');
 }
 
 /**
