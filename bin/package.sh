@@ -5,7 +5,7 @@
 #############################################################################
 ### Config
 
-SOURCES="gpme.js background.js fancy-settings/source/settings.js gplusx/gplusx.js gplusx/webxdk/webx.js"
+SOURCES="gpme.js background.js fancy-settings/source/settings.js gplusx/gplusx.js gplusx/webxdk/webx.js gplusx/webxdk/webx-background.js"
 
 ### End config
 #############################################################################
@@ -59,7 +59,7 @@ cd google-plus-me || exit 1
 (cd ../..; tar cf - --exclude=jquery.js --exclude="jquery*min.js" \
   {*.{html,js,css,json},icons,images,_locales,fancy-settings} \
   gplusx/{gplusx.js,gen/gplusx-map.json} \
-  gplusx/webxdk/{webx,jquery*}.js \
+  gplusx/webxdk/{webx,webx-background,jquery*}.js \
 ) | tar xf -
 
 version=$(sed -n 's/.*"version" *: *"\([0-9\.][0-9\.]*\)".*/\1/p' manifest.json)

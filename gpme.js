@@ -71,7 +71,7 @@ RegExp.quote = function(str) {
 
 // FIXME: these will go away
 var _ID_GB                      = '#gb';
-var C_GBAR                      = 'c-Yd-V c-i-Yd-V c-Yd-V-Fi'; // 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
+var C_GBAR                      = 'c-Yd-V c-i-Yd-V'; // 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
 
 function defineDomConstants(ns) {
   ns._ID_GBAR                    = '%gbar'; // '#gb';
@@ -232,7 +232,6 @@ function defineDomConstants(ns) {
     regexpString += c.split(/\s+/).join('|');
   });
   ns.COMMENT_MODIFIED_REGEXP = new RegExp('(?:^|\\s)(?:' + regexpString + ')(?:\\s|$)');
-  debug(ns.COMMENT_MODIFIED_REGEXP);
   ns.DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
   ns.DISABLED_PAGES_CLASSES = [
     C_NOTIFICATIONS_MARKER,
@@ -2241,7 +2240,7 @@ function foldItem(options, $item, $post) {
           break;
         default:
           if (sourceText.indexOf('+1') >= 0) {
-            $sender.append('+1');
+            $sender.append('\u00a0+1');
           } else { // For non-English or new unrecognized things
             $clonedTitle.append($titleDashTpl.clone());
             $clonedTitle.append($source.text());
@@ -3877,7 +3876,7 @@ var lastNewsCheck = null;
  */
 function injectNews(mappingKey) {
   // NOTE: Some other extensions mess with the CSS class names
-  mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed)/).replace(/\s+/g, '_');
+  mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed)/, '').replace(/\s+/g, '_');
 
   var $listItems = $('#gbg > ol > li');
   if ($listItems.length) {
@@ -4046,7 +4045,9 @@ function main() {
     extendJQueryPseudoClasses: true,
     extendQuerySelectors: true,
     aliasAPI: true,
-    strict: DEBUG
+    strict: DEBUG,
+    warn: DEBUG,
+    debug: DEBUG
   }, function() {
     // Overwrite what's in local storage
     if (DEBUG)
