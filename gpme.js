@@ -6,7 +6,7 @@
 # Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-08-09
+# Updated on:       2011-09-12
 # Created on:       2011-07-11
 #
 # Installation:
@@ -72,86 +72,63 @@ RegExp.quote = function(str) {
 // FIXME: these will go away
 var _ID_GB                      = '#gb';
 var C_GBAR                      = 'c-Yd-V c-i-Yd-V'; // 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
+var DISABLED_PAGES_URL_REGEXP   = /\/(?:posts\/|notifications\/|sparks(:?\/|$)|up\/start\/)/;
 
 function defineDomConstants(ns) {
-  ns._ID_GBAR                    = '%gbar'; // '#gb';
-  ns._ID_GBAR_TOP                = '%gbarTop'; // '#gbw';
-  ns._ID_STATUS                  = '%gbarToolsNotificationA'; // '#gbg1';
-  ns._ID_STATUS_BG               = '%gbarToolsNotificationUnitBg'; // '#gbi1a';
-  ns._ID_STATUS_FG               = '%gbarToolsNotificationUnitFg'; // '#gbi1';
-  ns.C_STATUS_BG_OFF             = 'gbid';
-  ns.C_STATUS_FG_OFF             = 'gbids';
-  ns._C_GPLUSBAR                 = '%gplusBar'; // '.' + C_GPLUSBAR;
-  ns._ID_CONTENT                 = '%content'; // '#content';
-  // For stream, we  have to use #contentPane; we can't just use '.a-b-f-i-oa' cuz
-  // clicking link to the *current* page will refresh the contentPane
-  ns._ID_CONTENT_PANE            = '%contentPane'; // '#contentPane';
-  ns._C_COPYRIGHT                = '%copyrightRow'; // '.a-f-kb-R';
-  ns._C_FEEDBACK_LINK            = '%feedbackLink'; // '.a-Vi-Eg';
-  //var C_FEEDBACK                  = 'g-d-Ba'; // The class with gray style
+  ns.S_gbar                             = '%gbar'; // '#gb';
+  ns.S_gbarTop                          = '%gbarTop'; // '#gbw';
+  ns.S_gbarToolsNotificationA           = '%gbarToolsNotificationA'; // '#gbg1';
+  ns.S_gbarToolsNotificationUnitBg      = '%gbarToolsNotificationUnitBg'; // '#gbi1a';
+  ns.S_gbarToolsNotificationUnitFg      = '%gbarToolsNotificationUnitFg'; // '#gbi1';
+  ns.CN_gbarToolsNotificationUnitBgZero = X.classNames('gbarToolsNotificationUnitBgZero'); // 'gbid';
+  ns.CN_gbarToolsNotificationUnitFgZero = X.classNames('gbarToolsNotificationUnitFgZero'); // 'gbids';
+  ns.S_gplusBar                         = '%gplusBar'; // '.c-i-cb-V';
+  ns.S_content                          = '%content'; // '#content';
+  ns.S_contentPane                      = '%contentPane'; // '#contentPane';
+  ns.S_copyrightRow                     = '%copyrightRow'; // '.a-f-kb-R';
+  ns.S_feedbackLink                     = '%feedbackLink'; // '.a-Vi-Eg';
 
   // Icons
-  ns.C_HANGOUT_LIVE_ICON         = X.cn('hangoutLiveIcon'); // 'kC'; // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
-  ns._C_HANGOUT_LIVE_ICON        = '%hangoutLiveIcon'; // https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
-  // C_CAMERA_ICON*
-  ns.C_POST_CONTENT_ICON_CONTAINER = 'f-oa-Bd-Xa-v'; // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
-  ns.C_CAMERA_ICON               = X.cn('shareIconsPhoto'); // 'i-wa-m-v';
-  ns.C_VIDEO_ICON                = X.cn('shareIconsVideo'); // 'i-wa-m-Ha';
-  ns.C_LINK_ICON                 = X.cn('shareIconsLink'); // 'i-wa-m-j';
-  ns.C_CHECKIN_ICON              = X.cn('shareIconsLocation'); // 'i-wa-m-Te-D'; // Unlike the other ones, this has a single class for non-hover
-  ns.C_GAME_ICON                 = X.cn('gplusBarNavGamesIcon_c'); // 'Il';
+  ns.CN_hangoutLiveIcon                = X.classNames('hangoutLiveIcon'); // 'kC'
+  ns.S_hangoutLiveIcon                 = '%hangoutLiveIcon';
+  // We use backups for these icons because the first page load may have been on a page without share icons
+  // and we need these classes for our pre-created DOM elements
+  ns.CN_makeChildShareIconNonHoverable = X.classNames('makeChildShareIconNonHoverable') || X.classNames('makeChildShareIconNonHoverable2'); // Look at camera icon matched CSS rules, look for series of 3 pairs, use the last one (don't use the first one '.h-fc' otherwise hovers works)
+  ns.CN_shareIconsPhoto                = X.classNames('shareIconsPhoto') || X.classNames('shareIconsPhoto2'); // 'i-wa-m-v';
+  ns.CN_shareIconsVideo                = X.classNames('shareIconsVideo') || X.classNames('shareIconsVideo2'); // 'i-wa-m-Ha';
+  ns.CN_shareIconsLink                 = X.classNames('shareIconsLink')  || X.classNames('shareIconsLink2'); // 'i-wa-m-j';
+  ns.CN_shareIconsLocation             = X.classNames('shareIconsLocation') || X.classNames('shareIconsLocation2'); // 'i-wa-m-Te-D'; // Unlike the other ones, this has a single class for non-hover
+  ns.CN_gplusBarNavGamesIcon           = X.classNames('gplusBarNavGamesIcon'); // 'Il';
 
   // Pages and streams
-  ns.C_NOTIFICATIONS_MARKER      = 'gwa'; // Look for the notifications stream
-  ns._C_NOTIFICATION_STREAM      = '.' + C_NOTIFICATIONS_MARKER; // gwa yfa
-  ns.C_SPARKS_MARKER             = 'wja'; // Look for 3rd div in blank one, ancestor of stream
-  ns.C_SINGLE_POST_MARKER        = 'c-ng-L1-P'; // grandchild of #contentPane
-  ns.C_STREAM                    = X.cn('postsStream'); // br';
-  ns._C_STREAM                   = '%postsStream'; // '.' + C_STREAM;
-  ns._C_GAMES_STREAM             = '.BI';
-  ns.S_PROFILE_POSTS             = 'div[id$="-posts-page"]';
-  ns._C_MORE_BUTTON              = '%postsStreamMoreButton'; // '.Uk';
+  ns.S_circleStream           = '%circleStream'; // '.br'
+  ns.S_gamesActivitiesStream  = '%gamesActivitiesStream'; // '.BI';
+  ns.S_circleStreamMoreButton = '%circleStreamMoreButton'; // '.Uk';
 
-  ns._C_GAMES_HEADING            = '.Gt';
-  ns._C_CONTENT_PANE_HEADING     = '%postStreamContentPaneHeadingText'; // '.vo';
-  ns._C_PROFILE_HEADING          = '.fn';
+  ns.S_gamesActivitiesStreamHeadingText   = '%gamesActivitiesStreamHeadingText'; // '.Gt';
+  ns.S_circleStreamContentPaneHeadingText = '%circleStreamContentPaneHeadingText'; // '.vo';
+  ns.S_profileHeadingName                 = '%profileHeadingName'; // '.fn';
 
   // Item
-  ns.C_SELECTED                  = X.cn('postIsSelected'); // 'ki';
-  ns._C_SELECTED                 = '%postIsSelected'; // '.' + C_SELECTED;
-  ns._C_ITEM                     = '%post'; // '.ke';
-  ns._C_ITEM_GUTS                = '%postContainer_c'; // '.Tf';
-  //var _C_ITEM_GUTS_PLACEHOLDER    = '.nw'; // For hangout and photo albums https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV
-  ns.C_IS_MUTED                  = 'En';
-  ns._C_IS_MUTED                 = '.' + ns.C_IS_MUTED;
-  ns._C_LINK_UNMUTE              = ns._C_IS_MUTED + ' [role="button"]'; // '.Fh'; // Undo link after muting in stream
-  ns.C_TITLE_COLOR               = X.scn('postHeadInfo_c'); // 'Jj';
-  // _C_TITLE:
-  // Watch out for these divs:
-  // - hangout 'Live' icon (.a-lx-i-ie-ms-Ha-q), which comes before post
-  // - "Shared by ..." in Incoming page ("a-f-i-Jf-Om a-b-f-i-Jf-Om")
-  // - Google Plus Reply+
-  //var _C_TITLE                    = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(.gpr_tools)'; // This will work with StartG+ as well
-  ns.C_TITLE                     = X.cn('postHead_c'); // 'Nw'; // Meaning, excluding the avatar and menu icon
-  ns._C_TITLE                    = '%postHead_c'; // '.' + C_TITLE;
-  //var _C_TITLE2                   = '.a-f-i-p-U > div:not(.a-lx-i-ie-ms-Ha-q):not(' + _C_CONTENT_PLACEHOLDER + ')';
-  ns._C_CONTENT                  = '%postBody_c'; // '.Kw'; // 2nd child of _C_ITEM_GUTS
-  ns.S_PHOTO                     = '%postUserAvatarA_c'; // '.kr > a.Km'; // 1st child of C_ITEM_GUTS
-  ns._C_NAME                     = '%postUserName_c'; // '.nC'; // span that contains the <a>
-  // S_SOURCE:
+  ns.S_postIsSelected            = '%postIsSelected'; // '.ki';
+  ns.S_post                      = '%post'; // '.ke';
+  ns.S_postContainer             = '%postContainer'; // '.Tf';
+  ns.S_postIsMutedOrDeleted      = '%postIsMutedOrDeleted_d'; // '.En'
+  ns.S_postHead                  = '%postHead'; // '.Nw', div excluding the avatar and menu icon
+  ns.S_postBody                  = '%postBody'; // '.Kw'; // 2nd child of S_postContainer
+  ns.S_postUserAvatarA           = '%postUserAvatarA'; // '.kr > a.Km'; // 1st child of C_ITEM_GUTS
+  ns.S_postUserName              = '%postUserName'; // '.nC'; // span that contains the <a>
+  // S_postCategory:
   // - checkin: https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
   // - hangout: https://plus.google.com/100512649718649402368/posts/1u32KN5UzUR
   // - mobile: https://plus.google.com/115404182941170857382/posts/ZUiCSs9Qteq
-  ns.S_SOURCE                    = '.Uv'; // '%postCategory_c'; // '.kv'; // kv b-n-l
-  ns._C_PERMS                    = '%postPermissions_c'; // '.Ii'; // b-j Ii cp Gl
-  ns._C_MUTED                    = '.Ox'; // FIXME: '%postHeadInfoMuted'; // '.Oo'; // "- Muted" text in profile page
-  ns.C_DATE                      = X.cn('postTime_c'); // 'Hi'; // Hi vn. Span that contains the <a>
-  ns._C_DATE                     = '%postTime_c'; // '.' + C_DATE;
-  ns._C_EXPAND_POST              = '.ho'; // https://plus.google.com/111775942615006547057/posts/RaZvqBMadoH
+  ns.S_postCategory              = '%postCategory'; // '.Uv';
+  ns.S_postPermissions           = '%postPermissions'; // '.Ii' from b-j Ii cp Gl
+  ns.S_postHeadInfoMuted         = '%postHeadInfoMuted'; // '.Ox'; // "- Muted" text in profile page
+  ns.S_postTime                  = '%postTime'; // '.Hi'; // Hi vn. Span that contains the <a>
+  ns.S_postContentExpandButton   = '%postContentExpandButton'; // '.ho'; // https://plus.google.com/111775942615006547057/posts/RaZvqBMadoH
   //var _C_EMBEDDED_VIDEO           = '.ea-S-Bb-jn > div';
 
-  // Parts of content relevant for the summary
-  ns._C_QUOTE_IMG                = '.ea-S-qg'; // FIXME: This is an image of a blown-up quote: ``
   // _C_QUOTED_PHOTO:
   // - re-sharing your own post: https://plus.google.com/116805285176805120365/posts/3vKNMqMsYrc
   ns._C_QUOTED_PHOTO             = '.Ux > img';
@@ -164,7 +141,7 @@ function defineDomConstants(ns) {
   ns.S_CONTENT_IMG               = '.B-u-zt-ja > img, .B-u-xh-ja > img, .B-u-Nd-ja > img, .B-u-fc-ja > img';
   // _C_CONTENT_VIDEO: https://plus.google.com/111775942615006547057/posts/YyeAxkSfjTD
   ns._C_CONTENT_VIDEO            = '.B-u-wa-Uj'; // Take the 4-part parent that looks like S_CONTENT_IMG
-  ns._C_CONTENT_ANY_LINK         = _C_CONTENT + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
+  ns._C_CONTENT_ANY_LINK         = ns.S_postBody + ' a.ot-anchor'; // This also includes links that are embedded in the text https://plus.google.com/112374836634096795698/posts/KryDaNYMQLF
   ns._C_MAP_IMG                  = 'img.pv'; // https://plus.google.com/112543001180298325686/posts/1hJCin8mTaV
 
   // poster text https://plus.google.com/111091089527727420853/posts/63tRxMQk7rV
@@ -187,60 +164,32 @@ function defineDomConstants(ns) {
   ns.S_CONTENT_PHOTO_TAGGED      = '.xo > a.yn'; // Photo album with live updated tags https://plus.google.com/109342148209917802565/posts/6yXESEyCPtV  XXX Do we need '> a' ?
 
   // Comments
-  ns.C_COMMENTS_EDITOR           = 'el'; // id=:1tt.editor
-  ns.C_COMMENTS_ALL_CONTAINER    = X.cn('postComments_c'); // 'zf';
-  ns._C_COMMENTS_ALL_CONTAINER   = '%postComments_c'; // '.' + C_COMMENTS_ALL_CONTAINER;
-  ns.C_COMMENTS_BUTTON_CONTAINER = X.cn('postCommentsToggler_c'); // 'Vr';
-  ns._C_COMMENTS_BUTTON_CONTAINER = '%postCommentsToggler_c'; // '.' + C_COMMENTS_BUTTON_CONTAINER;
-  ns._C_COMMENTS_BUTTON_COUNT    = ns._C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) ' + '%postCommentsButtonTextLinkCount_c'; // _C_COMMENTS_BUTTON_CONTAINER + ':not([style*="none"]) .Fw';
-  ns._C_COMMENTS_BUTTON          = ns._C_COMMENTS_BUTTON_CONTAINER + ':not(.pk) > :first-child'; // :not grayed out
-  ns._C_COMMENTS_BUTTON_NAMES    = ns._C_COMMENTS_BUTTON_CONTAINER + ' .xo';
-  ns.C_COMMENTS_CONTAINER        = X.cn('postCommentsList_c'); // 'Gw'; // Everything but button
-  ns._C_COMMENTS_CONTAINER       = '%postCommentsList_c'; // '.' + C_COMMENTS_CONTAINER;
-  ns._C_COMMENTS_OLDER_BUTTON    = '%postCommentsOlderButton_c'; // '.Kr';
-  ns._C_COMMENTS_OLDER_COUNT     = ns._C_COMMENTS_OLDER_BUTTON + ':not([style*="none"])';
-  ns.C_COMMENTS_SHOWN_CONTAINER  = X.cn('postCommentsStream_c'); // 'Xh';
-  ns._C_COMMENTS_SHOWN_CONTAINER = '%postCommentsStream_c'; // '.' + C_COMMENTS_SHOWN_CONTAINER;
-  ns._C_COMMENTS_SHOWN           = ns._C_COMMENTS_SHOWN_CONTAINER + '> div[id]'; // '.zh'; // Each comment item
-  ns._C_COMMENTS_SHOWN_NAMES     = _C_COMMENTS_SHOWN + ' a[rel]'; // _C_COMMENTS_SHOWN + ' a.Qn'; // Qn xw
-  ns.C_COMMENTS_SHOWN_LONG       = 'ok'; // For truncated comments, the div below the first <a> within the comment, for when the comment is expanded ('ok nk' becomes 'nk'): https://plus.google.com/111775942615006547057/posts/H56EXhntuAU
-  ns.C_COMMENTS_SHOWN_LONG_TRUNCATED = 'nk';
-  ns.S_EXPAND_COMMENT             = '.' + C_COMMENTS_SHOWN_LONG_TRUNCATED + '+ [role="button"]';
+  ns.S_postComments                     = '%postComments'; // '.zf'
+  ns.S_postCommentsToggler              = '%postCommentsToggler'; // '.Vr';
+  ns.S_postCommentsTogglerCount         = ns.S_postCommentsToggler + ':not([style*="none"]) ' + '%postCommentsButtonTextCountNumber'; // S_postCommentsToggler + ':not([style *= "none"]) .Fw';
+  ns.S_postCommentsButtonChevron_expand = '%postCommentsButtonChevron:not(%postCommentsButtonChevronWouldCollapse)'; // ns.S_postCommentsToggler + ':not(.pk) > :first-child'; // :not grayed out
+  ns.S_postCommentsButtonNames          = '%postCommentsButtonTextNamesText'; // ns.S_postCommentsToggler + ' .xo';
+  ns.S_postCommentsList                 = '%postCommentsList'; // '.Gw'; // everything but button
+  ns.S_postCommentsOlderButton          = '%postCommentsOlderButton'; // '.Kr';
+  ns.S_postCommentsOlderButton_count    = ns.S_postCommentsOlderButton + ':not([style*="none"])';
+  ns.S_postCommentsStream               = '%postCommentsStream'; // '.Xh'
+  ns.S_postComment                      = '%postComment'; // ns.S_postCommentsStream + '> div[id]'; // '.zh'; // Each comment item
+  ns.S_postCommentUserNames             = '%postCommentUserNameA'; // ns.S_postComment + ' a[rel]'; // ns.S_postComment + ' a.Qn'; // Qn xw
+  ns.S_postCommentContentExpandButton   = '%postCommentContentExpandButton'; // '.tg'
 
-  ns._C_ACTIONBAR                = '%postActionBar_c'; // '.Bl';
-  ns.C_LINK_COMMENT              = X.cn('postCommentLink_c'); // 'de';
-  ns._C_LINK_COMMENT             = '%postCommentLink_c'; // '.' + C_LINK_COMMENT;
-  ns.C_FAKEINPUT_COMMENT         = X.cn('postCommentAddButton_c'); // 'zo';
-  ns._C_FAKEINPUT_COMMENT        = '%postCommentAddButton_c'; // '.' + C_FAKEINPUT_COMMENT; // Fake box that says "Add a comment...
-  //var _C_INPUTBOX_COMMENT         = '[id^=":"] .editable';
-  //var _C_COMMENT_EDITOR           = '.u-o-h-i-lc';
+  //ns.S_postActionBar                    = '%postActionBar'; // '.Bl';
+  ns.S_postCommentLink                  = '%postCommentLink'; // '.de'
+  ns.S_postCommentButton                = '%postCommentButton'; // '.zo' // Fake box that says "Add a comment...
 
   // Menu
-  //ns.C_MENU                      = 'Lm'; // For posts on regular load and when clicking "More"
-  //ns.CF_MENU                     = C_MENU + ' b-G'; // For incoming posts
-  ns._C_MENU_MUTE                = '.Zi'; // Zi cf. Look what's diff from other menuitems.
-  ns._C_MENU_UNMUTE              = '.Eo'; // Candidates: Eo cf; don't take inner div. Displayed on user's posts page.
+  ns.S_postMenuItemMute   = '%postMenuItemMute'; // '.Zi'; // Zi cf. Look what's diff from other menuitems.
+  ns.S_postMenuItemUnmute = '%postMenuItemUnmute'; // '.Eo'; // Candidates: Eo cf; don't take inner div. Displayed on user's posts page.
 
-  ns._C_COMMENT_CONTAINERS =
-    [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER, _C_COMMENTS_SHOWN_CONTAINER ];
-
-  // it doesn't look like any class names would be a superstring of these
-  var regexpString = '';
-  [C_COMMENTS_BUTTON_CONTAINER, C_COMMENTS_CONTAINER, C_COMMENTS_SHOWN_CONTAINER, C_COMMENTS_SHOWN_LONG, C_COMMENTS_EDITOR].forEach(function(c) {
-    if (regexpString !== '')
-      regexpString += '|';
-    regexpString += c.split(/\s+/).join('|');
-  });
-  ns.COMMENT_MODIFIED_REGEXP = new RegExp('(?:^|\\s)(?:' + regexpString + ')(?:\\s|$)');
-  ns.DISABLED_PAGES_URL_REGEXP = /\/(posts|notifications|sparks)\//;
-  ns.DISABLED_PAGES_CLASSES = [
-    C_NOTIFICATIONS_MARKER,
-    C_SPARKS_MARKER,
-    C_SINGLE_POST_MARKER
-  ];
+  ns.SL_COMMENT_CONTAINERS =
+    [ S_postCommentsToggler, S_postCommentsList, S_postCommentsStream ];
 
   // G+me
-  ns.C_GPME_COMMENTCOUNT_NOHILITE = 'gpme-comment-count-nohilite';
+  ns.CN_gpmeCommentCountNoHilite  = 'gpme-comment-count-nohilite';
 
   // Usability Boost
   ns._C_UBOOST_MUTELINK           = '.mute_link';
@@ -254,9 +203,9 @@ function defineDomConstants(ns) {
   ns.C_SGP_UPDATE                 = 'sgp_update';
   ns.C_SGP_UPDATE_FB              = 'sgp_update_facebook';
   ns.C_SGP_UPDATE_TWITTER         = 'sgp_update_twitter';
-  ns._C_SGP_TITLE                 = _C_TITLE; // Same as G+ now
-  ns._C_SGP_CONTENT               = _C_CONTENT; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
-  ns._C_SGP_TEXT1                 = _C_CONTENT; // .Qy
+  ns._C_SGP_TITLE                 = ns.S_postHead; // Same as G+ now
+  ns._C_SGP_CONTENT               = ns.S_postBody; // Same as G+ now (but doesn't matter coz not relevant to SGPlus posts
+  ns._C_SGP_TEXT1                 = ns.S_postBody; // .Qy
   ns._C_SGP_TEXT2                 = '.ea-S-R';
   //var S_SGP_ORIGPOST_LINK          = 'span[style^="font-size"]';
   ns._C_SGP_COMMENT               = '.sgp_comments_wrapper';
@@ -265,8 +214,6 @@ function defineDomConstants(ns) {
   // Google+ Tweaks
   ns._C_TWEAK_EZMNTN              = '.bcGTweakEzMntn';
 }
-
-var DATE_JUNK_REGEXP, DATE_LONG_REGEXP; // Due to Chrome bug, defined later, after response from background
 
 // CSS values shared with our CSS file
 var TRIANGLE_HEIGHT                               = 30;
@@ -323,6 +270,15 @@ var MARK_ITEM_AS_READ_WHEN_PREVIEW_SHOWN_DELAY = 3000;
 var MARK_ITEM_AS_READ_WHEN_PREVIEW_HOVERED_DELAY = 1000;
 
 /****************************************************************************
+ * Constant-like variables constructed later or over time
+ ***************************************************************************/
+
+var DATE_JUNK_REGEXP, DATE_LONG_REGEXP; // Due to Chrome bug, defined later, after response from background
+var commentsHeightChangedClassList;
+var commentsHeightChangedRegExp;
+var commentsHeightChangedElementsRemaining = 0;
+
+/****************************************************************************
  * Init
  ***************************************************************************/
 
@@ -376,7 +332,7 @@ function precreateElements(ns) {
 
   var $commentCountBgTpl = $('<span class="gpme-comment-count-bg"></span>');
   var $commentCountFgTpl = $('<span class="gpme-comment-count-fg"></span>');
-  var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + C_GPME_COMMENTCOUNT_NOHILITE + '"></div>').append($commentCountBgTpl).append($commentCountFgTpl).click(onCommentCountClick);
+  var $commentCountContainerTpl = $('<div class="gpme-comment-count-container ' + CN_gpmeCommentCountNoHilite + '"></div>').append($commentCountBgTpl).append($commentCountFgTpl).click(onCommentCountClick);
   ns.$markReadButtonTpl = $('<div class="gpme-mark-read-button"></div>').click(onMarkReadClick);
   ns.$muteButtonTpl = $('<div class="gpme-mute-button"></div>').click(onMuteClick);
   // NOTE: order matters.
@@ -395,17 +351,17 @@ function precreateElements(ns) {
   //ns.$titleTpl = $('<div class="' + C_TITLE + '"></div>').click(onTitleClick);
   ns.$titleTpl = $('<div class="gpme-title-clickarea"></div>').click(onTitleClick);
   ns.$titleSenderTpl = $('<span class="gpme-title-sender"></span>');
-  ns.$titleDashTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  -  </span>');
-  ns.$titleQuoteTpl = $('<span class="gpme-sep ' + C_TITLE_COLOR + '">  +  </span>');
-  ns.$hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + C_HANGOUT_LIVE_ICON + '" style="margin-left: 5px"></span>'); // 
+  ns.$titleDashTpl = $('<span class="gpme-sep">  -  </span>');
+  ns.$titleQuoteTpl = $('<span class="gpme-sep">  +  </span>');
+  ns.$hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + CN_hangoutLiveIcon + '" style="margin-left: 5px"></span>'); // 
   ns.$hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
   // $cameraIconTpl: need container so it doesn't have the green of hover
-  ns.$cameraIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_CAMERA_ICON + '" style="margin: 0 4px"></span></span>');
-  ns.$videoIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_VIDEO_ICON + '" style="margin: 0 4px"></span></span>');
-  ns.$linkIconTpl = $('<span class="' + C_POST_CONTENT_ICON_CONTAINER + '"><span class="gpme-title-icons ' + C_LINK_ICON + '" style="margin: 0 4px"></span>');
-  ns.$checkinIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-right: -5px;"></span>');
-  ns.$mobileIconTpl = $('<span class="gpme-title-icons ' + C_CHECKIN_ICON + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
-  ns.$gameIconTpl = $('<span class="gpme-title-icons ' + C_GAME_ICON + '" style="margin-left: 2px; margin-right: -3px; background-size: 80%; background-position: 0 -221px; height: 14px"></span>');
+  ns.$cameraIconTpl = $('<span class="' + CN_makeChildShareIconNonHoverable + '"><span class="gpme-title-icons ' + CN_shareIconsPhoto + '" style="margin: 0 4px"></span></span>');
+  ns.$videoIconTpl = $('<span class="' + CN_makeChildShareIconNonHoverable + '"><span class="gpme-title-icons ' + CN_shareIconsVideo + '" style="margin: 0 4px"></span></span>');
+  ns.$linkIconTpl = $('<span class="' + CN_makeChildShareIconNonHoverable + '"><span class="gpme-title-icons ' + CN_shareIconsLink + '" style="margin: 0 4px"></span>');
+  ns.$checkinIconTpl = $('<span class="gpme-title-icons ' + CN_shareIconsLocation + '" style="margin-right: -5px;"></span>');
+  ns.$mobileIconTpl = $('<span class="gpme-title-icons ' + CN_shareIconsLocation + '" style="margin-left: 2px; margin-right: -3px; background-position: 0 -34px"></span>');
+  ns.$gameIconTpl = $('<span class="gpme-title-icons ' + CN_gplusBarNavGamesIcon + '" style="margin-left: 2px; margin-right: -3px; background-size: 80%; background-position: 0 -221px; height: 14px"></span>');
   ns.$titleDateTpl = $('<span class="gpme-title-date"></span>');
   ns.$titleThumbnailsTpl = $('<span class="gpme-title-thumbnails"></span>');
   ns.$titleSnippetTpl = $('<span class="gpme-snippet"></span');
@@ -598,6 +554,11 @@ function resetHistory() {
  ***************************************************************************/
 
 /**
+ * Mod jQuery
+ */
+$.fn.reverse = [].reverse;
+
+/**
  * For debugging
  */
 function info() {
@@ -628,6 +589,31 @@ function error() {
 }
 
 /**
+  * Returns a function that catches exceptions to print them out to console.
+  * Useful for chrome event listeners and other chrome callbacks.
+  * Otherwise we get unhelpful messages like:
+  *   Error in event handler for 'undefined': undefined
+  * @param {string=} Optional with name of function.
+  * @param {Function} Required function to be wrapped
+  * @return {Function}
+  */
+function wrapTryCatch(name, func) {
+  return function() {
+    if (typeof name == 'function') {
+      func = name;
+      name = undefined;
+    }
+    try {
+      return func.apply(undefined, arguments);
+    } catch (e) {
+      var fname = name || (func && func.name) || 'wrapTryCatch';
+      error(fname + ': exception bubbling up:', e, e.stack);
+      throw e;
+    }
+  };
+}
+
+/**
  * Unescape HTML entities.
  * WARNING: make sure that you add the result careful, e.g. with jQuery.text(),
  * to avoid XSS security problems.
@@ -645,12 +631,7 @@ function htmlEncode(str) {
 }
 
 /**
- * Mod jQuery
- */
-$.fn.reverse = [].reverse;
-
-/**
- * Check if should enable on certain pages
+ * Check if should enable on certain pages.
  * @param $subtree: Optional, to force checking of DOM in cases when the
  *   href is not yet correct and the Ajax updates are pending
  */
@@ -658,16 +639,17 @@ function isEnabledOnThisPage($subtree) {
   if (typeof $subtree == 'undefined')
     return ! DISABLED_PAGES_URL_REGEXP.test(window.location.href);
 
-  for (var i in DISABLED_PAGES_CLASSES) {
-    if (DISABLED_PAGES_CLASSES.hasOwnProperty(i)) {
-      if ($subtree.hasClass(DISABLED_PAGES_CLASSES[i]) ||
-          $subtree.find('.' + DISABLED_PAGES_CLASSES[i]).length) {
-        debug("isEnabledOnThisPage: disabling because match on " + i);
-        return false;
+  return !
+    ['%notificationsPageMarker', // gwa // Look for the notifications stream
+     '%sparkPageMarker', // wja // Look for 3rd div in blank one, ancestor of stream
+     '%sparksPageMarker',
+     '%singlePostPageMarker' // 'c-ng-L1-P'; // grandchild of #contentPane
+    ].some(function(marker) {
+      if ($subtree.is(marker) || $subtree.find(marker).length) {
+        debug('isEnabledOnThisPage: disabling because match on page marker selector \'' + marker + '\'');
+        return true;
       }
-    }
-  }
-  return true;
+    });
 }
 
 /**
@@ -682,7 +664,7 @@ function abbreviateDate(text) {
  * Iterates through all the comment containers and calls the callback
  */
 function foreachCommentContainer($subtree, callback) {
-  _C_COMMENT_CONTAINERS.forEach(function(i) {
+  SL_COMMENT_CONTAINERS.forEach(function(i) {
     var $container = $subtree.find(i);
     if ($container.length)
       callback($container);
@@ -693,16 +675,16 @@ function foreachCommentContainer($subtree, callback) {
  * Iterates through all the posts and calls the callback
  */
 function foreachItem(callback) {
-  var $stream = $(_C_STREAM);
+  var $stream = $(S_circleStream).filter(':visible');
   if (! $stream.length) {
-    $stream = $(_C_GAMES_STREAM);
+    $stream = $(S_gamesActivitiesStream).filter(':visible');
     if (! $stream.length) {
       error("forEachItem: Can't find stream");
       return;
     }
   }
   
-  $stream.find(_C_ITEM).each(function(i, item) {
+  $stream.children(S_post).each(function(i, item) {
     callback($(item));
   });
 }
@@ -711,20 +693,22 @@ function foreachItem(callback) {
  * Queries background page for options
  */
 function getOptionsFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetSettings'}, function(theSettings) {
-    settings = theSettings;
-    displayMode = settings.nav_global_postsDefaultMode;
-    callback();
-  });
+  chrome.extension.sendRequest({action: 'gpmeGetSettings'},
+    wrapTryCatch('getOptionsFromBackground', function(theSettings) {
+      settings = theSettings;
+      displayMode = settings.nav_global_postsDefaultMode;
+      callback();
+    }));
 }
 
 /**
  * Queries background page for extension ID
  */
 function getAppDetailsFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetAppDetails'}, function(appDetails) {
-    callback(appDetails);
-  });
+  chrome.extension.sendRequest({action: 'gpmeGetAppDetails'},
+    wrapTryCatch('getAppDetailsFromBackground', function(appDetails) {
+      callback(appDetails);
+    }));
 }
 
 /**
@@ -741,7 +725,7 @@ function fixedBarsHeight() {
  * (Compatc or Ultra Compact navigation)
  */
 function getGplusBarHeight() {
-  var $gplusbar = $(_C_GPLUSBAR);
+  var $gplusbar = $(S_gplusBar);
   return $gplusbar.length ? $gplusbar.height() : GPLUSBAR_HEIGHT;
 }
 
@@ -752,7 +736,7 @@ function isGbarFixed() {
   var result = false;
   // Detect fixed gbar for compatibility (with "Replies and more for Google+",
   // Usability Boost, and Google+ Ultimate)
-  var $gbar = $(_ID_GBAR);
+  var $gbar = $(S_gbar);
   var $gbarParent = $gbar.parent();
   // Google+ now fixes the gbar using a CSS class
   // XXX Temporary until Webx supports media queries
@@ -773,7 +757,7 @@ function isGbarFixed() {
  */
 function isGplusBarFixed() {
   // Detect fixed gbar for compatibility (with "Google+ Ultimate" and "Google+ Tweaks")
-  var $gplusbar = $(_C_GPLUSBAR);
+  var $gplusbar = $(S_gplusBar);
   // XXX Temporary until Webx supports media queries
   //return $gplusbar.length && ($gplusbar.is('%gplusBarIsFixed') || $gplusbar.css('position') == 'fixed');
   return $gplusbar.length && (window.innerHeight >= 800 || $gplusbar.css('position') == 'fixed');
@@ -789,7 +773,7 @@ function overlappingBarsHeight() {
 
   // 2011-07-29 Usability Boost messes up the overflow of the content area
   // to fix something that it breaks.  So we have to adjust
-  var $content = $(_ID_CONTENT);
+  var $content = $(S_content);
   if ($content.length) {
     var styles = window.getComputedStyle($content.get(0));
     if (styles.overflowX == 'hidden')
@@ -909,7 +893,7 @@ function onStatusUpdated(e) {
  */
 function onBrowserActionClick() {
   info("event: browser action icon was clicked");
-  click($(_ID_STATUS));
+  click($(S_gbarToolsNotificationA));
 }
 
 /**
@@ -931,7 +915,7 @@ function onTabUpdated() {
   // If switching between Streams to Games, we need to inject the content pane buttons.
   // At this time, one of the content panes will be hidden -- we need to pick out the correct
   // subtree
-  var $contentPaneDiv = $(_ID_CONTENT_PANE + ' > :not([style*="none"])');
+  var $contentPaneDiv = $(S_contentPane + ' > :not([style*="none"])');
   updateContentPaneButtons($contentPaneDiv);
 }
 
@@ -944,13 +928,11 @@ function onTabUpdated() {
 function onContentPaneUpdated(e) {
   info("event: DOMNodeInserted within onContentPaneUpdated");
 
+//  gpx.automapPage();
+
   var $subtree = $(e.target);
   if (! isEnabledOnThisPage($subtree))
     return;
-
-  gpx.automapPage();
-  if (DEBUG)
-    gpx.writeMapToFile('gplusx-map.json');
 
   updateAllItems($subtree);
 }
@@ -962,6 +944,10 @@ function onContentPaneUpdated(e) {
 function onItemInserted(e) {
   if (! isEnabledOnThisPage())
     return;
+
+  // We may not be done constructing the regexp because we have yet to meet an expandable comment.
+  // If more posts come in, we may find one.
+  constructCommentHeightChangedRegExp();
 
   //info("event: DOMNodeInserted of item into stream");
   //debug("onItemInserted: DOMNodeInserted for item id=" + e.target.id + " class='" + e.target.className);
@@ -1051,17 +1037,14 @@ function onCommentsUpdated(e, $item) {
   //trace("event: DOM insertion or deletion of comments");
   //debug("onCommentsUpdated: DOM insertion/deletion of comments for item id=" + id + " class='" + e.target.className + "'");
 
+  // We may not be done constructing the regexp because we have yet to meet an expandable comment.
+  // If the user opens up comments, we may one.
+  constructCommentHeightChangedRegExp();
+
   // We may be getting events just from a jquery find for comments,
   // before things are set up.
   if (! $item.hasClass('gpme-enh'))
     return;
-
-  /*
-  // If the user is editing, we should unfold comments
-  if ($target.hasClass(C_COMMENTS_ALL_CONTAINER) && $target.find(_C_COMMENT_EDITOR).length && $item.hasClass('gpme-comments-folded')) {
-    unfoldComments(true, $item);
-  }
-  */
 
   updateItemComments($item);
 }
@@ -1071,7 +1054,7 @@ function onCommentsUpdated(e, $item) {
  * Calls toggleItemFolded()
  */
 function onTitleClick(e) {
-  var $item = $(this).closest(_C_ITEM);
+  var $item = $(this).closest(S_post);
   debug("onTitleClick: " + $item.attr('id'));
 
   toggleItemFolded($item, true);
@@ -1083,7 +1066,7 @@ function onTitleClick(e) {
  */
 function onCommentCountClick(e) {
   info("onCommentCountClick");
-  markItemAsRead($(this).closest(_C_ITEM));
+  markItemAsRead($(this).closest(S_post));
 }
 
 /**
@@ -1091,7 +1074,7 @@ function onCommentCountClick(e) {
  */
 function onMuteClick(e) {
   info("onMuteClick");
-  toggleItemMuted($(this).closest(_C_ITEM));
+  toggleItemMuted($(this).closest(S_post));
 }
 
 /**
@@ -1099,7 +1082,7 @@ function onMuteClick(e) {
  */
 function onMarkReadClick(e) {
   info("onMarkReadClick");
-  markItemAsRead($(this).closest(_C_ITEM));
+  markItemAsRead($(this).closest(S_post));
 }
 
 /**
@@ -1107,7 +1090,7 @@ function onMarkReadClick(e) {
  * Calls toggleItemFolded()
  */
 function onCommentTitleClick() {
-  var $item = $(this).closest(_C_ITEM);
+  var $item = $(this).closest(S_post);
   debug("onCommentTitleClick: " + $item.attr('id'));
 
   toggleCommentsFolded($item);
@@ -1143,11 +1126,23 @@ function onKeydown(e) {
   }
   */
 
-  // Skip all these modifiers
-  // TODO: Is there a jQuery plugin for this?
-  if ((e.which == 38 || e.which == 40 || e.which == 67 || e.which == 73 || e.which == 77 || e.which == 79 || e.which == 85) && (e.ctrlKey || e.altKey || e.metaKey) ||
-      (e.which != 38 && e.which != 40 && e.which != 67 && e.which != 73 && e.which != 77 && e.which != 79 && e.which != 85) && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey))
+  // Ignore keystrokes with only modifiers
+  if (e.which < 32 || e.ctrlKey || e.altKey)
     return;
+
+  // Ignore all keystrokes with the wrong modifiers
+  // NOTE: on Chrome for OSX, ctrlKey = metaKey
+  // TODO: Is there a jQuery plugin for this?
+  //debug('onKeyUp: which=' + e.which + ' shift=' + e.shiftKey + ' ctrl=' + e.ctrlKey + ' alt=' + e.altKey + ' meta=' + e.metaKey);
+  if ([38, 40, 67, 73, 77, 79, 85].indexOf(e.which) < 0 && (e.shiftKey || e.ctrlKey || e.altKey)) // Anything other than keys allowed to have shift or control
+    return;
+
+  // Use a key code that works with a switch statement
+  var key = e.which;
+  if (e.shiftKey)
+    key += 1000;
+  if (e.ctrlKey)
+    key += 2000;
 
   var itemHasFocus =
     document.activeElement !== null && document.activeElement.tagName !== 'BODY' &&
@@ -1156,15 +1151,12 @@ function onKeydown(e) {
   // First, try the activeElement instead of C_SELECTED because it's already set before the
   // scroll; but if that fails (e.g. when the user cancels the editing of a comment
   // or clicks on area outside of contentpane), then we go look at C_SELECTED
-  var $selectedItem = itemHasFocus ? $(document.activeElement) : $(_C_SELECTED);
-
-  // Use a key code that works with a switch statement
-  var key = e.which + (e.shiftKey ? 1000 : 0);
+  var $selectedItem = itemHasFocus ? $(document.activeElement) : $(S_postIsSelected);
 
   // If we still don't have a selected item, then e.g. the page must have just loaded,
   // so just pick the first item.
   if (! $selectedItem.length) {
-    $selectedItem = $(_C_ITEM).filter(':first');
+    $selectedItem = $(S_post).filter(':first');
     if ($selectedItem.length) {
       switch (key) {
         case 80: // 'p'
@@ -1187,7 +1179,7 @@ function onKeydown(e) {
   switch (key) {
     case 13: // <enter>
       // If user hits <enter>, we'll open so that they can type a comment
-      if (! isItemMuted($selectedItem) && isItemFolded($selectedItem))
+      if (! isItemMutedOrDeleted($selectedItem) && isItemFolded($selectedItem))
         toggleItemFolded($selectedItem);
       break;
     case 1073: // shift-I, like Gmail
@@ -1218,7 +1210,7 @@ function onKeydown(e) {
       }
       break;
     case 79: // 'o', like Greader
-      if (! isItemMuted($selectedItem)) {
+      if (! isItemMutedOrDeleted($selectedItem)) {
         toggleItemFolded($selectedItem);
         if (! isItemFolded($selectedItem))
           scrollToTop($selectedItem);
@@ -1230,7 +1222,7 @@ function onKeydown(e) {
       openLinkInContent($selectedItem);
       break;
     case 1079: // shift-O
-      if (! isItemMuted($selectedItem) && ! isItemFolded($selectedItem)) {
+      if (! isItemMutedOrDeleted($selectedItem) && ! isItemFolded($selectedItem)) {
         togglePostExpansion($selectedItem);
       }
       break;
@@ -1351,7 +1343,7 @@ function navigateUnfolding($item, $previousItem, scrollPreviousItem) {
 
   // In expanded mode, we want these shortcuts fold the previous item, unlike with the mouse.
   if (typeof $previousItem != 'undefined' && $previousItem !== null &&
-      $previousItem.length && displayMode == 'expanded' && ! isItemMuted($previousItem))
+      $previousItem.length && displayMode == 'expanded' && ! isItemMutedOrDeleted($previousItem))
     foldItem({interactive: true}, $previousItem);
 
   click($item);
@@ -1365,7 +1357,7 @@ function navigateUnfolding($item, $previousItem, scrollPreviousItem) {
  */
 /*
 function onSmartKeydown(e, attempt) {
-  var $selectedItem = $(_C_SELECTED);
+  var $selectedItem = $(S_postIsSelected);
   if (! $selectedIt && ! noscrollem.length)
     return;
 
@@ -1480,7 +1472,7 @@ function onScroll(e) {
   var $body = $('body');
   var x = $body.width() / 2;
   var el = document.elementFromPoint(x, 0);
-  var $item = $(el).closest(_C_ITEM);
+  var $item = $(el).closest(S_post);
 
   if ($item.length) {
     console.log("Item id=" + $item.attr('id'));
@@ -1534,20 +1526,20 @@ function injectSomeStyles() {
   var styleNode = document.createElement('style');
   styleNode.setAttribute('type', 'text/css');
   var $statusNode, statusOff, cssText;
-  $statusNode = $(_ID_STATUS_BG);
+  $statusNode = $(S_gbarToolsNotificationUnitBg);
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbid' (turns bg to
     // gray), which seems to be there by default.
-    statusOff = $statusNode.hasClass(C_STATUS_BG_OFF);
+    statusOff = $statusNode.hasClass(CN_gbarToolsNotificationUnitBgZero);
     if (statusOff)
-      $statusNode.removeClass(C_STATUS_BG_OFF);
+      $statusNode.removeClass(CN_gbarToolsNotificationUnitBgZero);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-bg { ' +
       hardcodeCoordsHilite($statusNode) + ' } '));
-    $statusNode.addClass(C_STATUS_BG_OFF);
-    styleNode.appendChild(document.createTextNode('.' + C_GPME_COMMENTCOUNT_NOHILITE + ' > .gpme-comment-count-bg' + ' { ' +
+    $statusNode.addClass(CN_gbarToolsNotificationUnitBgZero);
+    styleNode.appendChild(document.createTextNode('.' + CN_gpmeCommentCountNoHilite + ' > .gpme-comment-count-bg' + ' { ' +
       hardcodeCoordsNohilite($statusNode) + ' } '));
     if (! statusOff)
-      $statusNode.removeClass(C_STATUS_BG_OFF);
+      $statusNode.removeClass(CN_gbarToolsNotificationUnitBgZero);
   } else {
     // Sometimes this happens with G+ for some reason.  Happened at times when I was
     // reloading a profile page.
@@ -1555,20 +1547,20 @@ function injectSomeStyles() {
   }
 
   // Copy G+ notification status fg style because original is by ID
-  $statusNode = $('%gbarToolsNotificationUnitFg'); // $(_ID_STATUS_FG);
+  $statusNode = $(S_gbarToolsNotificationUnitFg);
   if ($statusNode.length) {
     // We have to temporarily remove the class 'gbids' (turns bg to
     // gray), which seems to be there by default.
-    statusOff = $statusNode.hasClass(C_STATUS_FG_OFF);
+    statusOff = $statusNode.hasClass(CN_gbarToolsNotificationUnitFgZero);
     if (statusOff)
-      $statusNode.removeClass(C_STATUS_FG_OFF);
+      $statusNode.removeClass(CN_gbarToolsNotificationUnitFgZero);
     styleNode.appendChild(document.createTextNode('.gpme-comment-count-fg { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
-    $statusNode.addClass(C_STATUS_FG_OFF);
-    styleNode.appendChild(document.createTextNode('.' + C_GPME_COMMENTCOUNT_NOHILITE + ' > .gpme-comment-count-fg' + ' { ' +
+    $statusNode.addClass(CN_gbarToolsNotificationUnitFgZero);
+    styleNode.appendChild(document.createTextNode('.' + CN_gpmeCommentCountNoHilite + ' > .gpme-comment-count-fg' + ' { ' +
       window.getComputedStyle($statusNode.get(0)).cssText + ' } '));
     if (! statusOff)
-      $statusNode.removeClass(C_STATUS_FG_OFF);
+      $statusNode.removeClass(CN_gbarToolsNotificationUnitFgZero);
   } else {
     // Sometimes this happens with G+ for some reason.  Happened at times when I was
     // reloading a profile page.
@@ -1630,7 +1622,7 @@ function updateAllItems($subtree) {
   // Default to updating all divs in contentpane,
   // but sometimes we know which one was just inserted by
   // an Ajax refresh
-  ( typeof $subtree != 'undefined' ? $subtree : $(_C_STREAM) ).find(_C_ITEM).each(function(i, item) {
+  ( typeof $subtree != 'undefined' ? $subtree : $(S_circleStream) ).find(S_post).each(function(i, item) {
     debug("updateAllItems #" + i);
     i++;
     updateItem($(item));
@@ -1649,7 +1641,7 @@ function updateAllItems($subtree) {
  * Enhance all the SGP items in the current page
  */
 function enhanceAllSgpPosts($stream) {
-  $stream.children(_C_ITEM + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh):not([gpme-nukeme])').each(function(i, item) {
+  $stream.children(S_post + '[id^="' + ID_SGP_POST_PREFIX + '"]:not(.gpme-enh):not([gpme-nukeme])').each(function(i, item) {
     debug("enhanceAllSgpPosts #" + i);
     i++;
     var $item = $(item);
@@ -1711,8 +1703,8 @@ function updateItem($item, attempt) {
       return;
     }
 
-    // NOTE: Check for _C_ITEM_GUTS because we want to make sure that our CSS class names are correct
-    if (! $itemGuts.filter(_C_ITEM_GUTS).length) {
+    // NOTE: Check for S_postContainer because we want to make sure that our CSS class names are correct
+    if (! $itemGuts.filter(S_postContainer).length) {
       error("updateItem: Can't find the right content inside item " + id + "; has Google+ changed its CSS class names?");
       console.error($item.get(0));
       return;
@@ -1736,7 +1728,7 @@ function updateItem($item, attempt) {
       // Structure commentbar:
       // "a-b-f-i-Xb"
       //   "gpme-commentbar"
-      var $allCommentContainer = $item.find(_C_COMMENTS_ALL_CONTAINER);
+      var $allCommentContainer = $item.find(S_postComments);
       // It's possible not to have comments at all on posts with comments
       // disabled or on photo-tagging posts
       if ($allCommentContainer.length) {
@@ -1746,7 +1738,7 @@ function updateItem($item, attempt) {
         // Insert wrapper for comments container so that we can hide it without
         // triggering DOMSubtreeModified events on the container
         $wrapper = $commentsWrapperTpl.clone().insertAfter($commentbar);
-        [ _C_COMMENTS_BUTTON_CONTAINER, _C_COMMENTS_CONTAINER ].forEach(function(item) {
+        [ S_postCommentsToggler, S_postCommentsList ].forEach(function(item) {
           $wrapper.append($allCommentContainer.find(item));
         });
       }
@@ -1851,6 +1843,8 @@ function updateItem($item, attempt) {
   // Start listening to updates to comments.
   // We need to listen all the time since comments can come in or out.
   if (enhanceItem && ! isSgpPost) {
+    constructCommentHeightChangedRegExp();
+
     // We must have one throttle function per comment section within item.
     // Test: 500 comments https://plus.google.com/112063946124358686266/posts/PiLy9zLpd3j
     var commentsUpdateHandler = $.throttle(200, 50, function(e) { onCommentsUpdated(e, $item); });
@@ -1866,16 +1860,17 @@ function updateItem($item, attempt) {
         // Some optimizations, especially to prevent lag when typing comments.
         // But we are interested in the ':4a.editor' event which happens in the beginning and end
         // of comment editing
-        if (id && id.charAt(0) == ':' && id.indexOf('.editor') < 0 || ! isEnabledOnThisPage())
+        if (id && id.charAt(0) == ':' && id.indexOf('.editor') < 0)
           return;
 
-        //debug("DOMSubtreeModified for comments id=" + e.target.id + " class=" + e.target.className);
-
-        // Process when target has an id (it's probably a comment),
-        // or the class is one of the divs we want
-        var className = e.target.className;
-        if (! COMMENT_MODIFIED_REGEXP.test(className))
-          return;
+        // If it doesn't have an id (a comment being updated or the comment editor), then
+        // check for specific class names.
+        if (! id) {
+          // or the class is one of the divs we want
+          var className = e.target.className;
+          if (! commentsHeightChangedRegExp || ! commentsHeightChangedRegExp.test(className))
+            return;
+        }
 
         //debug("DOMSubtreeModified PASSED for comments id=" + id + " class=" + className);
 
@@ -1885,6 +1880,53 @@ function updateItem($item, attempt) {
     });
   }
 }
+
+/**
+ * Progressively constructs a regular expression that catches the elements in the comments
+ * section that we care about, i.e. which impact the height of the comment sidebar.
+ * For performance, we don't go seeking to automap these elements, except for the first time
+ * this function is run.  We assume that foreachCommentContainer would have already triggered the
+ * automapping of the elements, except for postCommentContentExpandable, by the time the regexp gets used.
+ */
+function constructCommentHeightChangedRegExp() {
+  /**
+    * Add the classNames in the classList and reconstructs an updated regexp
+    */
+  function addToCommentsHeightChangedClassList(classList) {
+    var i;
+    for (i = classList.length; i--; )
+      commentsHeightChangedClassList.push(classList[i]);
+
+    // it doesn't look like any class names would be a superstring of these
+    var regexpString = '';
+    for (i = commentsHeightChangedClassList.length; i--; ) {
+      if (regexpString !== '')
+        regexpString += '|';
+      regexpString += commentsHeightChangedClassList[i].split(/\s+/).join('|');
+    }
+    commentsHeightChangedRegExp = new RegExp('(?:^|\\s)(?:' + regexpString + ')(?:\\s|$)');
+    commentsHeightChangedElementsRemaining--;
+    debug('addToCommentsHeightChangedClassList: regexp=' + commentsHeightChangedRegExp);
+  }
+
+  // If this is the first time we're running, initialize
+  if (! commentsHeightChangedClassList) {
+    commentsHeightChangedClassList = [];
+    // Get the class names for each of these elements on promise
+    ['postCommentsToggler',
+     'postCommentsList',
+     'postCommentsStream',
+     'postCommentContentExpandable'].forEach(function(key) {
+      commentsHeightChangedElementsRemaining++;
+      X.classList(key, X.QUERY_PROMISE).done(addToCommentsHeightChangedClassList);
+    });
+  }
+
+  // If we're not done constructing the regexp, let's keep looking for expandable comments
+  if (commentsHeightChangedElementsRemaining > 0)
+    X.classList('postCommentContentExpandable');
+}
+
 
 /**
  * Updates the display of comments
@@ -2001,7 +2043,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
       if (lastOpenId !== null && lastOpenId != id) {
         //debug("unfoldItem: href=" + window.location.href + " id =" + id + " lastOpenId=" + lastOpenId);
         var $lastItem = $('#' + lastOpenId);
-        if ($lastItem.length && $lastItem.hasClass('gpme-enh') && ! isItemMuted($lastItem)) {
+        if ($lastItem.length && $lastItem.hasClass('gpme-enh') && ! isItemMutedOrDeleted($lastItem)) {
           // Prepare for scrolling animation
           if (animated) {
             // If we're animating, we have to do our own calculations because
@@ -2029,7 +2071,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
       $post.hide();
     }
 
-    if (isItemMuted($item)) {
+    if (isItemMutedOrDeleted($item)) {
       lsRemove(LS_URL_LIST_LAST_UNFOLDED, window.location.href);
     } else {
       // Unfold the selected item
@@ -2042,7 +2084,7 @@ function toggleItemFoldedVariant(action, $item, animated) {
 
   } else { // For 'toggle' action, if the item is unfolded, we fold it.
 
-    if (isItemMuted($item)) {
+    if (isItemMutedOrDeleted($item)) {
       if (animated)
         predictedItemHeight = $item.height();
     } else {
@@ -2193,29 +2235,29 @@ function foldItem(options, $item, $post) {
 
     // NOTE: don't just take the first div inside post content title because
     // sometimes the hangout 'Live' icons is there
-    var $srcTitle = $item.find(_C_ITEM_GUTS + " " + (isSgpPost ? _C_SGP_TITLE : _C_TITLE));
+    var $srcTitle = $item.find(S_postContainer + " " + (isSgpPost ? _C_SGP_TITLE : S_postHead));
     if ($srcTitle.length != 1) {
       error("foldItem: can't find (unique) post content title node");
       error($item);
     } else {
       // Check if the permissions are limited
       // Other possibilities: Public, Extended circles
-      var $perms = $srcTitle.find(_C_PERMS);
+      var $perms = $srcTitle.find(S_postPermissions);
       if ($perms.length && $perms.text() == getMessage('gplus_permsLimited'))
         $title.addClass('gpme-perms-limited');
 
       var $clonedTitle = $titleTpl.clone(true);
       var $sender = $titleSenderTpl.clone().click(onTitleClick);
       $clonedTitle.append($sender);
-      var $clonedTitleName = $srcTitle.find(_C_NAME).clone();
+      var $clonedTitleName = $srcTitle.find(S_postUserName).clone();
       $sender.append($clonedTitleName);
 
-      var $srcPhoto = $post.find(S_PHOTO);
+      var $srcPhoto = $post.find(S_postUserAvatarA);
       if ($srcPhoto.length)
         $sender.prepend($srcPhoto.clone());
       
       // Insert "mobile"/"check-ins" icons
-      var $source = $srcTitle.find(S_SOURCE);
+      var $source = $srcTitle.find(S_postCategory);
       if ($source.length) {
         var sourceText = $source.text();
         // Maybe FIXME: English-only, but so far Google uses only English
@@ -2227,8 +2269,9 @@ function foldItem(options, $item, $post) {
           $sender.append($mobileIconTpl.clone());
           break;
         case 'Hangout':
+          var $hangoutJoinButton = $post.find('%hangoutJoinButton');
           // FIXME: haven't checked what happens when hangout ends
-          $clonedTitle.append($post.find(_C_HANGOUT_LIVE_ICON).length ?
+          $clonedTitle.append($post.find('%hangoutJoinButton').length ?
             $hangoutLiveIconTpl.clone() :
             $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
           break;
@@ -2249,8 +2292,8 @@ function foldItem(options, $item, $post) {
         }
       }
 
-      var $itemGuts = $post.children(_C_ITEM_GUTS);
-      var $content = $itemGuts.children(isSgpPost ? _C_SGP_CONTENT : _C_CONTENT);
+      var $itemGuts = $post.children(S_postContainer);
+      var $content = $itemGuts.children(isSgpPost ? _C_SGP_CONTENT : S_postBody);
       if (! $content.length) {
         error("foldItem: Can't find the item guts or contents for id=" + id);
       } else {
@@ -2262,7 +2305,7 @@ function foldItem(options, $item, $post) {
 
         // Photos in content?
         // Possibly-multiple images in the content
-        //$srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG).not(_C_QUOTE_IMG);
+        //$srcPhoto = $content.find('img').not(_C_QUOTED_PHOTO).not(_C_MAP_IMG);
         $srcPhoto = $content.find(S_CONTENT_IMG);
         if ($srcPhoto.length) {
           if (settings.nav_summaryIncludeThumbnails) {
@@ -2357,7 +2400,7 @@ function foldItem(options, $item, $post) {
         }
 
         // If any, move "- Muted" to right after date and before the " - "
-        $srcTitle.find(_C_MUTED).clone().insertAfter($clonedTitleName);
+        $srcTitle.find(S_postHeadInfoMuted).clone().insertAfter($clonedTitleName);
 
         // Add buttons & comment-count container
         // NOTE: this must be done after injecting the title
@@ -2393,7 +2436,7 @@ function foldItem(options, $item, $post) {
               $sender.after($titleDateTpl.clone().text(dateText)).after($titleDashTpl.clone());
 
             } else {
-              $dateA = $itemGuts.find(isSgpPost ? _C_SGP_DATE : _C_DATE + ' > a');
+              $dateA = $itemGuts.find(isSgpPost ? _C_SGP_DATE : S_postTime + ' > a');
 
               if ($dateA.length) {
                 // Try again later in a little bit
@@ -2597,7 +2640,7 @@ function scrollToTop($item) {
   //debug("scrollToTop: itemOffsetY=" + itemOffsetY + " scrollDist=" + scrollDist);
 
   if (scrollDist !== 0) {
-    var $copyright = $(_C_COPYRIGHT);
+    var $copyright = $(S_copyrightRow);
 
     // To prevent the page from jumping back down, we have to have a spacer
     // at the bottom of the page.
@@ -2640,12 +2683,12 @@ function toggleItemMuted($item, navigate) {
   // Try unmute link first, then unmute menu entry, then mute menu entry
   // NOTE: the unmute link could be there but hidden as a result of a prior
   // mute-unmute operation
-  var $unmuteLink = $item.find(_C_LINK_UNMUTE);
+  var $unmuteLink = $item.filter(S_postIsMutedOrDeleted).find('[role="button"]');
   var unmuteFound = false;
   if ($unmuteLink.length && $unmuteLink.is(':visible')) {
     unmuteFound = true;
   } else {
-    $unmuteLink = $item.find(_C_MENU_UNMUTE);
+    $unmuteLink = $item.find(S_postMenuItemUnmute);
     if ($unmuteLink.length)
       unmuteFound = true;
   }
@@ -2671,7 +2714,7 @@ function toggleItemMuted($item, navigate) {
     }
 
   } else { // Mute
-    var $muteMenu = $item.find(_C_MENU_MUTE);
+    var $muteMenu = $item.find(S_postMenuItemMute);
     if ($muteMenu.length) {
       // If the item is folded, we need to set a max-height so that G+'s muting
       // scrolling animation doesn't start from so low
@@ -2714,8 +2757,8 @@ function toggleItemMuted($item, navigate) {
 /**
  * Returns true if specified item is muted
  */
-function isItemMuted($item) {
-  return $item.hasClass(C_IS_MUTED);
+function isItemMutedOrDeleted($item) {
+  return $item.is(S_postIsMutedOrDeleted);
 }
 
 /**
@@ -2723,7 +2766,7 @@ function isItemMuted($item) {
   */
 function clickMoreButton() {
   // Scroll it into view
-  var $moreButton = $(_C_MORE_BUTTON);
+  var $moreButton = $(S_circleStreamMoreButton);
   if ($moreButton.length) {
     $moreButton.scrollintoview();
     click($moreButton);
@@ -2736,7 +2779,7 @@ function clickMoreButton() {
  */
 function expandComments($item) {
   // Regardless of round, we expand whatever long coments are visible
-  var $expandLink = $item.find(S_EXPAND_COMMENT);
+  var $expandLink = $item.find(S_postCommentContentExpandButton);
   if ($expandLink.length) {
     $expandLink.each(function(i, item) {
       click(item);
@@ -2744,11 +2787,11 @@ function expandComments($item) {
     return;
   }
 
-  var $commentsButton = $item.find(_C_COMMENTS_OLDER_BUTTON);
+  var $commentsButton = $item.find(S_postCommentsOlderButton);
   if ($commentsButton.length && $commentsButton.is(':visible')) {
     click($commentsButton);
   } else {
-    $commentsButton = $item.find(_C_COMMENTS_BUTTON);
+    $commentsButton = $item.find(S_postCommentsButtonChevron_expand);
     if ($commentsButton.length && $commentsButton.is(':visible')) {
       click($commentsButton);
     }
@@ -2760,7 +2803,7 @@ function expandComments($item) {
  */
 function togglePostExpansion($item) {
   if (typeof $item !== 'undefined' && $item.length) {
-    var $expandLink = $item.find(_C_EXPAND_POST);
+    var $expandLink = $item.find(S_postContentExpandButton);
     if ($expandLink.length) {
       click($expandLink);
     }
@@ -2804,7 +2847,7 @@ function updateButtonArea($item, $subtree) {
     $subtree = $item;
 
   var $muteButton = $subtree.find('.gpme-mute-button');
-  var $muteMenu = $item.find(_C_MENU_MUTE);
+  var $muteMenu = $item.find(S_postMenuItemMute);
   if ($muteMenu.length) {
     return $muteButton.show();
   } else {
@@ -2898,7 +2941,7 @@ function foldComments(interactive, $item, $comments) {
     // If there's a G+ comment button, then we're set; otherwise, we have keep a minimum height
     // to smoothly transition to gpme-comments-title-folded
     var minHeight = 0;
-    var $commentsButton = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
+    var $commentsButton = $comments.find(S_postCommentsToggler);
     if (! $commentsButton.length || ! $commentsButton.is(':visible'))
       minHeight = COMMENTS_TITLE_FOLDED_OUTERHEIGHT;
 
@@ -2912,9 +2955,9 @@ function foldComments(interactive, $item, $comments) {
         $commentsTitleUnfolded.css({'min-height': '', 'height': '', 'opacity': ''});
       });
 
-// No need for min-height if there's C_COMMENTS_BUTTON_CONTAINER there anyway
+// No need for min-height if there's CN_postCommentsToggler there anyway
 //    $comments.css('min-height', '27px').slideUp(duration, function() {
-    var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
+    var $shownOrOlderComments = $comments.find(S_postCommentsList);
     slideUpFromTop($shownOrOlderComments, minHeight, duration, easing, function() {
       // 2011-08-17 Due to G+'s new comment refresh, the page auto scrolls if display:none
       $comments.css({height: 0, overflow: 'hidden'}); //$comments.hide();
@@ -2929,7 +2972,7 @@ function foldComments(interactive, $item, $comments) {
     // Scroll the page properly in parallel
     /* Doesn't work well since G+'s comment toggling and our new easing.
     // Favor the share line first so there's no unnecessary motion
-    var $ = $item.find(_C_ACTIONBAR);
+    var $ = $item.find(S_postActionBar);
     ($shareLine.length? $shareLine : $item.find('gpme-commentbar')).scrollintoview({ duration: duration, easing: 'linear', direction: 'y' });
     */
     var commentsTop = $comments.offset().top;
@@ -3018,13 +3061,13 @@ function unfoldComments(interactive, $item, $comments) {
     // If there's a G+ comment button, then we're set; otherwise, we have start from a minimum height
     // to smoothly transition from gpme-comments-title-folded
     var minHeight = 0;
-    var $commentsButtonContainer = $comments.find(_C_COMMENTS_BUTTON_CONTAINER);
+    var $commentsButtonContainer = $comments.find(S_postCommentsToggler);
     if (! $commentsButtonContainer.length || ! $commentsButtonContainer.is(':visible'))
       minHeight = COMMENTS_TITLE_FOLDED_OUTERHEIGHT;
 
     var $commentsTitleFolded = $item.find('.gpme-comments-title-folded');
     var $commentsTitleUnfolded = $item.find('.gpme-comments-title-unfolded');
-    var $shownOrOlderComments = $comments.find(_C_COMMENTS_CONTAINER);
+    var $shownOrOlderComments = $comments.find(S_postCommentsList);
     if (! $shownOrOlderComments.length) {
       error("unfoldComments: can't find shownOrOldeComments container");
       error($item);
@@ -3046,7 +3089,7 @@ function unfoldComments(interactive, $item, $comments) {
       updateCachedSgpItem($item);
 
       // Start loading any hidden comments.
-      var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
+      var $commentsButton = $item.find(S_postCommentsButtonChevron_expand);
       if ($commentsButton.length && $commentsButton.is(':visible'))
         click($commentsButton);
     });
@@ -3059,11 +3102,6 @@ function unfoldComments(interactive, $item, $comments) {
     $item.addClass('gpme-comments-unfolded');
     // NOTE: updateCommentbar needs to be done after updating classes
     updateCommentbar(id, $item, commentCount);
-
-    // Start loading any hidden comments.
-    var $commentsButton = $item.find(_C_COMMENTS_BUTTON);
-    if ($commentsButton.length && $commentsButton.is(':visible'))
-      click($commentsButton);
   }
 }
 
@@ -3105,7 +3143,7 @@ function updateCommentCount(id, $subtree, count) {
   var oldCount = $countFg.first().html();
   if (typeof oldCount != 'undefined' && oldCount !== null && oldCount !== '')
     oldCount = oldCount.replace(/.*>/, ''); // In case of middle of another animation
-  var oldNoHilite = $countBg.first().hasClass(C_GPME_COMMENTCOUNT_NOHILITE);
+  var oldNoHilite = $countBg.first().hasClass(CN_gpmeCommentCountNoHilite);
 
   // Change background of count
   var seenCount = lsGet(LS_COMMENTS_READ_COUNT, id);
@@ -3118,7 +3156,7 @@ function updateCommentCount(id, $subtree, count) {
       (seenCountChanged = lsGet(LS_COMMENTS_READ_COUNT_CHANGED, id))) {
     var newCount = count - (seenCount !== null ? seenCount : 0);
     animateCount($countFg, oldCount, newCount, function() {
-      $container.removeClass(C_GPME_COMMENTCOUNT_NOHILITE);
+      $container.removeClass(CN_gpmeCommentCountNoHilite);
       $container.removeClass('gpme-hide');
       $buttonArea.addClass('gpme-new-comments');
     });
@@ -3134,7 +3172,7 @@ function updateCommentCount(id, $subtree, count) {
       }, 200);
     }
   } else {
-    $container.addClass(C_GPME_COMMENTCOUNT_NOHILITE);
+    $container.addClass(CN_gpmeCommentCountNoHilite);
     $buttonArea.removeClass('gpme-new-comments');
     if (count) {
       // If we used to be hilite, then wee don't animate -- the user just marked as read.
@@ -3203,12 +3241,12 @@ function updateCommentsSnippet(id, $item, commentCount) {
     return;
   }
 
-  var $shownNames = $commentWrapper.find(_C_COMMENTS_SHOWN_NAMES).reverse();
+  var $shownNames = $commentWrapper.find(S_postCommentUserNames).reverse();
   $shownNames.each(function() { if (addNameUnique($(this).text()) > 15) return false; });
   // Pad with some older names
   if (names.length < 15) {
     // FIXME: only handles English "hand"
-    $commentWrapper.find(_C_COMMENTS_BUTTON_NAMES).text().split(/,\s*| and /).forEach(function(item) {
+    $commentWrapper.find(S_postCommentsButtonNames).text().split(/,\s*| and /).forEach(function(item) {
       if (addNameUnique(item) > 15) return false;
     });
   }
@@ -3264,12 +3302,12 @@ function countComments($subtree) {
     return 0;
 
   var commentCount = 0, text;
-  var $comments = $subtree.find(_C_COMMENTS_BUTTON_COUNT);
+  var $comments = $subtree.find(S_postCommentsTogglerCount);
   if ($comments.length) {
     commentCount += parseTextCount($comments.html().replace(/<.*/, ''));
   } else {
     commentCount += countShownComments($subtree);
-    $comments = $subtree.find(_C_COMMENTS_OLDER_COUNT);
+    $comments = $subtree.find(S_postCommentsOlderButton_count);
     if ($comments.length)
       commentCount += parseTextCount($comments.text());
   }
@@ -3297,7 +3335,7 @@ function parseTextCount(text) {
  * Returns the number of shown comments
  */
 function countShownComments($subtree) {
-  return $subtree.find(_C_COMMENTS_SHOWN).length;
+  return $subtree.find(S_postComment).length;
 }
 
 /**
@@ -3385,7 +3423,7 @@ function showPreview(e) {
   hideAnyPostItemPreview();
 
   // Skip if this is a muted item
-  if (isItemMuted($item))
+  if (isItemMutedOrDeleted($item))
     return;
 
 /*
@@ -3406,7 +3444,7 @@ function showPreview(e) {
 
     // Enhance with our own commenting links
     if (! $item.hasClass('gpme-preview-enh')) {
-      var $commentLink = $item.find(_C_LINK_COMMENT + ',' + _C_FAKEINPUT_COMMENT);
+      var $commentLink = $item.find(S_postCommentLink + ',' + S_postCommentButton);
       // NOTE: Comments could be disabled for that post
       if ($commentLink.length) {
         // NOTE: Replies and More incorrectly injects the same 'a-b' class
@@ -3414,9 +3452,9 @@ function showPreview(e) {
         // injected before the first preview pops up)
         $commentLink.each(function(i, value) {
           var $value = $(value);
-          // NOTE: we leave the C_FAKEINPUT_COMMENT so that G+ hides our box when
+          // NOTE: we leave the classNames for postCommentButton so that G+ hides our box when
           // user starts editing
-          $value.clone().removeClass(C_LINK_COMMENT).
+          $value.clone().removeClass(X.classNames('postCommentLink')).
             addClass('gpme-link-comment').
             click(function() { startCommentInPreview($item, $value); }).
           /* Let's try something else
@@ -3491,7 +3529,7 @@ function showPreview(e) {
     $lastPreviewedItem = $item;
 
     // Change the max-height of the post content
-    var $itemGuts = $post.children(_C_ITEM_GUTS);
+    var $itemGuts = $post.children(S_postContainer);
     if (! $itemGuts.length) {
       error("showPreview: Can't find post content style class");
     } else {
@@ -3533,7 +3571,7 @@ function showPreview(e) {
  * We scroll the preview pane instead.
  */
 function startCommentInPreview($item, $origLink) {
-  var $itemGuts = $item.children('.gpme-post-wrapper').children(_C_ITEM_GUTS);
+  var $itemGuts = $item.children('.gpme-post-wrapper').children(S_postContainer);
 
   // Hide so that there's no scrolling
   $itemGuts.hide();
@@ -3567,7 +3605,7 @@ function getFocusInCommentEditable($itemGuts, attempt) {
  */
 function onPreviewMouseEnter() {
   var $post = $(this);
-  var $item = $post.closest(_C_ITEM);
+  var $item = $post.closest(S_post);
 
   // Start a timer for marking the item as read
   if (markItemAsReadTimer) {
@@ -3585,7 +3623,7 @@ function onPreviewMouseEnter() {
   // a hangout or a photo album with tags.
   // The reason, is if the preview is up, and the post disappears, then page's scrollbars
   // wont' come back.
-  if (! $item.length || ! $item.find(S_CONTENT_PHOTO_TAGGED + ',' + _C_HANGOUT_LIVE_ICON).length)
+  if (! $item.length || ! $item.find(S_CONTENT_PHOTO_TAGGED + ',' + S_hangoutLiveIcon).length)
     disableBodyScrollbarY();
 }
 
@@ -3593,7 +3631,7 @@ function onPreviewMouseEnter() {
  * Responds to mouse out events
  */
 function onPreviewMouseOut() {
-  var $item = $(this).closest(_C_ITEM);
+  var $item = $(this).closest(S_post);
 
   // Re-eable the page's scrollbars
   enableBodyScrollbarY();
@@ -3624,10 +3662,10 @@ function disableBodyScrollbarY() {
   var newWidth = $body.first().width();
   $body.css({'overflow-y': 'hidden', 'max-width': '' + width + 'px' });
   // Relative position is for the absolute-positioned #gbg to stay put
-  $(_ID_GBAR_TOP).css({'max-width': '' + width + 'px', 'position': 'relative'});
-  $(_C_GPLUSBAR).css({'max-width': '' + width + 'px'});
-  $(_ID_CONTENT).css('max-width', '' + width + 'px');
-  $(_C_FEEDBACK_LINK).css('right', '' + (newWidth - width - 1) + 'px');
+  $(S_gbarTop).css({'max-width': '' + width + 'px', 'position': 'relative'});
+  $(S_gplusBar).css({'max-width': '' + width + 'px'});
+  $(S_content).css('max-width', '' + width + 'px');
+  $(S_feedbackLink).css('right', '' + (newWidth - width - 1) + 'px');
 }
 
 /**
@@ -3636,10 +3674,10 @@ function disableBodyScrollbarY() {
 function enableBodyScrollbarY() {
   var $body = $('html');
   $body.css({'overflow-y': '', 'max-width': ''});
-  var $gbar = $(_ID_GBAR);
-  $(_ID_GBAR_TOP).css({'max-width': '', 'position': ''});
-  $(_C_GPLUSBAR).css({'max-width': ''});
-  $(_C_FEEDBACK_LINK).css('right', '');
+  var $gbar = $(S_gbar);
+  $(S_gbarTop).css({'max-width': '', 'position': ''});
+  $(S_gplusBar).css({'max-width': ''});
+  $(S_feedbackLink).css('right', '');
 }
 
 /**
@@ -3660,7 +3698,7 @@ function hidePostItemPreview($item) {
     return;
 
   // Skip if this is a muted item
-  if (isItemMuted($item))
+  if (isItemMutedOrDeleted($item))
     return;
 
   // Delete any existing timer
@@ -3672,7 +3710,7 @@ function hidePostItemPreview($item) {
   var $post = $item.children('.gpme-post-wrapper');
   if ($post.length) {
     // Change the max-height of the post content
-    var $itemGuts = $post.children(_C_ITEM_GUTS);
+    var $itemGuts = $post.children(S_postContainer);
     if (! $itemGuts.length) {
       error("showPreview: Can't find post content style class");
     } else {
@@ -3819,15 +3857,15 @@ function updateContentPaneButtons($subtree) {
 
   // Try for streams
   var $heading = typeof $subtree != 'undefined' ?
-    $subtree.find(_C_CONTENT_PANE_HEADING) : $(_C_CONTENT_PANE_HEADING);
+    $subtree.find(S_circleStreamContentPaneHeadingText) : $(S_circleStreamContentPaneHeadingText);
   // Try for profile
   if ($heading.length != 1) {
     $heading = typeof $subtree != 'undefined' ?
-      $subtree.find(_C_PROFILE_HEADING) : $(_C_PROFILE_HEADING);
+      $subtree.find(S_profileHeadingName) : $(S_profileHeadingName);
     // Try for games
     if ($heading.length != 1)
       $heading = typeof $subtree != 'undefined' ?
-        $subtree.find(_C_GAMES_HEADING) : $(_C_GAMES_HEADING);
+        $subtree.find(S_gamesActivitiesStreamHeadingText) : $(S_gamesActivitiesStreamHeadingText);
   }
 
   if ($heading.length != 1) {
@@ -3846,7 +3884,7 @@ function updateContentPaneButtons($subtree) {
     $buttons.removeClass('gpme-list-mode');
     // Count how many items are unfolded
     var unfoldedItemsCount = (typeof $subtree != 'undefined' ?
-      $subtree.find(_C_ITEM + '.gpme-unfolded') : $(_C_ITEM + '.gpme-unfolded')).length;
+      $subtree.find(S_post + '.gpme-unfolded') : $(S_post + '.gpme-unfolded')).length;
     var $expandOrCollapse = $buttons.children('.gpme-button-expand-or-collapse-all');
     if (unfoldedItemsCount)
       $expandOrCollapse.removeClass('gpme-select-expand-all');
@@ -3970,11 +4008,11 @@ $(document).ready(function() {
  * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
  */
 function getMessagesFromBackground(callback) {
-  chrome.extension.sendRequest({action: 'gpmeGetMessages'}, function(response) {
-    i18nMessages = response;
-
-    callback();
-  });
+  chrome.extension.sendRequest({action: 'gpmeGetMessages'},
+    wrapTryCatch('getMessagesFromBackground', function(response) {
+      i18nMessages = response;
+      callback();
+    }));
 }
 
 /*
@@ -4024,15 +4062,19 @@ function main() {
   jQuery.easing.def = 'easeInOutQuad';
 
   // Google+ DOM check
-  // FIXME: Change Gplusx to do this for us so we dont' have to reference _ID_GBAR
+  // FIXME: Change Gplusx to do this for us so we dont' have to reference S_gbar
   var $gbar = $(_ID_GB);
   var mappingKey = '';
   if ($gbar.length)
     mappingKey = $gbar.parent().attr('class');
-  if (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0) {
-    error("Google+ has changed is layout again (DOM CSS), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
+  if (isEnabledOnThisPage() && (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0)) {
+    error("Google+ has changed is layout again (CSS class names), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
     getAppDetailsFromBackground(function(theAppDetails) {
       appDetails = theAppDetails;
+
+      // NOTE: Some other extensions mess with the CSS class names
+      mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed|undefined)\s*$/, '').replace(/\s+/g, '_');
+
       injectNews(mappingKey);
     });
 
@@ -4042,31 +4084,26 @@ function main() {
   // Initialize Gplusx
   gpx = new Gplusx({
     extendJQuerySelectors: true,
-    extendJQueryPseudoClasses: true,
-    extendQuerySelectors: true,
+    extendJQueryPseudoClasses: DEBUG,
+    extendQuerySelectors: DEBUG,
     aliasAPI: true,
+    enableKeyCommands: DEBUG,
+    automap: DEBUG,
     strict: DEBUG,
-    warn: DEBUG,
     debug: DEBUG
   }, function() {
-    // Overwrite what's in local storage
-    if (DEBUG)
-      gpx.newMap();
-
-    // Remap based on what's on page
-    gpx.automapPage();
-    if (DEBUG)
-      gpx.writeMapToFile('gplusx-map.json');
-
+    // Overwrite what's in local storage so that we can test
     if (DEBUG) {
-      gpx.dumpToConsole("After automapping page:");
+      gpx.newMap();
+//      gpx.automapPage();
+      gpx.dumpToConsole("After automapping page");
 
 //    debug('Testing jQuery extension', $('%post'));
 //    debug('Testing jQuery extension', $('%post[aria-live]:eq(0)'));
 //    debug('Testing querySelector extension', document.querySelectorAll('%post'));
 //    debug('Testing querySelector extension', document.querySelector('.ke%post'));
     //debug('Testing alias', $X('%post'));
-    //debug('Testing alias', X.cn('%post'));
+    //debug('Testing alias', X.classNames('%post'));
 
       // Testing strit mode
 //      gpx.config.strict = false;
@@ -4088,54 +4125,56 @@ function main() {
 
     // Get settings
     getOptionsFromBackground(function() {
-      // Based on settings, set the height of a folded bar
       $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
       if ( settings.nav_summaryLines > 1)
         $titlebarFolded.css('white-space', 'inherit');
 
       // Listen for when there's a total AJAX refresh of the stream,
       // on a regular page
-      var $contentPane = $('%contentPane'); // $(_ID_CONTENT_PANE);
+      var $contentPane = $('%contentPane'); // $(S_contentPane);
       if ($contentPane.length) {
         var contentPane = $contentPane.get(0);
         $contentPane.bind('DOMNodeInserted', function(e) {
           // This happens when a new stream is selected
           if (e.relatedNode.parentNode == contentPane) {
             // We're only interested in the insertion of entire content pane
-            onContentPaneUpdated(e);
-            return;
+            return onContentPaneUpdated(e);
           }
 
           var id = e.target.id;
           // ':' is weak optimization attempt for comment editing
           if (id && id.charAt(0) == ':')
-            return;
+            return null;
 
           var target = e.target;
 
+          //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
           // This happens when a new post is added, either through "More"
           // or a new recent post.
           // Or it's a Start G+ post
           if (id && (id.substring(0,7) == 'update-'))
-            onItemInserted(e);
+            return onItemInserted(e);
           else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
-            onSgpItemInserted(e);
+            return onSgpItemInserted(e);
           // This happens when switching from About page to Posts page
           // on profile
           else if (e.relatedNode && e.relatedNode.id && e.relatedNode.id.indexOf('-posts-page') > 0)
-            onContentPaneUpdated(e);
+            return onContentPaneUpdated(e);
+
           // This happens when posts' menus get inserted.  If they're inserted on a page load,
           // then they have [role=menu], otherwise all they have is a simple classname, e.g. 'Om', not even
           // the 'a-z' class which comes later.  The problem is that we can't automap the 'Om' early enough.
           // We do know that the children come in as [role=button]s which later become [role=menuitem]
-          // Also, check for Usability Boost's star
-          //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-          else if (target.getAttribute('role') == "menu" ||
-                   target.childElementCount && target.childNodes[0] &&
-                   target.childNodes[0].nodeType == Node.ELEMENT_NODE &&
-                   target.childNodes[0].getAttribute('role') == 'button' ||
-              target.className == C_UBOOST_STAR)
-            onItemDivInserted(e);
+          var itemDivInserted = false;
+          if (target.getAttribute('role') == "menu" || target.className == C_UBOOST_STAR) {
+            itemDivInserted = true;
+          } else if (target.childElementCount) {
+            var childNode = target.childNodes[0];
+            if (childNode && childNode.nodeType == Node.ELEMENT_NODE && childNode.getAttribute('role') == 'button')
+              itemDivInserted= true;
+          }
+          if (itemDivInserted)
+            return onItemDivInserted(e);
         });
       } else  {
         // This can happen if we're in the settings page for example
@@ -4145,7 +4184,7 @@ function main() {
       // Listen when status change
       // WARNING: DOMSubtreeModified is deprecated and degrades performance:
       //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-      var $status = $('%gbarToolsNotificationUnitFg'); // $(_ID_STATUS_FG);
+      var $status = $('%gbarToolsNotificationUnitFg'); // $(S_gbarToolsNotificationUnitFg);
       if ($status.length)
         $status.bind('DOMSubtreeModified', onStatusUpdated);
       else
@@ -4154,19 +4193,20 @@ function main() {
         debug("main: Can't find status node; badges won't work.");
 
       // Listen to incoming messages from background page
-      chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-        if (request.action == "gpmeTabUpdateComplete") {
-          // Handle G+'s history state pushing when user clicks on different streams (and back)
-          onTabUpdated();
-        } else if (request.action == "gpmeModeOptionUpdated") {
-          // Handle options changes
-          onModeOptionUpdated(request.mode);
-        } else if (request.action == "gpmeResetAll") {
-          onResetAll();
-        } else if (request.action == "gpmeBrowserActionClick") {
-          onBrowserActionClick();
-        }
-      });
+      chrome.extension.onRequest.addListener(wrapTryCatch('chrome.extension.onRequest.addListener',
+        function(request, sender, sendResponse) {
+          if (request.action == "gpmeTabUpdateComplete") {
+            // Handle G+'s history state pushing when user clicks on different streams (and back)
+            onTabUpdated();
+          } else if (request.action == "gpmeModeOptionUpdated") {
+            // Handle options changes
+            onModeOptionUpdated(request.mode);
+          } else if (request.action == "gpmeResetAll") {
+            onResetAll();
+          } else if (request.action == "gpmeBrowserActionClick") {
+            onBrowserActionClick();
+          }
+        }));
 
       // Listen to keyboard shortcuts
       $(window).keydown(onKeydown);
