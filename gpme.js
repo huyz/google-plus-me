@@ -1916,7 +1916,7 @@ function constructCommentHeightChangedRegExp() {
     }
     commentsHeightChangedRegExp = new RegExp('(?:^|\\s)(?:' + regexpString + ')(?:\\s|$)');
     commentsHeightChangedElementsRemaining--;
-    debug('addToCommentsHeightChangedClassList: regexp=' + commentsHeightChangedRegExp);
+    //debug('addToCommentsHeightChangedClassList: regexp=' + commentsHeightChangedRegExp);
   }
 
   // If this is the first time we're running, initialize
@@ -4104,9 +4104,9 @@ function main() {
   }, function() {
     // Overwrite what's in local storage so that we can test
     if (DEV) {
-      gpx.newMap();
+//      gpx.newMap();
 //      gpx.automapPage();
-      gpx.dumpToConsole("After automapping page");
+//      gpx.dumpToConsole("After automapping page");
 
 //    debug('Testing jQuery extension', $('%post'));
 //    debug('Testing jQuery extension', $('%post[aria-live]:eq(0)'));

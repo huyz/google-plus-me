@@ -104,7 +104,7 @@ fi
 if [ $mode = beta ]; then
   DEBUG=true
   PARANOID=false
-  echo "\n== Web Store beta =="
+  echo -e "\n== Web Store beta =="
   perl -pi -e 's/^(var DEBUG =).*/$1 true;/' $SOURCES
   perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
   perl -pi -e 's/^(var DEV =).*/$1 false;/' $SOURCES
