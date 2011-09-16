@@ -72,6 +72,7 @@ if [ $mode = regular ]; then
   echo -e "\n== Paranoid edition =="
   perl -pi -e 's/^(var DEBUG =).*/$1 false;/' $SOURCES
   perl -pi -e 's/^(var PARANOID =).*/$1 true;/' $SOURCES
+  perl -pi -e 's/^(var DEV =).*/$1 false;/' $SOURCES
   rm -rf _locales
   cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
@@ -88,6 +89,7 @@ if [ $mode = regular ]; then
   echo -e "\n== Web Store =="
   perl -pi -e 's/^(var DEBUG =).*/$1 false;/' $SOURCES
   perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
+  perl -pi -e 's/^(var DEV =).*/$1 false;/' $SOURCES
   rm -rf _locales
   cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
@@ -105,6 +107,7 @@ if [ $mode = beta ]; then
   echo "\n== Web Store beta =="
   perl -pi -e 's/^(var DEBUG =).*/$1 true;/' $SOURCES
   perl -pi -e 's/^(var PARANOID =).*/$1 false;/' $SOURCES
+  perl -pi -e 's/^(var DEV =).*/$1 false;/' $SOURCES
   rm -rf _locales
   cp -a ../../{manifest.json,_locales} .
   perl -pi -e "
@@ -117,6 +120,6 @@ fi
 
 # huyz.us beta
 # NOTE: this must run right after eerything else.
-echo -e "\n== Independent beta (crx file) with DEBUG=$DEBUG PARANOID=$PARANOID"
+echo -e "\n== Independent beta (crx file) with DEV=false DEBUG=$DEBUG PARANOID=$PARANOID"
 perl -pi -e 's#"homepage_url"#"update_url": "http://huyz.us/gpme-beta-updates.xml",\n  $&#; ' manifest.json
 echo "Now go to Chrome > Manage Extensions and click 'Pack extension'"

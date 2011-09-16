@@ -50,11 +50,17 @@
 
 'use strict';
 
-// NOTE: Keep format the same as it is programmatically changed by package.sh
-var DEBUG = true;
 // If true, won't need the 'tabs' permission
 // NOTE: Keep format the same as it is programmatically changed by package.sh
 var PARANOID = false;
+// If true, this turns on all sorts of debugging output in the JS console.  This is appropriate
+// to turn on for both development and beta.
+// NOTE: Keep format the same as it is programmatically changed by package.sh
+var DEBUG = true;
+// If true, this will change the behavior of the app for development.  This is only appropriate
+// to turn on for development but not beta.
+// NOTE: Keep format the same as it is programmatically changed by package.sh
+var DEV = true;
 
 /****************************************************************************
  * Utility for constants
@@ -75,6 +81,9 @@ var C_GBAR                      = 'c-Yd-V c-i-Yd-V'; // 'a-Rf-R a-f-Rf-R'; // On
 var DISABLED_PAGES_URL_REGEXP   = /\/(?:posts\/|notifications\/|sparks(:?\/|$)|up\/start\/)/;
 
 function defineDomConstants(ns) {
+  // NOTE: only cache class names (CN_*) here if we're sure that they will be already mapped very early no
+  // matter what page the user first loads G+
+
   ns.S_gbar                             = '%gbar'; // '#gb';
   ns.S_gbarTop                          = '%gbarTop'; // '#gbw';
   ns.S_gbarToolsNotificationA           = '%gbarToolsNotificationA'; // '#gbg1';
@@ -90,6 +99,7 @@ function defineDomConstants(ns) {
 
   // Icons
   ns.CN_hangoutLiveIcon                = X.classNames('hangoutLiveIcon'); // 'kC'
+  ns.CN_hangoutLiveInactiveIcon        = X.classNames('hangoutLiveInactiveIcon'); // 'kC'
   ns.S_hangoutLiveIcon                 = '%hangoutLiveIcon';
   // We use backups for these icons because the first page load may have been on a page without share icons
   // and we need these classes for our pre-created DOM elements
@@ -290,7 +300,7 @@ var settings;
 
 // Hold all the messages from background
 // Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
-if (DEBUG)
+if (DEV)
   var i18nMessages;
 
 // chrome.app.getDetails() as returned from the background
@@ -354,7 +364,7 @@ function precreateElements(ns) {
   ns.$titleDashTpl = $('<span class="gpme-sep">  -  </span>');
   ns.$titleQuoteTpl = $('<span class="gpme-sep">  +  </span>');
   ns.$hangoutLiveIconTpl = $('<span class="gpme-title-icons ' + CN_hangoutLiveIcon + '" style="margin-left: 5px"></span>'); // 
-  ns.$hangoutPastIconTpl = $hangoutLiveIconTpl.clone().css('width', '21px');
+  ns.$hangoutLiveInactiveIconTpl = $('<span class="gpme-title-icons ' + CN_hangoutLiveInactiveIcon + '" style="margin-left: 5px; width: 21px"></span>'); // 
   // $cameraIconTpl: need container so it doesn't have the green of hover
   ns.$cameraIconTpl = $('<span class="' + CN_makeChildShareIconNonHoverable + '"><span class="gpme-title-icons ' + CN_shareIconsPhoto + '" style="margin: 0 4px"></span></span>');
   ns.$videoIconTpl = $('<span class="' + CN_makeChildShareIconNonHoverable + '"><span class="gpme-title-icons ' + CN_shareIconsVideo + '" style="margin: 0 4px"></span></span>');
@@ -642,7 +652,7 @@ function isEnabledOnThisPage($subtree) {
   return !
     ['%notificationsPageMarker', // gwa // Look for the notifications stream
      '%sparkPageMarker', // wja // Look for 3rd div in blank one, ancestor of stream
-     '%sparksPageMarker',
+     //'%sparksPageMarker', FIXME: right now sparksPageMarker picks up sparksPageMarker as well, which is faster anyway.
      '%singlePostPageMarker' // 'c-ng-L1-P'; // grandchild of #contentPane
     ].some(function(marker) {
       if ($subtree.is(marker) || $subtree.find(marker).length) {
@@ -2273,7 +2283,7 @@ function foldItem(options, $item, $post) {
           // FIXME: haven't checked what happens when hangout ends
           $clonedTitle.append($post.find('%hangoutJoinButton').length ?
             $hangoutLiveIconTpl.clone() :
-            $hangoutPastIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
+            $hangoutLiveInactiveIconTpl.clone()); // https://plus.google.com/116805285176805120365/posts/8eJMiPs5PQW
           break;
         case 'Photos':
           /* We already picked out photos.  Move code into here?  */ true;
@@ -3983,7 +3993,7 @@ $(document).ready(function() {
   // for our news notification
   injectStylesheet();
   
-  if (DEBUG)
+  if (DEV)
     getMessagesFromBackground(main);
   else // Get i18n messages
     main();
@@ -3993,7 +4003,7 @@ $(document).ready(function() {
  * When the page has all the stylesheets, we do a survey of the
  * page to get the selectors for the latest rules that we're writing
  */
-//if (DEBUG) {
+//if (DEV) {
 //  $(window).load(function() {
 //    // TODO: we gotta find the event that tells us the stylesheets are ready.
 //    setTimeout(function() {
@@ -4019,7 +4029,7 @@ function getMessagesFromBackground(callback) {
  * Initializations that may depend on the background page
  */
 var getMessage;
-if (DEBUG) {
+if (DEV) {
   /**
    * Workaround for http://code.google.com/p/chromium/issues/detail?id=53628
    */
@@ -4084,16 +4094,16 @@ function main() {
   // Initialize Gplusx
   gpx = new Gplusx({
     extendJQuerySelectors: true,
-    extendJQueryPseudoClasses: DEBUG,
-    extendQuerySelectors: DEBUG,
+    extendJQueryPseudoClasses: DEV,
+    extendQuerySelectors: DEV,
     aliasAPI: true,
-    enableKeyCommands: DEBUG,
-    automap: DEBUG,
-    strict: DEBUG,
-    debug: DEBUG
+    enableKeyCommands: DEV,
+    automap: DEV,
+    strict: DEV,
+    debug: DEV
   }, function() {
     // Overwrite what's in local storage so that we can test
-    if (DEBUG) {
+    if (DEV) {
       gpx.newMap();
 //      gpx.automapPage();
       gpx.dumpToConsole("After automapping page");
