@@ -6,7 +6,7 @@
 # Web:              http://huyz.us/google-plus-me/
 # Source:           https://github.com/huyz/google-plus-me
 # Author:           Huy Z  http://huyz.us/
-# Updated on:       2011-09-12
+# Updated on:       2011-09-17
 # Created on:       2011-07-11
 #
 # Installation:
@@ -16,12 +16,14 @@
 #   See http://huyz.us/google-plus-me/
 #
 # TODO:
-#   This file is in bad need of refactoring for OO abstraction.
-#   It has long outgrown its initial planned lifetime.
-#   It's also my first JavaScript app -- parden the cruft.
+#   This file is in bad need of refactoring for abstraction and architectural
+#   patterns, although there hasn't been a huge need for re-use yet.
+#   Since this project was initially a learning tool, I favored getting things done fast over
+#   thoughtful design.
+#   Still learning JavaScript, so pardon the cruft.
 #
 # Thanks:
-#   This extension originally took some ideas from
+#   This extension initially took some ideas from
 #   https://github.com/mohamedmansour/google-plus-extension/
 #   http://code.google.com/p/buzz-plus/
 #   https://github.com/wittman/googleplusplus_hide_comments .
@@ -75,6 +77,9 @@ RegExp.quote = function(str) {
  * Constants
  ***************************************************************************/
 
+// Google+ API dev key
+var plusApiDevKey = 'AIzaSyDueLroS1nPftNS3Ts5ik_GmLoYGuDkQaQ';
+
 // FIXME: these will go away
 var _ID_GB                      = '#gb';
 var C_GBAR                      = 'c-Yd-V c-i-Yd-V'; // 'a-Rf-R a-f-Rf-R'; // Only for checking, sometimes people have extra class, e.g. 'a-rg-M a-e-rg-M a-rg-M-El'
@@ -83,6 +88,8 @@ var DISABLED_PAGES_URL_REGEXP   = /\/(?:posts\/|notifications\/|sparks(:?\/|$)|u
 function defineDomConstants(ns) {
   // NOTE: only cache class names (CN_*) here if we're sure that they will be already mapped very early no
   // matter what page the user first loads G+
+
+  ns.S_notificationsIframe              = '#gbsf'; // FIXME: webx
 
   ns.S_gbar                             = '%gbar'; // '#gb';
   ns.S_gbarTop                          = '%gbarTop'; // '#gbw';
@@ -245,6 +252,9 @@ var GAP_ABOVE_ITEM_AT_TOP                         = 2;
 var GAP_ABOVE_PREVIEW                             = 7;
 var SLACK_BELOW_PREVIEW                           = 77; // Needed to prevent G+ from jumping page when user adds comment
 var COMMENTS_TITLE_FOLDED_OUTERHEIGHT             = 36;
+var CARD_POSTS_CONTENT_HORIZ_PADDING              = 5;
+var NOTIFICATION_FRAME_WIDTH                      = 440;
+var NOTIFICATION_FRAME_MAX_HOVERCARD_MAX_OFFSET_LEFT = 210;
 
 // Duration of clickwall.
 // NOTE: timeout must be less than jquery.hoverIntent's overTimeout, otherwise
@@ -262,6 +272,9 @@ var LS_COMMENTS_UNFOLDED           = LS_COMMENTS_ + 'u_'; // Applies if comments
 var LS_COMMENTS_READ_COUNT         = LS_COMMENTS_ + 'rc_';
 var LS_COMMENTS_READ_COUNT_CHANGED = LS_COMMENTS_ + 'rcc_';
 var LS_URL_LIST_LAST_UNFOLDED      = LS_HISTORY_ + 'ullu_'; // Applies in list mode
+
+var LS_CARD_POSTS                  = LS_CARD_POSTS + 'cp_';
+
 // DEPRECATED: old localStorage keys
 var OLD_KEYS = {
   LS_FOLDED                      : 'gpme_post_folded_',
@@ -291,6 +304,9 @@ var commentsHeightChangedElementsRemaining = 0;
 /****************************************************************************
  * Init
  ***************************************************************************/
+
+// Frame; either 'top' or 'notifications'
+var frame;
 
 // GPlusX SDK
 var gpx;
@@ -462,6 +478,12 @@ function precreateElements(ns) {
     append($('<div class="gpme-button-expand-or-collapse-all"></div>').
       append($collapseAllButtonTpl).
       append($expandAllButtonTpl));
+
+  //
+  // Hover cards
+  //
+
+  ns.$hoverCardPostsTpl = $('<tr id="gpme-card-posts" style="display:none"><td colspan=2><div id="gpme-card-posts-content" style="display:none"><div id="gpme-card-posts-recent"><div class="gpme-card-posts-loading"><div>Loading...</div></div></div><div id="gpme-card-posts-top" style="display:none"><div class="gpme-card-posts-loading"><div>Loading...</div></div></div><div id="gpme-card-posts-cloud" style="display:none"><div class="gpme-card-posts-loading"><div>Loading...</div></div></div></div></td></tr>');
 }
 
 
@@ -707,6 +729,15 @@ function getOptionsFromBackground(callback) {
     wrapTryCatch('getOptionsFromBackground', function(theSettings) {
       settings = theSettings;
       displayMode = settings.nav_global_postsDefaultMode;
+
+      // Override the built-in key with the options
+      var newKey = settings.apiKey;
+      if (newKey) {
+        newKey = newKey.replace(/\W/g, '');
+        if (newKey)
+          plusApiDevKey = newKey;
+      }
+
       callback();
     }));
 }
@@ -883,6 +914,36 @@ function slideDown($elem, minHeight, duration, easing, callback) {
     callback();
   });
 }
+
+// http://dansnetwork.com/javascript-iso8601rfc3339-date-parser/
+Date.prototype.setISO8601 = function(dString) {
+  var regexp = /(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))/;
+
+  if (dString.toString().match(new RegExp(regexp))) {
+    var d = dString.match(new RegExp(regexp));
+    var offset = 0;
+
+    this.setUTCDate(1);
+    this.setUTCFullYear(parseInt(d[1],10));
+    this.setUTCMonth(parseInt(d[3],10) - 1);
+    this.setUTCDate(parseInt(d[5],10));
+    this.setUTCHours(parseInt(d[7],10));
+    this.setUTCMinutes(parseInt(d[9],10));
+    this.setUTCSeconds(parseInt(d[11],10));
+    if (d[12])
+      this.setUTCMilliseconds(parseFloat(d[12]) * 1000);
+    else
+      this.setUTCMilliseconds(0);
+    if (d[13] != 'Z') {
+      offset = (d[15] * 60) + parseInt(d[17],10);
+      offset *= ((d[14] == '-') ? -1 : 1);
+      this.setTime(this.getTime() - offset * 60 * 1000);
+    }
+  } else {
+    this.setTime(Date.parse(dString));
+  }
+  return this;
+};
 
 /****************************************************************************
  * Event Handlers
@@ -1497,12 +1558,14 @@ function onScroll(e) {
  * Injects styles in current document.
  * This should be run early.
  */
-function injectStylesheet() {
-  var linkNode  = document.createElement('link');
+function injectStylesheet(doc) {
+  doc = doc || document;
+
+  var linkNode  = doc.createElement('link');
   linkNode.rel = 'stylesheet';
   linkNode.type = 'text/css';
   linkNode.href = chrome.extension.getURL('gpme.css') + '?' + new Date().getTime();
-  document.getElementsByTagName('head')[0].appendChild(linkNode);
+  doc.getElementsByTagName('head')[0].appendChild(linkNode);
 }
 
 /**
@@ -3914,6 +3977,478 @@ function updateContentPaneButtonsThrottled() {
 }
 
 /****************************************************************************
+ * HoverCard
+ ***************************************************************************/
+
+// Handler so that we can unbind
+var hoverButtonMouseEnterHandler;
+
+// Timer for resetting the hovercard
+var resetHoverCardTimer;
+
+// Cached hover card posts
+var cachedHoverCardPosts = {};
+// Limit the cache size
+var lastCachedHoverCardPosts = [];
+
+// Currently-selected tab
+var selectedHoverCardTabId;
+
+// Width of a stretched hovercard
+var finalHoverCardWidth;
+
+/**
+ * Adds event handlers to the hovercards
+ */
+function listenToHoverCardUpdates() {
+  /**
+   * Given a document, gets the hovercard and start listening to updates
+   */
+  function gotDocument($document) {
+    // Inject stylesheets into this frame
+    var doc = $document.get(0);
+    if (doc !== document)
+      injectStylesheet(doc);
+
+    var getHoverCard = function() {
+      // NOTE: document.defaultView.frameElement is to go the other way.
+      var $hoverCard = $document.find('body > div:empty:not(:visible):not([style*="absolute"]), .c-W-kj');
+
+      if ($hoverCard.length > 1)
+        error('listenToHoverCardUpdates.gotDocument: found ' + $hoverCard.length + ' hover cards.');
+
+      if ($hoverCard.length) {
+        gotHoverCard($hoverCard.first());
+      } else {
+        debug('listenToHoverCardUpdates.gotDocument: Can\'t find it.  Trying again...');
+        setTimeout(function() { getHoverCard(); }, 2000);
+      }
+    };
+
+    getHoverCard();
+  }
+
+  function gotHoverCard($hoverCard) {
+    if ($hoverCard.hasClass('gpme-enh'))
+      return;
+    $hoverCard.addClass('gpme-enh');
+
+    // NOTE: I hacked jquery to make getComputedStyle work within an iframe
+    // so that left (and top) can be determined properly and animation works.
+    $hoverCard.get(0).ownerDocument.defaultViewForUserScript = window;
+
+    var hoverCard = $hoverCard.get(0);
+    var hoverCardUpdatedTimer;
+    var hoverCardUpdateHandler = $.throttle(200, 50, function(e) {
+      onHoverCardUpdated(e, $hoverCard); });
+    debug('listenToHoverCardUpdates.gotDocument: Binding.');
+    $hoverCard.bind('DOMSubtreeModified', function(e) {
+      if (e.target === hoverCard) {
+        if (hoverCardUpdatedTimer)
+          clearTimeout(hoverCardUpdatedTimer);
+        // Give time for the entire hover card to be constructed
+        hoverCardUpdatedTimer = setTimeout(function() { onHoverCardUpdated(e, $hoverCard); }, 100);
+      }
+    });
+  }
+
+  // Listen to updates for the hovercard in the top frame
+  gotDocument($(document));
+
+  // Prepare to find the notifications frame
+  var $gbarToolsNotification = $(S_gbarToolsNotificationA);
+  if (! $gbarToolsNotification.length) {
+    error('listenToHoverCardUpdates: can\'t find notification button ' + S_gbarToolsNotificationA);
+    return;
+  }
+
+  $gbarToolsNotification.click(function() {
+    // The notification frame appears after a click and it takes time before everything is constructed
+    // So give G+ enough time to set up the structure
+    setTimeout(function() { gotDocument($(S_notificationsIframe).contents()); }, 1000);
+  });
+}
+
+/**
+ * Injects our own button into the hovercard
+ */
+function onHoverCardUpdated(e, $hoverCard) {
+  // Add elements if not enhanced
+  if (! $hoverCard.hasClass('gpme-enh')) {
+    $hoverCard.addClass('gpme-enh');
+    var $tbody = $hoverCard.find('tbody');
+    if (! $tbody.length) {
+      error('onHoverCardUpdated: Can\'t find tbody in hover card');
+      return;
+    }
+    var handler = function(e) { onCardPostsTabClick(e, $hoverCard); };
+    var $hoverCardButtonRecentTab = $('<div id="gpme-card-posts-tab-recent" class="gpme-card-posts-tab gpme-card-posts-tab-selected">Recent</div>').click(handler);
+    var $hoverCardButtonTopTab = $('<div id="gpme-card-posts-tab-top" class="gpme-card-posts-tab">Top</div>').click(handler);
+    var $hoverCardButtonCloudTab = $('<div id="gpme-card-posts-tab-cloud" class="gpme-card-posts-tab">Cloud</div>').click(handler);
+    var $hoverCardButtonTabs = $('<div id="gpme-card-posts-tabs" style="display:none"></div>').append($hoverCardButtonRecentTab, $hoverCardButtonTopTab, $hoverCardButtonCloudTab);
+    var $hoverCardButtonTd = $('<td colspan=2 id="gpme-card-posts-button"><div id="gpme-card-posts-button-text">Posts</div></td>').append($hoverCardButtonTabs);
+    var $hoverButton = $('<tr></tr>').append($hoverCardButtonTd).appendTo($tbody);
+
+    var $cardPosts = $hoverCardPostsTpl.clone().insertAfter($hoverButton);
+
+    selectedHoverCardTabId = 'gpme-card-posts-tab-recent';
+
+    hoverButtonMouseEnterHandler = function() { onCardPostsButtonMouseEnter($hoverCard, $cardPosts, $hoverButton); };
+
+    $hoverButton.bind('mouseenter', hoverButtonMouseEnterHandler);
+    $hoverCard.bind('mouseleave', function() { onHoverCardMouseOut($hoverCard, $hoverButton, $cardPosts); });
+  }
+}
+
+/**
+ * Displays posts when posts button on hovercard is hovered
+ */
+function onCardPostsButtonMouseEnter($hoverCard, $cardPosts, $hoverButton) {
+  debug('onCardPostsButtonMouseEnter');
+  $hoverButton.unbind('mouseenter', hoverButtonMouseEnterHandler);
+
+  // Animations
+
+  var currentWidth = $hoverCard.width();
+  var parentWidth = $hoverCard.parent().width();
+  finalHoverCardWidth = Math.min(NOTIFICATION_FRAME_WIDTH, Math.round(parentWidth * 0.99));
+  var currentLeft = parseInt($hoverCard.css('left'), 10);
+  // Minimum is 1 so that we have a border that matches the other side in the notification area
+  var halfWidthGain = (finalHoverCardWidth - currentWidth) / 2;
+  var finalLeft = Math.max(1, currentLeft - halfWidthGain -
+      Math.max(0, currentLeft + currentWidth + halfWidthGain - parentWidth));
+  var currentHeight = $hoverCard.height();
+  var finalHeight = currentHeight + 287; // FIXME: hardcoded
+  var scrollTop = $hoverCard.closest('body').scrollTop();
+  var currentTop = parseInt($hoverCard.css('top'), 10) - scrollTop;
+  var overExtended = Math.max(0, currentTop + finalHeight - (window.innerHeight - GBAR_HEIGHT));
+  var finalTop = scrollTop + Math.min(currentTop, Math.max(100, currentTop - overExtended));
+  $hoverCard.css({maxWidth: '500px', width: '' + currentWidth + 'px'}).
+      animate($.extend({width: finalHoverCardWidth, left: finalLeft}, finalTop !== currentTop ? {top: finalTop} : {}),
+          'easeOutQuart');
+  $cardPosts.show().css('opacity', '1');
+
+  $hoverButton.find('#gpme-card-posts-button-text').fadeOut();
+  $hoverButton.find('#gpme-card-posts-tabs').fadeIn();
+
+  var $postsContent = $hoverCard.find('#gpme-card-posts-content');
+  $postsContent.slideDown();
+  // XXX Don't know why I have to do this but the items sometimes stretch outside the table otherwise.
+  $postsContent.children().css('max-width', finalHoverCardWidth - 10);
+
+  // Get the ID of the user
+  var $cardUserLink = $hoverCard.find('a.c-W-yq');
+  if (! $cardUserLink) {
+    error('displayHoverCardPosts: Can\'t get the user link from the hovercard', $hovercard);
+    return;
+  }
+
+  var cardUserId = $cardUserLink.attr('o');
+  if (! cardUserId) {
+    error('displayHoverCardPosts: Can\'t get the user id from the hovercard user link', $cardUserLink);
+    return;
+  }
+
+  var existingId = $postsContent.attr('gpme-o-id');
+  if (! existingId || existingId != cardUserId)
+    retrieveHoverCardPosts($hoverCard, cardUserId);
+}
+
+/**
+ * Download the posts from the API
+ */
+function retrieveHoverCardPosts($hoverCard, cardUserId) {
+  var imageCount = 0;
+  var DATE_REGEXP = /^(?:\d+\/\d+\/\d+|\d+-\d+-\d+)$/;
+
+  function appendItem($parent, item, prefix) {
+    var addAttachments = function(attachments) {
+      var empty = true;
+      for (var i = 0, l = attachments.length; i < l; i++)  {
+        var attach = attachments[i];
+        var text = attach.displayName || attach.content;
+        if (text) {
+          if (! empty)
+            $el.append($('<span> \u2022 </span>'));
+          empty = false;
+          // TODO: check for XSS.  G+ docs say displayName is suitable for display, but we gotta check
+          if (attach.objectType == 'article') {
+            $el.append($('<i>' + text + '</i>'));
+          } else if (attach.objectType == 'photo') { 
+            $el.append($('<span>Photo ' + text + '</span>'));
+          } else if (attach.objectType == 'photo-album') {
+            $el.append($('<span>Photo Album ' + text + '</span>'));
+          }
+          // FIXME: non of the above
+        }
+      }
+    };
+
+    // FIXME: do a proper style
+    var $el = $('<div class="gpme-title-folded" style="cursor: pointer"/>').click(function() {
+      var $this = $(this);
+      if (! $this.hasClass('gpme-card-posts-open')) {
+        $this.addClass('gpme-card-posts-open');
+        $('<div class="gpme-card-posts-item-content" style="display: none"/>').html(item.object.content ? item.object.content : item.url).
+            click(function() {
+                window.location.href = item.url;
+            }).
+            insertAfter($this).
+            slideDown(100).
+            // Neuter any of the +mentions so that they don't trigger another hovercard
+            find('.proflink').attr('oid', '');
+      }
+    });
+    if (prefix)
+      $el.append($(prefix));
+
+    var p;
+
+    if (item.verb == 'share') { // Shared item
+      if (item.object && (p = item.object.actor)) {
+        var link = '<a href="/' + p.id + '" class="yn Hf cg">';
+        if (++imageCount < 20) // Minimize the number of images we download at a time
+          $el.append($(link + '<img src="' + p.image.url + '"></a><span>\u00a0</span>'));
+        $el.append($(link + p.displayName + '</a><span>\u00a0</span>'));
+      }
+      if (item.object.content)  {
+        var content = item.object.content;
+        var snippet = $('<div/>').html(content).text().substr(0, 100);
+        $el.append($('<i/>').text(snippet));
+      }
+      if (item.object.attachments)
+        addAttachments(item.object.attachments);
+    } else if (item.title && ! DATE_REGEXP.test(item.title)) { // Simple item // FIXME: deal with the boring dates
+        $el.append($('<span/>').text(item.title));
+    } else if (item.object.attachments) { // Item with no title, but has attachments
+      addAttachments(item.object.attachments);
+    } else { // Unrecognized
+      if (DEBUG)
+        $el.append('<pre>' + JSON.stringify(item) + '</pre>');
+      else
+        return;
+    }
+
+    // Make sure it has at least something in there, for all the post types that we don't yet support
+    $el.append('<span>\u00a0</span>');
+    $parent.append($el);
+  }
+
+  /**
+   * Display posts as they come in
+   */
+  function displayRecentPosts(newItems) {
+    if (! cardPostsRecentInitialized) {
+      $cardPostsRecent.empty();
+      cardPostsRecentInitialized = true;
+    }
+    debug('retrieveHoverCardPosts.displayRecentPosts: ' + newItems.length + ' new items.');
+    for (var i = 0, l = newItems.length; i < l; i++)
+      appendItem($cardPostsRecent, newItems[i]);
+  }
+
+  /**
+   * Process the posts when all done.
+   */
+  function doneRetrievingPosts(errorText) {
+    var recentItems = items.recent;
+    if (! recentItems.length) { // No data
+      $cardPostsRecent.parent().empty().html(errorText ?
+          '<div class="gpme-card-posts-api-error">The Google+ API returned an error:<br /><pre>' + errorText + '</pre></div>' :
+          '<p>No public posts.</p>');
+
+    } else { // We got data
+
+      // Clean up old cached items
+      if (lastCachedHoverCardPosts.length >= 10)
+        delete cachedHoverCardPosts[lastCachedHoverCardPosts.shift()];
+      // Cache items
+      lastCachedHoverCardPosts.push(cardUserId);
+      cachedHoverCardPosts[cardUserId] = items;
+/* Temporary
+    lsSet(LS_CARD_POSTS, '2', items);
+*/
+
+      // See if we've already sorted it
+      var i, sortedItems = items.sortedByScore;
+      if (! sortedItems) {
+        // Compute the item scores & gather all the text
+        var scoreElements = ['replies', 'plusoners', 'resharers'];
+        var scoreWeights = [1, 2, 3];
+        sortedItems = items.sortedByScore = [];
+        for (i = recentItems.length; i--; ) {
+          var p, score = 0;
+          for (var se = 3; se--; ) {
+            if ((p = recentItems[i].object) && (p = p[scoreElements[se]]) && (p = p.totalItems))
+              score += p * scoreWeights[se];
+          }
+          sortedItems[i] = recentItems[i];
+          sortedItems[i].gpmeScore = score;
+        }
+        // Sort so that items with highest scores are first
+        sortedItems.sort(function(a, b) {
+          return a.gpmeScore - b.gpmeScore;
+        });
+      }
+
+      // Reset the image count so that the top posts can get some images too
+      imageCount = 0;
+
+      // Display the sorted items, get all the content
+      var $cardPostsTop = $cardPostsContent.children('#gpme-card-posts-top').empty();
+      var allContent = '';
+      var totalScore = 0;
+      var maxScore = sortedItems[sortedItems.length - 1].gpmeScore;
+      for (i = sortedItems.length; i--; ) {
+        var item = sortedItems[i];
+        appendItem($cardPostsTop, item, '<span>' +
+            (maxScore ? '<div class="gpme-card-posts-top-scorebar"><div class="gpme-card-posts-top-scorebar-fg" style="width:' + Math.round(item.gpmeScore * 100 / maxScore) + '%"></div><div class="gpme-card-posts-top-scorebar-text">' + item.gpmeScore + '</div></div>' : '<b>' + item.gpmeScore + '</b>') +
+            '- </span>');
+        totalScore += item.gpmeScore;
+        // FIXME: originalContent doesn't seem to work right now
+        if (item.object && item.object.content)
+          allContent += item.object.content;
+      }
+
+      // Generate the cloud
+      var canvasWidth = finalHoverCardWidth - 2 * CARD_POSTS_CONTENT_HORIZ_PADDING - 2;
+      var canvasHeight = Math.round(canvasWidth * 2 / 3);
+      var $cardPostsCloud = $cardPostsContent.children('#gpme-card-posts-cloud').empty();
+      if (allContent) {
+        // Strip all HTML tags, remove URLs (simple regexp from:
+        // http://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url/163684#163684 )
+        allContent = $('<div/>').html(allContent).text().replace(/\b(https?|ftp|file):\/\/[-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[-A-Za-z0-9+&@#\/%=~_|]/g, '');
+        if (allContent) {
+          var vis = new metaaps.nebulos($cardPostsCloud.get(0), '' + canvasWidth + 'px', '' + canvasHeight + 'px');
+          vis.draw(allContent);
+        }
+      }
+
+      // Add additional info about the user
+      var $gpmeCardPostsInfo = $('<td class="gpme-card-posts-info" style="opacity:1"></td>');
+
+      // Calculate very rough post frequency
+      var earliestPublished = recentItems[recentItems.length - 1].published;
+      if (earliestPublished) {
+        var earliestDate = new Date().setISO8601(earliestPublished);
+        var numDays = (new Date() - earliestDate) / (24 * 3600000);
+        if (numDays > 0) {
+          var postFreq = Math.round(recentItems.length * 10 / numDays) / 10;
+          $gpmeCardPostsInfo.html('<div>' + postFreq + ' posts/day</div>');
+        }
+      }
+
+      // Calculate the average score per post
+      $gpmeCardPostsInfo.append($('<div>' + Math.round(totalScore * 10 / recentItems.length) / 10 + ' pts/post</div>'));
+
+      $hoverCard.find('td[colspan="2"]').attr('colspan', '3');
+      $hoverCard.find('tr:first-child > td:last-child').after($gpmeCardPostsInfo);
+    }
+  }
+
+  var $cardPostsContent = $hoverCard.find('#gpme-card-posts-content');
+  $cardPostsContent.attr('gpme-o-id', cardUserId);
+  var $cardPostsRecent = $cardPostsContent.children('#gpme-card-posts-recent');
+  var cardPostsRecentInitialized = false;
+
+  // Check cache
+  var items = cachedHoverCardPosts[cardUserId];
+  if (items) {
+    displayRecentPosts(items.recent);
+    doneRetrievingPosts();
+
+  } else {
+/*
+    // Temporary
+    items = lsGet(LS_CARD_POSTS, '2');
+    if (items) {
+      displayRecentPosts(items);
+    } else {
+*/
+
+    items = {recent: []};
+
+    // Retrieve posts
+    //var remainingResults = 230; // Pagination bug of G+ which limits the number of posts we can get for a user
+    var remainingResults = 200;
+    var plusList = function(url) {
+      var maxResults = Math.min(100, remainingResults);
+      var actualUrl = $.param.querystring(url, 'maxResults=' + maxResults + '&key=' + plusApiDevKey);
+      //debug('G+API: URL=' + actualUrl);
+      $.getJSON(actualUrl).then(function(data) {
+        if (data.items) {
+          items.recent = items.recent.concat(data.items);
+          displayRecentPosts(data.items);
+          remainingResults -= data.items.length;
+          //debug('G+API: remainingResults=' + remainingResults);
+
+          // We got more posts to get
+          if (data.items.length == maxResults && remainingResults > 0 && data.nextLink) {
+            setTimeout(function() { plusList(data.nextLink); }, 2000);
+            return;
+          }
+        }
+        doneRetrievingPosts();
+      }, function(e) {
+        error('retrieveHoverCardPosts.getJSON', e, e.responseText);
+        // Display what we have
+        doneRetrievingPosts(e.responseText);
+      });
+    };
+
+    // Start downloading
+    plusList('https://www.googleapis.com/plus/v1/people/' + cardUserId + '/activities/public');
+
+/*
+    // Temporary
+    }
+*/
+  }
+}
+
+function onHoverCardMouseOut($hoverCard, $cardPosts) {
+  debug('onCardPostsButtonMouseOut');
+
+  if (resetHoverCardTimer)
+    clearTimeout(resetHoverCardTimer);
+  var attempts = 15;
+
+  // The mouse could just be over the circles menu, so we check
+  // if the hovercard is still there.
+  resetHoverCardTimer = setTimeout(function resetHoverCard() {
+    if (! $hoverCard.is(':visible')) {
+      $cardPosts.hide().css('opacity', '0');
+      $hoverCard.css({maxWidth: '', width: '', left: '', top: ''});
+    } else {
+      // It's possible the mouse moves from circles menu to the outside
+      // area very quickly, in which case the hovercard doesn't disappear right away
+      // (G+ bug).
+      // Then, as the mouse moves again, the hoverCard disappears.  So
+      // we have to find that event.  We'll try for 15 seconds.
+      if (--attempts >= 0)
+        resetHoverCardTimer = setTimeout(resetHoverCard, 1000);
+    }
+  }, 200);
+}
+
+/**
+ * Responds to tab clicks
+ */
+function onCardPostsTabClick(e, $hoverCard) {
+  info('onCardPostsTabClick');
+  var id = e.target.id;
+  if (id && id !== selectedHoverCardTabId) {
+    var contentId = id.replace(/-tab/, '');
+    var previousContentId = selectedHoverCardTabId.replace(/-tab/, '');
+    $hoverCard.find('#' + previousContentId).hide();
+    $hoverCard.find('#' + contentId).show();
+    $hoverCard.find('#' + selectedHoverCardTabId).removeClass('gpme-card-posts-tab-selected');
+    selectedHoverCardTabId = id;
+    $hoverCard.find('#' + selectedHoverCardTabId).addClass('gpme-card-posts-tab-selected');
+  }
+}
+
+/****************************************************************************
  * Announcements
  ***************************************************************************/
 
@@ -3988,6 +4523,20 @@ function injectNews(mappingKey) {
  */
 $(document).ready(function() {
   info("event: initial page load.");
+
+/* Deprecated
+  // Frame check: we only want the top frame and the notifications frame
+  var href = window.location.href;
+  var match = href.match(/^https?:\/\/plus\.google\.com\/(?:u\/\d+\/)?(_)\/(notifications\/frame\b)?/)
+  if (! match || ! match[1])
+    frame = 'top';
+  else if (match[2])
+    frame = 'notifications';
+  else
+    return;
+  debug(frame + ' frame URL=' + href);
+*/
+  frame = 'top';
 
   // We inject our stylesheet early because there are styles that we need
   // for our news notification
@@ -4071,169 +4620,173 @@ function main() {
   // Specify jQuery UI easing method
   jQuery.easing.def = 'easeInOutQuad';
 
-  // Google+ DOM check
-  // FIXME: Change Gplusx to do this for us so we dont' have to reference S_gbar
-  var $gbar = $(_ID_GB);
-  var mappingKey = '';
-  if ($gbar.length)
-    mappingKey = $gbar.parent().attr('class');
-  if (isEnabledOnThisPage() && (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0)) {
-    error("Google+ has changed is layout again (CSS class names), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
-    getAppDetailsFromBackground(function(theAppDetails) {
-      appDetails = theAppDetails;
+  if (frame == 'top') { // Top frame
+    // Google+ DOM check
+    // FIXME: Change Gplusx to do this for us so we don't have to reference S_gbar
+    var $gbar = $(_ID_GB);
+    var mappingKey = '';
+    if ($gbar.length)
+      mappingKey = $gbar.parent().attr('class');
+    if (isEnabledOnThisPage() && (! $gbar.length || (' ' + mappingKey + ' ').indexOf(' ' + C_GBAR + ' ') < 0)) {
+      error("Google+ has changed is layout again (CSS class names), breaking G+me.  Please report the problem to http://huyz.us/gpme-release/ and I will fix it right away.");
+      getAppDetailsFromBackground(function(theAppDetails) {
+        appDetails = theAppDetails;
 
-      // NOTE: Some other extensions mess with the CSS class names
-      mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed|undefined)\s*$/, '').replace(/\s+/g, '_');
+        // NOTE: Some other extensions mess with the CSS class names
+        mappingKey = mappingKey.replace(/\s*(?:gpr_gbar|SkipMeIAmAlradyFixPushed|undefined)\s*$/, '').replace(/\s+/g, '_');
 
-      injectNews(mappingKey);
-    });
+        injectNews(mappingKey);
+      });
 
-    // We continue because the extension may still work even though the mapping key doesn't
-  }
-
-  // Initialize Gplusx
-  gpx = new Gplusx({
-    extendJQuerySelectors: true,
-    extendJQueryPseudoClasses: DEV,
-    extendQuerySelectors: DEV,
-    aliasAPI: true,
-    enableKeyCommands: DEV,
-    automap: DEV,
-    strict: DEV,
-    debug: DEV
-  }, function() {
-    // Overwrite what's in local storage so that we can test
-    if (DEV) {
-//      gpx.newMap();
-//      gpx.automapPage();
-//      gpx.dumpToConsole("After automapping page");
-
-//    debug('Testing jQuery extension', $('%post'));
-//    debug('Testing jQuery extension', $('%post[aria-live]:eq(0)'));
-//    debug('Testing querySelector extension', document.querySelectorAll('%post'));
-//    debug('Testing querySelector extension', document.querySelector('.ke%post'));
-    //debug('Testing alias', $X('%post'));
-    //debug('Testing alias', X.classNames('%post'));
-
-      // Testing strit mode
-//      gpx.config.strict = false;
-//      console.dir($('.ke%crap'));
-//      console.dir(document.querySelector('.ke%crap'));
-//      gpx.config.strict = true;
-//      console.dir(document.querySelector('.ke%crap'));
+      // We continue because the extension may still work even though the mapping key doesn't
     }
 
+    // Initialize Gplusx
+    gpx = new Gplusx({
+      extendJQuerySelectors: true,
+      extendJQueryPseudoClasses: DEV,
+      extendQuerySelectors: DEV,
+      aliasAPI: true,
+      enableKeyCommands: DEV,
+      automap: DEV,
+      strict: DEV,
+      debug: DEV
+    }, function() {
+      // Overwrite what's in local storage so that we can test
+//      if (DEV) {
+  //      gpx.newMap();
+  //      gpx.automapPage();
+  //      gpx.dumpToConsole("After automapping page");
 
-    // Pre-create DOM elements
-    defineDomConstants(window); // Does most of the referencing to Gplusx
-    precreateElements(window);
-    // Set up items including DOM elements based on internationalization settings
-    i18nInit();
+  //    debug('Testing jQuery extension', $('%post'));
+  //    debug('Testing jQuery extension', $('%post[aria-live]:eq(0)'));
+  //    debug('Testing querySelector extension', document.querySelectorAll('%post'));
+  //    debug('Testing querySelector extension', document.querySelector('.ke%post'));
+      //debug('Testing alias', $X('%post'));
+      //debug('Testing alias', X.classNames('%post'));
 
-    // Inject some styles
-    injectSomeStyles();
+        // Testing strit mode
+  //      gpx.config.strict = false;
+  //      console.dir($('.ke%crap'));
+  //      console.dir(document.querySelector('.ke%crap'));
+  //      gpx.config.strict = true;
+  //      console.dir(document.querySelector('.ke%crap'));
+//      }
 
-    // Get settings
-    getOptionsFromBackground(function() {
-      $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
-      if ( settings.nav_summaryLines > 1)
-        $titlebarFolded.css('white-space', 'inherit');
 
-      // Listen for when there's a total AJAX refresh of the stream,
-      // on a regular page
-      var $contentPane = $('%contentPane'); // $(S_contentPane);
-      if ($contentPane.length) {
-        var contentPane = $contentPane.get(0);
-        $contentPane.bind('DOMNodeInserted', function(e) {
-          // This happens when a new stream is selected
-          if (e.relatedNode.parentNode == contentPane) {
-            // We're only interested in the insertion of entire content pane
-            return onContentPaneUpdated(e);
-          }
+      // Pre-create DOM elements
+      defineDomConstants(window); // Does most of the referencing to Gplusx
+      precreateElements(window);
+      // Set up items including DOM elements based on internationalization settings
+      i18nInit();
 
-          var id = e.target.id;
-          // ':' is weak optimization attempt for comment editing
-          if (id && id.charAt(0) == ':')
-            return null;
+      // Inject some styles
+      injectSomeStyles();
 
-          var target = e.target;
+      // Get settings
+      getOptionsFromBackground(function() {
+        $titlebarFolded.css('height', settings.nav_summaryLines * ITEM_LINE_HEIGHT);
+        if ( settings.nav_summaryLines > 1)
+          $titlebarFolded.css('white-space', 'inherit');
 
-          //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
-          // This happens when a new post is added, either through "More"
-          // or a new recent post.
-          // Or it's a Start G+ post
-          if (id && (id.substring(0,7) == 'update-'))
-            return onItemInserted(e);
-          else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
-            return onSgpItemInserted(e);
-          // This happens when switching from About page to Posts page
-          // on profile
-          else if (e.relatedNode && e.relatedNode.id && e.relatedNode.id.indexOf('-posts-page') > 0)
-            return onContentPaneUpdated(e);
+        // Listen for when there's a total AJAX refresh of the stream,
+        // on a regular page
+        var $contentPane = $('%contentPane'); // $(S_contentPane);
+        if ($contentPane.length) {
+          var contentPane = $contentPane.get(0);
+          $contentPane.bind('DOMNodeInserted', function(e) {
+            // This happens when a new stream is selected
+            if (e.relatedNode.parentNode == contentPane) {
+              // We're only interested in the insertion of entire content pane
+              return onContentPaneUpdated(e);
+            }
 
-          // This happens when posts' menus get inserted.  If they're inserted on a page load,
-          // then they have [role=menu], otherwise all they have is a simple classname, e.g. 'Om', not even
-          // the 'a-z' class which comes later.  The problem is that we can't automap the 'Om' early enough.
-          // We do know that the children come in as [role=button]s which later become [role=menuitem]
-          var itemDivInserted = false;
-          if (target.getAttribute('role') == "menu" || target.className == C_UBOOST_STAR) {
-            itemDivInserted = true;
-          } else if (target.childElementCount) {
-            var childNode = target.childNodes[0];
-            if (childNode && childNode.nodeType == Node.ELEMENT_NODE && childNode.getAttribute('role') == 'button')
-              itemDivInserted= true;
-          }
-          if (itemDivInserted)
-            return onItemDivInserted(e);
-        });
-      } else  {
-        // This can happen if we're in the settings page for example
-        warn("main: Can't find content pane");
-      }
+            var id = e.target.id;
+            // ':' is weak optimization attempt for comment editing
+            if (id && id.charAt(0) == ':')
+              return null;
 
-      // Listen when status change
-      // WARNING: DOMSubtreeModified is deprecated and degrades performance:
-      //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
-      var $status = $('%gbarToolsNotificationUnitFg'); // $(S_gbarToolsNotificationUnitFg);
-      if ($status.length)
-        $status.bind('DOMSubtreeModified', onStatusUpdated);
-      else
-        // Sometimes this happens with G+ for some reason.  Happened at times when I was
-        // reloading a profile page.
-        debug("main: Can't find status node; badges won't work.");
+            var target = e.target;
 
-      // Listen to incoming messages from background page
-      chrome.extension.onRequest.addListener(wrapTryCatch('chrome.extension.onRequest.addListener',
-        function(request, sender, sendResponse) {
-          if (request.action == "gpmeTabUpdateComplete") {
-            // Handle G+'s history state pushing when user clicks on different streams (and back)
-            onTabUpdated();
-          } else if (request.action == "gpmeModeOptionUpdated") {
-            // Handle options changes
-            onModeOptionUpdated(request.mode);
-          } else if (request.action == "gpmeResetAll") {
-            onResetAll();
-          } else if (request.action == "gpmeBrowserActionClick") {
-            onBrowserActionClick();
-          }
-        }));
+            //debug("DOMNodeInserted: id=" + id + " className=" + e.target.className);
+            // This happens when a new post is added, either through "More"
+            // or a new recent post.
+            // Or it's a Start G+ post
+            if (id && (id.substring(0,7) == 'update-'))
+              return onItemInserted(e);
+            else if (settings.nav_compatSgp && id.substring(0,9) == ID_SGP_POST_PREFIX )
+              return onSgpItemInserted(e);
+            // This happens when switching from About page to Posts page
+            // on profile
+            else if (e.relatedNode && e.relatedNode.id && e.relatedNode.id.indexOf('-posts-page') > 0)
+              return onContentPaneUpdated(e);
 
-      // Listen to keyboard shortcuts
-      $(window).keydown(onKeydown);
+            // This happens when posts' menus get inserted.  If they're inserted on a page load,
+            // then they have [role=menu], otherwise all they have is a simple classname, e.g. 'Om', not even
+            // the 'a-z' class which comes later.  The problem is that we can't automap the 'Om' early enough.
+            // We do know that the children come in as [role=button]s which later become [role=menuitem]
+            var itemDivInserted = false;
+            if (target.getAttribute('role') == "menu" || target.className == C_UBOOST_STAR) {
+              itemDivInserted = true;
+            } else if (target.childElementCount) {
+              var childNode = target.childNodes[0];
+              if (childNode && childNode.nodeType == Node.ELEMENT_NODE && childNode.getAttribute('role') == 'button')
+                itemDivInserted= true;
+            }
+            if (itemDivInserted)
+              return onItemDivInserted(e);
+          });
+        } else  {
+          // This can happen if we're in the settings page for example
+          warn("main: Can't find content pane");
+        }
 
-      //injectNewFeedbackLink();
+        // Listen when status change
+        // WARNING: DOMSubtreeModified is deprecated and degrades performance:
+        //   https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions
+        var $status = $('%gbarToolsNotificationUnitFg'); // $(S_gbarToolsNotificationUnitFg);
+        if ($status.length)
+          $status.bind('DOMSubtreeModified', onStatusUpdated);
+        else
+          // Sometimes this happens with G+ for some reason.  Happened at times when I was
+          // reloading a profile page.
+          debug("main: Can't find status node; badges won't work.");
 
-      // The initial update, if enabled on this page.
-      // NOTE: we don't put anything else within this guard because all our event handlers
-      // need to work when the user switches to a page where G+me is enabled.
-      if (isEnabledOnThisPage()) {
-        updateAllItems();
-      }
+        // Listen to incoming messages from background page
+        chrome.extension.onRequest.addListener(wrapTryCatch('chrome.extension.onRequest.addListener',
+          function(request, sender, sendResponse) {
+            if (request.action == "gpmeTabUpdateComplete") {
+              // Handle G+'s history state pushing when user clicks on different streams (and back)
+              onTabUpdated();
+            } else if (request.action == "gpmeModeOptionUpdated") {
+              // Handle options changes
+              onModeOptionUpdated(request.mode);
+            } else if (request.action == "gpmeResetAll") {
+              onResetAll();
+            } else if (request.action == "gpmeBrowserActionClick") {
+              onBrowserActionClick();
+            }
+          }));
 
-      // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
-      setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
+        // Listen to keyboard shortcuts
+        $(window).keydown(onKeydown);
+
+        //injectNewFeedbackLink();
+
+        // The initial update, if enabled on this page.
+        // NOTE: we don't put anything else within this guard because all our event handlers
+        // need to work when the user switches to a page where G+me is enabled.
+        if (isEnabledOnThisPage()) {
+          updateAllItems();
+        }
+
+        listenToHoverCardUpdates();
+
+        // Set up a lscache cleanup in 5 minutes, keeping 30 days of history
+        setTimeout(function() { lscache.removeOld(30 * 24 * 60, LS_HISTORY_); }, 5 * 60000);
+      });
     });
-  });
+  }
 }
 
 // vim:set iskeyword+=-,36:

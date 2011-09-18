@@ -44,6 +44,11 @@ var defaultSettings = {
   'nav_global_commentsDefaultCollapsed': false,
 
   /*
+   *
+   */
+  'apiKey': '',
+
+  /*
    * Compatibility
    */
   'nav_compatSgp': true,

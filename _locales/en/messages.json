@@ -291,5 +291,21 @@
   },
   "options_nav_translators_desc": {
     "message": "Huy sincerely thanks all the translators for their skills and effort."
+  },
+
+
+  "options_hcard_general_label": {
+    "message": "Hovercard",
+    "description": "Name of the tab in the options page"
+  },
+  "options_hcard_advanced_label": {
+    "message": "Advanced",
+    "description": "Name of the options group for advanced options for hovercard"
+  },
+  "options_hcard_advanced_apiKey_desc": {
+    "message": "For development and beta, you can override the built-in API key with your own.  This is a workaround in case G+me has reached the API usage limit for the day and the hovercard can no longer get data.  Get your own API key at <a href=\"https://code.google.com/apis/console#access\" target=_blank>Google APIs Console</a>."
+  },
+  "options_hcard_advanced_apiKey": {
+    "message": "Google+ API key"
   }
 }

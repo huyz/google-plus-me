@@ -735,6 +735,166 @@ div.gpme-bottombar.gpme-hover:hover { /* Like C_FEEDBACK */
 }
 
 /*
+ * HoverCard post listing
+ */
+
+.gpme-card-posts-info {
+  width: 100px;
+  padding: 3px 15px 3px 5px;
+  text-align: right;
+  opacity: 0;
+  transition: opacity .90s linear;
+  -moz-transition: opacity .90s linear;
+  -ms-transition: opacity .90s linear;
+  -o-transition: opacity .90s linear;
+  -webkit-transition: opacity .90s linear;
+}
+
+/* Copied from "person in common" row (.c-W-Hc-kc on 2011-09-17) */
+#gpme-card-posts-button {
+  background: -o-linear-gradient(top,#f7f7f7,#f4f4f4);
+  background: -webkit-gradient(linear,left top,left bottom,from(#f7f7f7),to(#f4f4f4));
+  background: -moz-linear-gradient(top,#f7f7f7,#f4f4f4);
+  background: -o-linear-gradient(top,#f7f7f7,#f4f4f4);
+  border-top: solid 1px #bcbcbc;
+  margin-top: 5px;
+  height: 32px;
+  padding: 0;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+#gpme-card-posts-button-text {
+  text-align: center;
+  cursor: default;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+#gpme-card-posts-tabs {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 5px;
+}
+
+.gpme-card-posts-tab  {
+  padding: 7px 12px;
+  float: left;
+  cursor: pointer;
+}
+.gpme-card-posts-tab:hover {
+  color: #dd4b39;
+}
+
+.gpme-card-posts-tab-selected {
+  color: #dd4b39;
+  font-weight: bold;
+}
+
+#gpme-card-posts {
+  opacity: 0;
+  /*
+  position: fixed;
+  z-index: 10000;
+  */
+  /*
+  left: 20px;
+  top: 20px;
+  height: 200px;
+  */
+  background-color: white;
+/*
+  border: solid 1px #bcbcbc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: opacity .30s linear;
+  -moz-transition: opacity .30s linear;
+  -ms-transition: opacity .30s linear;
+  -o-transition: opacity .30s linear;
+  -webkit-transition: opacity .30s linear;
+*/
+}
+
+#gpme-card-posts-content {
+  padding: 5px; /* Dunno why this messes with the table width */
+  color: #000;
+}
+#gpme-card-posts-content > :not(#gpme-card-posts-cloud) {
+  height: 285px; /* 370px; XXX Make it match the cloud for now as it's easier to animate */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#gpme-card-posts-content > ::-webkit-scrollbar {
+  background: transparent;
+  overflow: visible;
+  width: 15px;
+}
+#gpme-card-posts-content > ::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border: solid #fff;
+}
+
+.gpme-card-posts-top-scorebar {
+  display: inline-block;
+  width: 38px;
+  height: 15px;
+  margin-right: 3px;
+  font-weight: bold;
+  position: relative;
+}
+.gpme-card-posts-top-scorebar-fg {
+  background-color: #DDD;
+  height: 15px;
+}
+.gpme-card-posts-top-scorebar-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0 2px;
+}
+
+.gpme-card-posts-item-content {
+  padding: 5px 10px;
+  cursor: pointer; /* Damn Chrome doesn't reset it properly */
+  background-color: #f8f8f8;
+  border: 1px solid transparent;
+  border-left: 3px solid #CCC;
+}
+.gpme-card-posts-item-content:hover {
+  background-color: #f0f0f0;
+  border: 1px solid #bbb;
+  border-left: 3px solid #CCC;
+  cursor: pointer;
+}
+
+.gpme-card-posts-loading {
+  text-align: center;
+}
+
+.gpme-card-posts-loading > div {
+  background: #fff1a8;
+  border-color: #fff1a8;
+  color: #000;
+  font-size: 13px;
+  padding: 2px 15px;
+  font-weight: bold;
+  display: inline-block;
+  border: 3px solid transparent;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+
+.gpme-card-posts-api-error {
+  background: #000;
+  color: #fff;
+}
+
+/*
  * Compatibility with other extensions
  */
 

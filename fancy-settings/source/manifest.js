@@ -32,7 +32,7 @@ this.manifest = {
     },
 
     /*
-     * General
+     * Navigation
      */
     // Collapse summary
     {
@@ -108,6 +108,24 @@ this.manifest = {
       "name"  : "nav_browserActionOpensNewTab",
       "type"  : "checkbox",
       "label" : chrome.i18n.getMessage("options_nav_browserActionOpensNewTab")
+    },
+
+    /*
+     * Hovercard
+     */
+    {
+      "tab"   : chrome.i18n.getMessage("options_hcard_general_label"),
+      "group" : chrome.i18n.getMessage("options_hcard_advanced_label"),
+      "name"  : "hcard_advanced_apiKey_desc",
+      "type"  : "description",
+      "text" : chrome.i18n.getMessage("options_hcard_advanced_apiKey_desc")
+    },
+    {
+      "tab"   : chrome.i18n.getMessage("options_hcard_general_label"),
+      "group" : chrome.i18n.getMessage("options_hcard_advanced_label"),
+      "name"  : "apiKey",
+      "type"  : "text",
+      "label" : chrome.i18n.getMessage("options_hcard_advanced_apiKey")
     },
 
     /*

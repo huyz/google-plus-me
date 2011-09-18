@@ -1,7 +1,7 @@
 {
   "default_locale": "en",
   "name": "__MSG_extensionName__",
-  "version": "6.0.4",
+  "version": "7.0.0",
   "minimum_chrome_version": "12",
 
   "description": "__MSG_extensionDescription__",
@@ -26,9 +26,12 @@
         "gplusx/gplusx.js",
 	"jquery.easing.js",
 	"jquery.ba-throttle-debounce.js",
+	"jquery.ba-bbq.js",
 	"jquery.hoverIntent.js",
 	"jquery.scrollintoview.js",
 	"jquery.actual.js",
+        "canvasport.js",
+        "nebulos.js",
         "lscache.js",
 	"gpme.js"],
       "run_at": "document_start"
@@ -37,7 +40,12 @@
 
   "permissions": [
     "http://plus.google.com/*",
-    "https://plus.google.com/*"
+    "https://plus.google.com/*",
+    "http://*.googleapis.com/*",
+    "https://*.googleapis.com/*",
+    "unlimitedStorage",
+    "contextMenus",
+    "idle"
 ,   "tabs"
   ],
 
