@@ -4086,7 +4086,9 @@ function onHoverCardUpdated(e, $hoverCard) {
     var $hoverCardButtonTopTab = $('<div id="gpme-card-posts-tab-top" class="gpme-card-posts-tab">Top</div>').click(handler);
     var $hoverCardButtonCloudTab = $('<div id="gpme-card-posts-tab-cloud" class="gpme-card-posts-tab">Cloud</div>').click(handler);
     var $hoverCardButtonTabs = $('<div id="gpme-card-posts-tabs" style="display:none"></div>').append($hoverCardButtonRecentTab, $hoverCardButtonTopTab, $hoverCardButtonCloudTab);
-    var $hoverCardButtonTd = $('<td colspan=2 id="gpme-card-posts-button"><div id="gpme-card-posts-button-text">Posts</div></td>').append($hoverCardButtonTabs);
+    // NOTE: G+'s hovercards can sometimes actually stretch out invisible; e.g., if there are a lot of followees
+    // in common.  This makes our children stretch out improperly, so we have to limit the size.
+    var $hoverCardButtonTd = $('<td colspan=2 id="gpme-card-posts-button"><div id="gpme-card-posts-button-text" style="max-width:' + $hoverCard.width() + 'px">Public Posts</div></td>').append($hoverCardButtonTabs);
     var $hoverButton = $('<tr></tr>').append($hoverCardButtonTd).appendTo($tbody);
 
     var $cardPosts = $hoverCardPostsTpl.clone().insertAfter($hoverButton);
@@ -4133,7 +4135,8 @@ function onCardPostsButtonMouseEnter($hoverCard, $cardPosts, $hoverButton) {
 
   var $postsContent = $hoverCard.find('#gpme-card-posts-content');
   $postsContent.slideDown();
-  // XXX Don't know why I have to do this but the items sometimes stretch outside the table otherwise.
+  // NOTE: G+'s hovercards can sometimes actually stretch out invisible; e.g., if there are a lot of followees
+  // in common.  This makes our children stretch out improperly, so we have to limit the size.
   $postsContent.children().css('max-width', finalHoverCardWidth - 10);
 
   // Get the ID of the user
